@@ -94,7 +94,7 @@ public class DelayRingItem extends Item implements ICurioItem, IHasTooltip {
 
     @Override
     public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
+        if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
             if (!NBTUtils.getString(stack, TAG_KILLER_UUID, "").equals("")
                     && livingEntity.getEntityWorld().getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, ""))) != null) {
                 livingEntity.attackEntityFrom(DamageSource.causePlayerDamage(livingEntity.getEntityWorld().getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, "")))), Integer.MAX_VALUE);
