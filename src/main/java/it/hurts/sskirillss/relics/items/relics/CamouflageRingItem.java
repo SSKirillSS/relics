@@ -73,12 +73,6 @@ public class CamouflageRingItem extends Item implements ICurioItem, IHasTooltip 
         }
     }
 
-    @Override
-    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, false);
-        NBTUtils.setInt(stack, TAG_TIME, 0);
-    }
-
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class CamouflageRingServerEvents {
         @SubscribeEvent

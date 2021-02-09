@@ -89,12 +89,6 @@ public class JellyfishNecklaceItem extends Item implements ICurioItem, IHasToolt
     }
 
     @Override
-    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        NBTUtils.setInt(stack, TAG_CHARGES, 0);
-        NBTUtils.setInt(stack, TAG_TIME, 0);
-    }
-
-    @Override
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing,
                        float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
         ICurio.RenderHelper.translateIfSneaking(matrixStack, livingEntity);

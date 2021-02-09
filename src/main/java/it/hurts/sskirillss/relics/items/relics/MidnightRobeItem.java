@@ -85,7 +85,6 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
         if (movementSpeed.hasModifier(MIDNIGHT_ROBE_SPEED_BOOST)) {
             movementSpeed.removeModifier(MIDNIGHT_ROBE_SPEED_BOOST);
         }
-        NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

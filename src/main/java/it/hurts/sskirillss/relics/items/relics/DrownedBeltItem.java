@@ -68,11 +68,6 @@ public class DrownedBeltItem extends Item implements ICurioItem, IHasTooltip {
         return result;
     }
 
-    @Override
-    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-
-    }
-
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class DrownedBeltServerEvents {
         @SubscribeEvent

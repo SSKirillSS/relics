@@ -74,12 +74,6 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
         }
     }
 
-    @Override
-    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-        NBTUtils.setString(stack, TAG_STORED_POSITION, "");
-    }
-
     public static void teleportPlayer(PlayerEntity player) {
         ItemStack stack = player.inventory.getStackInSlot(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
         BlockPos pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_STORED_POSITION, ""));

@@ -105,7 +105,6 @@ public class IceSkatesItem extends Item implements ICurioItem, IHasTooltip {
                 && !livingEntity.isSprinting()) {
             movementSpeed.removeModifier(ICE_SKATES_SPEED_BOOST);
         }
-        NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, 0);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

@@ -87,12 +87,6 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
         }
     }
 
-    @Override
-    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, 0);
-        NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-    }
-
     public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/animations/rn_shield.png");
 
     @Override

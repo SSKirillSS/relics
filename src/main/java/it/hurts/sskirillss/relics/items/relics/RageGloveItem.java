@@ -64,13 +64,6 @@ public class RageGloveItem extends Item implements ICurioItem, IHasTooltip {
         }
     }
 
-    @Override
-    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        NBTUtils.setString(stack, TAG_TARGETED_ENTITY, "");
-        NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, 0);
-        NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-    }
-
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class RageGloveEvents {
         @SubscribeEvent
