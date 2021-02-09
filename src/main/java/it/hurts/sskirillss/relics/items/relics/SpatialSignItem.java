@@ -60,7 +60,7 @@ public class SpatialSignItem extends Item implements IHasTooltip {
         if (NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
             NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.getPosition()));
             NBTUtils.setString(stack, TAG_WORLD, playerIn.getEntityWorld().getDimensionKey().getLocation().toString());
-            NBTUtils.setInt(stack, TAG_TIME, RelicsConfig.SpatialSign.TIME_BEFORE_ACTIVATION.get() * 20);
+            NBTUtils.setInt(stack, TAG_TIME, RelicsConfig.SpatialSign.TIME_BEFORE_ACTIVATION.get());
         } else {
             if (playerIn.isSneaking()) {
                 teleportPlayer(playerIn);
