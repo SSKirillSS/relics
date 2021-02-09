@@ -122,10 +122,13 @@ public class SpatialSignItem extends Item implements IHasTooltip {
             if (event.getEntity() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntity();
                 if (EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()) != -1) {
-                    teleportPlayer(player);
-                    player.setHealth(1.0F);
-                    player.inventory.getStackInSlot(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get())).shrink(1);
-                    event.setCanceled(true);
+                    ItemStack stack = player.inventory.getStackInSlot(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
+                    if (!NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
+                        teleportPlayer(player);
+                        player.setHealth(1.0F);
+                        stack.shrink(1);
+                        event.setCanceled(true);
+                    }
                 }
             }
         }
