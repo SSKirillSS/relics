@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "relics:block/magma_stone_0"
+    },
+    "age=1": {
+      "model": "relics:block/magma_stone_1"
+    },
+    "age=2": {
+      "model": "relics:block/magma_stone_2"
+    },
+    "age=3": {
+      "model": "relics:block/magma_stone_3"
+    }
+  }
+}

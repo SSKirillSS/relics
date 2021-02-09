@@ -1,0 +1,93 @@
+{
+  "itemGroup.relics": "Relics",
+
+  "tooltip.relics.shift.tooltip": "§7Hold §8[Shift] §7for more info",
+  "tooltip.relics.shift.divider_up": "§8---------------§e[Info]§8---------------",
+  "tooltip.relics.shift.divider_down": "§8-----------------------------------",
+
+  "tooltip.relics.alt.tooltip": "§7Hold §8[Alt] §7for more info",
+  "tooltip.relics.alt.divider_up": "§8---------------§b[Info]§8---------------",
+  "tooltip.relics.alt.divider_down": "§8-----------------------------------",
+
+  "tooltip.relics.ctrl.tooltip": "§7Hold §8[Ctrl] §7for more info",
+  "tooltip.relics.ctrl.divider_up": "§8---------------§a[Info]§8---------------",
+  "tooltip.relics.ctrl.divider_down": "§8-----------------------------------",
+
+  "item.relics.chrysolite": "Chrysolite",
+  "item.relics.aquasteel_ingot": "Aquasteel ingot",
+  "item.relics.firesteel_ingot": "Firesteel ingot",
+  "item.relics.terrasteel_ingot": "Terrasteel ingot",
+  "item.relics.airsteel_ingot": "Airsteel ingot",
+  "item.relics.mithril_ingot": "Mithril ingot",
+  "item.relics.obsidian_ingot": "Obsidian ingot",
+  "item.relics.steel_ingot": "Steel ingot",
+  "item.relics.flaming_amber_geode": "Flaming amber geode",
+  "item.relics.flaming_amber_dust": "Flaming amber dust",
+  "item.relics.chalk": "Chalk",
+
+  "item.relics.spatial_sign": "Spatial sign",
+  "tooltip.relics.spatial_sign.tooltip_1": "Stored destination: %1$s",
+  "tooltip.relics.spatial_sign.tooltip_2": "Time left: %1$s",
+  "tooltip.relics.spatial_sign.shift_1": "Teleports to the stored position after certain time after activation",
+  "tooltip.relics.spatial_sign.shift_2": "Taking fatal damage with activated sign in inventory will save your life and teleport to a stored position, destroying the relic",
+
+  "item.relics.reflection_necklace": "Reflection necklace",
+  "tooltip.relics.reflection_necklace.shift_1": "Slowly accumulates charges to fully reflect projectiles and incoming damage",
+
+  "item.relics.magma_walker": "Magma walker",
+  "tooltip.relics.magma_walker.shift_1": "Condenses lava underfoot, temporarily transforming it into solid magma stone",
+  "tooltip.relics.magma_walker.shift_2": "Fully removes damage from a hot blocks",
+
+  "item.relics.midnight_robe": "Midnight robe",
+  "tooltip.relics.midnight_robe.shift_1": "Grants temporary invisibility and movement speed boost at night if the wearer's health falls to a low level",
+  "tooltip.relics.midnight_robe.shift_2": "Stealth attacks will deal double damage, but temporarily remove invisibility and movement speed boost effects",
+
+  "item.relics.scarab_talisman": "Scarab talisman",
+  "tooltip.relics.scarab_talisman.shift_1": "Increases movement speed and step height on sand",
+  "tooltip.relics.scarab_talisman.shift_2": "Increases sand breaking speed and fully removes damage from suffocating in blocks",
+
+  "item.relics.stellar_catalyst": "Stellar catalyst",
+  "tooltip.relics.stellar_catalyst.shift_1": "Grants chance to summon a falling star while attack a mob",
+
+  "item.relics.drowned_belt": "Drowned belt",
+  "tooltip.relics.drowned_belt.shift_1": "Grants infinity breathing, increases underwater incoming and dealing damage, reduces swimming speed",
+
+  "item.relics.jellyfish_necklace": "Jellyfish necklace",
+  "tooltip.relics.jellyfish_necklace.shift_1": "Slowly accumulates charges underwater which then can be used to deal electrical damage on collision with mobs",
+  "tooltip.relics.jellyfish_necklace.shift_2": "Doubles health regeneration speed underwater",
+
+  "item.relics.hunter_belt": "Hunter belt",
+  "tooltip.relics.hunter_belt.shift_1": "Doubles damage dealt to animals and loot received from mobs",
+
+  "item.relics.rage_glove": "Rage glove",
+  "tooltip.relics.rage_glove.shift_1": "Increases dealt and taken damage from the same target per each combo-attack",
+
+  "item.relics.ice_skates": "Ice skates",
+  "tooltip.relics.ice_skates.shift_1": "Increases movement speed and grants ability to ram mobs on ice, on high movement speed adds ability to freeze water underfoot",
+  "tooltip.relics.ice_skates.shift_2": "Dealt damage and knockback force depends on amount of time spend on ice",
+
+  "item.relics.camouflage_ring": "Camouflage ring",
+  "tooltip.relics.camouflage_ring.shift_1": "Grants ability to temporarily hide in a tall grass, stealth attacks will deal double damage",
+
+  "item.relics.delay_ring": "Delay ring",
+  "tooltip.relics.delay_ring.tooltip_1": "Time: %1$s",
+  "tooltip.relics.delay_ring.tooltip_2": "Health: %1$s",
+  "tooltip.relics.delay_ring.shift_1": "Temporarily alters an wearer's destiny, delaying any healing and damage taken for next 10 seconds",
+  "tooltip.relics.delay_ring.shift_2": "Any healing that is delayed by the ring would be doubled",
+
+  "item.relics.bastion_ring": "Bastion ring",
+  "tooltip.relics.bastion_ring.shift_1": "Grants ability to locate nearest bastion when killing piglins",
+
+  "item.relics.chorus_inhibitor": "Chorus inhibitor",
+  "tooltip.relics.chorus_inhibitor.shift_1": "Remembers the position of the chorus fruit usage, and returns to it after a certain time",
+  "tooltip.relics.chorus_inhibitor.shift_2": "Additional using of the chorus fruit before time runs out will increase its supply",
+  "tooltip.relics.chorus_inhibitor.shift_3": "Fully removes damage from teleportation",
+
+  "item.relics.arrow_quiver": "Arrow quiver",
+  "tooltip.relics.arrow_quiver.shift_1": "Adds chance to shoot multiple arrows",
+
+  "item.relics.lucky_horseshoe": "Lucky horseshoe",
+  "tooltip.relics.lucky_horseshoe.shift_1": "With a random chance increases player's looting and fortune",
+
+  "block.relics.magma_stone": "Magma stone"
+}

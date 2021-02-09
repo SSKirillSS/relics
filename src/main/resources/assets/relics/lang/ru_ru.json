@@ -1,0 +1,93 @@
+{
+  "itemGroup.relics": "Реликвии",
+
+  "tooltip.relics.shift.tooltip": "§7Удерживай §8[Shift] §7для подробной информации",
+  "tooltip.relics.shift.divider_up": "§8---------------§e[Инфо]§8---------------",
+  "tooltip.relics.shift.divider_down": "§8-----------------------------------",
+
+  "tooltip.relics.alt.tooltip": "§7Удерживай §8[Alt] §7для подробной информации",
+  "tooltip.relics.alt.divider_up": "§8---------------§b[Инфо]§8---------------",
+  "tooltip.relics.alt.divider_down": "§8-----------------------------------",
+
+  "tooltip.relics.ctrl.tooltip": "§7Удерживай §8[Ctrl] §7для подробной информации",
+  "tooltip.relics.ctrl.divider_up": "§8---------------§a[Инфо]§8---------------",
+  "tooltip.relics.ctrl.divider_down": "§8-----------------------------------",
+
+  "item.relics.chrysolite": "Хризолит",
+  "item.relics.aquasteel_ingot": "Слиток аквастали",
+  "item.relics.firesteel_ingot": "Слиток огнестали",
+  "item.relics.terrasteel_ingot": "Слиток террастали",
+  "item.relics.airsteel_ingot": "Слиток аэростали",
+  "item.relics.mithril_ingot": "Мифриловый слиток",
+  "item.relics.obsidian_ingot": "Обсидиановый слиток",
+  "item.relics.steel_ingot": "Стальной слиток",
+  "item.relics.flaming_amber_geode": "Жеода пламенного янтаря",
+  "item.relics.flaming_amber_dust": "Пыль из пламенного янтаря",
+  "item.relics.chalk": "Мел",
+
+  "item.relics.spatial_sign": "Пространственная печать",
+  "tooltip.relics.spatial_sign.tooltip_1": "Позиция: %1$s",
+  "tooltip.relics.spatial_sign.tooltip_2": "Время: %1$s",
+  "tooltip.relics.spatial_sign.shift_1": "Телепортирует к запомненной позиции спустя определенное время после активации",
+  "tooltip.relics.spatial_sign.shift_2": "Получение фатального урона с активированной печатью в инвентаре сохранит жизнь и телепортирует на запомненную позицию, разрушив реликвию",
+
+  "item.relics.reflection_necklace": "Отражающий амулет",
+  "tooltip.relics.reflection_necklace.shift_1": "Медленно накапливает заряды для полного отражения снарядов и входящего урона",
+
+  "item.relics.magma_walker": "Лаваходы",
+  "tooltip.relics.magma_walker.shift_1": "Конденсирует лаву под ногами, временно превращая её в твёрдый магмовый камень",
+  "tooltip.relics.magma_walker.shift_2": "Полностью нивелирует урон от горячих блоков",
+
+  "item.relics.midnight_robe": "Полуночная мантия",
+  "tooltip.relics.midnight_robe.shift_1": "Наделяет невидимостью и дополнительной скоростью передвижения, если здоровье носителя в ночное время опустится до достаточно низкого уровня",
+  "tooltip.relics.midnight_robe.shift_2": "Атака из невидимости нанесёт двойной урон, но временно отключит саму невидимость и дополнительную скорость передвижения",
+
+  "item.relics.scarab_talisman": "Талисман скарабея",
+  "tooltip.relics.scarab_talisman.shift_1": "Увеличивает скорость передвижения и высоту шага на песке",
+  "tooltip.relics.scarab_talisman.shift_2": "Увеличивает скорость разрушения песка и полностью нивелирует урон от удушья в блоках",
+
+  "item.relics.stellar_catalyst": "Звёздный катализатор",
+  "tooltip.relics.stellar_catalyst.shift_1": "Наделяет способностью призвать падающую звезду при атаке",
+
+  "item.relics.drowned_belt": "Пояс утопленника",
+  "tooltip.relics.drowned_belt.shift_1": "Наделяет бесконечным подводным дыханием, увеличивает входящий и исходящий урон под водой, замедляет скорость плаванья",
+
+  "item.relics.jellyfish_necklace": "Амулет медузы",
+  "tooltip.relics.jellyfish_necklace.shift_1": "Медленно накапливает заряды во время пребывания под водой для дальнейшего нанесения электрического урона при коллизии с мобами",
+  "tooltip.relics.jellyfish_necklace.shift_2": "Удваивает регенерацию здоровья под водой",
+
+  "item.relics.hunter_belt": "Пояс охотника",
+  "tooltip.relics.hunter_belt.shift_1": "Удваивает урон, наносимый животным, а также получаемый с мобов лут",
+
+  "item.relics.rage_glove": "Перчатка ярости",
+  "tooltip.relics.rage_glove.shift_1": "Увеличивает наносимый и получаемый от одной и той же цели урон при нанесении комбинированных атак",
+
+  "item.relics.ice_skates": "Коньки",
+  "tooltip.relics.ice_skates.shift_1": "Увеличивает скорость передвижения и позволяет таранить мобов на льду, при накоплении достаточно высокой скорости позволяет замораживать воду под ногами",
+  "tooltip.relics.ice_skates.shift_2": "Наносимый урон и степень отбрасывания зависят от времени, проведенного на льду",
+
+  "item.relics.camouflage_ring": "Камуфляжное кольцо",
+  "tooltip.relics.camouflage_ring.shift_1": "Наделяет способностью спрятаться в высокой траве, удваивая наносимый из неё урон",
+
+  "item.relics.delay_ring": "Кольцо отсрочки",
+  "tooltip.relics.delay_ring.tooltip_1": "Время: %1$s",
+  "tooltip.relics.delay_ring.tooltip_2": "Здоровье: %1$s",
+  "tooltip.relics.delay_ring.shift_1": "Временно отсрочивает судьбу союзника, откладывая любое лечение и получение урона на 10 секунд",
+  "tooltip.relics.delay_ring.shift_2": "Любое полученное во время действия способности кольца исцеление будет удвоено",
+
+  "item.relics.bastion_ring": "Кольцо бастиона",
+  "tooltip.relics.bastion_ring.shift_1": "Позволяет обнаружить ближайший бастион при убийстве пиглинов",
+
+  "item.relics.chorus_inhibitor": "Хорусовый ингибитор",
+  "tooltip.relics.chorus_inhibitor.shift_1": "Запоминает позицию использования плода хоруса, и возвращает к ней спустя определенное время",
+  "tooltip.relics.chorus_inhibitor.shift_2": "Дополнительное использование плода хоруса увеличит запас времени до возвращения к запомненной точке",
+  "tooltip.relics.chorus_inhibitor.shift_3": "Полностью нивелирует урон при телепортации",
+
+  "item.relics.arrow_quiver": "Колчан",
+  "tooltip.relics.arrow_quiver.shift_1": "Позволяет с определенным шансом выстрелить сразу несколькими стрелами",
+
+  "item.relics.lucky_horseshoe": "Счастливая подкова",
+  "tooltip.relics.lucky_horseshoe.shift_1": "Со случайным шансом увеличивает уровень удачи и добычи носителя",
+
+  "block.relics.magma_stone": "Магмовый камень"
+}
