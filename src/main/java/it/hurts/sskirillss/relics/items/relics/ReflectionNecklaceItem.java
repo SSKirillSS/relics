@@ -76,7 +76,8 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
             int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
             int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
             if (charges < RelicsConfig.ReflectionNecklace.MAX_CHARGES.get()) {
-                if (time < RelicsConfig.ReflectionNecklace.MIN_TIME_PER_CHARGE.get() * charges) {
+                if (time < (charges > 0 ? RelicsConfig.ReflectionNecklace.MIN_TIME_PER_CHARGE.get()
+                        * charges : RelicsConfig.ReflectionNecklace.MIN_TIME_PER_CHARGE.get())) {
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
                 } else {
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
