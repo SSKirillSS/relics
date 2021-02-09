@@ -99,7 +99,7 @@ public class RelicsConfig {
 
         private static void setupIceSkatesConfig(ForgeConfigSpec.Builder builder) {
             builder.push("ice_skates");
-            MOVEMENT_SPEED_MULTIPLIER = builder.defineInRange("movement_speed_multiplier", 1.25, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            MOVEMENT_SPEED_MULTIPLIER = builder.defineInRange("movement_speed_multiplier", 1.1, Integer.MIN_VALUE, Integer.MAX_VALUE);
             MAX_SPEEDUP_TIME = builder.defineInRange("max_speedup_time", 10, Integer.MIN_VALUE, Integer.MAX_VALUE);
             SPEEDUP_TIME_PER_RAM = builder.defineInRange("speedup_time_per_ram", 2, Integer.MIN_VALUE, Integer.MAX_VALUE);
             RAM_RADIUS = builder.defineInRange("ram_radius", 1.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
