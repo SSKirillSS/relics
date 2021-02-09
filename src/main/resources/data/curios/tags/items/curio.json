@@ -1,9 +1,7 @@
 {
   "replace": false,
   "values": [
-    "relics:magma_walker",
     "relics:stellar_catalyst",
-    "relics:ice_skates",
     "relics:lucky_horseshoe"
   ]
 }

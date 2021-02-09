@@ -13,6 +13,9 @@
   "tooltip.relics.ctrl.divider_up": "§8---------------§a[Info]§8---------------",
   "tooltip.relics.ctrl.divider_down": "§8-----------------------------------",
 
+  "curios.identifier.feet": "Feet",
+  "curios.modifiers.feet": "When on feet:",
+
   "item.relics.chrysolite": "Chrysolite",
   "item.relics.aquasteel_ingot": "Aquasteel ingot",
   "item.relics.firesteel_ingot": "Firesteel ingot",

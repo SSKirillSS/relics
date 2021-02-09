@@ -13,6 +13,9 @@
   "tooltip.relics.ctrl.divider_up": "§8---------------§a[Инфо]§8---------------",
   "tooltip.relics.ctrl.divider_down": "§8-----------------------------------",
 
+  "curios.identifier.feet": "Ноги",
+  "curios.modifiers.feet": "Если надето на ноги:",
+
   "item.relics.chrysolite": "Хризолит",
   "item.relics.aquasteel_ingot": "Слиток аквастали",
   "item.relics.firesteel_ingot": "Слиток огнестали",
