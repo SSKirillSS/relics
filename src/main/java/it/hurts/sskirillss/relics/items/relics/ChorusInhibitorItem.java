@@ -21,7 +21,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
@@ -60,6 +60,7 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) livingEntity;
             if (livingEntity.ticksExisted % 20 == 0) {
                 int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
                 if (time > 0) {
@@ -67,40 +68,31 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
                 } else {
                     BlockPos pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_STORED_POSITION, ""));
                     if (pos != null) {
-                        teleportPlayer((PlayerEntity) livingEntity);
+                        String worldString = NBTUtils.getString(stack, TAG_WORLD, "").equals("")
+                                ? player.getEntityWorld().getDimensionKey().getLocation().toString() : NBTUtils.getString(stack, TAG_WORLD, "");
+                        if (!player.getEntityWorld().isRemote() && player.getEntityWorld().getServer()
+                                .getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(worldString))) != null) {
+                            EntityUtils.teleportWithMount(player, player.getEntityWorld().getServer().getWorld(RegistryKey
+                                    .getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(worldString))), pos);
+                        }
+                        player.getEntityWorld().playSound(player, pos.getX(), pos.getY(), pos.getZ(),
+                                SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        NBTUtils.setString(stack, TAG_STORED_POSITION, "");
+                        NBTUtils.setString(stack, TAG_WORLD, "");
+                        NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                     }
                 }
             }
         }
     }
 
-    public static void teleportPlayer(PlayerEntity player) {
-        ItemStack stack = player.inventory.getStackInSlot(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
-        BlockPos pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_STORED_POSITION, ""));
-        String worldString = NBTUtils.getString(stack, TAG_WORLD, "").equals("")
-                ? player.getEntityWorld().getDimensionKey().getLocation().toString() : NBTUtils.getString(stack, TAG_WORLD, "");
-
-        if (!player.getEntityWorld().isRemote() && player.getEntityWorld().getServer()
-                .getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(worldString))) != null) {
-            EntityUtils.teleportWithMount(player, player.getEntityWorld().getServer().getWorld(RegistryKey
-                    .getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(worldString))), pos);
-        }
-
-        player.getEntityWorld().playSound(player, pos.getX(), pos.getY(), pos.getZ(),
-                SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-        NBTUtils.setString(stack, TAG_STORED_POSITION, "");
-        NBTUtils.setString(stack, TAG_WORLD, "");
-        NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-    }
-
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class ChorusInhibitorEvents {
         @SubscribeEvent
-        public static void onItemUseStart(LivingEntityUseItemEvent.Start event) {
+        public static void onItemUse(PlayerInteractEvent.RightClickItem event) {
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-                if (event.getItem().getItem() == Items.CHORUS_FRUIT
+                if (player.getHeldItemMainhand().getItem() == Items.CHORUS_FRUIT && !player.isSneaking()
                         && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CHORUS_INHIBITOR.get(), player).isPresent()) {
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CHORUS_INHIBITOR.get(), player).get().getRight();
                     int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
@@ -110,6 +102,7 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
                         NBTUtils.setString(stack, TAG_WORLD, player.getEntityWorld().getDimensionKey().getLocation().toString());
                     }
                     player.getHeldItemMainhand().shrink(1);
+                    event.setCanceled(true);
                 }
             }
         }
