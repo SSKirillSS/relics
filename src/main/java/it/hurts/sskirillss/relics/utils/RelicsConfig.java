@@ -114,6 +114,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.IntValue MAX_CHARGES_AMOUNT;
         public static ForgeConfigSpec.DoubleValue DAMAGE_PER_CHARGE;
         public static ForgeConfigSpec.DoubleValue HEALING_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue ATTACK_RADIUS_MULTIPLIER;
 
         private static void setupJellyfishNecklaceConfig(ForgeConfigSpec.Builder builder) {
             builder.push("jellyfish_necklace");
@@ -121,6 +122,7 @@ public class RelicsConfig {
             MAX_CHARGES_AMOUNT = builder.defineInRange("max_charges_amount", 10, Integer.MIN_VALUE, Integer.MAX_VALUE);
             DAMAGE_PER_CHARGE = builder.defineInRange("damage_per_charge", 10.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
             HEALING_MULTIPLIER = builder.defineInRange("healing_multiplier", 2.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            ATTACK_RADIUS_MULTIPLIER = builder.defineInRange("attack_radius_multiplier", 1.2, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }

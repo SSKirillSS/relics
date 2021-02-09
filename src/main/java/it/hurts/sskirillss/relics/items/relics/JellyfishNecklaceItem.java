@@ -69,13 +69,16 @@ public class JellyfishNecklaceItem extends Item implements ICurioItem, IHasToolt
                     NBTUtils.setInt(stack, TAG_CHARGES, charges + 1);
                 }
 
-                List<LivingEntity> entities = livingEntity.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, livingEntity.getBoundingBox());
-                if (!entities.isEmpty()) {
-                    for (LivingEntity entity : entities) {
-                        if (entity.isInWater() && !(entity instanceof TameableEntity
-                                && ((TameableEntity) entity).isOwner(livingEntity))) {
-                            entity.attackEntityFrom(DamageSource.LIGHTNING_BOLT, RelicsConfig.JellyfishNecklace.DAMAGE_PER_CHARGE.get().floatValue());
-                            NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
+                if (charges > 1) {
+                    List<LivingEntity> entities = livingEntity.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, livingEntity.getBoundingBox()
+                            .grow(RelicsConfig.JellyfishNecklace.ATTACK_RADIUS_MULTIPLIER.get()));
+                    if (!entities.isEmpty()) {
+                        for (LivingEntity entity : entities) {
+                            if (entity.isInWater() && entity != livingEntity && !(entity instanceof TameableEntity
+                                    && ((TameableEntity) entity).isOwner(livingEntity))) {
+                                entity.attackEntityFrom(DamageSource.LIGHTNING_BOLT, RelicsConfig.JellyfishNecklace.DAMAGE_PER_CHARGE.get().floatValue());
+                                NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
+                            }
                         }
                     }
                 }
