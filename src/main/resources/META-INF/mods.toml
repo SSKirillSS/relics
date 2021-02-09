@@ -8,7 +8,7 @@ version="${file.jarVersion}"
 displayName="Relics"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/relics"
 authors="SSKirillSS"
-description="Just a mod about usefull relics with unique mechanics ;)"
+description="Just a mod about useful relics with unique mechanics ;)"
 [[dependencies.relics]]
     modId="forge"
     mandatory=true
