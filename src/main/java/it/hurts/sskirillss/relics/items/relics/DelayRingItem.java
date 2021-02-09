@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -64,29 +65,30 @@ public class DelayRingItem extends Item implements ICurioItem, IHasTooltip {
         if (livingEntity instanceof PlayerEntity) {
             int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
             PlayerEntity player = (PlayerEntity) livingEntity;
-            if (!player.getCooldownTracker().hasCooldown(ItemRegistry.DELAY_RING.get())) {
-                if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
-                    if (time < RelicsConfig.DelayRing.DELAY_DURATION.get()) {
-                        if (livingEntity.ticksExisted % 20 == 0) NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
+            if (!player.getCooldownTracker().hasCooldown(ItemRegistry.DELAY_RING.get())
+                    && NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
+                if (time < RelicsConfig.DelayRing.DELAY_DURATION.get()) {
+                    if (livingEntity.ticksExisted % 20 == 0) NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
+                } else {
+                    if (NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0) > 0) {
+                        player.setHealth(Math.min(NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0), player.getMaxHealth()));
                     } else {
-                        if (NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0) > 0) {
-                            player.setHealth(Math.min(NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0), player.getMaxHealth()));
+                        if (!NBTUtils.getString(stack, TAG_KILLER_UUID, "").equals("")
+                                && player.getEntityWorld().getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, ""))) != null) {
+                            player.attackEntityFrom(DamageSource.causePlayerDamage(player.getEntityWorld()
+                                    .getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, "")))), Integer.MAX_VALUE);
+                            NBTUtils.setString(stack, TAG_KILLER_UUID, "");
                         } else {
-                            if (!NBTUtils.getString(stack, TAG_KILLER_UUID, "").equals("")
-                                    && player.getEntityWorld().getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, ""))) != null) {
-                                player.attackEntityFrom(DamageSource.causePlayerDamage(player.getEntityWorld().getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, "")))), Integer.MAX_VALUE);
-                                NBTUtils.setString(stack, TAG_KILLER_UUID, "");
-                            } else {
-                                player.attackEntityFrom(DamageSource.GENERIC, Integer.MAX_VALUE);
-                            }
-                            ParticleUtils.createBall(new CircleTintData(new Color(0.4F, 0.05F, 0.7F), 0.5F, 40, 0.94F, true),
-                                    player.getPosition(), player.getEntityWorld(), 3, 0.2F);
+                            player.attackEntityFrom(DamageSource.GENERIC, Integer.MAX_VALUE);
                         }
-                        player.getCooldownTracker().setCooldown(ItemRegistry.DELAY_RING.get(), RelicsConfig.DelayRing.USAGE_COOLDOWN.get() * 20);
-                        NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-                        NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
-                        NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, false);
+                        ParticleUtils.createBall(new CircleTintData(new Color(0.4F, 0.05F, 0.7F), 0.5F, 40, 0.94F, true),
+                                player.getPosition(), player.getEntityWorld(), 3, 0.2F);
                     }
+                    player.getCooldownTracker().setCooldown(ItemRegistry.DELAY_RING.get(), RelicsConfig.DelayRing.USAGE_COOLDOWN.get() * 20);
+                    NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
+                    NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
+                    NBTUtils.setString(stack, TAG_KILLER_UUID, "");
+                    NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, false);
                 }
             }
         }
@@ -94,19 +96,23 @@ public class DelayRingItem extends Item implements ICurioItem, IHasTooltip {
 
     @Override
     public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
+        ItemStack ring = CuriosApi.getCuriosHelper().getCuriosHandler(livingEntity).map(
+                handler -> handler.getStacksHandler(identifier)
+                        .map(stacks -> stacks.getStacks().getStackInSlot(index)).orElse(ItemStack.EMPTY))
+                .orElse(ItemStack.EMPTY);
+        if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)
+                && ring == ItemStack.EMPTY) {
             if (!NBTUtils.getString(stack, TAG_KILLER_UUID, "").equals("")
                     && livingEntity.getEntityWorld().getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, ""))) != null) {
-                livingEntity.attackEntityFrom(DamageSource.causePlayerDamage(livingEntity.getEntityWorld().getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, "")))), Integer.MAX_VALUE);
+                livingEntity.attackEntityFrom(DamageSource.causePlayerDamage(livingEntity.getEntityWorld()
+                        .getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, "")))), Integer.MAX_VALUE);
                 NBTUtils.setString(stack, TAG_KILLER_UUID, "");
             } else {
                 livingEntity.attackEntityFrom(DamageSource.GENERIC, Integer.MAX_VALUE);
             }
+            ParticleUtils.createBall(new CircleTintData(new Color(0.4F, 0.05F, 0.7F), 0.5F, 40, 0.94F, true),
+                    livingEntity.getPosition(), livingEntity.getEntityWorld(), 3, 0.2F);
         }
-        NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
-        NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, false);
-        NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-        NBTUtils.setString(stack, TAG_KILLER_UUID, "");
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
