@@ -65,12 +65,13 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
         }
 
-        if (livingEntity.getHealth() < livingEntity.getMaxHealth() * RelicsConfig.MidnightRobe.HEALTH_PERCENTAGE.get()
-                && livingEntity.getEntityWorld().isNightTime()) {
+        if (livingEntity.getHealth() < livingEntity.getMaxHealth() * RelicsConfig.MidnightRobe.HEALTH_PERCENTAGE.get()) {
             if (time <= 0) {
-                livingEntity.setInvisible(true);
-                if (!movementSpeed.hasModifier(MIDNIGHT_ROBE_SPEED_BOOST))
-                    movementSpeed.applyNonPersistentModifier(MIDNIGHT_ROBE_SPEED_BOOST);
+                if (livingEntity.getEntityWorld().isNightTime()) {
+                    livingEntity.setInvisible(true);
+                    if (!movementSpeed.hasModifier(MIDNIGHT_ROBE_SPEED_BOOST))
+                        movementSpeed.applyNonPersistentModifier(MIDNIGHT_ROBE_SPEED_BOOST);
+                }
             } else {
                 livingEntity.setInvisible(false);
                 if (movementSpeed.hasModifier(MIDNIGHT_ROBE_SPEED_BOOST))
