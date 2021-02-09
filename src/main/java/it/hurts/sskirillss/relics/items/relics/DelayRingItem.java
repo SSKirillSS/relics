@@ -79,9 +79,9 @@ public class DelayRingItem extends Item implements ICurioItem, IHasTooltip {
                             } else {
                                 player.attackEntityFrom(DamageSource.GENERIC, Integer.MAX_VALUE);
                             }
+                            ParticleUtils.createBall(new CircleTintData(new Color(0.4F, 0.05F, 0.7F), 0.5F, 40, 0.94F, true),
+                                    player.getPosition(), player.getEntityWorld(), 3, 0.2F);
                         }
-                        ParticleUtils.createBall(new CircleTintData(new Color(0.4F, 0.05F, 0.7F), 0.5F, 40, 0.94F, true),
-                                player.getPosition(), player.getEntityWorld(), 3, 0.2F);
                         player.getCooldownTracker().setCooldown(ItemRegistry.DELAY_RING.get(), RelicsConfig.DelayRing.USAGE_COOLDOWN.get() * 20);
                         NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                         NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
