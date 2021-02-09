@@ -16,12 +16,6 @@ description="Just a mod about usefull relics with unique mechanics ;)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.relics]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.16.5)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.relics]]
     modId="curios"
     mandatory=true
     versionRange="[1.16.4-4.0.3.5,)"
