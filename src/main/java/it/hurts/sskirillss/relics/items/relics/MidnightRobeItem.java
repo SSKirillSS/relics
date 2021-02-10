@@ -60,8 +60,7 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (livingEntity.ticksExisted % 20 == 0
-                && time > 0) {
+        if (livingEntity.ticksExisted % 20 == 0 && time > 0) {
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
         }
 
@@ -77,6 +76,10 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
                 if (movementSpeed.hasModifier(MIDNIGHT_ROBE_SPEED_BOOST))
                     movementSpeed.removeModifier(MIDNIGHT_ROBE_SPEED_BOOST);
             }
+        } else {
+            livingEntity.setInvisible(false);
+            if (movementSpeed.hasModifier(MIDNIGHT_ROBE_SPEED_BOOST))
+                movementSpeed.removeModifier(MIDNIGHT_ROBE_SPEED_BOOST);
         }
     }
 
@@ -85,6 +88,7 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         if (movementSpeed.hasModifier(MIDNIGHT_ROBE_SPEED_BOOST)) {
             movementSpeed.removeModifier(MIDNIGHT_ROBE_SPEED_BOOST);
+            livingEntity.setInvisible(false);
         }
     }
 
