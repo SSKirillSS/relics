@@ -230,6 +230,7 @@ public class RelicsConfig {
     }
 
     public static class RelicsWorldgen {
+        public static ForgeConfigSpec.BooleanValue RELICS_WORLDGEN_ENABLED;
         public static ForgeConfigSpec.DoubleValue ARROW_QUIVER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue BASTION_RING_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue CAMOUFLAGE_RING_GEN_CHANCE;
@@ -249,6 +250,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue STELLAR_CATALYST_GEN_CHANCE;
 
         private static void setupWorldgenConfig(ForgeConfigSpec.Builder builder) {
+            RELICS_WORLDGEN_ENABLED = builder.define("relics_worldgen_enabled", true);
             ARROW_QUIVER_GEN_CHANCE = builder.defineInRange("arrow_quiver_gen_chance", 0.2, 0, 1);
             BASTION_RING_GEN_CHANCE = builder.defineInRange("bastion_ring_gen_chance", 0.15, 0, 1);
             CAMOUFLAGE_RING_GEN_CHANCE = builder.defineInRange("camouflage_ring_gen_chance", 0.2, 0, 1);
