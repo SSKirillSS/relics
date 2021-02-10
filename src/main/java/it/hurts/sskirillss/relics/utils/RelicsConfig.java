@@ -221,7 +221,7 @@ public class RelicsConfig {
 
         private static void setupStellarCatalystConfig(ForgeConfigSpec.Builder builder) {
             builder.push("stellar_catalyst");
-            FALLING_STAR_SUMMON_CHANCE = builder.defineInRange("falling_star_summon_chance", 0.3, 0, 1);
+            FALLING_STAR_SUMMON_CHANCE = builder.defineInRange("falling_star_summon_chance", 0.15, 0, 1);
             FALLING_STAR_DAMAGE_MULTIPLIER = builder.defineInRange("falling_star_damage_multiplier", 0.5, Integer.MIN_VALUE, Integer.MAX_VALUE);
             FALLING_STAR_DAMAGE_RADIUS = builder.defineInRange("falling_star_damage_radius", 3, Integer.MIN_VALUE, Integer.MAX_VALUE);
             MIN_DAMAGE_AMOUNT = builder.defineInRange("min_damage_amount", 3.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
