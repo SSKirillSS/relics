@@ -6,7 +6,7 @@ issueTrackerURL="https://discord.gg/pHren9yxzW"
 modId="relics"
 version="${file.jarVersion}"
 displayName="Relics"
-displayURL="https://www.curseforge.com/minecraft/mc-mods/relics"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/relics-mod"
 authors="SSKirillSS"
 description="Just a mod about useful relics with unique mechanics ;)"
 [[dependencies.relics]]
