@@ -58,32 +58,34 @@ public class JellyfishNecklaceItem extends Item implements ICurioItem, IHasToolt
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity.ticksExisted % 20 == 0) {
-            int time = NBTUtils.getInt(stack, TAG_TIME, 0);
-            int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
-            if (livingEntity.isInWater()) {
-                if (time < RelicsConfig.JellyfishNecklace.TIME_PER_CHARGE.get() && charges < RelicsConfig.JellyfishNecklace.MAX_CHARGES_AMOUNT.get()) {
-                    NBTUtils.setInt(stack, TAG_TIME, time + 1);
-                } else {
-                    NBTUtils.setInt(stack, TAG_TIME, 0);
-                    NBTUtils.setInt(stack, TAG_CHARGES, charges + 1);
-                }
+        if (livingEntity instanceof PlayerEntity) {
+            if (livingEntity.ticksExisted % 20 == 0) {
+                int time = NBTUtils.getInt(stack, TAG_TIME, 0);
+                int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
+                if (livingEntity.isInWater()) {
+                    if (time < RelicsConfig.JellyfishNecklace.TIME_PER_CHARGE.get() && charges < RelicsConfig.JellyfishNecklace.MAX_CHARGES_AMOUNT.get()) {
+                        NBTUtils.setInt(stack, TAG_TIME, time + 1);
+                    } else {
+                        NBTUtils.setInt(stack, TAG_TIME, 0);
+                        NBTUtils.setInt(stack, TAG_CHARGES, charges + 1);
+                    }
 
-                if (charges > 1) {
-                    List<LivingEntity> entities = livingEntity.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, livingEntity.getBoundingBox()
-                            .grow(RelicsConfig.JellyfishNecklace.ATTACK_RADIUS_MULTIPLIER.get()));
-                    if (!entities.isEmpty()) {
-                        for (LivingEntity entity : entities) {
-                            if (entity.isInWater() && entity != livingEntity && !(entity instanceof TameableEntity
-                                    && ((TameableEntity) entity).isOwner(livingEntity))) {
-                                entity.attackEntityFrom(DamageSource.LIGHTNING_BOLT, RelicsConfig.JellyfishNecklace.DAMAGE_PER_CHARGE.get().floatValue());
-                                NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
+                    if (charges > 0) {
+                        List<LivingEntity> entities = livingEntity.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, livingEntity.getBoundingBox()
+                                .grow(RelicsConfig.JellyfishNecklace.ATTACK_RADIUS_MULTIPLIER.get()));
+                        if (!entities.isEmpty()) {
+                            for (LivingEntity entity : entities) {
+                                if (entity.isInWater() && entity != livingEntity && !(entity instanceof TameableEntity
+                                        && ((TameableEntity) entity).isOwner(livingEntity))) {
+                                    entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) livingEntity), RelicsConfig.JellyfishNecklace.DAMAGE_PER_CHARGE.get().floatValue());
+                                    NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
+                                }
                             }
                         }
                     }
+                } else {
+                    if (time > 0) NBTUtils.setInt(stack, TAG_TIME, time - 1);
                 }
-            } else {
-                if (time != 0) NBTUtils.setInt(stack, TAG_TIME, 0);
             }
         }
     }
