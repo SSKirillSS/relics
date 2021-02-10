@@ -7,7 +7,6 @@ import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -77,7 +76,6 @@ public class DelayRingItem extends Item implements ICurioItem, IHasTooltip {
                                 && player.getEntityWorld().getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, ""))) != null) {
                             player.attackEntityFrom(DamageSource.causePlayerDamage(player.getEntityWorld()
                                     .getPlayerByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_KILLER_UUID, "")))), Integer.MAX_VALUE);
-                            NBTUtils.setString(stack, TAG_KILLER_UUID, "");
                         } else {
                             player.attackEntityFrom(DamageSource.GENERIC, Integer.MAX_VALUE);
                         }
@@ -139,7 +137,7 @@ public class DelayRingItem extends Item implements ICurioItem, IHasTooltip {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), player).isPresent()) {
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), player).get().getRight();
-                    if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
+                    if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false) && NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) < RelicsConfig.DelayRing.DELAY_DURATION.get()) {
                         NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
                                 - Math.round(event.getAmount() * RelicsConfig.DelayRing.DAMAGE_MULTIPLIER.get().floatValue()));
                         event.setCanceled(true);
