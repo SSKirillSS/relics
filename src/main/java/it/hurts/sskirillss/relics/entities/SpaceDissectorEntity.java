@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.init.EntityRegistry;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
 import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -18,6 +19,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -124,6 +126,8 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                                     -2 * this.getMotion().dotProduct(normalVector),
                                     -2 * this.getMotion().dotProduct(normalVector))
                                     .add(this.getMotion()));
+                            if (rand.nextInt(2) == 0) world.playSound(getPosX(), getPosY(), getPosZ(), SoundRegistry.RICOCHET,
+                                    SoundCategory.MASTER, 0.5F, 0.75F + (rand.nextFloat() * 0.5F), false);
                             bounced = true;
                             dataManager.set(BOUNCES, dataManager.get(BOUNCES) + 1);
                             dataManager.set(UPDATE_TIME, Math.max(dataManager.get(UPDATE_TIME)

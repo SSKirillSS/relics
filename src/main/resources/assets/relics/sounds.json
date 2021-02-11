@@ -1,0 +1,6 @@
+{
+    "ricochet": {
+        "category": "master",
+        "sounds": [ { "name": "relics:ricochet" } ]
+    }
+}

@@ -13,6 +13,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -61,6 +63,8 @@ public class SpaceDissectorItem extends Item implements IHasTooltip {
                         } else {
                             if (playerIn.getPositionVec().distanceTo(dissector.getPositionVec()) > RelicsConfig.SpaceDissector.DISTANCE_FOR_TELEPORT.get()) {
                                 playerIn.setPositionAndUpdate(dissector.getPosX(), dissector.getPosY(), dissector.getPosZ());
+                                playerIn.getEntityWorld().playSound(playerIn, dissector.getPosX(), dissector.getPosY(), dissector.getPosZ(),
+                                        SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 dissector.remove();
                                 playerIn.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get());
                                 NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
@@ -75,10 +79,9 @@ public class SpaceDissectorItem extends Item implements IHasTooltip {
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (entityIn.ticksExisted % 20 == 0) {
+        if (entityIn.ticksExisted % 20 == 0 && NBTUtils.getBoolean(stack, TAG_IS_THROWN, false)) {
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) + 1);
-            if (NBTUtils.getBoolean(stack, TAG_IS_THROWN, false) && NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0)
-                    > RelicsConfig.SpaceDissector.MAX_THROWN_TIME.get()) {
+            if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) > RelicsConfig.SpaceDissector.MAX_THROWN_TIME.get()) {
                 NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
             }
         }
@@ -98,5 +101,10 @@ public class SpaceDissectorItem extends Item implements IHasTooltip {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged;
     }
 }
