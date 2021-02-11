@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.network;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.vector.Vector3d;
@@ -32,11 +33,8 @@ public class PacketPlayerMotion {
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            if (ctx.get().getSender() != null) {
-                PlayerEntity player = ctx.get().getSender();
-                Vector3d motion = new Vector3d(this.motionX, this.motionY, this.motionZ);
-                player.setMotion(motion);
-            }
+            Vector3d motion = new Vector3d(this.motionX, this.motionY, this.motionZ);
+            Minecraft.getInstance().player.setMotion(motion);
         });
         return true;
     }
