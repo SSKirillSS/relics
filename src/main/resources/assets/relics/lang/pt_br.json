@@ -1,0 +1,96 @@
+{
+  "itemGroup.relics": "Relics",
+
+  "tooltip.relics.shift.tooltip": "§7Segure §8[Shift] §7para mais informações",
+  "tooltip.relics.shift.divider_up": "§8-----------§e[Informações]§8-----------",
+  "tooltip.relics.shift.divider_down": "§8----------------------------------",
+
+  "tooltip.relics.alt.tooltip": "§7Segure §8[Alt] §7para mais informações",
+  "tooltip.relics.alt.divider_up": "§8-----------§b[Informações]§8-----------",
+  "tooltip.relics.alt.divider_down": "§8-----------------------------------",
+
+  "tooltip.relics.ctrl.tooltip": "§7Segure §8[Ctrl] §7para mais informações",
+  "tooltip.relics.ctrl.divider_up": "§8-----------§a[Informações]§8-----------",
+  "tooltip.relics.ctrl.divider_down": "§8----------------------------------",
+
+  "curios.identifier.feet": "Pés",
+  "curios.modifiers.feet": "Quando nos Pés:",
+
+  "item.relics.chrysolite": "Crisólito",
+  "item.relics.aquasteel_ingot": "Barra de Aço Aquatico",
+  "item.relics.firesteel_ingot": "Barra de Aço Flamejante",
+  "item.relics.terrasteel_ingot": "Barra de Aço Terroso",
+  "item.relics.airsteel_ingot": "Barra de Aço Aéreo",
+  "item.relics.mithril_ingot": "Barra de Mithril",
+  "item.relics.obsidian_ingot": "Barra de Obsidiana",
+  "item.relics.steel_ingot": "Barra de Aço",
+  "item.relics.flaming_amber_geode": "Geodo de Âmbar Flamejante",
+  "item.relics.flaming_amber_dust": "Pó de Âmbar Flamejante",
+  "item.relics.chalk": "Giz",
+
+  "item.relics.spatial_sign": "Signo Espacial",
+  "tooltip.relics.spatial_sign.tooltip_1": "Destino armazenado: %1$s",
+  "tooltip.relics.spatial_sign.tooltip_2": "Tempo restante: %1$s",
+  "tooltip.relics.spatial_sign.shift_1": "Teleporta para a posição armazenada algum tempo após a ativação",
+  "tooltip.relics.spatial_sign.shift_2": "Receber dano fatal com signo ativado no inventário salvará sua vida e se teletransportará para uma posição armazenada, destruindo a relíquia",
+
+  "item.relics.reflection_necklace": "Colar da Reflexão",
+  "tooltip.relics.reflection_necklace.shift_1": "Acumula cargas lentamente para refletir totalmente os projéteis e os danos recebidos",
+
+  "item.relics.magma_walker": "Botas de Lava",
+  "tooltip.relics.magma_walker.shift_1": "Condensa a lava sob os pés, transformando-a temporariamente em uma Pedra de Magma.",
+  "tooltip.relics.magma_walker.shift_2": "Remove totalmente os danos causados por blocos quentes",
+
+  "item.relics.midnight_robe": "Manto da Meia-Noite",
+  "tooltip.relics.midnight_robe.shift_1": "Concede invisibilidade temporária e aumento da velocidade de movimento durante a noite se a saúde do usuário estiver baixa.",
+  "tooltip.relics.midnight_robe.shift_2": "Ataques furtivos causarão dano duplo, mas removerão temporariamente os efeitos de invisibilidade e de aumento da velocidade de movimento",
+
+  "item.relics.scarab_talisman": "Talismã de Escaravelho",
+  "tooltip.relics.scarab_talisman.shift_1": "Aumenta a velocidade de movimento e a altura do passo enquanto estiver na areia",
+  "tooltip.relics.scarab_talisman.shift_2": "Aumenta a velocidade de quebra de areia e remove totalmente os danos causados por sufocamento em blocos",
+
+  "item.relics.stellar_catalyst": "Catalisador Estelar",
+  "tooltip.relics.stellar_catalyst.shift_1": "Concede chance de invocar uma estrela cadente enquanto ataca uma criatura",
+
+  "item.relics.drowned_belt": "Cinto do Afogado",
+  "tooltip.relics.drowned_belt.shift_1": "Concede respiração infinita, aumenta o dano causado e recebido debaixo da água, reduz a velocidade do nado",
+
+  "item.relics.jellyfish_necklace": "Colar de Água-Viva",
+  "tooltip.relics.jellyfish_necklace.shift_1": "Acumula cargas lentamente enquanto está debaixo da água para infligir dano elétrico ao colidir com criaturas",
+  "tooltip.relics.jellyfish_necklace.shift_2": "Duplica a velocidade de regeneração de saúde enquanto está debaixo da água",
+
+  "item.relics.hunter_belt": "Cinto de Caçador",
+  "tooltip.relics.hunter_belt.shift_1": "Duplica o dano causado aos animais e o saque recebido das criaturas",
+
+  "item.relics.rage_glove": "Luva da Raiva",
+  "tooltip.relics.rage_glove.shift_1": "Aumenta o dano causado e recebido do mesmo alvo a cada ataque consecutivo",
+
+  "item.relics.ice_skates": "Patins de Gelo",
+  "tooltip.relics.ice_skates.shift_1": "Aumentaa velocidade de movimento e concede habilidade de empurrar criaturas no gelo, em alta velocidade de movimento adiciona habilidade de congelar a água sob os pés.",
+  "tooltip.relics.ice_skates.shift_2": "O dano causado e a força do empurrão dependem da quantidade de tempo gasto no gelo",
+
+  "item.relics.camouflage_ring": "Anel de Camuflagem",
+  "tooltip.relics.camouflage_ring.shift_1": "Concede a habilidade de se esconder temporariamente na grama alta, ataques furtivos causarão o dobro de dano",
+
+  "item.relics.delay_ring": "Anel do Delay",
+  "tooltip.relics.delay_ring.tooltip_1": "Tempo: %1$s",
+  "tooltip.relics.delay_ring.tooltip_2": "Vida: %1$s",
+  "tooltip.relics.delay_ring.shift_1": "Altera temporariamente o destino do usuário, atrasando qualquer cura e dano recebido nos próximos 10 segundos",
+  "tooltip.relics.delay_ring.shift_2": "Qualquer cura atrasada pelo anel será duplicada",
+
+  "item.relics.bastion_ring": "Anel do Bastião",
+  "tooltip.relics.bastion_ring.shift_1": "Concede habilidade de localizar o Bastião mais próximo ao matar piglins",
+
+  "item.relics.chorus_inhibitor": "Inibidor de Coro",
+  "tooltip.relics.chorus_inhibitor.shift_1": "Lembra-se da posição do uso da Fruta do Coro e retorna a ela após um certo tempo",
+  "tooltip.relics.chorus_inhibitor.shift_2": "Usar a Fruta do Coro novamante antes que o tempo acabe aumentará seu tempo de retorno.",
+  "tooltip.relics.chorus_inhibitor.shift_3": "Remove totalmente os danos do teletransporte",
+
+  "item.relics.arrow_quiver": "Aljava de Flecha",
+  "tooltip.relics.arrow_quiver.shift_1": "Adiciona chance de atirar várias flechas",
+
+  "item.relics.lucky_horseshoe": "Ferradura da Sorte",
+  "tooltip.relics.lucky_horseshoe.shift_1": "Com uma chance aleatória de aumentar o Saque e a Fortuna do jogador.",
+
+  "block.relics.magma_stone": "Pedra de Magma"
+}
