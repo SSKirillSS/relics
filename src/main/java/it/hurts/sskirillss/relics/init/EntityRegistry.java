@@ -18,6 +18,12 @@ public class EntityRegistry {
                     .build("stellar_catalyst_projectile")
     );
 
+    public static final RegistryObject<EntityType<SpaceDissectorEntity>> SPACE_DISSECTOR = ENTITIES.register("space_dissector", () ->
+            EntityType.Builder.<SpaceDissectorEntity>create(SpaceDissectorEntity::new, EntityClassification.MISC)
+                    .size(0.9F, 0.1F)
+                    .build("space_dissector")
+    );
+
     public static void registerEntities() {
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

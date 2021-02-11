@@ -203,6 +203,34 @@ public class RelicsConfig {
         }
     }
 
+    public static class SpaceDissector {
+        public static ForgeConfigSpec.DoubleValue MOVEMENT_SPEED;
+        public static ForgeConfigSpec.IntValue MAX_THROWN_TIME;
+        public static ForgeConfigSpec.IntValue TIME_BEFORE_RETURN;
+        public static ForgeConfigSpec.IntValue DISTANCE_FOR_TELEPORT;
+        public static ForgeConfigSpec.IntValue COOLDOWN_AFTER_TELEPORT;
+        public static ForgeConfigSpec.IntValue COOLDOWN_AFTER_RETURN;
+        public static ForgeConfigSpec.IntValue MAX_BOUNCES_AMOUNT;
+        public static ForgeConfigSpec.IntValue ADDITIONAL_TIME_PER_BOUNCE;
+        public static ForgeConfigSpec.DoubleValue BASE_DAMAGE_AMOUNT;
+        public static ForgeConfigSpec.DoubleValue DAMAGE_MULTIPLIER_PER_BOUNCE;
+
+        private static void setupSpaceDissectorConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("space_dissector");
+            MOVEMENT_SPEED = builder.defineInRange("movement_speed", 0.75, 0, Integer.MAX_VALUE);
+            MAX_THROWN_TIME = builder.defineInRange("max_thrown_time", 60, 0, Integer.MAX_VALUE);
+            TIME_BEFORE_RETURN = builder.defineInRange("time_before_return", 10, 0, Integer.MAX_VALUE);
+            DISTANCE_FOR_TELEPORT = builder.defineInRange("distance_for_teleport", 5, 0, Integer.MAX_VALUE);
+            COOLDOWN_AFTER_TELEPORT = builder.defineInRange("cooldown_after_teleport", 30, 0, Integer.MAX_VALUE);
+            COOLDOWN_AFTER_RETURN = builder.defineInRange("cooldown_after_return", 5, 0, Integer.MAX_VALUE);
+            MAX_BOUNCES_AMOUNT = builder.defineInRange("max_bounces_amount", 10, 0, Integer.MAX_VALUE);
+            ADDITIONAL_TIME_PER_BOUNCE = builder.defineInRange("additional_time_per_bounce", 4, 0, Integer.MAX_VALUE);
+            BASE_DAMAGE_AMOUNT = builder.defineInRange("base_damage_amount", 2.0, 0, Integer.MAX_VALUE);
+            DAMAGE_MULTIPLIER_PER_BOUNCE = builder.defineInRange("damage_multiplier_per_bounce", 1.5, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class SpatialSign {
         public static ForgeConfigSpec.IntValue TIME_BEFORE_ACTIVATION;
 
@@ -246,6 +274,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue RAGE_GLOVE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue REFLECTION_NECKLACE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SCARAB_TALISMAN_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue SPACE_DISSECTOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPATIAL_SIGN_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue STELLAR_CATALYST_GEN_CHANCE;
 
@@ -266,6 +295,7 @@ public class RelicsConfig {
             RAGE_GLOVE_GEN_CHANCE = builder.defineInRange("rage_glove_gen_chance", 0.05, 0, 1);
             REFLECTION_NECKLACE_GEN_CHANCE = builder.defineInRange("reflection_necklace_gen_chance", 0.05, 0, 1);
             SCARAB_TALISMAN_GEN_CHANCE = builder.defineInRange("scarab_talisman_gen_chance", 0.14, 0, 1);
+            SPACE_DISSECTOR_GEN_CHANCE = builder.defineInRange("space_dissector_gen_chance", 0.05, 0, 1);
             SPATIAL_SIGN_GEN_CHANCE = builder.defineInRange("spatial_sign_gen_chance", 0.25, 0, 1);
             STELLAR_CATALYST_GEN_CHANCE = builder.defineInRange("stellar_catalyst_gen_chance", 0.05, 0, 1);
             builder.pop();
@@ -289,6 +319,7 @@ public class RelicsConfig {
         RageGlove.setupRageGloveConfig(builder);
         ReflectionNecklace.setupReflectionNecklaceConfig(builder);
         ScarabTalisman.setupScarabTalismanConfig(builder);
+        SpaceDissector.setupSpaceDissectorConfig(builder);
         SpatialSign.setupSpatialSignConfig(builder);
         StellarCatalyst.setupStellarCatalystConfig(builder);
 

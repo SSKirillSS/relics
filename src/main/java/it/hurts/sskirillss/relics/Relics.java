@@ -1,15 +1,19 @@
 package it.hurts.sskirillss.relics;
 
-import it.hurts.sskirillss.relics.entities.renderer.NullRenderer;
+import it.hurts.sskirillss.relics.entities.renderer.*;
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -63,8 +67,13 @@ public class Relics {
 
     private void setupClient(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), NullRenderer::new);
-
+        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.SPACE_DISSECTOR.get(), new SpaceDissectorRenderer.RenderFactory());
         RenderTypeLookup.setRenderLayer(BlockRegistry.CHALK_BLOCK.get(), RenderType.getCutout());
+
+        ItemModelsProperties.registerProperty(
+                ItemRegistry.SPACE_DISSECTOR.get(), new ResourceLocation(Reference.MODID, "thrown"),
+                (stack, world, entity) -> NBTUtils.getBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false) ? 1 : 0
+        );
     }
 
     private void setupCommon(final FMLCommonSetupEvent event) {

@@ -1,0 +1,10 @@
+{
+  "parent": "item/generated",
+    "textures": {
+        "layer0": "relics:items/space_dissector"
+    },
+    "overrides": [
+        { "predicate": { "relics:thrown": 0 }, "model": "relics:item/space_dissector" },
+        { "predicate": { "relics:thrown": 1 }, "model": "relics:item/space_dissector_thrown" }
+    ]
+}

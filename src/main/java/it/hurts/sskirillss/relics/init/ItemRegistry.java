@@ -43,6 +43,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> CHORUS_INHIBITOR = ITEMS.register("chorus_inhibitor", ChorusInhibitorItem::new);
     public static final RegistryObject<Item> ARROW_QUIVER = ITEMS.register("arrow_quiver", ArrowQuiverItem::new);
     public static final RegistryObject<Item> LUCKY_HORSESHOE = ITEMS.register("lucky_horseshoe", LuckyHorseshoeItem::new);
+    public static final RegistryObject<Item> SPACE_DISSECTOR = ITEMS.register("space_dissector", SpaceDissectorItem::new);
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
