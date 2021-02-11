@@ -21,7 +21,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
 import java.lang.*;
 
 public class SpatialSignItem extends Item implements IHasTooltip {
@@ -63,7 +63,7 @@ public class SpatialSignItem extends Item implements IHasTooltip {
             NBTUtils.setInt(stack, TAG_TIME, RelicsConfig.SpatialSign.TIME_BEFORE_ACTIVATION.get());
         } else {
             if (playerIn.isSneaking()) {
-                teleportPlayer(playerIn);
+                teleportPlayer(playerIn, stack);
             }
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
@@ -78,7 +78,7 @@ public class SpatialSignItem extends Item implements IHasTooltip {
                 if (time > 0) {
                     NBTUtils.setInt(stack, TAG_TIME, time - 1);
                 } else {
-                    teleportPlayer(player);
+                    teleportPlayer(player, stack);
                 }
             }
         }
@@ -95,8 +95,7 @@ public class SpatialSignItem extends Item implements IHasTooltip {
         return !NBTUtils.getString(stack, TAG_POSITION, "").equals("");
     }
 
-    public static void teleportPlayer(PlayerEntity player) {
-        ItemStack stack = player.inventory.getStackInSlot(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
+    public static void teleportPlayer(PlayerEntity player, ItemStack stack) {
         BlockPos pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
         String worldString = NBTUtils.getString(stack, TAG_WORLD, "").equals("")
                 ? player.getEntityWorld().getDimensionKey().getLocation().toString() : NBTUtils.getString(stack, TAG_WORLD, "");
@@ -124,7 +123,7 @@ public class SpatialSignItem extends Item implements IHasTooltip {
                 if (EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()) != -1) {
                     ItemStack stack = player.inventory.getStackInSlot(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
                     if (!NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
-                        teleportPlayer(player);
+                        teleportPlayer(player, stack);
                         player.setHealth(1.0F);
                         stack.shrink(1);
                         event.setCanceled(true);
