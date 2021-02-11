@@ -76,8 +76,9 @@ public class SpaceDissectorItem extends Item implements IHasTooltip {
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (entityIn.ticksExisted % 20 == 0) {
+            NBTUtils.setInt(stack, TAG_UPDATE_TIME, NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) + 1);
             if (NBTUtils.getBoolean(stack, TAG_IS_THROWN, false) && NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0)
-                    < RelicsConfig.SpaceDissector.MAX_THROWN_TIME.get()) {
+                    > RelicsConfig.SpaceDissector.MAX_THROWN_TIME.get()) {
                 NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
             }
         }
@@ -89,7 +90,7 @@ public class SpaceDissectorItem extends Item implements IHasTooltip {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_2"));
-        tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_2"));
+        tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_3"));
         return tooltip;
     }
 

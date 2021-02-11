@@ -87,14 +87,24 @@ public class SpaceDissectorEntity extends ThrowableEntity {
             if (!dataManager.get(IS_RETURNING)) {
                 if (!bounced) setMotion(defaultMotion);
             } else {
-                if (this.owner != null) {
+                if (owner != null) {
                     EntityUtils.moveTowardsPosition(this, new Vector3d(owner.getPosX(),
                             owner.getPosY() + 1.0F, owner.getPosZ()), RelicsConfig.SpaceDissector.MOVEMENT_SPEED.get().floatValue());
+                    for (PlayerEntity player : world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(2.0F))) {
+                        if (owner.getUniqueID().equals(player.getUniqueID()) && stack != null && stack != ItemStack.EMPTY) {
+                            this.remove();
+                            NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
+                            owner.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
+                        }
+                    }
                 } else {
                     if (stack != null && stack != ItemStack.EMPTY) NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
                     this.remove();
                 }
             }
+
+            if (this.isBurning()) this.extinguish();
+
             bounced = false;
         }
     }
@@ -122,8 +132,6 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                     } else {
                         dataManager.set(IS_RETURNING, true);
                     }
-                } else {
-                    world.destroyBlock(blockRayTraceResult.getPos(), true);
                 }
                 break;
             }
@@ -131,7 +139,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                 EntityRayTraceResult entityRayTraceResult = (EntityRayTraceResult) rayTraceResult;
                 if (entityRayTraceResult.getEntity() instanceof LivingEntity) {
                     LivingEntity entity = (LivingEntity) entityRayTraceResult.getEntity();
-                    if (entity == owner) {
+                    if (owner != null && owner.getUniqueID().equals(entity.getUniqueID())) {
                         if (stack != null && stack != ItemStack.EMPTY) {
                             NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
                             owner.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
@@ -176,6 +184,11 @@ public class SpaceDissectorEntity extends ThrowableEntity {
         dataManager.set(BOUNCES, tag.getInt(TAG_BOUNCES_AMOUNT));
         stack = ItemStack.read(tag);
         super.readAdditional(tag);
+    }
+
+    @Override
+    public boolean isPushedByWater() {
+        return false;
     }
 
     @Override
