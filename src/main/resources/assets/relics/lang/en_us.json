@@ -13,6 +13,8 @@
   "tooltip.relics.ctrl.divider_up": "§8---------------§a[Info]§8---------------",
   "tooltip.relics.ctrl.divider_down": "§8-----------------------------------",
 
+  "message.relics.version.forge": "§4[RELICS-WARN] §cSEEMS LIKE YOU ARE USING AN OUTDATED VERSION OF FORGE. IT'S MEAN THAT RELICS DOESN'T APPEAR IN THE DUNGEONS LOOT CHESTS. TO FIX THIS ISSUE PLEASE UPDATE YOUR FORGE VERSION TO 1.16.5-36.0.14 OR HIGHER. IF YOU FOR SOME REASONS DON'T WANT UPDATE YOUR FORGE VERSION - YOU CAN ADD OWN WAYS TO GETTING RELICS. THIS MESSAGE CAN BE DISABLED IN CONFIG",
+
   "curios.identifier.feet": "Feet",
   "curios.modifiers.feet": "When on feet:",
 

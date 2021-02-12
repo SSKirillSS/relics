@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.world;
 
 import com.google.gson.JsonObject;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.utils.CompatibilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,7 @@ public class DungeonLootModifier extends LootModifier {
     @Nonnull
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
-        if (RelicsConfig.RelicsWorldgen.RELICS_WORLDGEN_ENABLED.get()) {
+        if (RelicsConfig.RelicsWorldgen.RELICS_WORLDGEN_ENABLED.get() && CompatibilityUtils.isValidForgeVersion()) {
             ResourceLocation id = context.getQueriedLootTableId();
             if (id.equals(LootTables.CHESTS_DESERT_PYRAMID) || id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SCARAB_TALISMAN_GEN_CHANCE.get())

@@ -338,6 +338,14 @@ public class RelicsConfig {
         }
     }
 
+    public static class RelicsCompatibility {
+        public static ForgeConfigSpec.BooleanValue WARN_ABOUT_OLD_FORGE;
+
+        private static void setupCompatibilityConfig(ForgeConfigSpec.Builder builder) {
+            WARN_ABOUT_OLD_FORGE = builder.define("warn_about_old_forge", true);
+        }
+    }
+
     private static void setupRelicsStatsConfig(ForgeConfigSpec.Builder builder) {
         builder.push("stats");
 
@@ -375,6 +383,9 @@ public class RelicsConfig {
 
         builder.push("worldgen");
         RelicsWorldgen.setupWorldgenConfig(builder);
+
+        builder.push("compatibility");
+        RelicsCompatibility.setupCompatibilityConfig(builder);
         builder.pop();
 
         RELICS_CONFIG = builder.build();
