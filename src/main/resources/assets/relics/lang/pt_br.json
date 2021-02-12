@@ -37,6 +37,11 @@
   "item.relics.reflection_necklace": "Colar da Reflexão",
   "tooltip.relics.reflection_necklace.shift_1": "Acumula cargas lentamente para refletir totalmente os projéteis e os danos recebidos",
 
+  "item.relics.space_dissector": "Divisor Espaçial",
+  "tooltip.relics.space_dissector.shift_1": "Lança um disco que ricocheteia nas superfícies e causa dano a todos em seu caminho",
+  "tooltip.relics.space_dissector.shift_2": "O dano causado e o tempo até que o disco retorne automaticamente ao dono depende do número vezes que ele ricocheteou",
+  "tooltip.relics.space_dissector.shift_3": "Usar o disco enquanto mantém pressionada a tecla [Shift] teletransporta o usuario para a posição atual do disco",
+
   "item.relics.magma_walker": "Botas de Lava",
   "tooltip.relics.magma_walker.shift_1": "Condensa a lava sob os pés, transformando-a temporariamente em uma Pedra de Magma.",
   "tooltip.relics.magma_walker.shift_2": "Remove totalmente os danos causados por blocos quentes",
