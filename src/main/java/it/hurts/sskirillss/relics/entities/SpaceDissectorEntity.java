@@ -124,9 +124,9 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                             Direction dir = blockRayTraceResult.getFace();
                             Vector3d normalVector = new Vector3d(-2 * dir.getXOffset(), -2 * dir.getYOffset(), -2 * dir.getZOffset()).normalize();
                             setMotion(normalVector.mul(
-                                    -2 * this.getMotion().dotProduct(normalVector),
-                                    -2 * this.getMotion().dotProduct(normalVector),
-                                    -2 * this.getMotion().dotProduct(normalVector))
+                                    -1.91 * this.getMotion().dotProduct(normalVector),
+                                    -1.91 * this.getMotion().dotProduct(normalVector),
+                                    -1.91 * this.getMotion().dotProduct(normalVector))
                                     .add(this.getMotion()));
                             if (time > 5) {
                                 world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundRegistry.RICOCHET, SoundCategory.MASTER,
