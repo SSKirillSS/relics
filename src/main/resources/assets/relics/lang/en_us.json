@@ -37,10 +37,14 @@
   "item.relics.reflection_necklace": "Reflection Necklace",
   "tooltip.relics.reflection_necklace.shift_1": "Slowly accumulates charges to fully reflect projectiles and incoming damage",
 
-  "item.relics.space_dissector": "Space dissector",
+  "item.relics.space_dissector": "Space Dissector",
   "tooltip.relics.space_dissector.shift_1": "Throws a disc that bounces off surfaces and damages everyone in its path",
   "tooltip.relics.space_dissector.shift_2": "Damage dealt and time before the disc automatically returns to thrower depends on the total number of bounces",
   "tooltip.relics.space_dissector.shift_3": "Activating the disk while holding down the [Shift] key teleports to its current position",
+
+  "item.relics.soul_devourer": "Soul Devourer",
+  "tooltip.relics.soul_devourer.shift_1": "Accumulates souls of defeated entities, proportionately increasing dealing damage",
+  "tooltip.relics.soul_devourer.shift_2": "Holding down the [Shift] key will release all accumulated souls, dealing damage and knocking everyone around",
 
   "item.relics.magma_walker": "Magma Walker",
   "tooltip.relics.magma_walker.shift_1": "Condenses lava underfoot, temporarily transforming it into solid magma stone",

@@ -65,6 +65,8 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.CHORUS_INHIBITOR.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPACE_DISSECTOR_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.SPACE_DISSECTOR.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SOUL_DEVOURER_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.SOUL_DEVOURER.get()));
             }
 
             if (id.equals(LootTables.CHESTS_UNDERWATER_RUIN_BIG) || id.equals(LootTables.CHESTS_UNDERWATER_RUIN_SMALL)

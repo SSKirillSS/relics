@@ -203,6 +203,40 @@ public class RelicsConfig {
         }
     }
 
+    public static class SoulDevourer {
+        public static ForgeConfigSpec.IntValue TIME_PER_SOUL_DECREASE;
+        public static ForgeConfigSpec.IntValue MIN_SOUL_DECREASE_AMOUNT;
+        public static ForgeConfigSpec.DoubleValue SOUL_DECREASE_MULTIPLIER_PER_SOUL;
+        public static ForgeConfigSpec.IntValue MIN_SOUL_AMOUNT_FOR_EXPLOSION;
+        public static ForgeConfigSpec.IntValue EXPLOSION_PREPARING_TIME;
+        public static ForgeConfigSpec.DoubleValue EXPLOSION_RADIUS;
+        public static ForgeConfigSpec.DoubleValue EXPLOSION_VELOCITY_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue MIN_EXPLOSION_DAMAGE_AMOUNT;
+        public static ForgeConfigSpec.DoubleValue EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER;
+        public static ForgeConfigSpec.IntValue EXPLOSION_COOLDOWN;
+        public static ForgeConfigSpec.IntValue SOUL_CAPACITY;
+        public static ForgeConfigSpec.DoubleValue SOUL_PER_HEALTH_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue ADDITIONAL_DAMAGE_PER_SOUL_MULTIPLIER;
+
+        private static void setupSoulDevourerConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("soul_devourer");
+            TIME_PER_SOUL_DECREASE = builder.defineInRange("time_per_soul_decrease", 10, 0, Integer.MAX_VALUE);
+            MIN_SOUL_DECREASE_AMOUNT = builder.defineInRange("min_soul_decrease_amount", 5, 0, Integer.MAX_VALUE);
+            SOUL_DECREASE_MULTIPLIER_PER_SOUL = builder.defineInRange("soul_decrease_multiplier_per_soul", 0.1F, 0, Integer.MAX_VALUE);
+            MIN_SOUL_AMOUNT_FOR_EXPLOSION = builder.defineInRange("min_soul_amount_for_explosion", 50, 0, Integer.MAX_VALUE);
+            EXPLOSION_PREPARING_TIME = builder.defineInRange("explosion_preparing_time", 12, 0, Integer.MAX_VALUE);
+            EXPLOSION_RADIUS = builder.defineInRange("explosion_radius", 10.0F, 0, Integer.MAX_VALUE);
+            EXPLOSION_VELOCITY_MULTIPLIER = builder.defineInRange("explosion_velocity_multiplier", 5.0F, 0, Integer.MAX_VALUE);
+            MIN_EXPLOSION_DAMAGE_AMOUNT = builder.defineInRange("min_explosion_damage_amount", 2.0, 0, Integer.MAX_VALUE);
+            EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER = builder.defineInRange("explosion_damage_per_soul_multiplier", 0.25, 0, Integer.MAX_VALUE);
+            EXPLOSION_COOLDOWN = builder.defineInRange("explosion_cooldown", 60, 0, Integer.MAX_VALUE);
+            SOUL_CAPACITY = builder.defineInRange("soul_capacity", 100, 0, Integer.MAX_VALUE);
+            SOUL_PER_HEALTH_MULTIPLIER = builder.defineInRange("soul_per_health_multiplier", 0.25, 0, Integer.MAX_VALUE);
+            ADDITIONAL_DAMAGE_PER_SOUL_MULTIPLIER = builder.defineInRange("additional_damage_per_soul_multiplier", 0.05, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class SpaceDissector {
         public static ForgeConfigSpec.DoubleValue MOVEMENT_SPEED;
         public static ForgeConfigSpec.IntValue MAX_THROWN_TIME;
@@ -274,6 +308,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue RAGE_GLOVE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue REFLECTION_NECKLACE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SCARAB_TALISMAN_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue SOUL_DEVOURER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPACE_DISSECTOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPATIAL_SIGN_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue STELLAR_CATALYST_GEN_CHANCE;
@@ -295,6 +330,7 @@ public class RelicsConfig {
             RAGE_GLOVE_GEN_CHANCE = builder.defineInRange("rage_glove_gen_chance", 0.05, 0, 1);
             REFLECTION_NECKLACE_GEN_CHANCE = builder.defineInRange("reflection_necklace_gen_chance", 0.05, 0, 1);
             SCARAB_TALISMAN_GEN_CHANCE = builder.defineInRange("scarab_talisman_gen_chance", 0.14, 0, 1);
+            SOUL_DEVOURER_GEN_CHANCE = builder.defineInRange("soul_devourer_gen_chance", 0.05, 0, 1);
             SPACE_DISSECTOR_GEN_CHANCE = builder.defineInRange("space_dissector_gen_chance", 0.05, 0, 1);
             SPATIAL_SIGN_GEN_CHANCE = builder.defineInRange("spatial_sign_gen_chance", 0.25, 0, 1);
             STELLAR_CATALYST_GEN_CHANCE = builder.defineInRange("stellar_catalyst_gen_chance", 0.05, 0, 1);
@@ -319,6 +355,7 @@ public class RelicsConfig {
         RageGlove.setupRageGloveConfig(builder);
         ReflectionNecklace.setupReflectionNecklaceConfig(builder);
         ScarabTalisman.setupScarabTalismanConfig(builder);
+        SoulDevourer.setupSoulDevourerConfig(builder);
         SpaceDissector.setupSpaceDissectorConfig(builder);
         SpatialSign.setupSpatialSignConfig(builder);
         StellarCatalyst.setupStellarCatalystConfig(builder);
