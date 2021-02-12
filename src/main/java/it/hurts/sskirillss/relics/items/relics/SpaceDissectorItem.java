@@ -50,22 +50,28 @@ public class SpaceDissectorItem extends Item implements IHasTooltip {
             } else {
                 if (!NBTUtils.getString(stack, TAG_UUID, "").equals("")) {
                     UUID uuid = UUID.fromString(NBTUtils.getString(stack, TAG_UUID, ""));
-                    if (worldIn instanceof ServerWorld && ((ServerWorld) worldIn).getEntityByUuid(uuid) != null
-                            && ((ServerWorld) worldIn).getEntityByUuid(uuid) instanceof SpaceDissectorEntity) {
-                        SpaceDissectorEntity dissector = (SpaceDissectorEntity) ((ServerWorld) worldIn).getEntityByUuid(uuid);
-                        if (!playerIn.isSneaking()) {
-                            if (!dissector.getDataManager().get(SpaceDissectorEntity.IS_RETURNING)) {
-                                dissector.getDataManager().set(SpaceDissectorEntity.IS_RETURNING, true);
+                    if (worldIn instanceof ServerWorld) {
+                        if (((ServerWorld) worldIn).getEntityByUuid(uuid) != null) {
+                            if (((ServerWorld) worldIn).getEntityByUuid(uuid) instanceof SpaceDissectorEntity) {
+                                SpaceDissectorEntity dissector = (SpaceDissectorEntity) ((ServerWorld) worldIn).getEntityByUuid(uuid);
+                                if (!playerIn.isSneaking()) {
+                                    if (!dissector.getDataManager().get(SpaceDissectorEntity.IS_RETURNING)) {
+                                        dissector.getDataManager().set(SpaceDissectorEntity.IS_RETURNING, true);
+                                    }
+                                } else {
+                                    if (playerIn.getPositionVec().distanceTo(dissector.getPositionVec()) > RelicsConfig.SpaceDissector.DISTANCE_FOR_TELEPORT.get()) {
+                                        playerIn.setPositionAndUpdate(dissector.getPosX(), dissector.getPosY(), dissector.getPosZ());
+                                        worldIn.playSound(null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(),
+                                                SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                        dissector.remove();
+                                        playerIn.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
+                                        NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
+                                    }
+                                }
                             }
                         } else {
-                            if (playerIn.getPositionVec().distanceTo(dissector.getPositionVec()) > RelicsConfig.SpaceDissector.DISTANCE_FOR_TELEPORT.get()) {
-                                playerIn.setPositionAndUpdate(dissector.getPosX(), dissector.getPosY(), dissector.getPosZ());
-                                worldIn.playSound(null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(),
-                                        SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                                dissector.remove();
-                                playerIn.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
-                                NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
-                            }
+                            playerIn.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
+                            NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
                         }
                     }
                 }
