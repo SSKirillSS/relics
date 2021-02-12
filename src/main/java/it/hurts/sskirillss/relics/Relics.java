@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
@@ -71,8 +72,9 @@ public class Relics {
         RenderTypeLookup.setRenderLayer(BlockRegistry.CHALK_BLOCK.get(), RenderType.getCutout());
 
         ItemModelsProperties.registerProperty(
-                ItemRegistry.SPACE_DISSECTOR.get(), new ResourceLocation(Reference.MODID, "thrown"),
-                (stack, world, entity) -> NBTUtils.getBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false) ? 1 : 0
+                ItemRegistry.SPACE_DISSECTOR.get(), new ResourceLocation(Reference.MODID, "mode"),
+                (stack, world, entity) -> NBTUtils.getBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false) ? 2
+                        : (entity instanceof PlayerEntity && ((PlayerEntity) entity).getCooldownTracker().hasCooldown(stack.getItem())) ? 1 : 0
         );
     }
 
