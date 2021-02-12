@@ -3,10 +3,7 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.entities.SpaceDissectorEntity;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
-import it.hurts.sskirillss.relics.utils.TooltipUtils;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -63,10 +60,10 @@ public class SpaceDissectorItem extends Item implements IHasTooltip {
                         } else {
                             if (playerIn.getPositionVec().distanceTo(dissector.getPositionVec()) > RelicsConfig.SpaceDissector.DISTANCE_FOR_TELEPORT.get()) {
                                 playerIn.setPositionAndUpdate(dissector.getPosX(), dissector.getPosY(), dissector.getPosZ());
-                                playerIn.getEntityWorld().playSound(playerIn, dissector.getPosX(), dissector.getPosY(), dissector.getPosZ(),
+                                worldIn.playSound(null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(),
                                         SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 dissector.remove();
-                                playerIn.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get());
+                                playerIn.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
                                 NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
                             }
                         }

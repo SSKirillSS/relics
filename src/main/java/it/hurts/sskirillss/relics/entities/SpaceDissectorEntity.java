@@ -42,6 +42,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
     private static boolean bounced = false;
     public ItemStack stack = ItemStack.EMPTY;
     private PlayerEntity owner;
+    private static int time;
 
     public SpaceDissectorEntity(EntityType<? extends SpaceDissectorEntity> type, World worldIn) {
         super(type, worldIn);
@@ -107,6 +108,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
             if (this.isBurning()) this.extinguish();
 
+            time++;
             bounced = false;
         }
     }
@@ -126,8 +128,11 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                                     -2 * this.getMotion().dotProduct(normalVector),
                                     -2 * this.getMotion().dotProduct(normalVector))
                                     .add(this.getMotion()));
-                            if (rand.nextInt(2) == 0) world.playSound(getPosX(), getPosY(), getPosZ(), SoundRegistry.RICOCHET,
-                                    SoundCategory.MASTER, 0.5F, 0.75F + (rand.nextFloat() * 0.5F), false);
+                            if (time > 5) {
+                                world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundRegistry.RICOCHET, SoundCategory.MASTER,
+                                        0.5F, 0.75F + (rand.nextFloat() * 0.5F));
+                                time = 0;
+                            }
                             bounced = true;
                             dataManager.set(BOUNCES, dataManager.get(BOUNCES) + 1);
                             dataManager.set(UPDATE_TIME, Math.max(dataManager.get(UPDATE_TIME)
