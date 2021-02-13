@@ -96,7 +96,7 @@ public class SoulDevourerItem extends Item implements ICurioItem, IHasTooltip {
                                                 + (soul * RelicsConfig.SoulDevourer.EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER.get())));
                                 player.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SoulDevourer.EXPLOSION_COOLDOWN.get() * 20);
                                 ParticleUtils.createBall(new CircleTintData(new Color(0.3F, 0.7F, 1.0F),
-                                                0.5F, 50, 0.95F, false), player.getPosition(),
+                                                0.5F, 50, 0.95F, false), player.getPositionVec(),
                                         player.getEntityWorld(), 5, 0.2F);
                                 NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, 0);
                                 NBTUtils.setInt(stack, TAG_EXPLOSION_READINESS, 0);

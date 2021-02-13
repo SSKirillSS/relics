@@ -74,7 +74,7 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     @Override
     protected void onImpact(RayTraceResult result) {
         ParticleUtils.createBall(new CircleTintData(new Color(0.4F, 0.05F, 0.7F), 0.5F, 40, 0.94F, true),
-                this.getPosition(), this.getEntityWorld(), 3, 0.2F);
+                this.getPositionVec(), this.getEntityWorld(), 3, 0.2F);
 
         for (LivingEntity entity : this.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
                 this.getBoundingBox().grow(RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_RADIUS.get()))) {
