@@ -3,11 +3,14 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
@@ -82,19 +85,22 @@ public class SoulDevourerItem extends Item implements ICurioItem, IHasTooltip {
                                         RelicsConfig.SoulDevourer.EXPLOSION_VELOCITY_MULTIPLIER.get(),
                                         RelicsConfig.SoulDevourer.EXPLOSION_VELOCITY_MULTIPLIER.get(),
                                         RelicsConfig.SoulDevourer.EXPLOSION_VELOCITY_MULTIPLIER.get());
-                                if (entity != player) {
-                                    entity.attackEntityFrom(DamageSource.causePlayerDamage(player),
-                                            (float) (RelicsConfig.SoulDevourer.MIN_EXPLOSION_DAMAGE_AMOUNT.get()
-                                                    + (soul * RelicsConfig.SoulDevourer.EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER.get())));
+                                if (entity instanceof PlayerEntity) {
+                                    if (!entity.getUniqueID().equals(player.getUniqueID()) && entity instanceof ServerPlayerEntity)
+                                        NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) entity);
+                                } else {
                                     entity.setMotion(motion);
-                                    NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, 0);
                                 }
+                                entity.attackEntityFrom(DamageSource.causePlayerDamage(player),
+                                        (float) (RelicsConfig.SoulDevourer.MIN_EXPLOSION_DAMAGE_AMOUNT.get()
+                                                + (soul * RelicsConfig.SoulDevourer.EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER.get())));
+                                player.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SoulDevourer.EXPLOSION_COOLDOWN.get() * 20);
+                                ParticleUtils.createBall(new CircleTintData(new Color(0.3F, 0.7F, 1.0F),
+                                                0.5F, 50, 0.95F, false), player.getPosition(),
+                                        player.getEntityWorld(), 5, 0.2F);
+                                NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, 0);
+                                NBTUtils.setInt(stack, TAG_EXPLOSION_READINESS, 0);
                             }
-                            player.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SoulDevourer.EXPLOSION_COOLDOWN.get() * 20);
-                            ParticleUtils.createBall(new CircleTintData(new Color(0.3F, 0.7F, 1.0F),
-                                            0.5F, 50, 0.95F, false), player.getPosition(),
-                                    player.getEntityWorld(), 5, 0.2F);
-                            NBTUtils.setInt(stack, TAG_EXPLOSION_READINESS, 0);
                         }
                     }
                 } else {
