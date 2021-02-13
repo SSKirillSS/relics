@@ -85,8 +85,7 @@ public class SoulDevourerItem extends Item implements ICurioItem, IHasTooltip {
                                 if (entity != player) {
                                     entity.attackEntityFrom(DamageSource.causePlayerDamage(player),
                                             (float) (RelicsConfig.SoulDevourer.MIN_EXPLOSION_DAMAGE_AMOUNT.get()
-                                                    + (soul * RelicsConfig.SoulDevourer.EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER.get())
-                                                    / Math.max(0.1D, player.getPositionVec().distanceTo(entity.getPositionVec()))));
+                                                    + (soul * RelicsConfig.SoulDevourer.EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER.get())));
                                     entity.setMotion(motion);
                                     NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, 0);
                                 }
