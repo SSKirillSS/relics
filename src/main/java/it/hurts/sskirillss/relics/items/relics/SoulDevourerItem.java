@@ -65,7 +65,7 @@ public class SoulDevourerItem extends Item implements ICurioItem, IHasTooltip {
                             float radius = (float) Math.sin(readiness * 0.1) + 1.0F + (readiness * 0.002F);
                             double extraY = player.getPosY() + 0.5F;
                             for (int i = 0; i < 5; i++) {
-                                float angle = (0.01F * (readiness * 4 + i * 120));
+                                float angle = (0.0105F * (readiness * 4 + i * 120));
                                 double extraX = (double) (radius * MathHelper.sin((float) (Math.PI + angle))) + player.getPosX();
                                 double extraZ = (double) (radius * MathHelper.cos(angle)) + player.getPosZ();
                                 CircleTintData circleTintData = new CircleTintData(
