@@ -116,6 +116,7 @@ public class SoulDevourerItem extends Item implements ICurioItem, IHasTooltip {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TranslationTextComponent("tooltip.relics.soul_devourer.tooltip_1", NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0)));
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
