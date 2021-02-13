@@ -13,6 +13,8 @@
   "tooltip.relics.ctrl.divider_up": "§8-----------§a[Informações]§8-----------",
   "tooltip.relics.ctrl.divider_down": "§8----------------------------------",
 
+  "message.relics.version.forge": "§4[RELICS-WARN] §cPARECE QUE VOCÊ ESTÁ USANDO UMA VERSÃO DESATUALIZADA DO FORGE. ISSO SIGNIFICA QUE RELÍQUIAS NÃO APARECE EM MASMORRAS BAÚS DE LOOT EM DUNGEONS. PARA CORRIGIR ESSE PROBLEMA, ATUALIZE SUA VERSÃO DO FORGE PARA 1.16.5-36.0.14 OU SUPERIOR. SE VOCÊ, POR ALGUM MOTIVO, NÃO QUER ATUALIZAR SUA VERSÃO DO FORGE - VOCÊ PODE ADICIONAR PRÓPRIAS FORMAS DE OBTER RELÍQUIAS. ESTA MENSAGEM PODE SER DESATIVADA NO CONFIG",
+
   "curios.identifier.feet": "Pés",
   "curios.modifiers.feet": "Quando nos Pés:",
 
@@ -41,6 +43,11 @@
   "tooltip.relics.space_dissector.shift_1": "Lança um disco que ricocheteia nas superfícies e causa dano a todos em seu caminho",
   "tooltip.relics.space_dissector.shift_2": "O dano causado e o tempo até que o disco retorne automaticamente ao dono depende do número vezes que ele ricocheteou",
   "tooltip.relics.space_dissector.shift_3": "Usar o disco enquanto mantém pressionada a tecla [Shift] teletransporta o usuario para a posição atual do disco",
+
+  "item.relics.soul_devourer": "Devorador de Almas",
+  "tooltip.relics.soul_devourer.tooltip_1": "Almas Acumuladas: %1$s",
+  "tooltip.relics.soul_devourer.shift_1": "Acumula almas de criaturas derrotadas, aumentando proporcionalmente o dano causado",
+  "tooltip.relics.soul_devourer.shift_2": "Manter a tecla [Shift] pressionada irá liberar todas as almas acumuladas, causando dano e derrubando todos ao redor",
 
   "item.relics.magma_walker": "Botas de Lava",
   "tooltip.relics.magma_walker.shift_1": "Condensa a lava sob os pés, transformando-a temporariamente em uma Pedra de Magma.",
