@@ -22,7 +22,7 @@ public class EntityUtils {
         entity.setMotion(motion.x, motion.y, motion.z);
     }
 
-    public static void teleportWithMount(Entity entity, ServerWorld targetWorld, BlockPos targetPos) {
+    public static void teleportWithMount(Entity entity, ServerWorld targetWorld, Vector3d targetPos) {
         if (entity.getRidingEntity() != null) {
             Entity mount = entity.getRidingEntity();
             entity.stopRiding();

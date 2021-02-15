@@ -40,7 +40,7 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
 
     public StellarCatalystProjectileEntity(LivingEntity throwerIn, LivingEntity target, float damage) {
         super(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), throwerIn, target.getEntityWorld());
-        this.position = NBTUtils.writePosition(new BlockPos(target.getPosX(), 0.0D, target.getPosZ()));
+        this.position = NBTUtils.writePosition(new Vector3d(target.getPosX(), 0.0D, target.getPosZ()));
         this.damage = damage;
         this.thrower = throwerIn.getUniqueID();
         this.setNoGravity(true);
@@ -56,7 +56,7 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
         if (liveTime > 10 * 20) this.setDead();
 
         if (NBTUtils.parsePosition(position) != null) {
-            BlockPos pos = NBTUtils.parsePosition(position);
+            Vector3d pos = NBTUtils.parsePosition(position);
             EntityUtils.moveTowardsPosition(this, new Vector3d(pos.getX(), pos.getY(), pos.getZ()), 0.5F);
         }
 

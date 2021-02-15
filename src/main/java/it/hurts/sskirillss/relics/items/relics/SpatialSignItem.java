@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -58,7 +59,7 @@ public class SpatialSignItem extends Item implements IHasTooltip {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
         if (NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
-            NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.getPosition()));
+            NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.getPositionVec()));
             NBTUtils.setString(stack, TAG_WORLD, playerIn.getEntityWorld().getDimensionKey().getLocation().toString());
             NBTUtils.setInt(stack, TAG_TIME, RelicsConfig.SpatialSign.TIME_BEFORE_ACTIVATION.get());
         } else {
@@ -96,7 +97,7 @@ public class SpatialSignItem extends Item implements IHasTooltip {
     }
 
     public static void teleportPlayer(PlayerEntity player, ItemStack stack) {
-        BlockPos pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
+        Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
         String worldString = NBTUtils.getString(stack, TAG_WORLD, "").equals("")
                 ? player.getEntityWorld().getDimensionKey().getLocation().toString() : NBTUtils.getString(stack, TAG_WORLD, "");
 

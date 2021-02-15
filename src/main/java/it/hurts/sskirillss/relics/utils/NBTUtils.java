@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.utils;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class NBTUtils {
     public static void setBoolean(ItemStack stack, String tag, boolean value) {
@@ -32,14 +32,14 @@ public class NBTUtils {
         return !stack.isEmpty() && stack.getOrCreateTag().contains(tag);
     }
 
-    public static String writePosition(BlockPos pos) {
-        return pos.getX() + "," + pos.getY() + "," + pos.getZ();
+    public static String writePosition(Vector3d vec) {
+        return vec.getX() + "," + vec.getY() + "," + vec.getZ();
     }
 
-    public static BlockPos parsePosition(String value) {
+    public static Vector3d parsePosition(String value) {
         if (value != null && !value.equals("")) {
             String[] pos = value.split(",");
-            return new BlockPos(Float.parseFloat(pos[0]), Float.parseFloat(pos[1]), Float.parseFloat(pos[2]));
+            return new Vector3d(Float.parseFloat(pos[0]), Float.parseFloat(pos[1]), Float.parseFloat(pos[2]));
         }
         return null;
     }

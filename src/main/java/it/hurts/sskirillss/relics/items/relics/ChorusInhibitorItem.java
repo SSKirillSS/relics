@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -66,7 +67,7 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
                 if (time > 0) {
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
                 } else {
-                    BlockPos pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_STORED_POSITION, ""));
+                    Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_STORED_POSITION, ""));
                     if (pos != null) {
                         String worldString = NBTUtils.getString(stack, TAG_WORLD, "").equals("")
                                 ? player.getEntityWorld().getDimensionKey().getLocation().toString() : NBTUtils.getString(stack, TAG_WORLD, "");
@@ -98,7 +99,7 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
                     int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + RelicsConfig.ChorusInhibitor.TIME_PER_CHORUS.get());
                     if (time <= 0) {
-                        NBTUtils.setString(stack, TAG_STORED_POSITION, NBTUtils.writePosition(player.getPosition()));
+                        NBTUtils.setString(stack, TAG_STORED_POSITION, NBTUtils.writePosition(player.getPositionVec()));
                         NBTUtils.setString(stack, TAG_WORLD, player.getEntityWorld().getDimensionKey().getLocation().toString());
                     }
                     player.getHeldItemMainhand().shrink(1);
