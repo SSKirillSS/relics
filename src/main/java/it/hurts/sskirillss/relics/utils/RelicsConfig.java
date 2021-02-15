@@ -199,8 +199,8 @@ public class RelicsConfig {
             builder.push("rage_glove");
             STACK_TIME = builder.defineInRange("stack_time", 5, Integer.MIN_VALUE, Integer.MAX_VALUE);
             MIN_DAMAGE_AMOUNT = builder.defineInRange("min_damage_amount", 3.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-            DEALING_DAMAGE_MULTIPLIER_PER_STACK = builder.defineInRange("dealing_damage_multiplier_per_stack", 0.05, Integer.MIN_VALUE, Integer.MAX_VALUE);
-            INCOMING_DAMAGE_MULTIPLIER_PER_STACK = builder.defineInRange("incoming_damage_multiplier_per_stack", 0.025, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            DEALING_DAMAGE_MULTIPLIER_PER_STACK = builder.defineInRange("dealing_damage_multiplier_per_stack", 0.1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            INCOMING_DAMAGE_MULTIPLIER_PER_STACK = builder.defineInRange("incoming_damage_multiplier_per_stack", 0.05, Integer.MIN_VALUE, Integer.MAX_VALUE);
             builder.pop();
         }
     }
