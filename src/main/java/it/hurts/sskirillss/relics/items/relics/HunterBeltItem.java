@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -61,7 +62,14 @@ public class HunterBeltItem extends Item implements ICurioItem, IHasTooltip {
                     && event.getEntityLiving() instanceof AnimalEntity) {
                 PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), player).isPresent()) {
-                    event.setAmount(event.getAmount() * RelicsConfig.HunterBelt.DAMAGE_MULTIPLIER.get().floatValue());
+                    event.setAmount(event.getAmount() * RelicsConfig.HunterBelt.PLAYER_DAMAGE_MULTIPLIER.get().floatValue());
+                }
+            }
+            if (event.getSource().getTrueSource() instanceof TameableEntity) {
+                TameableEntity pet = (TameableEntity) event.getSource().getTrueSource();
+                if (pet.getOwner() != null && pet.getOwner() instanceof PlayerEntity
+                        && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), pet.getOwner()).isPresent()) {
+                    event.setAmount(event.getAmount() * RelicsConfig.HunterBelt.PET_DAMAGE_MULTIPLIER.get().floatValue());
                 }
             }
         }

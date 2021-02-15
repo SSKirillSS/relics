@@ -106,12 +106,14 @@ public class RelicsConfig {
     }
 
     public static class HunterBelt {
-        public static ForgeConfigSpec.DoubleValue DAMAGE_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue PLAYER_DAMAGE_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue PET_DAMAGE_MULTIPLIER;
         public static ForgeConfigSpec.IntValue ADDITIONAL_LOOTING;
 
         private static void setupHunterBeltConfig(ForgeConfigSpec.Builder builder) {
             builder.push("hunter_belt");
-            DAMAGE_MULTIPLIER = builder.defineInRange("damage_multiplier", 2.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            PLAYER_DAMAGE_MULTIPLIER = builder.defineInRange("player_damage_multiplier", 2.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            PET_DAMAGE_MULTIPLIER = builder.defineInRange("pet_damage_multiplier", 3.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
             ADDITIONAL_LOOTING = builder.defineInRange("additional_looting", 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
             builder.pop();
         }

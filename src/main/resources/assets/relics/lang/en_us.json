@@ -78,7 +78,7 @@
   "tooltip.relics.jellyfish_necklace.shift_2": "Doubles health regeneration speed underwater",
 
   "item.relics.hunter_belt": "Hunter Belt",
-  "tooltip.relics.hunter_belt.shift_1": "Doubles damage dealt to animals and loot received from mobs",
+  "tooltip.relics.hunter_belt.shift_1": "Doubles damage dealt to animals and loot received from mobs. Increases damage dealt by pets",
 
   "item.relics.rage_glove": "Rage Glove",
   "tooltip.relics.rage_glove.shift_1": "Increases dealt and taken damage from the same target per each combo-attack",
