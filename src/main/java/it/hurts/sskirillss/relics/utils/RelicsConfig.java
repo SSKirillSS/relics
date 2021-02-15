@@ -289,8 +289,8 @@ public class RelicsConfig {
             COOLDOWN_AFTER_RETURN = builder.defineInRange("cooldown_after_return", 5, 0, Integer.MAX_VALUE);
             MAX_BOUNCES_AMOUNT = builder.defineInRange("max_bounces_amount", 10, 0, Integer.MAX_VALUE);
             ADDITIONAL_TIME_PER_BOUNCE = builder.defineInRange("additional_time_per_bounce", 4, 0, Integer.MAX_VALUE);
-            BASE_DAMAGE_AMOUNT = builder.defineInRange("base_damage_amount", 2.0, 0, Integer.MAX_VALUE);
-            DAMAGE_MULTIPLIER_PER_BOUNCE = builder.defineInRange("damage_multiplier_per_bounce", 1.5, 0, Integer.MAX_VALUE);
+            BASE_DAMAGE_AMOUNT = builder.defineInRange("base_damage_amount", 4.0, 0, Integer.MAX_VALUE);
+            DAMAGE_MULTIPLIER_PER_BOUNCE = builder.defineInRange("damage_multiplier_per_bounce", 2.0, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }
