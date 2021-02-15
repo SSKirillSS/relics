@@ -67,6 +67,9 @@
   "item.relics.drowned_belt": "Drowned Belt",
   "tooltip.relics.drowned_belt.shift_1": "Grants infinity breathing, increases underwater incoming and dealing damage, reduces swimming speed",
 
+  "item.relics.holy_locket": "Holy Locket",
+  "tooltip.relics.holy_locket.shift_1": "Increases damage dealt to undead entities and grants ability to set them on fire",
+
   "item.relics.jellyfish_necklace": "Jellyfish Necklace",
   "tooltip.relics.jellyfish_necklace.shift_1": "Slowly accumulates charges underwater which then can be used to deal electrical damage on collision with mobs",
   "tooltip.relics.jellyfish_necklace.shift_2": "Doubles health regeneration speed underwater",

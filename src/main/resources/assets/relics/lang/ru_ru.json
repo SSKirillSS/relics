@@ -67,6 +67,9 @@
   "item.relics.drowned_belt": "Пояс утопленника",
   "tooltip.relics.drowned_belt.shift_1": "Наделяет бесконечным подводным дыханием, увеличивает входящий и исходящий урон под водой, замедляет скорость плаванья",
 
+  "item.relics.holy_locket": "Священный медальон",
+  "tooltip.relics.holy_locket.shift_1": "Увеличивает урон, наносимый нежити, а также наделяет способностью поджечь её",
+
   "item.relics.jellyfish_necklace": "Амулет медузы",
   "tooltip.relics.jellyfish_necklace.shift_1": "Медленно накапливает заряды во время пребывания под водой для дальнейшего нанесения электрического урона при коллизии с мобами",
   "tooltip.relics.jellyfish_necklace.shift_2": "Удваивает регенерацию здоровья под водой",

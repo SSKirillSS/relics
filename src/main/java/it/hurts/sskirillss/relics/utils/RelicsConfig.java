@@ -77,6 +77,20 @@ public class RelicsConfig {
         }
     }
 
+    public static class HolyLocket {
+        public static ForgeConfigSpec.DoubleValue DAMAGE_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue ARSON_CHANCE;
+        public static ForgeConfigSpec.IntValue BURN_DURATION;
+
+        private static void setupHolyLocketConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("holy_locket");
+            DAMAGE_MULTIPLIER = builder.defineInRange("damage_multiplier", 1.5, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            ARSON_CHANCE = builder.defineInRange("arson_chance", 0.25, 0, Integer.MAX_VALUE);
+            BURN_DURATION = builder.defineInRange("burn_duration", 4, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class HunterBelt {
         public static ForgeConfigSpec.DoubleValue DAMAGE_MULTIPLIER;
         public static ForgeConfigSpec.IntValue ADDITIONAL_LOOTING;
@@ -299,6 +313,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue CHORUS_INHIBITOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue DELAY_RING_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue DROWNED_BELT_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue HOLY_LOCKET_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue HUNTER_BELT_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue ICE_SKATES_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue JELLYFISH_NECKLACE_GEN_CHANCE;
@@ -321,6 +336,7 @@ public class RelicsConfig {
             CHORUS_INHIBITOR_GEN_CHANCE = builder.defineInRange("chorus_inhibitor_gen_chance", 0.15, 0, 1);
             DELAY_RING_GEN_CHANCE = builder.defineInRange("delay_ring_gen_chance", 0.05, 0, 1);
             DROWNED_BELT_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.2, 0, 1);
+            HOLY_LOCKET_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.3, 0, 1);
             HUNTER_BELT_GEN_CHANCE = builder.defineInRange("hunter_belt_gen_chance", 0.2, 0, 1);
             ICE_SKATES_GEN_CHANCE = builder.defineInRange("ice_skates_gen_chance", 0.2, 0, 1);
             JELLYFISH_NECKLACE_GEN_CHANCE = builder.defineInRange("jellyfish_necklace_gen_chance", 0.2, 0, 1);
@@ -355,6 +371,7 @@ public class RelicsConfig {
         ChorusInhibitor.setupChorusInhibitorConfig(builder);
         DelayRing.setupDelayRingConfig(builder);
         DrownedBelt.setupDrownedBeltConfig(builder);
+        HolyLocket.setupHolyLocketConfig(builder);
         HunterBelt.setupHunterBeltConfig(builder);
         IceSkates.setupIceSkatesConfig(builder);
         JellyfishNecklace.setupJellyfishNecklaceConfig(builder);

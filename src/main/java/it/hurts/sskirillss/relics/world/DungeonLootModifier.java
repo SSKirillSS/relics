@@ -32,6 +32,8 @@ public class DungeonLootModifier extends LootModifier {
             if (id.equals(LootTables.CHESTS_DESERT_PYRAMID) || id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SCARAB_TALISMAN_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.SCARAB_TALISMAN.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.HOLY_LOCKET_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.HOLY_LOCKET.get()));
             }
 
             if (id.equals(LootTables.CHESTS_ABANDONED_MINESHAFT) || id.equals(LootTables.CHESTS_STRONGHOLD_CORRIDOR)
