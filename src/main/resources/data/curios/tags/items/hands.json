@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "relics:rage_glove"
+    "relics:rage_glove",
+    "relics:enders_hand"
   ]
 }

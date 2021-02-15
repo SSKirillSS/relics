@@ -40,6 +40,8 @@ public class DungeonLootModifier extends LootModifier {
                     || id.equals(LootTables.CHESTS_STRONGHOLD_CROSSING) || id.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPATIAL_SIGN_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ENDERS_HAND_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
             }
 
             if (id.equals(LootTables.BASTION_BRIDGE) || id.equals(LootTables.BASTION_OTHER)
@@ -70,6 +72,8 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.SPACE_DISSECTOR.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SOUL_DEVOURER_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.SOUL_DEVOURER.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ENDERS_HAND_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.ENDERS_HAND.get()));
             }
 
             if (id.equals(LootTables.CHESTS_UNDERWATER_RUIN_BIG) || id.equals(LootTables.CHESTS_UNDERWATER_RUIN_SMALL)

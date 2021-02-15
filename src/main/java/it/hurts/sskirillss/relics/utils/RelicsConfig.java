@@ -77,6 +77,20 @@ public class RelicsConfig {
         }
     }
 
+    public static class EndersHand {
+        public static ForgeConfigSpec.IntValue TIME_BEFORE_TELEPORTING;
+        public static ForgeConfigSpec.IntValue MAX_TELEPORT_DISTANCE;
+        public static ForgeConfigSpec.IntValue TELEPORT_COOLDOWN;
+
+        private static void setupEndersHandConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("enders_hand");
+            TIME_BEFORE_TELEPORTING = builder.defineInRange("time_before_teleporting", 1, 0, Integer.MAX_VALUE);
+            MAX_TELEPORT_DISTANCE = builder.defineInRange("max_teleport_instance", 64, 0, Integer.MAX_VALUE);
+            TELEPORT_COOLDOWN = builder.defineInRange("teleport_cooldown", 10, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class HolyLocket {
         public static ForgeConfigSpec.DoubleValue DAMAGE_MULTIPLIER;
         public static ForgeConfigSpec.DoubleValue ARSON_CHANCE;
@@ -313,6 +327,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue CHORUS_INHIBITOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue DELAY_RING_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue DROWNED_BELT_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue ENDERS_HAND_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue HOLY_LOCKET_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue HUNTER_BELT_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue ICE_SKATES_GEN_CHANCE;
@@ -336,6 +351,7 @@ public class RelicsConfig {
             CHORUS_INHIBITOR_GEN_CHANCE = builder.defineInRange("chorus_inhibitor_gen_chance", 0.15, 0, 1);
             DELAY_RING_GEN_CHANCE = builder.defineInRange("delay_ring_gen_chance", 0.05, 0, 1);
             DROWNED_BELT_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.2, 0, 1);
+            ENDERS_HAND_GEN_CHANCE = builder.defineInRange("enders_hand_gen_chance", 0.3, 0, 1);
             HOLY_LOCKET_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.3, 0, 1);
             HUNTER_BELT_GEN_CHANCE = builder.defineInRange("hunter_belt_gen_chance", 0.2, 0, 1);
             ICE_SKATES_GEN_CHANCE = builder.defineInRange("ice_skates_gen_chance", 0.2, 0, 1);
@@ -371,6 +387,7 @@ public class RelicsConfig {
         ChorusInhibitor.setupChorusInhibitorConfig(builder);
         DelayRing.setupDelayRingConfig(builder);
         DrownedBelt.setupDrownedBeltConfig(builder);
+        EndersHand.setupEndersHandConfig(builder);
         HolyLocket.setupHolyLocketConfig(builder);
         HunterBelt.setupHunterBeltConfig(builder);
         IceSkates.setupIceSkatesConfig(builder);
