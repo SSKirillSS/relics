@@ -93,7 +93,7 @@
   "item.relics.delay_ring": "Кольцо отсрочки",
   "tooltip.relics.delay_ring.tooltip_1": "Время: %1$s",
   "tooltip.relics.delay_ring.tooltip_2": "Здоровье: %1$s",
-  "tooltip.relics.delay_ring.shift_1": "Временно отсрочивает судьбу союзника, откладывая любое лечение и получение урона на 10 секунд",
+  "tooltip.relics.delay_ring.shift_1": "Временно отсрочивает судьбу носителя, откладывая любое лечение и получение урона на 10 секунд",
   "tooltip.relics.delay_ring.shift_2": "Любое полученное во время действия способности кольца исцеление будет удвоено",
 
   "item.relics.bastion_ring": "Кольцо бастиона",
