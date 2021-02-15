@@ -41,7 +41,7 @@ public class DungeonLootModifier extends LootModifier {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPATIAL_SIGN_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ENDERS_HAND_GEN_CHANCE.get())
-                    generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
+                    generatedLoot.add(new ItemStack(ItemRegistry.ENDERS_HAND.get()));
             }
 
             if (id.equals(LootTables.BASTION_BRIDGE) || id.equals(LootTables.BASTION_OTHER)
