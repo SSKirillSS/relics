@@ -18,6 +18,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -62,36 +63,39 @@ public class IceSkatesItem extends Item implements ICurioItem, IHasTooltip {
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         int time = NBTUtils.getInt(stack, TAG_SPEEDUP_TIME, 0);
-        if (livingEntity.getEntityWorld().getBlockState(livingEntity.getPosition().down()).isIn(BlockTags.ICE)) {
-            if (livingEntity.isSprinting()) {
-                if (!movementSpeed.hasModifier(ICE_SKATES_SPEED_BOOST)) {
-                    movementSpeed.applyNonPersistentModifier(ICE_SKATES_SPEED_BOOST);
-                }
-                if (livingEntity.ticksExisted % 20 == 0) {
-                    if (time < RelicsConfig.IceSkates.MAX_SPEEDUP_TIME.get()) {
-                        NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, time + 1);
+        BlockPos pos = WorldUtils.getSolidBlockUnderFeet(livingEntity.getEntityWorld(), livingEntity.getPosition());
+        if (pos != null) {
+            if (livingEntity.getEntityWorld().getBlockState(pos).isIn(BlockTags.ICE)) {
+                if (livingEntity.isSprinting()) {
+                    if (!movementSpeed.hasModifier(ICE_SKATES_SPEED_BOOST)) {
+                        movementSpeed.applyNonPersistentModifier(ICE_SKATES_SPEED_BOOST);
                     }
-                }
-                if (time > RelicsConfig.IceSkates.SPEEDUP_TIME_PER_RAM.get()) {
-                    livingEntity.getEntityWorld().addParticle(ParticleTypes.CLOUD, livingEntity.getPosX(), livingEntity.getPosY() + 0.1F, livingEntity.getPosZ(), 0, 0, 0);
-                    for (LivingEntity entity : livingEntity.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, livingEntity.getBoundingBox().grow(RelicsConfig.IceSkates.RAM_RADIUS.get()))) {
-                        if (entity != livingEntity) {
-                            entity.setMotion(entity.getPositionVec().subtract(livingEntity.getPositionVec()).normalize().mul(time * 0.25F, time * 0.1F, time * 0.25F));
-                            entity.attackEntityFrom(DamageSource.FLY_INTO_WALL, RelicsConfig.IceSkates.BASE_RAM_DAMAGE_AMOUNT.get().floatValue() + time);
-                            NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, Math.max(time - RelicsConfig.IceSkates.SPEEDUP_TIME_PER_RAM.get(), 0));
+                    if (livingEntity.ticksExisted % 20 == 0) {
+                        if (time < RelicsConfig.IceSkates.MAX_SPEEDUP_TIME.get()) {
+                            NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, time + 1);
+                        }
+                    }
+                    if (time > RelicsConfig.IceSkates.SPEEDUP_TIME_PER_RAM.get()) {
+                        livingEntity.getEntityWorld().addParticle(ParticleTypes.CLOUD, livingEntity.getPosX(), livingEntity.getPosY() + 0.1F, livingEntity.getPosZ(), 0, 0, 0);
+                        for (LivingEntity entity : livingEntity.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, livingEntity.getBoundingBox().grow(RelicsConfig.IceSkates.RAM_RADIUS.get()))) {
+                            if (entity != livingEntity) {
+                                entity.setMotion(entity.getPositionVec().subtract(livingEntity.getPositionVec()).normalize().mul(time * 0.25F, time * 0.1F, time * 0.25F));
+                                entity.attackEntityFrom(DamageSource.FLY_INTO_WALL, RelicsConfig.IceSkates.BASE_RAM_DAMAGE_AMOUNT.get().floatValue() + time);
+                                NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, Math.max(time - RelicsConfig.IceSkates.SPEEDUP_TIME_PER_RAM.get(), 0));
+                            }
                         }
                     }
                 }
-            }
-        } else {
-            if (livingEntity.getEntityWorld().getBlockState(livingEntity.getPosition().down()) == Fluids.WATER.getStillFluid().getDefaultState().getBlockState()
-                    && time > 0) {
-                livingEntity.getEntityWorld().setBlockState(livingEntity.getPosition().down(), Blocks.FROSTED_ICE.getDefaultState());
-                NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, time - 1);
             } else {
-                NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, 0);
-                if (movementSpeed.hasModifier(ICE_SKATES_SPEED_BOOST)) {
-                    movementSpeed.removeModifier(ICE_SKATES_SPEED_BOOST);
+                if (livingEntity.getEntityWorld().getBlockState(livingEntity.getPosition().down()) == Fluids.WATER.getStillFluid()
+                        .getDefaultState().getBlockState() && time > 0) {
+                    livingEntity.getEntityWorld().setBlockState(livingEntity.getPosition().down(), Blocks.FROSTED_ICE.getDefaultState());
+                    NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, time - 1);
+                } else {
+                    NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, 0);
+                    if (movementSpeed.hasModifier(ICE_SKATES_SPEED_BOOST)) {
+                        movementSpeed.removeModifier(ICE_SKATES_SPEED_BOOST);
+                    }
                 }
             }
         }

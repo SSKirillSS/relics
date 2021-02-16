@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
-import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
-import it.hurts.sskirillss.relics.utils.TooltipUtils;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -22,8 +19,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -43,8 +42,6 @@ import java.util.UUID;
 public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip {
     private static final AttributeModifier SCARAB_TALISMAN_SPEED_BOOST = new AttributeModifier(UUID.fromString("09bc5b60-3277-45ee-8bf0-aae7acba4385"),
             Reference.MODID + ":" + "scarab_talisman_movement_speed", RelicsConfig.ScarabTalisman.SPEED_MULTIPLIER.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
-
-    private final float defaultStepHeight = 0.6F;
 
     public ScarabTalismanItem() {
         super(new Item.Properties()
@@ -70,16 +67,16 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (livingEntity.getEntityWorld().getBlockState(livingEntity.getPosition().down()).getBlock() == Blocks.SAND) {
+        BlockPos pos = WorldUtils.getSolidBlockUnderFeet(livingEntity.getEntityWorld(), livingEntity.getPosition());
+        if (pos != null && livingEntity.getEntityWorld().getBlockState(pos).isIn(BlockTags.SAND)) {
             if (!movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
                 movementSpeed.applyNonPersistentModifier(SCARAB_TALISMAN_SPEED_BOOST);
-            }
-            if (livingEntity instanceof PlayerEntity) {
-                livingEntity.stepHeight = Math.max(livingEntity.stepHeight, RelicsConfig.ScarabTalisman.STEP_HEIGHT.get().floatValue());
+                livingEntity.stepHeight = Math.max(livingEntity.stepHeight,
+                        RelicsConfig.ScarabTalisman.STEP_HEIGHT.get().floatValue());
             }
         } else if (movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
             movementSpeed.removeModifier(SCARAB_TALISMAN_SPEED_BOOST);
-            livingEntity.stepHeight = defaultStepHeight;
+            livingEntity.stepHeight = 0.6F;
         }
     }
 
@@ -88,7 +85,7 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         if (movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
             movementSpeed.removeModifier(SCARAB_TALISMAN_SPEED_BOOST);
-            livingEntity.stepHeight = defaultStepHeight;
+            livingEntity.stepHeight = 0.6F;
         }
     }
 
