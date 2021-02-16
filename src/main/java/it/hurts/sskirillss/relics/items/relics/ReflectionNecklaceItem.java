@@ -100,7 +100,6 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
         if (charges > 0) {
             for (int i = 0; i < charges; i++) {
                 matrixStack.push();
-                GL11.glDisable(GL11.GL_CULL_FACE);
                 matrixStack.scale(2F, -2F, 2F);
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.cos(livingEntity.ticksExisted / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
                 matrixStack.rotate(Vector3f.YP.rotationDegrees((livingEntity.ticksExisted / 10.0F) * (180F / (float) Math.PI) + (i * (360F / charges))));
@@ -114,6 +113,7 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
                 }
                 matrixStack.pop();
             }
+            GL11.glDisable(GL11.GL_CULL_FACE);
         }
 
         ICurio.RenderHelper.translateIfSneaking(matrixStack, livingEntity);
