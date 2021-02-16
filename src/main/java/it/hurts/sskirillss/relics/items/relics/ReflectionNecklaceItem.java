@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
@@ -10,9 +9,11 @@ import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -35,11 +36,14 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -87,26 +91,29 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
         }
     }
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/animations/rn_shield.png");
+    public static final ModelResourceLocation RL = new ModelResourceLocation(new ResourceLocation(Reference.MODID, "rn_shield"), "inventory");
+    private static final Direction[] DIR = ArrayUtils.add(Direction.values(), null);
 
     @Override
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing,
                        float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
-        IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.getEntityCutoutNoCull(TEXTURE));
         int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
+        IBakedModel model = Minecraft.getInstance().getModelManager().getModel(RL);
         if (charges > 0) {
             for (int i = 0; i < charges; i++) {
                 matrixStack.push();
-                matrixStack.translate(0.0, 1.0, 0);
-                matrixStack.scale(1.75F, -1.75F, 1.75F);
+                GL11.glDisable(GL11.GL_CULL_FACE);
+                matrixStack.scale(2F, -2F, 2F);
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.cos(livingEntity.ticksExisted / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
                 matrixStack.rotate(Vector3f.YP.rotationDegrees((livingEntity.ticksExisted / 10.0F) * (180F / (float) Math.PI) + (i * (360F / charges))));
                 matrixStack.rotate(Vector3f.XP.rotationDegrees((MathHelper.sin(livingEntity.ticksExisted / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
-                matrixStack.translate(0F, 0F, -0.5F);
-                VertexUtils.addVertexPoint(builder, matrixStack.getLast().getMatrix(), matrixStack.getLast().getNormal(), light, 0.0F, 0, 0, 1);
-                VertexUtils.addVertexPoint(builder, matrixStack.getLast().getMatrix(), matrixStack.getLast().getNormal(), light, 1.0F, 0, 1, 1);
-                VertexUtils.addVertexPoint(builder, matrixStack.getLast().getMatrix(), matrixStack.getLast().getNormal(), light, 1.0F, 1, 1, 0);
-                VertexUtils.addVertexPoint(builder, matrixStack.getLast().getMatrix(), matrixStack.getLast().getNormal(), light, 0.0F, 1, 0, 0);
+                matrixStack.translate(-0.5, -0.75, -1);
+                for (Direction dir : DIR) {
+                    Minecraft.getInstance().getItemRenderer().renderQuads(
+                            matrixStack, renderTypeBuffer.getBuffer(Atlases.getCutoutBlockType()),
+                            model.getQuads(null, dir, livingEntity.getEntityWorld().getRandom(), EmptyModelData.INSTANCE),
+                            ItemStack.EMPTY, light, OverlayTexture.NO_OVERLAY);
+                }
                 matrixStack.pop();
             }
         }
