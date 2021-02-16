@@ -24,9 +24,7 @@ import net.minecraft.entity.projectile.DamagingProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -151,6 +149,8 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
                         } else {
                             attacker.setMotion(motion);
                         }
+                        player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
+                                SoundEvents.ENTITY_WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                         event.setCanceled(true);
                     }
                     attacker.attackEntityFrom(DamageSource.causePlayerDamage(player), event.getAmount() * RelicsConfig.ReflectionNecklace.REFLECTION_DAMAGE_MULTIPLIER.get().floatValue());
@@ -180,6 +180,8 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
                     event.setCanceled(true);
                     undefinedProjectile.velocityChanged = true;
                     NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) - 1);
+                    player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
+                            SoundEvents.ENTITY_WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
             }
         }
