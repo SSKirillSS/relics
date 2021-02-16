@@ -13,7 +13,6 @@ import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -24,13 +23,11 @@ import java.awt.*;
 import java.util.UUID;
 
 public class StellarCatalystProjectileEntity extends ThrowableEntity {
-    public static final String TAG_TARGET_POSITION = "target";
     public static final String TAG_LIVE_TIME = "time";
     public static final String TAG_DAMAGE_AMOUNT = "damage";
     public static final String TAG_THROWER = "thrower";
 
     private int liveTime;
-    private String position;
     private float damage;
     private UUID thrower;
 
@@ -40,25 +37,19 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
 
     public StellarCatalystProjectileEntity(LivingEntity throwerIn, LivingEntity target, float damage) {
         super(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), throwerIn, target.getEntityWorld());
-        this.position = NBTUtils.writePosition(new Vector3d(target.getPosX(), 0.0D, target.getPosZ()));
         this.damage = damage;
         this.thrower = throwerIn.getUniqueID();
         this.setNoGravity(true);
-        this.setPosition(target.getPosX() + MathUtils.generateReallyRandomFloat() * 10,
-                Math.min(target.getPosY() + world.getRandom().nextInt(10) + 20, target.getEntityWorld().getHeight()),
-                target.getPosZ() + MathUtils.generateReallyRandomFloat() * 10);
+        this.setPosition(target.getPosX(), Math.min(world.getHeight(), target.getPosY() + world.getRandom().nextInt(10) + 20), target.getPosZ());
     }
 
     @Override
     public void tick() {
         super.tick();
+
+        this.setMotion(0.0F,-0.5F,0.0F);
         liveTime++;
         if (liveTime > 10 * 20) this.setDead();
-
-        if (NBTUtils.parsePosition(position) != null) {
-            Vector3d pos = NBTUtils.parsePosition(position);
-            EntityUtils.moveTowardsPosition(this, new Vector3d(pos.getX(), pos.getY(), pos.getZ()), 0.5F);
-        }
 
         if (world.isRemote() && liveTime > 5) {
             CircleTintData circleTintData = new CircleTintData(
@@ -98,7 +89,6 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     protected void writeAdditional(@Nonnull CompoundNBT compound) {
         compound.putInt(TAG_LIVE_TIME, liveTime);
         compound.putFloat(TAG_DAMAGE_AMOUNT, damage);
-        compound.putString(TAG_TARGET_POSITION, position);
         compound.putUniqueId(TAG_THROWER, thrower);
     }
 
@@ -106,7 +96,6 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     protected void readAdditional(@Nonnull CompoundNBT compound) {
         liveTime = compound.getInt(TAG_LIVE_TIME);
         damage = compound.getFloat(TAG_DAMAGE_AMOUNT);
-        position = compound.getString(TAG_TARGET_POSITION);
         thrower = compound.getUniqueId(TAG_THROWER);
     }
 
