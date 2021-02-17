@@ -36,8 +36,13 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.HOLY_LOCKET.get()));
             }
 
-            if (id.equals(LootTables.CHESTS_ABANDONED_MINESHAFT) || id.equals(LootTables.CHESTS_STRONGHOLD_CORRIDOR)
-                    || id.equals(LootTables.CHESTS_STRONGHOLD_CROSSING) || id.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) {
+            if (id.equals(LootTables.CHESTS_ABANDONED_MINESHAFT)) {
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPATIAL_SIGN_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
+            }
+
+            if (id.equals(LootTables.CHESTS_STRONGHOLD_CORRIDOR) || id.equals(LootTables.CHESTS_STRONGHOLD_CROSSING)
+                    || id.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPATIAL_SIGN_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ENDERS_HAND_GEN_CHANCE.get())
