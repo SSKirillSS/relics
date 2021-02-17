@@ -77,6 +77,26 @@ public class RelicsConfig {
         }
     }
 
+    public static class ElytraBooster {
+        public static ForgeConfigSpec.DoubleValue MOVEMENT_SPEED_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue RAM_DAMAGE_AMOUNT;
+        public static ForgeConfigSpec.DoubleValue RAM_KNOCKBACK_POWER;
+        public static ForgeConfigSpec.DoubleValue BREATH_CONSUMPTION_RADIUS;
+        public static ForgeConfigSpec.IntValue BREATH_CAPACITY;
+        public static ForgeConfigSpec.DoubleValue BREATH_CONSUMPTION_AMOUNT;
+
+        private static void setupElytraBoosterConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("elytra_booster");
+            MOVEMENT_SPEED_MULTIPLIER = builder.defineInRange("movement_speed_multiplier", 1.5, 0, Integer.MAX_VALUE);
+            RAM_DAMAGE_AMOUNT = builder.defineInRange("ram_damage_amount", 5.0, 0, Integer.MAX_VALUE);
+            RAM_KNOCKBACK_POWER = builder.defineInRange("ram_knockback_power", 3.0, 0, Integer.MAX_VALUE);
+            BREATH_CONSUMPTION_RADIUS = builder.defineInRange("breath_consumption_radius", 10.0, 0, Integer.MAX_VALUE);
+            BREATH_CAPACITY = builder.defineInRange("breath_capacity", 1000, 0, Integer.MAX_VALUE);
+            BREATH_CONSUMPTION_AMOUNT = builder.defineInRange("breath_consumption_amount", 0.02, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class EndersHand {
         public static ForgeConfigSpec.IntValue TIME_BEFORE_TELEPORTING;
         public static ForgeConfigSpec.IntValue MAX_TELEPORT_DISTANCE;
@@ -329,6 +349,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue CHORUS_INHIBITOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue DELAY_RING_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue DROWNED_BELT_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue ELYTRA_BOOSTER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue ENDERS_HAND_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue HOLY_LOCKET_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue HUNTER_BELT_GEN_CHANCE;
@@ -353,6 +374,7 @@ public class RelicsConfig {
             CHORUS_INHIBITOR_GEN_CHANCE = builder.defineInRange("chorus_inhibitor_gen_chance", 0.15, 0, 1);
             DELAY_RING_GEN_CHANCE = builder.defineInRange("delay_ring_gen_chance", 0.05, 0, 1);
             DROWNED_BELT_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.2, 0, 1);
+            ELYTRA_BOOSTER_GEN_CHANCE = builder.defineInRange("elytra_booster_gen_chance", 0.15, 0, 1);
             ENDERS_HAND_GEN_CHANCE = builder.defineInRange("enders_hand_gen_chance", 0.3, 0, 1);
             HOLY_LOCKET_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.3, 0, 1);
             HUNTER_BELT_GEN_CHANCE = builder.defineInRange("hunter_belt_gen_chance", 0.2, 0, 1);
@@ -389,6 +411,7 @@ public class RelicsConfig {
         ChorusInhibitor.setupChorusInhibitorConfig(builder);
         DelayRing.setupDelayRingConfig(builder);
         DrownedBelt.setupDrownedBeltConfig(builder);
+        ElytraBooster.setupElytraBoosterConfig(builder);
         EndersHand.setupEndersHandConfig(builder);
         HolyLocket.setupHolyLocketConfig(builder);
         HunterBelt.setupHunterBeltConfig(builder);

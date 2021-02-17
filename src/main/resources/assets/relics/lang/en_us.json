@@ -67,6 +67,11 @@
   "item.relics.drowned_belt": "Drowned Belt",
   "tooltip.relics.drowned_belt.shift_1": "Grants infinity breathing, increases underwater incoming and dealing damage, reduces swimming speed",
 
+  "item.relics.elytra_booster": "Elytra Booster",
+  "tooltip.relics.elytra_booster.tooltip_1": "Charge: %1$s",
+  "tooltip.relics.elytra_booster.shift_1": "Accumulates energy from the nearest dragon breath cloud while holding [Shift] key and uses it to increase elytra flying speed while holding same key",
+  "tooltip.relics.elytra_booster.shift_2": "Grants ability to ram mobs while flying on elytra with activated booster",
+
   "item.relics.enders_hand": "Ender's Hand",
   "tooltip.relics.enders_hand.shift_1": "While holding down the [Shift] key, swaps positions of the player and enderman he is looking at",
 
