@@ -67,6 +67,11 @@
   "item.relics.drowned_belt": "Cinto do Afogado",
   "tooltip.relics.drowned_belt.shift_1": "Concede respiração infinita, aumenta o dano causado e recebido debaixo da água, reduz a velocidade do nado",
 
+  "item.relics.elytra_booster": "Reforço para Élitros",
+  "tooltip.relics.elytra_booster.tooltip_1": "Carga: %1$s",
+  "tooltip.relics.elytra_booster.shift_1": "Acumula energia da nuvem de bafo do dragão mais próxima ao manter a tecla [Shift] pressiona e a usa para aumentar a velocidade de vôo do Élitros enquanto pressiona a mesma tecla",
+  "tooltip.relics.elytra_booster.shift_2": "Concede a capacidade de bater em criaturas enquanto voa em Élitros com reforço ativado",
+
   "item.relics.enders_hand": "Mão de Ender",
   "tooltip.relics.enders_hand.shift_1": "Manter a tecla [Shift] pressionada irá troca as posição do usuario e do enderman para qual ele está olhando",
 
