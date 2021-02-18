@@ -34,6 +34,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -41,7 +42,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -95,27 +95,6 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
     @Override
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing,
                        float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
-        int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
-        IBakedModel model = Minecraft.getInstance().getModelManager().getModel(RL);
-        if (charges > 0) {
-            for (int i = 0; i < charges; i++) {
-                matrixStack.push();
-                matrixStack.scale(2F, -2F, 2F);
-                matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.cos(livingEntity.ticksExisted / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
-                matrixStack.rotate(Vector3f.YP.rotationDegrees((livingEntity.ticksExisted / 10.0F) * (180F / (float) Math.PI) + (i * (360F / charges))));
-                matrixStack.rotate(Vector3f.XP.rotationDegrees((MathHelper.sin(livingEntity.ticksExisted / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
-                matrixStack.translate(-0.5, -0.75, -1);
-                for (Direction dir : DIR) {
-                    Minecraft.getInstance().getItemRenderer().renderQuads(
-                            matrixStack, renderTypeBuffer.getBuffer(Atlases.getCutoutBlockType()),
-                            model.getQuads(null, dir, livingEntity.getEntityWorld().getRandom(), EmptyModelData.INSTANCE),
-                            ItemStack.EMPTY, light, OverlayTexture.NO_OVERLAY);
-                }
-                matrixStack.pop();
-            }
-            GL11.glDisable(GL11.GL_CULL_FACE);
-        }
-
         ICurio.RenderHelper.translateIfSneaking(matrixStack, livingEntity);
         ICurio.RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
         matrixStack.scale(0.35F, 0.35F, 0.35F);
@@ -205,6 +184,62 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
                     x += 8;
                 }
                 Minecraft.getInstance().textureManager.bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerRender(RenderPlayerEvent event) {
+            if (!event.getPlayer().isSpectator() && !event.getPlayer().isInvisible()
+                    && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), event.getPlayer()).isPresent()) {
+                int charges = NBTUtils.getInt(CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(),
+                        event.getPlayer()).get().getRight(), TAG_CHARGE_AMOUNT, 0);
+                PlayerEntity player = event.getPlayer();
+                MatrixStack matrixStack = event.getMatrixStack();
+                IBakedModel model = Minecraft.getInstance().getModelManager().getModel(RL);
+                if (charges > 0) {
+                    for (int i = 0; i < charges; i++) {
+                        matrixStack.push();
+                        matrixStack.scale(2F, 2F, 2F);
+                        float f = player.getSwimAnimation(player.ticksExisted);
+                        if (player.isElytraFlying()) {
+                            matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F - player.rotationYaw));
+                            float f1 = (float)player.getTicksElytraFlying() + player.ticksExisted;
+                            float f2 = MathHelper.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
+                            if (!player.isSpinAttacking()) {
+                                matrixStack.rotate(Vector3f.XP.rotationDegrees(f2 * (-90.0F - player.rotationPitch)));
+                            }
+
+                            Vector3d vector3d = player.getLook(player.ticksExisted);
+                            Vector3d vector3d1 = player.getMotion();
+                            double d0 = Entity.horizontalMag(vector3d1);
+                            double d1 = Entity.horizontalMag(vector3d);
+                            if (d0 > 0.0D && d1 > 0.0D) {
+                                double d2 = (vector3d1.x * vector3d.x + vector3d1.z * vector3d.z) / Math.sqrt(d0 * d1);
+                                double d3 = vector3d1.x * vector3d.z - vector3d1.z * vector3d.x;
+                                matrixStack.rotate(Vector3f.YP.rotation((float)(Math.signum(d3) * Math.acos(d2))));
+                            }
+                        } else if (f > 0.0F) {
+                            float f3 = player.isInWater() ? -90.0F - player.rotationPitch : -90.0F;
+                            float f4 = MathHelper.lerp(f, 0.0F, f3);
+                            matrixStack.rotate(Vector3f.XP.rotationDegrees(f4));
+                            if (player.isActualySwimming()) {
+                                matrixStack.translate(0.0D, -1.0D, (double)0.3F);
+                            }
+                        }
+                        matrixStack.translate(0, 0.75, 0);
+                        matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.cos(player.ticksExisted / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
+                        matrixStack.rotate(Vector3f.YP.rotationDegrees((player.ticksExisted / 10.0F) * (180F / (float) Math.PI) + (i * (360F / charges))));
+                        matrixStack.rotate(Vector3f.XP.rotationDegrees((MathHelper.sin(player.ticksExisted / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
+                        matrixStack.translate(-0.5, -0.75, -1);
+                        for (Direction dir : DIR) {
+                            Minecraft.getInstance().getItemRenderer().renderQuads(
+                                    matrixStack, event.getBuffers().getBuffer(Atlases.getCutoutBlockType()),
+                                    model.getQuads(null, dir, player.getEntityWorld().getRandom(), EmptyModelData.INSTANCE),
+                                    ItemStack.EMPTY, event.getLight(), OverlayTexture.NO_OVERLAY);
+                        }
+                        matrixStack.pop();
+                    }
+                }
             }
         }
     }
