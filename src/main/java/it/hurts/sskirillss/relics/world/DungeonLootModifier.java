@@ -39,6 +39,8 @@ public class DungeonLootModifier extends LootModifier {
             if (id.equals(LootTables.CHESTS_ABANDONED_MINESHAFT)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPATIAL_SIGN_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.FRAGRANT_FLOWER_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.FRAGRANT_FLOWER.get()));
             }
 
             if (id.equals(LootTables.CHESTS_STRONGHOLD_CORRIDOR) || id.equals(LootTables.CHESTS_STRONGHOLD_CROSSING)
@@ -116,6 +118,8 @@ public class DungeonLootModifier extends LootModifier {
             if (id.equals(LootTables.CHESTS_JUNGLE_TEMPLE) || id.equals(LootTables.CHESTS_IGLOO_CHEST)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.CAMOUFLAGE_RING_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.CAMOUFLAGE_RING.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.FRAGRANT_FLOWER_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.FRAGRANT_FLOWER.get()));
             }
         }
 

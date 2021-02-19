@@ -111,6 +111,26 @@ public class RelicsConfig {
         }
     }
 
+    public static class FragrantFlower {
+        public static ForgeConfigSpec.IntValue BEE_LURING_RADIUS;
+        public static ForgeConfigSpec.IntValue BEE_AGGRO_RADIUS;
+        public static ForgeConfigSpec.IntValue NECTAR_CAPACITY;
+        public static ForgeConfigSpec.DoubleValue NECTAR_CONSUMPTION_RADIUS;
+        public static ForgeConfigSpec.IntValue GROW_RADIUS;
+        public static ForgeConfigSpec.IntValue GROW_EFFICIENCY;
+
+        private static void setupFragrantFlowerConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("fragrant_flower");
+            BEE_LURING_RADIUS = builder.defineInRange("bee_luring_radius", 16, 0, Integer.MAX_VALUE);
+            BEE_AGGRO_RADIUS = builder.defineInRange("bee_aggro_radius", 32, 0, Integer.MAX_VALUE);
+            NECTAR_CAPACITY = builder.defineInRange("nectar_capacity", 10, 0, Integer.MAX_VALUE);
+            NECTAR_CONSUMPTION_RADIUS = builder.defineInRange("nectar_consumption_radius", 3.0F, 0, Integer.MAX_VALUE);
+            GROW_RADIUS = builder.defineInRange("grow_radius", 5, 0, Integer.MAX_VALUE);
+            GROW_EFFICIENCY = builder.defineInRange("grow_efficiency", 4, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class HolyLocket {
         public static ForgeConfigSpec.DoubleValue DAMAGE_MULTIPLIER;
         public static ForgeConfigSpec.DoubleValue ARSON_CHANCE;
@@ -351,6 +371,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue DROWNED_BELT_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue ELYTRA_BOOSTER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue ENDERS_HAND_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue FRAGRANT_FLOWER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue HOLY_LOCKET_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue HUNTER_BELT_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue ICE_SKATES_GEN_CHANCE;
@@ -376,6 +397,7 @@ public class RelicsConfig {
             DROWNED_BELT_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.2, 0, 1);
             ELYTRA_BOOSTER_GEN_CHANCE = builder.defineInRange("elytra_booster_gen_chance", 0.15, 0, 1);
             ENDERS_HAND_GEN_CHANCE = builder.defineInRange("enders_hand_gen_chance", 0.3, 0, 1);
+            FRAGRANT_FLOWER_GEN_CHANCE = builder.defineInRange("fragrant_flower_gen_chance", 0.2, 0, 1);
             HOLY_LOCKET_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.3, 0, 1);
             HUNTER_BELT_GEN_CHANCE = builder.defineInRange("hunter_belt_gen_chance", 0.2, 0, 1);
             ICE_SKATES_GEN_CHANCE = builder.defineInRange("ice_skates_gen_chance", 0.2, 0, 1);
@@ -413,6 +435,7 @@ public class RelicsConfig {
         DrownedBelt.setupDrownedBeltConfig(builder);
         ElytraBooster.setupElytraBoosterConfig(builder);
         EndersHand.setupEndersHandConfig(builder);
+        FragrantFlower.setupFragrantFlowerConfig(builder);
         HolyLocket.setupHolyLocketConfig(builder);
         HunterBelt.setupHunterBeltConfig(builder);
         IceSkates.setupIceSkatesConfig(builder);
