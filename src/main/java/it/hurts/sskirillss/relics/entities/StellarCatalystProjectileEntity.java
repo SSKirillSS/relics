@@ -7,7 +7,6 @@ import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -39,15 +38,13 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
         super(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), throwerIn, target.getEntityWorld());
         this.damage = damage;
         this.thrower = throwerIn.getUniqueID();
-        this.setNoGravity(true);
-        this.setPosition(target.getPosX(), Math.min(world.getHeight(), target.getPosY() + world.getRandom().nextInt(10) + 20), target.getPosZ());
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        this.setMotion(0.0F,-0.5F,0.0F);
+        this.setMotion(0.0F, -0.5F, 0.0F);
         liveTime++;
         if (liveTime > 10 * 20) this.setDead();
 
@@ -66,22 +63,25 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     protected void onImpact(RayTraceResult result) {
         ParticleUtils.createBall(new CircleTintData(new Color(0.4F, 0.05F, 0.7F), 0.5F, 40, 0.94F, true),
                 this.getPositionVec(), this.getEntityWorld(), 3, 0.2F);
-
-        for (LivingEntity entity : this.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
-                this.getBoundingBox().grow(RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_RADIUS.get()))) {
-            double distance = entity.getPositionVec().distanceTo(this.getPositionVec());
-            if (thrower != null && world.getPlayerByUuid(thrower) != null && entity != world.getPlayerByUuid(thrower)) {
-                entity.attackEntityFrom(DamageSource.causePlayerDamage(world.getPlayerByUuid(thrower)), (float) (damage / (distance * 0.25D)));
-                Vector3d motion = entity.getPositionVec().subtract(this.getPositionVec()).normalize()
-                        .mul(distance * 0.25D, distance * 0.25D, distance * 0.25D);
-                if (entity instanceof PlayerEntity) {
+        if (!world.isRemote()) {
+            for (LivingEntity entity : this.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
+                    this.getBoundingBox().grow(RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_RADIUS.get()))) {
+                Vector3d motion = entity.getPositionVec().subtract(this.getPositionVec()).normalize();
+                if (entity instanceof ServerPlayerEntity) {
                     NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) entity);
                 } else {
                     entity.setMotion(motion);
                 }
+                if (thrower != null) {
+                    if (world.getPlayerByUuid(thrower) != null && entity != world.getPlayerByUuid(thrower)) {
+                        entity.attackEntityFrom(DamageSource.causePlayerDamage(world.getPlayerByUuid(thrower)), damage);
+                    }
+                } else {
+                    entity.attackEntityFrom(DamageSource.GENERIC, (float) (RelicsConfig.StellarCatalyst.MIN_DAMAGE_AMOUNT.get()
+                            * RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_MULTIPLIER.get()));
+                }
             }
         }
-
         this.setDead();
     }
 
@@ -89,14 +89,14 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     protected void writeAdditional(@Nonnull CompoundNBT compound) {
         compound.putInt(TAG_LIVE_TIME, liveTime);
         compound.putFloat(TAG_DAMAGE_AMOUNT, damage);
-        compound.putUniqueId(TAG_THROWER, thrower);
+        if (thrower != null) compound.putUniqueId(TAG_THROWER, thrower);
     }
 
     @Override
     protected void readAdditional(@Nonnull CompoundNBT compound) {
         liveTime = compound.getInt(TAG_LIVE_TIME);
         damage = compound.getFloat(TAG_DAMAGE_AMOUNT);
-        thrower = compound.getUniqueId(TAG_THROWER);
+        if (thrower != null) thrower = compound.getUniqueId(TAG_THROWER);
     }
 
     @Override

@@ -60,6 +60,8 @@ public class StellarCatalystItem extends Item implements ICurioItem, IHasTooltip
                             && random.nextFloat() <= RelicsConfig.StellarCatalyst.FALLING_STAR_SUMMON_CHANCE.get()) {
                         StellarCatalystProjectileEntity projectile = new StellarCatalystProjectileEntity((LivingEntity) event.getSource().getTrueSource(),
                                 event.getEntityLiving(), event.getAmount() * RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_MULTIPLIER.get().floatValue());
+                        projectile.setPosition(target.getPosX(), Math.min(target.getEntityWorld().getHeight(),
+                                target.getPosY() + target.getEntityWorld().getRandom().nextInt(10) + 20), target.getPosZ());
                         projectile.getEntityWorld().addEntity(projectile);
                     }
                 }
