@@ -19,13 +19,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -67,8 +66,7 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        BlockPos pos = WorldUtils.getSolidBlockUnderFeet(livingEntity.getEntityWorld(), livingEntity.getPosition());
-        if (pos != null && livingEntity.getEntityWorld().getBlockState(pos).isIn(BlockTags.SAND)) {
+        if (livingEntity.getEntityWorld().getBiome(livingEntity.getPosition()).getCategory() == Biome.Category.DESERT) {
             if (!movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
                 movementSpeed.applyNonPersistentModifier(SCARAB_TALISMAN_SPEED_BOOST);
                 livingEntity.stepHeight = Math.max(livingEntity.stepHeight,
