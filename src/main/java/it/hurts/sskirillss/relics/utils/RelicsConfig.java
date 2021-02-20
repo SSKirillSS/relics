@@ -129,7 +129,7 @@ public class RelicsConfig {
             NECTAR_CAPACITY = builder.defineInRange("nectar_capacity", 10, 0, Integer.MAX_VALUE);
             NECTAR_CONSUMPTION_RADIUS = builder.defineInRange("nectar_consumption_radius", 3.0F, 0, Integer.MAX_VALUE);
             EFFECT_RADIUS = builder.defineInRange("effect_radius", 5, 0, Integer.MAX_VALUE);
-            GROW_EFFICIENCY = builder.defineInRange("grow_efficiency", 4, 0, Integer.MAX_VALUE);
+            GROW_EFFICIENCY = builder.defineInRange("grow_efficiency", 2, 0, Integer.MAX_VALUE);
             HEAL_AMOUNT = builder.defineInRange("heal_amount", 10.0, 0, Integer.MAX_VALUE);
             builder.pop();
         }

@@ -6,7 +6,8 @@ import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.CropsBlock;
+import net.minecraft.block.GrassBlock;
+import net.minecraft.block.IGrowable;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.BeeEntity;
@@ -24,6 +25,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -121,14 +123,19 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
                                     player.getPositionVec(), player.getEntityWorld(), 2, 0.3F);
                             for (BlockPos pos : sphere) {
                                 BlockState state = player.getEntityWorld().getBlockState(pos);
-                                if (state.getBlock() instanceof CropsBlock) {
-                                    CropsBlock plant = (CropsBlock) state.getBlock();
-                                    if (plant.canGrow(player.getEntityWorld(), pos, state, player.getEntityWorld().isRemote)
-                                            && plant.canUseBonemeal(player.getEntityWorld(), player.getEntityWorld().rand, pos, state)) {
-                                        player.getEntityWorld().setBlockState(pos, plant.withAge(Math.min(plant.getMaxAge(),
-                                                state.get(plant.getAgeProperty()) + RelicsConfig.FragrantFlower.GROW_EFFICIENCY.get())));
-                                        BoneMealItem.spawnBonemealParticles(player.getEntityWorld(), pos, 0);
+                                if (state.getBlock() instanceof IGrowable && !(state.getBlock() instanceof GrassBlock)) {
+                                    IGrowable plant = (IGrowable) state.getBlock();
+                                    if (!player.getEntityWorld().isRemote()) {
+                                        for (int i = 0; i < RelicsConfig.FragrantFlower.GROW_EFFICIENCY.get(); i++) {
+                                            state = player.getEntityWorld().getBlockState(pos);
+                                            if (plant.canGrow(player.getEntityWorld(), pos, state, player.getEntityWorld().isRemote)
+                                                    && plant.canUseBonemeal(player.getEntityWorld(), player.getEntityWorld().rand, pos, state)) {
+                                                plant.grow((ServerWorld) player.getEntityWorld(),
+                                                        player.getEntityWorld().getRandom(), pos, state);
+                                            }
+                                        }
                                     }
+                                    BoneMealItem.spawnBonemealParticles(player.getEntityWorld(), pos, 0);
                                 }
                             }
                             for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
