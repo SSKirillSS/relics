@@ -15,6 +15,7 @@ import net.minecraft.item.BoneMealItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.TickRangeConverter;
@@ -86,7 +87,7 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
             }
             if (player.isSneaking()) {
                 if (!player.getCooldownTracker().hasCooldown(stack.getItem()) && nectar > 0) {
-                    float radius = RelicsConfig.FragrantFlower.GROW_RADIUS.get();
+                    float radius = RelicsConfig.FragrantFlower.EFFECT_RADIUS.get();
                     double extraY = player.getPosY() + 0.5F;
                     for (int i = 0; i < 5; i++) {
                         float angle = (0.01F * (player.ticksExisted * 3 + i * 125));
@@ -128,6 +129,15 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
                                                 state.get(plant.getAgeProperty()) + RelicsConfig.FragrantFlower.GROW_EFFICIENCY.get())));
                                         BoneMealItem.spawnBonemealParticles(player.getEntityWorld(), pos, 0);
                                     }
+                                }
+                            }
+                            for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
+                                    player.getBoundingBox().grow(radius))) {
+                                if (entity.isEntityUndead()) {
+                                    entity.attackEntityFrom(DamageSource.causePlayerDamage(player),
+                                            RelicsConfig.FragrantFlower.HEAL_AMOUNT.get().floatValue());
+                                } else {
+                                    entity.heal(RelicsConfig.FragrantFlower.HEAL_AMOUNT.get().floatValue());
                                 }
                             }
                         }

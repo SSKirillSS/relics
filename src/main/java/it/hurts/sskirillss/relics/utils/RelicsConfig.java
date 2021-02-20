@@ -116,8 +116,9 @@ public class RelicsConfig {
         public static ForgeConfigSpec.IntValue BEE_AGGRO_RADIUS;
         public static ForgeConfigSpec.IntValue NECTAR_CAPACITY;
         public static ForgeConfigSpec.DoubleValue NECTAR_CONSUMPTION_RADIUS;
-        public static ForgeConfigSpec.IntValue GROW_RADIUS;
+        public static ForgeConfigSpec.IntValue EFFECT_RADIUS;
         public static ForgeConfigSpec.IntValue GROW_EFFICIENCY;
+        public static ForgeConfigSpec.DoubleValue HEAL_AMOUNT;
 
         private static void setupFragrantFlowerConfig(ForgeConfigSpec.Builder builder) {
             builder.push("fragrant_flower");
@@ -125,8 +126,9 @@ public class RelicsConfig {
             BEE_AGGRO_RADIUS = builder.defineInRange("bee_aggro_radius", 32, 0, Integer.MAX_VALUE);
             NECTAR_CAPACITY = builder.defineInRange("nectar_capacity", 10, 0, Integer.MAX_VALUE);
             NECTAR_CONSUMPTION_RADIUS = builder.defineInRange("nectar_consumption_radius", 3.0F, 0, Integer.MAX_VALUE);
-            GROW_RADIUS = builder.defineInRange("grow_radius", 5, 0, Integer.MAX_VALUE);
+            EFFECT_RADIUS = builder.defineInRange("effect_radius", 5, 0, Integer.MAX_VALUE);
             GROW_EFFICIENCY = builder.defineInRange("grow_efficiency", 4, 0, Integer.MAX_VALUE);
+            HEAL_AMOUNT = builder.defineInRange("heal_amount", 10.0, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }
