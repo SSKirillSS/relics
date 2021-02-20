@@ -30,28 +30,28 @@
   "item.relics.flaming_amber_dust": "Pó de Âmbar Flamejante",
   "item.relics.chalk": "Giz",
 
-  "item.relics.spatial_sign": "Signo Espacial",
-  "tooltip.relics.spatial_sign.tooltip_1": "Destino armazenado: %1$s",
-  "tooltip.relics.spatial_sign.tooltip_2": "Tempo restante: %1$s",
-  "tooltip.relics.spatial_sign.shift_1": "Teleporta para a posição armazenada algum tempo após a ativação",
-  "tooltip.relics.spatial_sign.shift_2": "Receber dano fatal com signo ativado no inventário salvará sua vida e se teletransportará para uma posição armazenada, destruindo a relíquia",
+  "item.relics.spatial_sign": "Selo Espacial",
+  "tooltip.relics.spatial_sign.tooltip_1": "Posição: %1$s",
+  "tooltip.relics.spatial_sign.tooltip_2": "Tempo: %1$s",
+  "tooltip.relics.spatial_sign.shift_1": "Teleporta para a posição memorizada certo tempo após a ativação",
+  "tooltip.relics.spatial_sign.shift_2": "Receber dano fatal com o 'Selo Espacial' ativado no inventário salva a vida do usuário e o teletransporta para a posição memorizada, destruindo a relíquia.",
 
-  "item.relics.reflection_necklace": "Colar da Reflexão",
-  "tooltip.relics.reflection_necklace.shift_1": "Acumula cargas lentamente para refletir totalmente os projéteis e os danos recebidos",
+  "item.relics.reflection_necklace": "Colar Reflexivo",
+  "tooltip.relics.reflection_necklace.shift_1": "Acumula cargas lentamente para refletir projéteis e danos recebidos",
 
   "item.relics.space_dissector": "Divisor Espaçial",
   "tooltip.relics.space_dissector.shift_1": "Lança um disco que ricocheteia nas superfícies e causa dano a todos em seu caminho",
   "tooltip.relics.space_dissector.shift_2": "O dano causado e o tempo até que o disco retorne automaticamente ao dono depende do número vezes que ele ricocheteou",
-  "tooltip.relics.space_dissector.shift_3": "Usar o disco enquanto mantém pressionada a tecla [Shift] teletransporta o usuario para a posição atual do disco",
+  "tooltip.relics.space_dissector.shift_3": "Usar o disco enquanto mantém a tecla [Shift] pressionada teletransporta o usuario para a posição atual do disco",
 
   "item.relics.soul_devourer": "Devorador de Almas",
-  "tooltip.relics.soul_devourer.tooltip_1": "Almas Acumuladas: %1$s",
-  "tooltip.relics.soul_devourer.shift_1": "Acumula almas de criaturas derrotadas, aumentando proporcionalmente o dano causado",
-  "tooltip.relics.soul_devourer.shift_2": "Manter a tecla [Shift] pressionada irá liberar todas as almas acumuladas, causando dano e derrubando todos ao redor",
+  "tooltip.relics.soul_devourer.tooltip_1": "Almas: %1$s",
+  "tooltip.relics.soul_devourer.shift_1": "Absorve almas de criaturas derrotadas, aumentando proporcionalmente o dano causado",
+  "tooltip.relics.soul_devourer.shift_2": "Manter a tecla [Shift] pressionada irá liberar todas as almas absorvidas, causando dano e epurrando todos ao redor",
 
   "item.relics.magma_walker": "Botas de Lava",
-  "tooltip.relics.magma_walker.shift_1": "Condensa a lava sob os pés, transformando-a temporariamente em uma Pedra de Magma.",
-  "tooltip.relics.magma_walker.shift_2": "Remove totalmente os danos causados por blocos quentes",
+  "tooltip.relics.magma_walker.shift_1": "Solidifica a lava sob os pés, transformando-a temporariamente em uma Pedra de Magma.",
+  "tooltip.relics.magma_walker.shift_2": "Remove totalmente o dano causado por blocos quentes",
 
   "item.relics.midnight_robe": "Manto da Meia-Noite",
   "tooltip.relics.midnight_robe.shift_1": "Concede invisibilidade temporária e aumento da velocidade de movimento durante a noite se a saúde do usuário estiver baixa.",
@@ -59,7 +59,7 @@
 
   "item.relics.scarab_talisman": "Talismã de Escaravelho",
   "tooltip.relics.scarab_talisman.shift_1": "Aumenta a velocidade de movimento e a altura do passo enquanto estiver na areia",
-  "tooltip.relics.scarab_talisman.shift_2": "Aumenta a velocidade de quebra de areia e remove totalmente os danos causados por sufocamento em blocos",
+  "tooltip.relics.scarab_talisman.shift_2": "Aumenta a velocidade de quebra de areia e remove totalmente o dano causado por sufocamento em blocos",
 
   "item.relics.stellar_catalyst": "Catalisador Estelar",
   "tooltip.relics.stellar_catalyst.shift_1": "Concede chance de invocar uma estrela cadente enquanto ataca uma criatura",
@@ -74,6 +74,11 @@
 
   "item.relics.enders_hand": "Mão de Ender",
   "tooltip.relics.enders_hand.shift_1": "Manter a tecla [Shift] pressionada irá troca as posição do usuario e do enderman para qual ele está olhando",
+
+  "item.relics.fragrant_flower": "Flor  Perfumada",
+  "tooltip.relics.fragrant_flower.tooltip_1": "Néctar: %1$s",
+  "tooltip.relics.fragrant_flower.shift_1": "Força as abelhas a lutar ao lado do portador da relíquia e as tornam amigáveis para o jogador",
+  "tooltip.relics.fragrant_flower.shift_2": "As abelhas ao redor também coletarão néctar para esta relíquia, que pode então ser liberado mantendo pressionada a tecla [Shift] para fazer as plantações ao redor crescerem",
 
   "item.relics.holy_locket": "Medalhão Sagrado",
   "tooltip.relics.holy_locket.shift_1": "Aumenta o dano causado aos mortos-vivos e também concede a capacidade de incendiá-los ao atacar",
@@ -113,7 +118,7 @@
   "tooltip.relics.arrow_quiver.shift_1": "Adiciona chance de atirar várias flechas",
 
   "item.relics.lucky_horseshoe": "Ferradura da Sorte",
-  "tooltip.relics.lucky_horseshoe.shift_1": "Com uma chance aleatória de aumentar o Saque e a Fortuna do jogador.",
+  "tooltip.relics.lucky_horseshoe.shift_1": "Tem a chance aleatória de aumentar o Saque e a Fortuna do jogador.",
 
   "block.relics.magma_stone": "Pedra de Magma"
 }
