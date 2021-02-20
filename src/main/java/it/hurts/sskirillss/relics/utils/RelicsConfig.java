@@ -114,6 +114,7 @@ public class RelicsConfig {
     public static class FragrantFlower {
         public static ForgeConfigSpec.IntValue BEE_LURING_RADIUS;
         public static ForgeConfigSpec.IntValue BEE_AGGRO_RADIUS;
+        public static ForgeConfigSpec.DoubleValue BEE_DAMAGE_MULTIPLIER;
         public static ForgeConfigSpec.IntValue NECTAR_CAPACITY;
         public static ForgeConfigSpec.DoubleValue NECTAR_CONSUMPTION_RADIUS;
         public static ForgeConfigSpec.IntValue EFFECT_RADIUS;
@@ -124,6 +125,7 @@ public class RelicsConfig {
             builder.push("fragrant_flower");
             BEE_LURING_RADIUS = builder.defineInRange("bee_luring_radius", 16, 0, Integer.MAX_VALUE);
             BEE_AGGRO_RADIUS = builder.defineInRange("bee_aggro_radius", 32, 0, Integer.MAX_VALUE);
+            BEE_DAMAGE_MULTIPLIER = builder.defineInRange("bee_damage_multiplier", 3.0, 0, Integer.MAX_VALUE);
             NECTAR_CAPACITY = builder.defineInRange("nectar_capacity", 10, 0, Integer.MAX_VALUE);
             NECTAR_CONSUMPTION_RADIUS = builder.defineInRange("nectar_consumption_radius", 3.0F, 0, Integer.MAX_VALUE);
             EFFECT_RADIUS = builder.defineInRange("effect_radius", 5, 0, Integer.MAX_VALUE);

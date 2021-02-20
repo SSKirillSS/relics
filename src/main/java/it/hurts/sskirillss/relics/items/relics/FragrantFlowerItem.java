@@ -169,6 +169,16 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
                     }
                 }
             }
+            if (event.getSource().getTrueSource() instanceof BeeEntity) {
+                BeeEntity bee = (BeeEntity) event.getSource().getTrueSource();
+                for (PlayerEntity player : bee.getEntityWorld().getEntitiesWithinAABB(PlayerEntity.class, bee.getBoundingBox()
+                        .grow(RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(),
+                                RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get()))) {
+                    if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.FRAGRANT_FLOWER.get(), player).isPresent()) {
+                        event.setAmount(event.getAmount() * RelicsConfig.FragrantFlower.BEE_DAMAGE_MULTIPLIER.get().floatValue());
+                    }
+                }
+            }
         }
     }
 }
