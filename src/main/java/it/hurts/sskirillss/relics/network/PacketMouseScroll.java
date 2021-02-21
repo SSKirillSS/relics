@@ -32,8 +32,6 @@ public class PacketMouseScroll {
                 double delta = this.delta;
                 ItemStack stack = this.stack;
                 PlayerEntity player = ctx.get().getSender();
-
-                player.getHeldItemMainhand().grow((int) Math.round(delta));
             }
         });
         return true;

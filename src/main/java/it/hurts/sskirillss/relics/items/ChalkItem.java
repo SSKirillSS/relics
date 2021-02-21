@@ -7,8 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 
-import java.util.UUID;
-
 public class ChalkItem extends Item {
     public ChalkItem() {
         super(new Item.Properties()
@@ -19,7 +17,6 @@ public class ChalkItem extends Item {
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
-        System.out.println(UUID.randomUUID());
         if (context.getWorld().getBlockState(context.getPos()).isSolid()
                 && context.getWorld().getBlockState(context.getPos().up()).getBlock() == Blocks.AIR) {
             context.getWorld().setBlockState(context.getPos().up(), BlockRegistry.CHALK_BLOCK.get().getDefaultState());

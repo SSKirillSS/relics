@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics;
 
 import it.hurts.sskirillss.relics.init.BlockRegistry;
-import it.hurts.sskirillss.relics.init.ClientRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
