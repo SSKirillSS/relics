@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
-import java.util.Random;
 
 public class LuckyHorseshoeItem extends Item implements ICurioItem, IHasTooltip {
     public LuckyHorseshoeItem() {
@@ -42,11 +41,13 @@ public class LuckyHorseshoeItem extends Item implements ICurioItem, IHasTooltip 
 
     @Override
     public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return new Random().nextFloat() <= RelicsConfig.LuckyHorseshoe.LOOTING_CHANCE.get() ? RelicsConfig.LuckyHorseshoe.ADDITIONAL_LOOTING.get() : 0;
+        return livingEntity.getEntityWorld().getRandom().nextFloat() <= RelicsConfig.LuckyHorseshoe.LOOTING_CHANCE.get()
+                ? RelicsConfig.LuckyHorseshoe.ADDITIONAL_LOOTING.get() : 0;
     }
 
     @Override
     public int getFortuneBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return new Random().nextFloat() <= RelicsConfig.LuckyHorseshoe.FORTUNA_CHANCE.get() ? RelicsConfig.LuckyHorseshoe.ADDITIONAL_FORTUNE.get() : 0;
+        return livingEntity.getEntityWorld().getRandom().nextFloat() <= RelicsConfig.LuckyHorseshoe.FORTUNA_CHANCE.get()
+                ? RelicsConfig.LuckyHorseshoe.ADDITIONAL_FORTUNE.get() : 0;
     }
 }

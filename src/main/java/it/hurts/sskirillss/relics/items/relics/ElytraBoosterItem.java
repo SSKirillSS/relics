@@ -63,9 +63,10 @@ public class ElytraBoosterItem extends Item implements ICurioItem, IHasTooltip {
                             look.y * 0.1D + (look.y * RelicsConfig.ElytraBooster.MOVEMENT_SPEED_MULTIPLIER.get() - motion.y) * 0.5D,
                             look.z * 0.1D + (look.z * RelicsConfig.ElytraBooster.MOVEMENT_SPEED_MULTIPLIER.get() - motion.z) * 0.5D));
                     player.getEntityWorld().addParticle(ParticleTypes.DRAGON_BREATH,
-                            player.getPosX() + (MathUtils.generateReallyRandomFloat() * 0.5F),
-                            player.getPosY() + (MathUtils.generateReallyRandomFloat() * 0.5F),
-                            player.getPosZ() + (MathUtils.generateReallyRandomFloat() * 0.5F), 0, 0, 0);
+                            player.getPosX() + (MathUtils.generateReallyRandomFloat(player.getEntityWorld().getRandom()) * 0.5F),
+                            player.getPosY() + (MathUtils.generateReallyRandomFloat(player.getEntityWorld().getRandom()) * 0.5F),
+                            player.getPosZ() + (MathUtils.generateReallyRandomFloat(player.getEntityWorld().getRandom()) * 0.5F),
+                            0, 0, 0);
                     if (player.ticksExisted % 20 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath - 1);
                     for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, player.getBoundingBox().grow(2.0F))) {
                         if (!entity.getUniqueID().equals(player.getUniqueID())) {
