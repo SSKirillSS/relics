@@ -217,6 +217,16 @@ public class RelicsConfig {
         }
     }
 
+    public static class MagicMirror {
+        public static ForgeConfigSpec.IntValue USAGE_COOLDOWN;
+
+        private static void setupMagicMirrorConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("magic_mirror");
+            USAGE_COOLDOWN = builder.defineInRange("usage_cooldown", 60, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class MidnightRobe {
         public static ForgeConfigSpec.DoubleValue MOVEMENT_SPEED_MULTIPLIER;
         public static ForgeConfigSpec.DoubleValue HEALTH_PERCENTAGE;
@@ -381,6 +391,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue ICE_SKATES_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue JELLYFISH_NECKLACE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue LUCKY_HORSESHOE_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue MAGIC_MIRROR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue MAGMA_WALKER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue MIDNIGHT_ROBE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue RAGE_GLOVE_GEN_CHANCE;
@@ -407,6 +418,7 @@ public class RelicsConfig {
             ICE_SKATES_GEN_CHANCE = builder.defineInRange("ice_skates_gen_chance", 0.2, 0, 1);
             JELLYFISH_NECKLACE_GEN_CHANCE = builder.defineInRange("jellyfish_necklace_gen_chance", 0.2, 0, 1);
             LUCKY_HORSESHOE_GEN_CHANCE = builder.defineInRange("lucky_horseshoe_gen_chance", 0.15, 0, 1);
+            MAGIC_MIRROR_GEN_CHANCE = builder.defineInRange("magic_mirror_gen_chance", 0.15, 0, 1);
             MAGMA_WALKER_GEN_CHANCE = builder.defineInRange("magma_walker_gen_chance", 0.12, 0, 1);
             MIDNIGHT_ROBE_GEN_CHANCE = builder.defineInRange("midnight_robe_gen_chance", 0.15, 0, 1);
             RAGE_GLOVE_GEN_CHANCE = builder.defineInRange("rage_glove_gen_chance", 0.05, 0, 1);
@@ -445,6 +457,7 @@ public class RelicsConfig {
         IceSkates.setupIceSkatesConfig(builder);
         JellyfishNecklace.setupJellyfishNecklaceConfig(builder);
         LuckyHorseshoe.setupLuckyHorseshoeConfig(builder);
+        MagicMirror.setupMagicMirrorConfig(builder);
         MidnightRobe.setupMidnightRobeConfig(builder);
         RageGlove.setupRageGloveConfig(builder);
         ReflectionNecklace.setupReflectionNecklaceConfig(builder);

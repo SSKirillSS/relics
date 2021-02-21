@@ -41,6 +41,8 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.FRAGRANT_FLOWER_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.FRAGRANT_FLOWER.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.MAGIC_MIRROR_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.MAGIC_MIRROR.get()));
             }
 
             if (id.equals(LootTables.CHESTS_STRONGHOLD_CORRIDOR) || id.equals(LootTables.CHESTS_STRONGHOLD_CROSSING)
@@ -49,6 +51,8 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ENDERS_HAND_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.ENDERS_HAND.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.MAGIC_MIRROR_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.MAGIC_MIRROR.get()));
             }
 
             if (id.equals(LootTables.BASTION_BRIDGE) || id.equals(LootTables.BASTION_OTHER)

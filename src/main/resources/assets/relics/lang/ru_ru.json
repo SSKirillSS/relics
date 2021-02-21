@@ -120,5 +120,9 @@
   "item.relics.lucky_horseshoe": "Счастливая подкова",
   "tooltip.relics.lucky_horseshoe.shift_1": "Со случайным шансом увеличивает уровень удачи и добычи носителя",
 
+  "item.relics.magic_mirror": "Магическое зеркало",
+  "tooltip.relics.magic_mirror.shift_1": "Телепортирует к последней установленной точке возрождения",
+  "tooltip.relics.magic_mirror.invalid_location": "Точка возрождения не определена",
+
   "block.relics.magma_stone": "Магмовый камень"
 }

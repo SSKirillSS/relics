@@ -120,5 +120,9 @@
   "item.relics.lucky_horseshoe": "Lucky Horseshoe",
   "tooltip.relics.lucky_horseshoe.shift_1": "With a random chance increases player's looting and fortune",
 
+  "item.relics.magic_mirror": "Magic Mirror",
+  "tooltip.relics.magic_mirror.shift_1": "Teleports to latest known respawn position",
+  "tooltip.relics.magic_mirror.invalid_location": "Unknown respawn position",
+
   "block.relics.magma_stone": "Magma Stone"
 }
