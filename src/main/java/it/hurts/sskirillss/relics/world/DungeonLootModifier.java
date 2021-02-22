@@ -68,6 +68,13 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.MAGMA_WALKER.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.RAGE_GLOVE_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.RAGE_GLOVE.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.BASTION_RING_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.BASTION_RING.get()));
+            }
+
+            if (id.equals(LootTables.RUINED_PORTAL)) {
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.MAGMA_WALKER_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.MAGMA_WALKER.get()));
             }
 
             if (id.equals(LootTables.CHESTS_END_CITY_TREASURE)) {
@@ -114,12 +121,13 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.LUCKY_HORSESHOE.get()));
             }
 
-            if (id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SNOWY_HOUSE) || id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_TAIGA_HOUSE)) {
+            if (id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SNOWY_HOUSE) || id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_TAIGA_HOUSE)
+                    || id.equals(LootTables.CHESTS_IGLOO_CHEST)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ICE_SKATES_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.ICE_SKATES.get()));
             }
 
-            if (id.equals(LootTables.CHESTS_JUNGLE_TEMPLE) || id.equals(LootTables.CHESTS_IGLOO_CHEST)) {
+            if (id.equals(LootTables.CHESTS_JUNGLE_TEMPLE)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.CAMOUFLAGE_RING_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.CAMOUFLAGE_RING.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.FRAGRANT_FLOWER_GEN_CHANCE.get())
