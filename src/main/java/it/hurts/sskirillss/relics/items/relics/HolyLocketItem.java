@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -52,8 +53,9 @@ public class HolyLocketItem extends Item implements IHasTooltip {
                 LivingEntity entity = event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HOLY_LOCKET.get(), player).isPresent()
                         && entity.isEntityUndead()) {
-                    if (player.getEntityWorld().rand.nextFloat() <= 0.25F) entity.setFire(4);
-                    event.setAmount(event.getAmount() * 1.5F);
+                    if (player.getEntityWorld().rand.nextFloat() <= RelicsConfig.HolyLocket.ARSON_CHANCE.get())
+                        entity.setFire(RelicsConfig.HolyLocket.BURN_DURATION.get());
+                    event.setAmount(event.getAmount() * RelicsConfig.HolyLocket.DAMAGE_MULTIPLIER.get().floatValue());
                 }
             }
         }
