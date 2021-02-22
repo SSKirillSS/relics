@@ -34,7 +34,7 @@
   "tooltip.relics.spatial_sign.tooltip_1": "Posição: %1$s",
   "tooltip.relics.spatial_sign.tooltip_2": "Tempo: %1$s",
   "tooltip.relics.spatial_sign.shift_1": "Teleporta para a posição memorizada certo tempo após a ativação",
-  "tooltip.relics.spatial_sign.shift_2": "Receber dano fatal com o 'Selo Espacial' ativado no inventário salva a vida do usuário e o teletransporta para a posição memorizada, destruindo a relíquia.",
+  "tooltip.relics.spatial_sign.shift_2": "Receber dano fatal com o 'Selo Espacial' ativado no inventário salvará a vida do usuário e o teletransportará para a posição memorizada, destruindo a relíquia.",
 
   "item.relics.reflection_necklace": "Colar Reflexivo",
   "tooltip.relics.reflection_necklace.shift_1": "Acumula cargas lentamente para refletir projéteis e danos recebidos",
@@ -47,30 +47,30 @@
   "item.relics.soul_devourer": "Devorador de Almas",
   "tooltip.relics.soul_devourer.tooltip_1": "Almas: %1$s",
   "tooltip.relics.soul_devourer.shift_1": "Absorve almas de criaturas derrotadas, aumentando proporcionalmente o dano causado",
-  "tooltip.relics.soul_devourer.shift_2": "Manter a tecla [Shift] pressionada irá liberar todas as almas absorvidas, causando dano e epurrando todos ao redor",
+  "tooltip.relics.soul_devourer.shift_2": "Manter a tecla [Shift] pressionada irá liberar todas as almas absorvidas, causando dano e derrubando todos ao redor",
 
   "item.relics.magma_walker": "Botas de Lava",
   "tooltip.relics.magma_walker.shift_1": "Solidifica a lava sob os pés, transformando-a temporariamente em uma Pedra de Magma.",
-  "tooltip.relics.magma_walker.shift_2": "Remove totalmente o dano causado por blocos quentes",
+  "tooltip.relics.magma_walker.shift_2": "Oferece imunidade a blocos quentes",
 
   "item.relics.midnight_robe": "Manto da Meia-Noite",
-  "tooltip.relics.midnight_robe.shift_1": "Concede invisibilidade temporária e aumento da velocidade de movimento durante a noite se a saúde do usuário estiver baixa.",
-  "tooltip.relics.midnight_robe.shift_2": "Ataques furtivos causarão dano duplo, mas removerão temporariamente os efeitos de invisibilidade e de aumento da velocidade de movimento",
+  "tooltip.relics.midnight_robe.shift_1": "Durnte a noite oferece invisibilidade e aumento da velocidade de movimento se a saúde do usuário cair a um nível baixo o suficiente.",
+  "tooltip.relics.midnight_robe.shift_2": "Ataque furtivo causa o dobro de dano, mas desativa temporariamente os efeitos de invisibilidade e de aumento da velocidade de movimento",
 
   "item.relics.scarab_talisman": "Talismã de Escaravelho",
-  "tooltip.relics.scarab_talisman.shift_1": "Aumenta a velocidade de movimento e a altura do passo enquanto estiver na areia",
-  "tooltip.relics.scarab_talisman.shift_2": "Aumenta a velocidade de quebra de areia e remove totalmente o dano causado por sufocamento em blocos",
+  "tooltip.relics.scarab_talisman.shift_1": "Oferece aumento da velocidade de movimento e da altura do passo enquanto estiver em bionas de Deserto",
+  "tooltip.relics.scarab_talisman.shift_2": "Oferece aumento da velocidade de quebra da areia e remove totalmente o dano causado por sufocamento em blocos",
 
   "item.relics.stellar_catalyst": "Catalisador Estelar",
-  "tooltip.relics.stellar_catalyst.shift_1": "Concede chance de invocar uma estrela cadente enquanto ataca uma criatura",
+  "tooltip.relics.stellar_catalyst.shift_1": "Oferece a chance de invocar uma estrela cadente ao atacar",
 
   "item.relics.drowned_belt": "Cinto do Afogado",
-  "tooltip.relics.drowned_belt.shift_1": "Concede respiração infinita, aumenta o dano causado e recebido debaixo da água, reduz a velocidade do nado",
+  "tooltip.relics.drowned_belt.shift_1": "Oferece respiração infinita, aumenta o dano causado e recebido debaixo da água, reduz a velocidade do nado",
 
   "item.relics.elytra_booster": "Reforço para Élitros",
   "tooltip.relics.elytra_booster.tooltip_1": "Carga: %1$s",
   "tooltip.relics.elytra_booster.shift_1": "Acumula energia da nuvem de bafo do dragão mais próxima ao manter a tecla [Shift] pressiona e a usa para aumentar a velocidade de vôo do Élitros enquanto pressiona a mesma tecla",
-  "tooltip.relics.elytra_booster.shift_2": "Concede a capacidade de bater em criaturas enquanto voa em Élitros com reforço ativado",
+  "tooltip.relics.elytra_booster.shift_2": "Oferece a capacidade de bater em criaturas enquanto voa em Élitros com reforço ativado",
 
   "item.relics.enders_hand": "Mão de Ender",
   "tooltip.relics.enders_hand.shift_1": "Manter a tecla [Shift] pressionada irá troca as posição do usuario e do enderman para qual ele está olhando",
@@ -107,18 +107,22 @@
   "tooltip.relics.delay_ring.shift_2": "Qualquer cura atrasada pelo anel será duplicada",
 
   "item.relics.bastion_ring": "Anel do Bastião",
-  "tooltip.relics.bastion_ring.shift_1": "Concede habilidade de localizar o Bastião mais próximo ao matar piglins",
+  "tooltip.relics.bastion_ring.shift_1": "Oferece a habilidade de localizar o Bastião mais próximo ao matar piglins",
 
   "item.relics.chorus_inhibitor": "Inibidor de Coro",
-  "tooltip.relics.chorus_inhibitor.shift_1": "Lembra-se da posição do uso da Fruta do Coro e retorna a ela após um certo tempo",
-  "tooltip.relics.chorus_inhibitor.shift_2": "Usar a Fruta do Coro novamante antes que o tempo acabe aumentará seu tempo de retorno.",
-  "tooltip.relics.chorus_inhibitor.shift_3": "Remove totalmente os danos do teletransporte",
+  "tooltip.relics.chorus_inhibitor.shift_1": "Memorizada a posição do uso da Fruta do Coro e retorna a ela após um certo tempo",
+  "tooltip.relics.chorus_inhibitor.shift_2": "Usar a Fruta do Coro novamante antes que o tempo de retorno acabe o aumentará.",
+  "tooltip.relics.chorus_inhibitor.shift_3": "Oferece imunidade a dano causado por teletransporte",
 
-  "item.relics.arrow_quiver": "Aljava de Flecha",
-  "tooltip.relics.arrow_quiver.shift_1": "Adiciona chance de atirar várias flechas",
+  "item.relics.arrow_quiver": "Aljava",
+  "tooltip.relics.arrow_quiver.shift_1": "Oferece a chance de atirar várias flechas ao mesmo tempo",
 
   "item.relics.lucky_horseshoe": "Ferradura da Sorte",
-  "tooltip.relics.lucky_horseshoe.shift_1": "Tem a chance aleatória de aumentar o Saque e a Fortuna do jogador.",
+  "tooltip.relics.lucky_horseshoe.shift_1": "Oferece a chance aleatória de aumentar o Saque e a Fortuna do usuário.",
+
+  "item.relics.magic_mirror": "Espelho Mágico",
+  "tooltip.relics.magic_mirror.shift_1": "Teleporta para a último ponto de desova conhecido",
+  "tooltip.relics.magic_mirror.invalid_location": "Ponto de desova desconhecida",
 
   "block.relics.magma_stone": "Pedra de Magma"
 }
