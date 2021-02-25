@@ -171,17 +171,19 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue MAX_DEALT_DAMAGE;
         public static ForgeConfigSpec.DoubleValue STOMP_RADIUS_MULTIPLIER;
         public static ForgeConfigSpec.DoubleValue STOMP_MOTION_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue MOVEMENT_SPEED_MULTIPLIER;
         public static ForgeConfigSpec.DoubleValue INCOMING_FALL_DAMAGE_MULTIPLIER;
 
         private static void setupIceBreakerConfig(ForgeConfigSpec.Builder builder) {
             builder.push("ice_breaker");
             MIN_FALL_DISTANCE = builder.defineInRange("min_fall_distance", 3, 0, Integer.MAX_VALUE);
-            FALL_MOTION_MULTIPLIER = builder.defineInRange("fall_motion_multiplier", 1.05, 0, Integer.MAX_VALUE);
+            FALL_MOTION_MULTIPLIER = builder.defineInRange("fall_motion_multiplier", 1.075, 0, Integer.MAX_VALUE);
             STOMP_COOLDOWN_MULTIPLIER = builder.defineInRange("stomp_cooldown_multiplier", 3.0, 0, Integer.MAX_VALUE);
             DEALT_DAMAGE_MULTIPLIER = builder.defineInRange("dealt_damage_multiplier", 1.0, 0, Integer.MAX_VALUE);
             MAX_DEALT_DAMAGE = builder.defineInRange("max_dealt_damage", 100.0, 0, Integer.MAX_VALUE);
             STOMP_RADIUS_MULTIPLIER = builder.defineInRange("stomp_radius_multiplier", 0.5, 0, Integer.MAX_VALUE);
             STOMP_MOTION_MULTIPLIER = builder.defineInRange("stomp_motion_multiplier", 1.01, 0, Integer.MAX_VALUE);
+            MOVEMENT_SPEED_MULTIPLIER = builder.defineInRange("movement_speed_multiplier", -0.1, Integer.MIN_VALUE, Integer.MAX_VALUE);
             INCOMING_FALL_DAMAGE_MULTIPLIER = builder.defineInRange("incoming_fall_damage_multiplier", 0.0, 0, Integer.MAX_VALUE);
             builder.pop();
         }

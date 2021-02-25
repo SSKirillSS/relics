@@ -9,6 +9,9 @@ import it.hurts.sskirillss.relics.utils.RelicsTab;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,8 +32,12 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
+import java.util.UUID;
 
 public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
+    private static final AttributeModifier ICE_BREAKER_SPEED_BOOST = new AttributeModifier(UUID.fromString("90af8e8a-93aa-4b0f-8ddc-8986dd2a8461"),
+            Reference.MODID + ":" + "ice_breaker_movement_speed", RelicsConfig.IceBreaker.MOVEMENT_SPEED_MULTIPLIER.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
+
     public IceBreakerItem() {
         super(new Item.Properties()
                 .group(RelicsTab.RELICS_TAB)
@@ -53,9 +60,21 @@ public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
+        ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (!movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) {
+            movementSpeed.applyNonPersistentModifier(ICE_BREAKER_SPEED_BOOST);
+        }
         if (livingEntity.fallDistance >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && livingEntity.isSneaking()) {
             Vector3d motion = livingEntity.getMotion();
             livingEntity.setMotion(motion.getX(), motion.getY() * RelicsConfig.IceBreaker.FALL_MOTION_MULTIPLIER.get(), motion.getZ());
+        }
+    }
+
+    @Override
+    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
+        ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) {
+            movementSpeed.removeModifier(ICE_BREAKER_SPEED_BOOST);
         }
     }
 
