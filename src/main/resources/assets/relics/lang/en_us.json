@@ -124,5 +124,8 @@
   "tooltip.relics.magic_mirror.shift_1": "Teleports to latest known respawn position",
   "tooltip.relics.magic_mirror.invalid_location": "Unknown respawn position",
 
+  "item.relics.stomper_boots": "Stomper Boots",
+  "tooltip.relics.stomper_boots.shift_1": "Causes shockwave after player falls to the ground while holding [Shift]",
+
   "block.relics.magma_stone": "Magma Stone"
 }
