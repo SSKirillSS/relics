@@ -43,8 +43,6 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.FRAGRANT_FLOWER.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.MAGIC_MIRROR_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.MAGIC_MIRROR.get()));
-                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.STOMPER_BOOTS_GEN_CHANCE.get())
-                    generatedLoot.add(new ItemStack(ItemRegistry.STOMPER_BOOTS.get()));
             }
 
             if (id.equals(LootTables.CHESTS_STRONGHOLD_CORRIDOR) || id.equals(LootTables.CHESTS_STRONGHOLD_CROSSING)
@@ -55,8 +53,6 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.ENDERS_HAND.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.MAGIC_MIRROR_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.MAGIC_MIRROR.get()));
-                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.STOMPER_BOOTS_GEN_CHANCE.get())
-                    generatedLoot.add(new ItemStack(ItemRegistry.STOMPER_BOOTS.get()));
             }
 
             if (id.equals(LootTables.BASTION_BRIDGE) || id.equals(LootTables.BASTION_OTHER)
@@ -111,8 +107,6 @@ public class DungeonLootModifier extends LootModifier {
             if (id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_FLETCHER)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ARROW_QUIVER_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.ARROW_QUIVER.get()));
-                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.STOMPER_BOOTS_GEN_CHANCE.get())
-                    generatedLoot.add(new ItemStack(ItemRegistry.STOMPER_BOOTS.get()));
             }
 
             if (id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_BUTCHER)) {
@@ -131,8 +125,8 @@ public class DungeonLootModifier extends LootModifier {
                     || id.equals(LootTables.CHESTS_IGLOO_CHEST)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ICE_SKATES_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.ICE_SKATES.get()));
-                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.STOMPER_BOOTS_GEN_CHANCE.get())
-                    generatedLoot.add(new ItemStack(ItemRegistry.STOMPER_BOOTS.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ICE_BREAKER_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.ICE_BREAKER.get()));
             }
 
             if (id.equals(LootTables.CHESTS_JUNGLE_TEMPLE)) {

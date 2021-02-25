@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -29,8 +30,8 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class StomperBootsItem extends Item implements ICurioItem, IHasTooltip {
-    public StomperBootsItem() {
+public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
+    public IceBreakerItem() {
         super(new Item.Properties()
                 .group(RelicsTab.RELICS_TAB)
                 .maxStackSize(1)
@@ -40,7 +41,7 @@ public class StomperBootsItem extends Item implements ICurioItem, IHasTooltip {
     @Override
     public List<ITextComponent> getShiftTooltip() {
         List<ITextComponent> tooltip = Lists.newArrayList();
-        tooltip.add(new TranslationTextComponent("tooltip.relics.stomper_boots.shift_1"));
+        tooltip.add(new TranslationTextComponent("tooltip.relics.ice_breaker.shift_1"));
         return tooltip;
     }
 
@@ -52,37 +53,39 @@ public class StomperBootsItem extends Item implements ICurioItem, IHasTooltip {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity.fallDistance >= RelicsConfig.StomperBoots.MIN_FALL_DISTANCE.get() && livingEntity.isSneaking()) {
+        if (livingEntity.fallDistance >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && livingEntity.isSneaking()) {
             Vector3d motion = livingEntity.getMotion();
-            livingEntity.setMotion(motion.getX(), motion.getY() * RelicsConfig.StomperBoots.FALL_MOTION_MULTIPLIER.get(), motion.getZ());
+            livingEntity.setMotion(motion.getX(), motion.getY() * RelicsConfig.IceBreaker.FALL_MOTION_MULTIPLIER.get(), motion.getZ());
         }
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
-    public static class StomperServerEvents {
+    public static class IceBreakerServerEvents {
         @SubscribeEvent
         public static void onEntityFall(LivingFallEvent event) {
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-                if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.STOMPER_BOOTS.get(), player).isPresent()
-                        && !player.getCooldownTracker().hasCooldown(ItemRegistry.STOMPER_BOOTS.get())) {
-                    if (event.getDistance() >= RelicsConfig.StomperBoots.MIN_FALL_DISTANCE.get() && player.isSneaking()) {
+                if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ICE_BREAKER.get(), player).isPresent()
+                        && !player.getCooldownTracker().hasCooldown(ItemRegistry.ICE_BREAKER.get())) {
+                    if (event.getDistance() >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && player.isSneaking()) {
                         player.getEntityWorld().playSound(null, player.getPosition(), SoundEvents.ENTITY_WITHER_BREAK_BLOCK,
                                 SoundCategory.PLAYERS, 0.75F, 1.0F);
-                        player.getCooldownTracker().setCooldown(ItemRegistry.STOMPER_BOOTS.get(), Math.round(event.getDistance()
-                                * RelicsConfig.StomperBoots.STOMP_COOLDOWN_MULTIPLIER.get().floatValue() * 20));
+                        player.getCooldownTracker().setCooldown(ItemRegistry.ICE_BREAKER.get(), Math.round(event.getDistance()
+                                * RelicsConfig.IceBreaker.STOMP_COOLDOWN_MULTIPLIER.get().floatValue() * 20));
                         for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
-                                player.getBoundingBox().grow(event.getDistance() * RelicsConfig.StomperBoots.STOMP_RADIUS_MULTIPLIER.get()))) {
+                                player.getBoundingBox().grow(event.getDistance() * RelicsConfig.IceBreaker.STOMP_RADIUS_MULTIPLIER.get()))) {
                             if (entity != player) {
-                                entity.attackEntityFrom(DamageSource.causePlayerDamage(player), Math.min(RelicsConfig.StomperBoots.MAX_DEALT_DAMAGE.get().floatValue(),
-                                        event.getDistance() * RelicsConfig.StomperBoots.DEALT_DAMAGE_MULTIPLIER.get().floatValue()));
+                                entity.attackEntityFrom(DamageSource.causePlayerDamage(player), Math.min(RelicsConfig.IceBreaker.MAX_DEALT_DAMAGE.get().floatValue(),
+                                        event.getDistance() * RelicsConfig.IceBreaker.DEALT_DAMAGE_MULTIPLIER.get().floatValue()));
                                 entity.setMotion(entity.getPositionVec().subtract(player.getPositionVec()).add(0, 1.005F, 0).mul(
-                                        RelicsConfig.StomperBoots.STOMP_MOTION_MULTIPLIER.get(),
-                                        RelicsConfig.StomperBoots.STOMP_MOTION_MULTIPLIER.get(),
-                                        RelicsConfig.StomperBoots.STOMP_MOTION_MULTIPLIER.get()));
+                                        RelicsConfig.IceBreaker.STOMP_MOTION_MULTIPLIER.get(),
+                                        RelicsConfig.IceBreaker.STOMP_MOTION_MULTIPLIER.get(),
+                                        RelicsConfig.IceBreaker.STOMP_MOTION_MULTIPLIER.get()));
                             }
                         }
-                        event.setDamageMultiplier(RelicsConfig.StomperBoots.INCOMING_FALL_DAMAGE_MULTIPLIER.get().floatValue());
+                        if (player.getEntityWorld().getBlockState(player.getPosition().down()).isIn(BlockTags.ICE))
+                            player.getEntityWorld().destroyBlock(player.getPosition().down(), false, player);
+                        event.setDamageMultiplier(RelicsConfig.IceBreaker.INCOMING_FALL_DAMAGE_MULTIPLIER.get().floatValue());
                     }
                 }
             }

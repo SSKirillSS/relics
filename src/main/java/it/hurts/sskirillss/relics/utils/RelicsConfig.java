@@ -163,6 +163,30 @@ public class RelicsConfig {
         }
     }
 
+    public static class IceBreaker {
+        public static ForgeConfigSpec.IntValue MIN_FALL_DISTANCE;
+        public static ForgeConfigSpec.DoubleValue FALL_MOTION_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue STOMP_COOLDOWN_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue DEALT_DAMAGE_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue MAX_DEALT_DAMAGE;
+        public static ForgeConfigSpec.DoubleValue STOMP_RADIUS_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue STOMP_MOTION_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue INCOMING_FALL_DAMAGE_MULTIPLIER;
+
+        private static void setupIceBreakerConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("ice_breaker");
+            MIN_FALL_DISTANCE = builder.defineInRange("min_fall_distance", 3, 0, Integer.MAX_VALUE);
+            FALL_MOTION_MULTIPLIER = builder.defineInRange("fall_motion_multiplier", 1.05, 0, Integer.MAX_VALUE);
+            STOMP_COOLDOWN_MULTIPLIER = builder.defineInRange("stomp_cooldown_multiplier", 3.0, 0, Integer.MAX_VALUE);
+            DEALT_DAMAGE_MULTIPLIER = builder.defineInRange("dealt_damage_multiplier", 1.0, 0, Integer.MAX_VALUE);
+            MAX_DEALT_DAMAGE = builder.defineInRange("max_dealt_damage", 100.0, 0, Integer.MAX_VALUE);
+            STOMP_RADIUS_MULTIPLIER = builder.defineInRange("stomp_radius_multiplier", 0.5, 0, Integer.MAX_VALUE);
+            STOMP_MOTION_MULTIPLIER = builder.defineInRange("stomp_motion_multiplier", 1.01, 0, Integer.MAX_VALUE);
+            INCOMING_FALL_DAMAGE_MULTIPLIER = builder.defineInRange("incoming_fall_damage_multiplier", 0.0, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class IceSkates {
         public static ForgeConfigSpec.DoubleValue MOVEMENT_SPEED_MULTIPLIER;
         public static ForgeConfigSpec.IntValue MAX_SPEEDUP_TIME;
@@ -375,30 +399,6 @@ public class RelicsConfig {
         }
     }
 
-    public static class StomperBoots {
-        public static ForgeConfigSpec.IntValue MIN_FALL_DISTANCE;
-        public static ForgeConfigSpec.DoubleValue FALL_MOTION_MULTIPLIER;
-        public static ForgeConfigSpec.DoubleValue STOMP_COOLDOWN_MULTIPLIER;
-        public static ForgeConfigSpec.DoubleValue DEALT_DAMAGE_MULTIPLIER;
-        public static ForgeConfigSpec.DoubleValue MAX_DEALT_DAMAGE;
-        public static ForgeConfigSpec.DoubleValue STOMP_RADIUS_MULTIPLIER;
-        public static ForgeConfigSpec.DoubleValue STOMP_MOTION_MULTIPLIER;
-        public static ForgeConfigSpec.DoubleValue INCOMING_FALL_DAMAGE_MULTIPLIER;
-
-        private static void setupStomperBootsConfig(ForgeConfigSpec.Builder builder) {
-            builder.push("stomper_boots");
-            MIN_FALL_DISTANCE = builder.defineInRange("min_fall_distance", 3, 0, Integer.MAX_VALUE);
-            FALL_MOTION_MULTIPLIER = builder.defineInRange("fall_motion_multiplier", 1.05, 0, Integer.MAX_VALUE);
-            STOMP_COOLDOWN_MULTIPLIER = builder.defineInRange("stomp_cooldown_multiplier", 3.0, 0, Integer.MAX_VALUE);
-            DEALT_DAMAGE_MULTIPLIER = builder.defineInRange("dealt_damage_multiplier", 1.0, 0, Integer.MAX_VALUE);
-            MAX_DEALT_DAMAGE = builder.defineInRange("max_dealt_damage", 100.0, 0, Integer.MAX_VALUE);
-            STOMP_RADIUS_MULTIPLIER = builder.defineInRange("stomp_radius_multiplier", 0.5, 0, Integer.MAX_VALUE);
-            STOMP_MOTION_MULTIPLIER = builder.defineInRange("stomp_motion_multiplier", 1.01, 0, Integer.MAX_VALUE);
-            INCOMING_FALL_DAMAGE_MULTIPLIER = builder.defineInRange("incoming_fall_damage_multiplier", 0.0, 0, Integer.MAX_VALUE);
-            builder.pop();
-        }
-    }
-
     public static class RelicsWorldgen {
         public static ForgeConfigSpec.BooleanValue RELICS_WORLDGEN_ENABLED;
         public static ForgeConfigSpec.DoubleValue ARROW_QUIVER_GEN_CHANCE;
@@ -412,6 +412,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue FRAGRANT_FLOWER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue HOLY_LOCKET_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue HUNTER_BELT_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue ICE_BREAKER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue ICE_SKATES_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue JELLYFISH_NECKLACE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue LUCKY_HORSESHOE_GEN_CHANCE;
@@ -425,7 +426,6 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue SPACE_DISSECTOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPATIAL_SIGN_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue STELLAR_CATALYST_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue STOMPER_BOOTS_GEN_CHANCE;
 
         private static void setupWorldgenConfig(ForgeConfigSpec.Builder builder) {
             RELICS_WORLDGEN_ENABLED = builder.define("relics_worldgen_enabled", true);
@@ -440,6 +440,7 @@ public class RelicsConfig {
             FRAGRANT_FLOWER_GEN_CHANCE = builder.defineInRange("fragrant_flower_gen_chance", 0.2, 0, 1);
             HOLY_LOCKET_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.3, 0, 1);
             HUNTER_BELT_GEN_CHANCE = builder.defineInRange("hunter_belt_gen_chance", 0.2, 0, 1);
+            ICE_BREAKER_GEN_CHANCE = builder.defineInRange("ice_breaker_gen_chance", 0.2, 0, 1);
             ICE_SKATES_GEN_CHANCE = builder.defineInRange("ice_skates_gen_chance", 0.2, 0, 1);
             JELLYFISH_NECKLACE_GEN_CHANCE = builder.defineInRange("jellyfish_necklace_gen_chance", 0.2, 0, 1);
             LUCKY_HORSESHOE_GEN_CHANCE = builder.defineInRange("lucky_horseshoe_gen_chance", 0.15, 0, 1);
@@ -452,7 +453,6 @@ public class RelicsConfig {
             SOUL_DEVOURER_GEN_CHANCE = builder.defineInRange("soul_devourer_gen_chance", 0.05, 0, 1);
             SPACE_DISSECTOR_GEN_CHANCE = builder.defineInRange("space_dissector_gen_chance", 0.05, 0, 1);
             SPATIAL_SIGN_GEN_CHANCE = builder.defineInRange("spatial_sign_gen_chance", 0.25, 0, 1);
-            STOMPER_BOOTS_GEN_CHANCE = builder.defineInRange("stomper_boots_gen_chance", 0.2, 0, 1);
 
             builder.pop();
         }
@@ -480,6 +480,7 @@ public class RelicsConfig {
         FragrantFlower.setupFragrantFlowerConfig(builder);
         HolyLocket.setupHolyLocketConfig(builder);
         HunterBelt.setupHunterBeltConfig(builder);
+        IceBreaker.setupIceBreakerConfig(builder);
         IceSkates.setupIceSkatesConfig(builder);
         JellyfishNecklace.setupJellyfishNecklaceConfig(builder);
         LuckyHorseshoe.setupLuckyHorseshoeConfig(builder);
@@ -492,7 +493,6 @@ public class RelicsConfig {
         SpaceDissector.setupSpaceDissectorConfig(builder);
         SpatialSign.setupSpatialSignConfig(builder);
         StellarCatalyst.setupStellarCatalystConfig(builder);
-        StomperBoots.setupStomperBootsConfig(builder);
 
         builder.pop();
     }
