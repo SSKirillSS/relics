@@ -66,7 +66,8 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (livingEntity.getEntityWorld().getBiome(livingEntity.getPosition()).getCategory() == Biome.Category.DESERT) {
+        if (livingEntity.getEntityWorld().getBiome(livingEntity.getPosition()).getCategory() == Biome.Category.DESERT
+                || livingEntity.getEntityWorld().getBiome(livingEntity.getPosition()).getCategory() == Biome.Category.MESA) {
             if (!movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
                 movementSpeed.applyNonPersistentModifier(SCARAB_TALISMAN_SPEED_BOOST);
                 livingEntity.stepHeight = Math.max(livingEntity.stepHeight,
