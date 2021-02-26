@@ -33,44 +33,44 @@
   "item.relics.spatial_sign": "Spatial Sign",
   "tooltip.relics.spatial_sign.tooltip_1": "Stored destination: %1$s",
   "tooltip.relics.spatial_sign.tooltip_2": "Time left: %1$s",
-  "tooltip.relics.spatial_sign.shift_1": "Teleports to the stored position after certain time after activation",
-  "tooltip.relics.spatial_sign.shift_2": "Taking fatal damage with activated sign in inventory will save your life and teleport to a stored position, destroying the relic",
+  "tooltip.relics.spatial_sign.shift_1": "After using stores current player position and automatically teleports him to the stored destination after certain time",
+  "tooltip.relics.spatial_sign.shift_2": "Taking fatal damage with active sign in inventory will save your life and teleport you to the stored destination, but breaks relic",
 
   "item.relics.reflection_necklace": "Reflection Necklace",
   "tooltip.relics.reflection_necklace.shift_1": "Slowly accumulates charges to fully reflect projectiles and incoming damage",
 
   "item.relics.space_dissector": "Space Dissector",
   "tooltip.relics.space_dissector.shift_1": "Throws a disc that bounces off surfaces and damages everyone in its path",
-  "tooltip.relics.space_dissector.shift_2": "Damage dealt and time before the disc automatically returns to thrower depends on the total number of bounces",
-  "tooltip.relics.space_dissector.shift_3": "Activating the disk while holding down the [Shift] key teleports to its current position",
+  "tooltip.relics.space_dissector.shift_2": "Damage dealt and time before disc return to the thrower depends on the total number of bounces of surfaces",
+  "tooltip.relics.space_dissector.shift_3": "Activating disc will force it to return to the owner. Activating disk while holding down the [Shift] key will teleport owner to the current disc position",
 
   "item.relics.soul_devourer": "Soul Devourer",
   "tooltip.relics.soul_devourer.tooltip_1": "Stored soul amount: %1$s",
-  "tooltip.relics.soul_devourer.shift_1": "Accumulates souls of defeated entities, proportionately increasing dealing damage",
+  "tooltip.relics.soul_devourer.shift_1": "Accumulates souls of defeated entities, proportionally increasing dealing damage",
   "tooltip.relics.soul_devourer.shift_2": "Holding down the [Shift] key will release all accumulated souls, dealing damage and knocking everyone around",
 
   "item.relics.magma_walker": "Magma Walker",
-  "tooltip.relics.magma_walker.shift_1": "Condenses lava underfoot, temporarily transforming it into solid magma stone",
+  "tooltip.relics.magma_walker.shift_1": "Condenses lava underfoot, temporarily transforming it into solid magma stone you can walk on",
   "tooltip.relics.magma_walker.shift_2": "Fully removes damage from a hot blocks",
 
   "item.relics.midnight_robe": "Midnight Robe",
-  "tooltip.relics.midnight_robe.shift_1": "Grants temporary invisibility and movement speed boost at night if the wearer's health falls to a low level",
-  "tooltip.relics.midnight_robe.shift_2": "Stealth attacks will deal double damage, but temporarily remove invisibility and movement speed boost effects",
+  "tooltip.relics.midnight_robe.shift_1": "Grants temporary invisibility and movement speed boost at night if wearer's health falls to a low level",
+  "tooltip.relics.midnight_robe.shift_2": "Stealth attacks from invisibility will deal double damage, but temporarily remove invisibility and movement speed boost effects",
 
   "item.relics.scarab_talisman": "Scarab Talisman",
-  "tooltip.relics.scarab_talisman.shift_1": "Increases movement speed and step height on sand",
-  "tooltip.relics.scarab_talisman.shift_2": "Increases sand breaking speed and fully removes damage from suffocating in blocks",
+  "tooltip.relics.scarab_talisman.shift_1": "Increases movement speed and step height in desert and mesas",
+  "tooltip.relics.scarab_talisman.shift_2": "Increases sand breaking speed, fully removes damage from suffocating in blocks and falling on sand",
 
   "item.relics.stellar_catalyst": "Stellar Catalyst",
-  "tooltip.relics.stellar_catalyst.shift_1": "Grants chance to summon a falling star while attack a mob",
+  "tooltip.relics.stellar_catalyst.shift_1": "Grants chance to summon a falling star while attack a mob, which deals half of summon damage for everyone on impact position",
 
   "item.relics.drowned_belt": "Drowned Belt",
-  "tooltip.relics.drowned_belt.shift_1": "Grants infinity breathing, increases underwater incoming and dealing damage, reduces swimming speed",
+  "tooltip.relics.drowned_belt.shift_1": "Grants infinity underwater breathing, increases underwater incoming and dealing damage, slightly reduces swimming speed",
 
   "item.relics.elytra_booster": "Elytra Booster",
   "tooltip.relics.elytra_booster.tooltip_1": "Charge: %1$s",
-  "tooltip.relics.elytra_booster.shift_1": "Accumulates energy from the nearest dragon breath cloud while holding [Shift] key and uses it to increase elytra flying speed while holding same key",
-  "tooltip.relics.elytra_booster.shift_2": "Grants ability to ram mobs while flying on elytra with activated booster",
+  "tooltip.relics.elytra_booster.shift_1": "Accumulates energy from the nearest dragon breath clouds while holding down the [Shift] key and uses it to increase elytra flying speed while holding same key",
+  "tooltip.relics.elytra_booster.shift_2": "Grants ability to ram mobs while flying on elytra with activated boost",
 
   "item.relics.enders_hand": "Ender's Hand",
   "tooltip.relics.enders_hand.shift_1": "While holding down the [Shift] key, swaps positions of the player and enderman he is looking at",
@@ -78,7 +78,7 @@
   "item.relics.fragrant_flower": "Fragrant Flower",
   "tooltip.relics.fragrant_flower.tooltip_1": "Nectar: %1$s",
   "tooltip.relics.fragrant_flower.shift_1": "Forces bees around to fight alongside with the relic wearer and makes them friendly to the player",
-  "tooltip.relics.fragrant_flower.shift_2": "Bees around will also collect nectar to the buffer of this relic, which can then be released by holding down the [Shift] key to grow crops around",
+  "tooltip.relics.fragrant_flower.shift_2": "Bees around will also collect nectar to the buffer of this relic, which can then be released by holding down the [Shift] key to grow crops and heal entities (or damage undead) around",
 
   "item.relics.holy_locket": "Holy Locket",
   "tooltip.relics.holy_locket.shift_1": "Increases damage dealt to undead entities and grants ability to set them on fire",
@@ -88,7 +88,7 @@
   "tooltip.relics.jellyfish_necklace.shift_2": "Doubles health regeneration speed underwater",
 
   "item.relics.hunter_belt": "Hunter Belt",
-  "tooltip.relics.hunter_belt.shift_1": "Doubles damage dealt to animals and loot received from mobs. Increases damage dealt by pets",
+  "tooltip.relics.hunter_belt.shift_1": "Doubles damage dealt to animals and loot received from mobs. Increases damage dealt by wearers pets",
 
   "item.relics.rage_glove": "Rage Glove",
   "tooltip.relics.rage_glove.shift_1": "Increases dealt and taken damage from the same target per each combo-attack",
@@ -110,7 +110,7 @@
   "tooltip.relics.bastion_ring.shift_1": "Grants ability to locate nearest bastion when killing piglins",
 
   "item.relics.chorus_inhibitor": "Chorus Inhibitor",
-  "tooltip.relics.chorus_inhibitor.shift_1": "Remembers the position of the chorus fruit usage, and returns to it after a certain time",
+  "tooltip.relics.chorus_inhibitor.shift_1": "Remembers position of the chorus fruit usage, and returns to it after a certain time",
   "tooltip.relics.chorus_inhibitor.shift_2": "Additional using of the chorus fruit before time runs out will increase its supply",
   "tooltip.relics.chorus_inhibitor.shift_3": "Fully removes damage from teleportation",
 
@@ -121,11 +121,11 @@
   "tooltip.relics.lucky_horseshoe.shift_1": "With a random chance increases player's looting and fortune",
 
   "item.relics.magic_mirror": "Magic Mirror",
-  "tooltip.relics.magic_mirror.shift_1": "Teleports to latest known respawn position",
+  "tooltip.relics.magic_mirror.shift_1": "Teleports to the latest known respawn position",
   "tooltip.relics.magic_mirror.invalid_location": "Unknown respawn position",
 
   "item.relics.ice_breaker": "Ice Breaker",
-  "tooltip.relics.ice_breaker.shift_1": "Causes shockwave after player falls to the ground while holding [Shift]",
+  "tooltip.relics.ice_breaker.shift_1": "Causes shockwave after player falls on the ground while holding [Shift]",
 
   "block.relics.magma_stone": "Magma Stone"
 }
