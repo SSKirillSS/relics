@@ -5,7 +5,7 @@ issueTrackerURL="https://discord.gg/pHren9yxzW"
 logoFile="logo.png"
 [[mods]]
 modId="relics"
-version="0.1.6"
+version="0.1.7"
 displayName="Relics"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/relics-mod"
 authors="SSKirillSS"
