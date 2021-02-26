@@ -2,6 +2,7 @@ modLoader="javafml"
 loaderVersion="[35,)"
 license="GNU GPL V3"
 issueTrackerURL="https://discord.gg/pHren9yxzW"
+logoFile="logo.png"
 [[mods]]
 modId="relics"
 version="0.1.6"
