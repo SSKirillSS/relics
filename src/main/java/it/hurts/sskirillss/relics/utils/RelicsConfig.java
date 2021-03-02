@@ -436,7 +436,7 @@ public class RelicsConfig {
             CAMOUFLAGE_RING_GEN_CHANCE = builder.defineInRange("camouflage_ring_gen_chance", 0.2, 0, 1);
             CHORUS_INHIBITOR_GEN_CHANCE = builder.defineInRange("chorus_inhibitor_gen_chance", 0.15, 0, 1);
             DELAY_RING_GEN_CHANCE = builder.defineInRange("delay_ring_gen_chance", 0.05, 0, 1);
-            DROWNED_BELT_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.2, 0, 1);
+            DROWNED_BELT_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.15, 0, 1);
             ELYTRA_BOOSTER_GEN_CHANCE = builder.defineInRange("elytra_booster_gen_chance", 0.15, 0, 1);
             ENDERS_HAND_GEN_CHANCE = builder.defineInRange("enders_hand_gen_chance", 0.3, 0, 1);
             FRAGRANT_FLOWER_GEN_CHANCE = builder.defineInRange("fragrant_flower_gen_chance", 0.2, 0, 1);
