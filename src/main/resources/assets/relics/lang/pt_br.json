@@ -124,5 +124,8 @@
   "tooltip.relics.magic_mirror.shift_1": "Teleporta para a último ponto de desova conhecido",
   "tooltip.relics.magic_mirror.invalid_location": "Ponto de desova desconhecida",
 
+  "item.relics.ice_breaker": "Quebra-Gelo",
+  "tooltip.relics.ice_breaker.shift_1": "Causa uma onda de choque após o jogador cair no chão enquanto segura [Shift]",
+
   "block.relics.magma_stone": "Pedra de Magma"
 }
