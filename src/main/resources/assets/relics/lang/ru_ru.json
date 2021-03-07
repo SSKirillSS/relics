@@ -109,6 +109,11 @@
   "item.relics.bastion_ring": "Кольцо бастиона",
   "tooltip.relics.bastion_ring.shift_1": "Позволяет обнаружить ближайший бастион при убийстве пиглинов",
 
+  "item.relics.blazing_flask": "Пылающий флакон",
+  "tooltip.relics.blazing_flask.tooltip_1": "Накоплено огня: %1$s",
+  "tooltip.relics.blazing_flask.shift_1": "Поглощает огонь вокруг, и использует его для наделения слабой способностью левитации с поджиганием мобов под ногами",
+  "tooltip.relics.blazing_flask.shift_2": "Полностью нивелирует урон от огня",
+
   "item.relics.chorus_inhibitor": "Хорусовый ингибитор",
   "tooltip.relics.chorus_inhibitor.shift_1": "Запоминает позицию использования плода хоруса, и возвращает к ней спустя определенное время",
   "tooltip.relics.chorus_inhibitor.shift_2": "Дополнительное использование плода хоруса увеличит запас времени до возвращения к запомненной точке",

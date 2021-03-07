@@ -109,6 +109,11 @@
   "item.relics.bastion_ring": "Bastion Ring",
   "tooltip.relics.bastion_ring.shift_1": "Grants ability to locate nearest bastion when killing piglins",
 
+  "item.relics.blazing_flask": "Blazing Flask",
+  "tooltip.relics.blazing_flask.tooltip_1": "Fire amount: %1$s",
+  "tooltip.relics.blazing_flask.shift_1": "Consumes fire around and uses it for a weak levitation ability with igniting mobs under feet",
+  "tooltip.relics.blazing_flask.shift_2": "Fully removes damage from fire",
+
   "item.relics.chorus_inhibitor": "Chorus Inhibitor",
   "tooltip.relics.chorus_inhibitor.shift_1": "Remembers position of the chorus fruit usage, and returns to it after a certain time",
   "tooltip.relics.chorus_inhibitor.shift_2": "Additional using of the chorus fruit before time runs out will increase its supply",

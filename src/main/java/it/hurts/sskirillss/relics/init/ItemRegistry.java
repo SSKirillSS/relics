@@ -51,6 +51,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> FRAGRANT_FLOWER = ITEMS.register("fragrant_flower", FragrantFlowerItem::new);
     public static final RegistryObject<Item> MAGIC_MIRROR = ITEMS.register("magic_mirror", MagicMirrorItem::new);
     public static final RegistryObject<Item> ICE_BREAKER = ITEMS.register("ice_breaker", IceBreakerItem::new);
+    public static final RegistryObject<Item> BLAZING_FLASK = ITEMS.register("blazing_flask", BlazingFlaskItem::new);
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());

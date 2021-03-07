@@ -25,6 +25,26 @@ public class RelicsConfig {
         }
     }
 
+    public static class BlazingFlask {
+        public static ForgeConfigSpec.DoubleValue LEVITATION_HEIGHT;
+        public static ForgeConfigSpec.DoubleValue LEVITATION_SPEED_MULTIPLIER;
+        public static ForgeConfigSpec.IntValue IGNITE_DURATION;
+        public static ForgeConfigSpec.IntValue FIRE_CONSUMPTION_COOLDOWN;
+        public static ForgeConfigSpec.IntValue FIRE_CONSUMPTION_RADIUS;
+        public static ForgeConfigSpec.IntValue FIRE_CAPACITY;
+
+        private static void setupBlazingFlaskConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("blazing_flask");
+            LEVITATION_HEIGHT = builder.defineInRange("levitation_height", 5.0, 0, Integer.MAX_VALUE);
+            LEVITATION_SPEED_MULTIPLIER = builder.defineInRange("levitation_speed_multiplier", 0.75, 0, Integer.MAX_VALUE);
+            IGNITE_DURATION = builder.defineInRange("ignite_duration", 5, 0, Integer.MAX_VALUE);
+            FIRE_CONSUMPTION_COOLDOWN = builder.defineInRange("fire_consumption_cooldown", 1, 0, Integer.MAX_VALUE);
+            FIRE_CONSUMPTION_RADIUS = builder.defineInRange("fire_consumption_radius", 10, 0, Integer.MAX_VALUE);
+            FIRE_CAPACITY = builder.defineInRange("fire_capacity", 100, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class CamouflageRing {
         public static ForgeConfigSpec.IntValue MAX_INVISIBILITY_TIME;
         public static ForgeConfigSpec.DoubleValue STEALTH_DAMAGE_MULTIPLIER;
@@ -405,6 +425,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.BooleanValue RELICS_WORLDGEN_ENABLED;
         public static ForgeConfigSpec.DoubleValue ARROW_QUIVER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue BASTION_RING_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue BLAZING_FLASK_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue CAMOUFLAGE_RING_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue CHORUS_INHIBITOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue DELAY_RING_GEN_CHANCE;
@@ -433,6 +454,7 @@ public class RelicsConfig {
             RELICS_WORLDGEN_ENABLED = builder.define("relics_worldgen_enabled", true);
             ARROW_QUIVER_GEN_CHANCE = builder.defineInRange("arrow_quiver_gen_chance", 0.2, 0, 1);
             BASTION_RING_GEN_CHANCE = builder.defineInRange("bastion_ring_gen_chance", 0.15, 0, 1);
+            BLAZING_FLASK_GEN_CHANCE = builder.defineInRange("blazing_flask_gen_chance", 0.05, 0, 1);
             CAMOUFLAGE_RING_GEN_CHANCE = builder.defineInRange("camouflage_ring_gen_chance", 0.2, 0, 1);
             CHORUS_INHIBITOR_GEN_CHANCE = builder.defineInRange("chorus_inhibitor_gen_chance", 0.15, 0, 1);
             DELAY_RING_GEN_CHANCE = builder.defineInRange("delay_ring_gen_chance", 0.05, 0, 1);
@@ -474,6 +496,7 @@ public class RelicsConfig {
 
         ArrowQuiver.setupArrowQuiverConfig(builder);
         BastionRing.setupBastionRingConfig(builder);
+        BlazingFlask.setupBlazingFlaskConfig(builder);
         CamouflageRing.setupCamouflageRingConfig(builder);
         ChorusInhibitor.setupChorusInhibitorConfig(builder);
         DelayRing.setupDelayRingConfig(builder);

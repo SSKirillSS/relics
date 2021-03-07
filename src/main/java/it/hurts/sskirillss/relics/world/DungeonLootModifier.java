@@ -70,6 +70,8 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.RAGE_GLOVE.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.BASTION_RING_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.BASTION_RING.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.BLAZING_FLASK_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.BLAZING_FLASK.get()));
             }
 
             if (id.equals(LootTables.RUINED_PORTAL)) {
