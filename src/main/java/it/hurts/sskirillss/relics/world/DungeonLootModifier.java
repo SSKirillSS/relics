@@ -55,13 +55,8 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.MAGIC_MIRROR.get()));
             }
 
-            if (id.equals(LootTables.BASTION_BRIDGE) || id.equals(LootTables.BASTION_OTHER)
-                    || id.equals(LootTables.BASTION_TREASURE) || id.equals(LootTables.BASTION_HOGLIN_STABLE)) {
-                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.BASTION_RING_GEN_CHANCE.get())
-                    generatedLoot.add(new ItemStack(ItemRegistry.BASTION_RING.get()));
-            }
-
-            if (id.equals(LootTables.CHESTS_NETHER_BRIDGE)) {
+            if (id.equals(LootTables.BASTION_BRIDGE) || id.equals(LootTables.BASTION_OTHER) || id.equals(LootTables.BASTION_TREASURE)
+                    || id.equals(LootTables.BASTION_HOGLIN_STABLE) || id.equals(LootTables.CHESTS_NETHER_BRIDGE)) {
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.REFLECTION_NECKLACE_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.REFLECTION_NECKLACE.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.MAGMA_WALKER_GEN_CHANCE.get())
