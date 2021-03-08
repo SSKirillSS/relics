@@ -109,6 +109,11 @@
   "item.relics.bastion_ring": "Anel do Bastião",
   "tooltip.relics.bastion_ring.shift_1": "Concede 30% de chance de apontar o bastião mais próximo ao matar piglins",
 
+  "item.relics.blazing_flask": "Frasco Flamejante",
+  "tooltip.relics.blazing_flask.tooltip_1": "Quantidade de fogo: %1$s",
+  "tooltip.relics.blazing_flask.shift_1": "Consome fogo ao redor e o usa para uma habilidade de levitação fraca, incendiando criatura sob os pés",
+  "tooltip.relics.blazing_flask.shift_2": "Remove totalmente os danos por fogo",
+
   "item.relics.chorus_inhibitor": "Inibidor de Coro",
   "tooltip.relics.chorus_inhibitor.shift_1": "Comer uma Fruta do Coro memorizaa posição do jogador e iniciará um cronômetro de 30 segundos, após o qual o jogador será teletransportado para a posição memorizada",
   "tooltip.relics.chorus_inhibitor.shift_2": "Comer a Fruta do Coro novamante antes que o cronômetro acabe aumentará o tempo 30 segundos.",
