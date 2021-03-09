@@ -70,7 +70,7 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
             World world = player.getEntityWorld();
             int fire = NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0);
             if (!(player.abilities.isCreativeMode)) {
-                player.abilities.allowFlying = fire > 0 && !player.isInWater();
+                player.abilities.allowFlying = fire > 0;
                 if (player.abilities.isFlying) {
                     for (int i = 0; i < 3; i++)
                         world.addParticle(ParticleTypes.LARGE_SMOKE, player.getPosX() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
@@ -86,7 +86,7 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
                     }
                     player.fallDistance = 0.0F;
                     double riseVelocity = 0.0D;
-                    player.abilities.isFlying = fire > 0 && !player.isInWater();
+                    player.abilities.isFlying = fire > 0;
                     player.setMotion(player.getMotion().mul(RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get(),
                             RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get(), RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get()));
                     if (player.moveForward > 0) player.setMotion(player.getMotion().getX() + new Vector3d(player.getLookVec().x,
