@@ -31,6 +31,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
@@ -103,7 +104,7 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
                 }
             }
             if (!world.isRemote() && !player.isSpectator() && player.ticksExisted % (RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_COOLDOWN.get() * 20)
-                    == 0 && fire < RelicsConfig.BlazingFlask.FIRE_CAPACITY.get() && player.isOnGround()) {
+                    == 0 && fire < RelicsConfig.BlazingFlask.FIRE_CAPACITY.get()) {
                 List<BlockPos> sphere = WorldUtils.getBlockSphere(player.getPosition(), RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_RADIUS.get());
                 for (BlockPos pos : sphere) {
                     if (world.getBlockState(pos).getBlock() instanceof AbstractFireBlock) {
@@ -133,27 +134,12 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) livingEntity;
-            if (!(player.abilities.isCreativeMode || player.isSpectator())) {
-                player.abilities.allowFlying = false;
-                player.abilities.isFlying = false;
-                player.sendPlayerAbilities();
-            }
-        }
-    }
-
-    @Override
-    public void onEquip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) livingEntity;
-            if (!(player.abilities.isCreativeMode || player.isSpectator()) && !player.isOnGround()
-                    && !player.isInWater() && NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0) > 0) {
-                player.abilities.allowFlying = true;
-                player.abilities.isFlying = true;
-                player.sendPlayerAbilities();
-            }
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (NBTUtils.getInt(newStack, TAG_FIRE_AMOUNT, 0) <= 0 && slotContext.getWearer() instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) slotContext.getWearer();
+            player.abilities.allowFlying = false;
+            player.abilities.isFlying = false;
+            player.sendPlayerAbilities();
         }
     }
 
