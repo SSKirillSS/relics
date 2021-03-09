@@ -72,14 +72,16 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
             if (!(player.abilities.isCreativeMode)) {
                 player.abilities.allowFlying = fire > 0;
                 if (player.abilities.isFlying) {
-                    for (int i = 0; i < 3; i++)
-                        world.addParticle(ParticleTypes.LARGE_SMOKE, player.getPosX() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
-                                player.getPosY() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, player.getPosZ()
-                                        + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, 0, -0.1, 0);
-                    world.addParticle(ParticleTypes.FLAME, player.getPosX()
-                            + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, player.getPosY()
-                            + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, player.getPosZ()
-                            + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, 0, -0.25F, 0);
+                    if (!player.isInWater()) {
+                        for (int i = 0; i < 3; i++)
+                            world.addParticle(ParticleTypes.LARGE_SMOKE, player.getPosX() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
+                                    player.getPosY() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, player.getPosZ()
+                                            + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, 0, -0.1, 0);
+                        world.addParticle(ParticleTypes.FLAME, player.getPosX()
+                                + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, player.getPosY()
+                                + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, player.getPosZ()
+                                + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, 0, -0.25F, 0);
+                    }
                     for (LivingEntity entity : world.getEntitiesWithinAABB(LivingEntity.class, player.getBoundingBox()
                             .grow(0.5D).expand(0, -getGroundHeight(player) - 1, 0))) {
                         if (entity != player) entity.setFire(RelicsConfig.BlazingFlask.IGNITE_DURATION.get());
