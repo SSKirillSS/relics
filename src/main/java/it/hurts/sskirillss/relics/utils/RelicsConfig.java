@@ -38,7 +38,7 @@ public class RelicsConfig {
             LEVITATION_HEIGHT = builder.defineInRange("levitation_height", 5.0, 0, Integer.MAX_VALUE);
             LEVITATION_SPEED_MULTIPLIER = builder.defineInRange("levitation_speed_multiplier", 0.75, 0, Integer.MAX_VALUE);
             IGNITE_DURATION = builder.defineInRange("ignite_duration", 5, 0, Integer.MAX_VALUE);
-            FIRE_CONSUMPTION_COOLDOWN = builder.defineInRange("fire_consumption_cooldown", 1, 0, Integer.MAX_VALUE);
+            FIRE_CONSUMPTION_COOLDOWN = builder.defineInRange("fire_consumption_cooldown", 10, 0, Integer.MAX_VALUE);
             FIRE_CONSUMPTION_RADIUS = builder.defineInRange("fire_consumption_radius", 10, 0, Integer.MAX_VALUE);
             FIRE_CAPACITY = builder.defineInRange("fire_capacity", 100, 0, Integer.MAX_VALUE);
             builder.pop();

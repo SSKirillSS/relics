@@ -105,8 +105,8 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
                     if (player.ticksExisted % 20 == 0) NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, fire - 1);
                 }
             }
-            if (!world.isRemote() && !player.isSpectator() && player.ticksExisted % (RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_COOLDOWN.get() * 20)
-                    == 0 && fire < RelicsConfig.BlazingFlask.FIRE_CAPACITY.get()) {
+            if (!world.isRemote() && !player.isSpectator() && player.ticksExisted % RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_COOLDOWN.get() == 0
+                    && fire < RelicsConfig.BlazingFlask.FIRE_CAPACITY.get()) {
                 List<BlockPos> sphere = WorldUtils.getBlockSphere(player.getPosition(), RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_RADIUS.get());
                 for (BlockPos pos : sphere) {
                     if (world.getBlockState(pos).getBlock() instanceof AbstractFireBlock) {
