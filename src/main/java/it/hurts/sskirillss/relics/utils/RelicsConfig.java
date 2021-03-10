@@ -192,6 +192,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue STOMP_RADIUS_MULTIPLIER;
         public static ForgeConfigSpec.DoubleValue STOMP_MOTION_MULTIPLIER;
         public static ForgeConfigSpec.DoubleValue MOVEMENT_SPEED_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue ADDITIONAL_KNOCKBACK_RESISTANCE;
         public static ForgeConfigSpec.DoubleValue INCOMING_FALL_DAMAGE_MULTIPLIER;
         public static ForgeConfigSpec.DoubleValue WALL_SLIPPING_SPEED;
 
@@ -205,6 +206,7 @@ public class RelicsConfig {
             STOMP_RADIUS_MULTIPLIER = builder.defineInRange("stomp_radius_multiplier", 0.5, 0, Integer.MAX_VALUE);
             STOMP_MOTION_MULTIPLIER = builder.defineInRange("stomp_motion_multiplier", 1.01, 0, Integer.MAX_VALUE);
             MOVEMENT_SPEED_MULTIPLIER = builder.defineInRange("movement_speed_multiplier", -0.1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            ADDITIONAL_KNOCKBACK_RESISTANCE = builder.defineInRange("additional_knockback_resistance", 0.5, Integer.MIN_VALUE, Integer.MAX_VALUE);
             INCOMING_FALL_DAMAGE_MULTIPLIER = builder.defineInRange("incoming_fall_damage_multiplier", 0.0, 0, Integer.MAX_VALUE);
             WALL_SLIPPING_SPEED = builder.defineInRange("wall_slipping_speed", 0.1, 0, Integer.MAX_VALUE);
             builder.pop();

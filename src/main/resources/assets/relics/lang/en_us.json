@@ -134,6 +134,7 @@
 
   "item.relics.ice_breaker": "Ice Breaker",
   "tooltip.relics.ice_breaker.shift_1": "Causes shockwave after player falls on the ground while holding [Shift]. Grants wall slipping ability",
+  "tooltip.relics.ice_breaker.shift_2": "Increases knockback resistance and grants wall slipping ability",
 
   "block.relics.magma_stone": "Magma Stone"
 }

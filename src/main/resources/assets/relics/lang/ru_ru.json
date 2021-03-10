@@ -133,7 +133,8 @@
   "tooltip.relics.magic_mirror.invalid_location": "Точка возрождения не определена",
 
   "item.relics.ice_breaker": "Ледоколы",
-  "tooltip.relics.ice_breaker.shift_1": "Вызывают ударную волну при падении на землю с зажатой клавишей [Shift]. Позволяются скользить по стенам",
+  "tooltip.relics.ice_breaker.shift_1": "Вызывают ударную волну при падении на землю с зажатой клавишей [Shift]",
+  "tooltip.relics.ice_breaker.shift_2": "Увеличивает сопротивление отдаче и позволяет скользить по стенам",
 
   "block.relics.magma_stone": "Магмовый камень"
 }

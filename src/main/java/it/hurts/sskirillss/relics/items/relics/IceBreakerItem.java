@@ -39,6 +39,8 @@ import java.util.UUID;
 public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
     private static final AttributeModifier ICE_BREAKER_SPEED_BOOST = new AttributeModifier(UUID.fromString("90af8e8a-93aa-4b0f-8ddc-8986dd2a8461"),
             Reference.MODID + ":" + "ice_breaker_movement_speed", RelicsConfig.IceBreaker.MOVEMENT_SPEED_MULTIPLIER.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier ICE_BREAKER_KNOCKBACK_RESISTANCE = new AttributeModifier(UUID.fromString("70c6b1a0-e025-44bf-8dcd-c165c59b7eb4"),
+            Reference.MODID + ":" + "ice_breaker_knockback resistance", RelicsConfig.IceBreaker.ADDITIONAL_KNOCKBACK_RESISTANCE.get(), AttributeModifier.Operation.ADDITION);
 
     public IceBreakerItem() {
         super(new Item.Properties()
@@ -51,6 +53,7 @@ public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
     public List<ITextComponent> getShiftTooltip() {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.ice_breaker.shift_1"));
+        tooltip.add(new TranslationTextComponent("tooltip.relics.ice_breaker.shift_2"));
         return tooltip;
     }
 
@@ -66,7 +69,9 @@ public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
             PlayerEntity player = (PlayerEntity) livingEntity;
             Vector3d motion = player.getMotion();
             ModifiableAttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+            ModifiableAttributeInstance knockbackResistance = player.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
             if (!movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) movementSpeed.applyNonPersistentModifier(ICE_BREAKER_SPEED_BOOST);
+            if (!knockbackResistance.hasModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE)) knockbackResistance.applyNonPersistentModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE);
             if (player.fallDistance >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && player.isSneaking())
                 player.setMotion(motion.getX(), motion.getY() * RelicsConfig.IceBreaker.FALL_MOTION_MULTIPLIER.get(), motion.getZ());
             if (player.collidedHorizontally && player.isSneaking()) {
@@ -80,9 +85,9 @@ public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         ModifiableAttributeInstance movementSpeed = slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED);
-        if (movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) {
-            movementSpeed.removeModifier(ICE_BREAKER_SPEED_BOOST);
-        }
+        ModifiableAttributeInstance knockbackResistance = slotContext.getWearer().getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+        if (movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) movementSpeed.removeModifier(ICE_BREAKER_SPEED_BOOST);
+        if (knockbackResistance.hasModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE)) knockbackResistance.removeModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
