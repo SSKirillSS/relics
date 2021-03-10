@@ -133,7 +133,7 @@
   "tooltip.relics.magic_mirror.invalid_location": "Unknown respawn position",
 
   "item.relics.ice_breaker": "Ice Breaker",
-  "tooltip.relics.ice_breaker.shift_1": "Causes shockwave after player falls on the ground while holding [Shift]",
+  "tooltip.relics.ice_breaker.shift_1": "Causes shockwave after player falls on the ground while holding [Shift]. Grants wall slipping ability",
 
   "block.relics.magma_stone": "Magma Stone"
 }

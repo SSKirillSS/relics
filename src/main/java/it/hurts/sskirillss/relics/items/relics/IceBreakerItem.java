@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
@@ -29,6 +30,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
@@ -60,19 +62,24 @@ public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (!movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) {
-            movementSpeed.applyNonPersistentModifier(ICE_BREAKER_SPEED_BOOST);
-        }
-        if (livingEntity.fallDistance >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && livingEntity.isSneaking()) {
-            Vector3d motion = livingEntity.getMotion();
-            livingEntity.setMotion(motion.getX(), motion.getY() * RelicsConfig.IceBreaker.FALL_MOTION_MULTIPLIER.get(), motion.getZ());
+        if (livingEntity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) livingEntity;
+            Vector3d motion = player.getMotion();
+            ModifiableAttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+            if (!movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) movementSpeed.applyNonPersistentModifier(ICE_BREAKER_SPEED_BOOST);
+            if (player.fallDistance >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && player.isSneaking())
+                player.setMotion(motion.getX(), motion.getY() * RelicsConfig.IceBreaker.FALL_MOTION_MULTIPLIER.get(), motion.getZ());
+            if (player.collidedHorizontally && player.isSneaking()) {
+                player.setMotion(0, -RelicsConfig.IceBreaker.WALL_SLIPPING_SPEED.get(), 0);
+                player.fallDistance = 0;
+                player.getEntityWorld().addParticle(ParticleTypes.CRIT, player.getPosX(), player.getPosY() - 0.15D, player.getPosZ(), 0, 0, 0);
+            }
         }
     }
 
     @Override
-    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        ModifiableAttributeInstance movementSpeed = slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED);
         if (movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) {
             movementSpeed.removeModifier(ICE_BREAKER_SPEED_BOOST);
         }
