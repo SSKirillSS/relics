@@ -36,6 +36,9 @@
   "tooltip.relics.spatial_sign.shift_1": "After using stores current player position and automatically teleports him to the stored destination after certain time",
   "tooltip.relics.spatial_sign.shift_2": "Taking fatal damage with active sign in inventory will save your life and teleport you to the stored destination, but breaks relic",
 
+  "item.relics.spider_necklace": "Spider Necklace",
+  "tooltip.relics.spider_necklace.shift_1": "Grants ability to climb the walls",
+
   "item.relics.reflection_necklace": "Reflection Necklace",
   "tooltip.relics.reflection_necklace.shift_1": "Slowly accumulates charges to fully reflect projectiles and incoming damage",
 

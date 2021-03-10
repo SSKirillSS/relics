@@ -36,6 +36,9 @@
   "tooltip.relics.spatial_sign.shift_1": "Телепортирует к запомненной позиции спустя определенное время после активации",
   "tooltip.relics.spatial_sign.shift_2": "Получение фатального урона с активированной печатью в инвентаре сохранит жизнь и телепортирует на запомненную позицию, разрушив реликвию",
 
+  "item.relics.spider_necklace": "Паучье ожерелье",
+  "tooltip.relics.spider_necklace.shift_1": "Позволяет карабкаться по стенам",
+
   "item.relics.reflection_necklace": "Отражающий амулет",
   "tooltip.relics.reflection_necklace.shift_1": "Медленно накапливает заряды для полного отражения снарядов и входящего урона",
 

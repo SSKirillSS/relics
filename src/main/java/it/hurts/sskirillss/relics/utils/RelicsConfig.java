@@ -405,6 +405,16 @@ public class RelicsConfig {
         }
     }
 
+    public static class SpiderNecklace {
+        public static ForgeConfigSpec.DoubleValue CLIMBING_SPEED;
+
+        private static void setupSpiderNecklaceConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("spider_necklace");
+            CLIMBING_SPEED = builder.defineInRange("climbing_speed", 0.2, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class StellarCatalyst {
         public static ForgeConfigSpec.DoubleValue FALLING_STAR_SUMMON_CHANCE;
         public static ForgeConfigSpec.DoubleValue FALLING_STAR_DAMAGE_MULTIPLIER;
@@ -448,6 +458,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue SOUL_DEVOURER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPACE_DISSECTOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPATIAL_SIGN_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue SPIDER_NECKLACE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue STELLAR_CATALYST_GEN_CHANCE;
 
         private static void setupWorldgenConfig(ForgeConfigSpec.Builder builder) {
@@ -477,6 +488,7 @@ public class RelicsConfig {
             SOUL_DEVOURER_GEN_CHANCE = builder.defineInRange("soul_devourer_gen_chance", 0.05, 0, 1);
             SPACE_DISSECTOR_GEN_CHANCE = builder.defineInRange("space_dissector_gen_chance", 0.05, 0, 1);
             SPATIAL_SIGN_GEN_CHANCE = builder.defineInRange("spatial_sign_gen_chance", 0.25, 0, 1);
+            SPIDER_NECKLACE_GEN_CHANCE = builder.defineInRange("spider_necklace_gen_chance", 0.25, 0, 1);
             STELLAR_CATALYST_GEN_CHANCE = builder.defineInRange("stellar_catalyst_gen_chance", 0.05, 0, 1);
 
             builder.pop();
@@ -518,6 +530,7 @@ public class RelicsConfig {
         SoulDevourer.setupSoulDevourerConfig(builder);
         SpaceDissector.setupSpaceDissectorConfig(builder);
         SpatialSign.setupSpatialSignConfig(builder);
+        SpiderNecklace.setupSpiderNecklaceConfig(builder);
         StellarCatalyst.setupStellarCatalystConfig(builder);
 
         builder.pop();
