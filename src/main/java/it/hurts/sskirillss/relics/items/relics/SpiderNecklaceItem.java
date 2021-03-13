@@ -27,8 +27,8 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class SpiderNecklace extends Item implements ICurioItem, IHasTooltip {
-    public SpiderNecklace() {
+public class SpiderNecklaceItem extends Item implements ICurioItem, IHasTooltip {
+    public SpiderNecklaceItem() {
         super(new Item.Properties()
                 .group(RelicsTab.RELICS_TAB)
                 .maxStackSize(1)
