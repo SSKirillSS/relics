@@ -35,7 +35,10 @@
   "tooltip.relics.spatial_sign.tooltip_2": "Tempo: %1$s",
   "tooltip.relics.spatial_sign.shift_1": "Teleporta para a posição memorizada 30 segundos após a ativação",
   "tooltip.relics.spatial_sign.shift_2": "Receber dano fatal com o 'Selo Espacial' ativado no inventário salvará a vida do usuário e o teletransportará para a posição memorizada, destruindo a relíquia.",
-
+  
+  "item.relics.spider_necklace": "Colar de Aranha",
+  "tooltip.relics.spider_necklace.shift_1": "Concede capacidade de escalar paredes",
+  
   "item.relics.reflection_necklace": "Colar Reflexivo",
   "tooltip.relics.reflection_necklace.shift_1": "Acumula cargas lentamente para refletir projéteis e danos recebidos",
 
@@ -130,7 +133,8 @@
   "tooltip.relics.magic_mirror.invalid_location": "Ponto de desova desconhecida",
 
   "item.relics.ice_breaker": "Quebra-Gelo",
-  "tooltip.relics.ice_breaker.shift_1": "Causa uma onda de choque após o jogador cair no chão enquanto segura [Shift]",
+  "tooltip.relics.ice_breaker.shift_1": "Causa uma onda de choque após o jogador cair no chão enquanto segura [Shift]. Concede capacidade de deslizar na parede",
+  "tooltip.relics.ice_breaker.shift_2": "Aumenta a resistência ao repulção e concede a capacidade de deslizar na parede",
 
   "block.relics.magma_stone": "Pedra de Magma"
 }
