@@ -428,9 +428,9 @@ public class RelicsConfig {
 
         private static void setupSporeSackConfig(ForgeConfigSpec.Builder builder) {
             builder.push("spore_sack");
-            SPORE_CHANCE = builder.defineInRange("spore_chance", 0.2, 0, 1);
+            SPORE_CHANCE = builder.defineInRange("spore_chance", 0.3, 0, 1);
             SPORE_RADIUS = builder.defineInRange("spore_radius", 3, 0, Integer.MAX_VALUE);
-            SPORE_COOLDOWN = builder.defineInRange("spore_cooldown", 10, 0, Integer.MAX_VALUE);
+            SPORE_COOLDOWN = builder.defineInRange("spore_cooldown", 8, 0, Integer.MAX_VALUE);
             POISON_LEVEL = builder.defineInRange("poison_level", 3, 0, Integer.MAX_VALUE);
             POISON_DURATION = builder.defineInRange("poison_duration", 5, 0, Integer.MAX_VALUE);
             builder.pop();
