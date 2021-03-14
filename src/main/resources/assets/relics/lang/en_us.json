@@ -39,6 +39,9 @@
   "item.relics.spider_necklace": "Spider Necklace",
   "tooltip.relics.spider_necklace.shift_1": "Grants ability to climb the walls",
 
+  "item.relics.spore_sack": "Spore Sack",
+  "tooltip.relics.spore_sack.shift_1": "Grants ability to disperse poisonous spores when a projectile hits block or mob",
+
   "item.relics.reflection_necklace": "Reflection Necklace",
   "tooltip.relics.reflection_necklace.shift_1": "Slowly accumulates charges to fully reflect projectiles and incoming damage",
 

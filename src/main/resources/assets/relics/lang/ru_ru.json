@@ -39,6 +39,9 @@
   "item.relics.spider_necklace": "Паучье ожерелье",
   "tooltip.relics.spider_necklace.shift_1": "Позволяет карабкаться по стенам",
 
+  "item.relics.spore_sack": "Мешок со спорами",
+  "tooltip.relics.spore_sack.shift_1": "Наделяет способностью рассеивать ядовитые споры при попадании снарядом в блок или моба",
+
   "item.relics.reflection_necklace": "Отражающий амулет",
   "tooltip.relics.reflection_necklace.shift_1": "Медленно накапливает заряды для полного отражения снарядов и входящего урона",
 

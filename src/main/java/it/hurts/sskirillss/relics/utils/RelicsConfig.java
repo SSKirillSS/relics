@@ -419,6 +419,24 @@ public class RelicsConfig {
         }
     }
 
+    public static class SporeSack {
+        public static ForgeConfigSpec.DoubleValue SPORE_CHANCE;
+        public static ForgeConfigSpec.IntValue SPORE_RADIUS;
+        public static ForgeConfigSpec.IntValue SPORE_COOLDOWN;
+        public static ForgeConfigSpec.IntValue POISON_LEVEL;
+        public static ForgeConfigSpec.IntValue POISON_DURATION;
+
+        private static void setupSporeSackConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("spore_sack");
+            SPORE_CHANCE = builder.defineInRange("spore_chance", 0.2, 0, 1);
+            SPORE_RADIUS = builder.defineInRange("spore_radius", 3, 0, Integer.MAX_VALUE);
+            SPORE_COOLDOWN = builder.defineInRange("spore_cooldown", 10, 0, Integer.MAX_VALUE);
+            POISON_LEVEL = builder.defineInRange("poison_level", 3, 0, Integer.MAX_VALUE);
+            POISON_DURATION = builder.defineInRange("poison_duration", 5, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class StellarCatalyst {
         public static ForgeConfigSpec.DoubleValue FALLING_STAR_SUMMON_CHANCE;
         public static ForgeConfigSpec.DoubleValue FALLING_STAR_DAMAGE_MULTIPLIER;
@@ -463,6 +481,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue SPACE_DISSECTOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPATIAL_SIGN_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPIDER_NECKLACE_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue SPORE_SACK_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue STELLAR_CATALYST_GEN_CHANCE;
 
         private static void setupWorldgenConfig(ForgeConfigSpec.Builder builder) {
@@ -493,6 +512,7 @@ public class RelicsConfig {
             SPACE_DISSECTOR_GEN_CHANCE = builder.defineInRange("space_dissector_gen_chance", 0.05, 0, 1);
             SPATIAL_SIGN_GEN_CHANCE = builder.defineInRange("spatial_sign_gen_chance", 0.25, 0, 1);
             SPIDER_NECKLACE_GEN_CHANCE = builder.defineInRange("spider_necklace_gen_chance", 0.25, 0, 1);
+            SPORE_SACK_GEN_CHANCE = builder.defineInRange("spore_sack_gen_chance", 0.3, 0, 1);
             STELLAR_CATALYST_GEN_CHANCE = builder.defineInRange("stellar_catalyst_gen_chance", 0.05, 0, 1);
 
             builder.pop();
@@ -535,6 +555,7 @@ public class RelicsConfig {
         SpaceDissector.setupSpaceDissectorConfig(builder);
         SpatialSign.setupSpatialSignConfig(builder);
         SpiderNecklace.setupSpiderNecklaceConfig(builder);
+        SporeSack.setupSporeSackConfig(builder);
         StellarCatalyst.setupStellarCatalystConfig(builder);
 
         builder.pop();

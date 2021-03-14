@@ -135,6 +135,8 @@ public class DungeonLootModifier extends LootModifier {
                     generatedLoot.add(new ItemStack(ItemRegistry.CAMOUFLAGE_RING.get()));
                 if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.FRAGRANT_FLOWER_GEN_CHANCE.get())
                     generatedLoot.add(new ItemStack(ItemRegistry.FRAGRANT_FLOWER.get()));
+                if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPORE_SACK_GEN_CHANCE.get())
+                    generatedLoot.add(new ItemStack(ItemRegistry.SPORE_SACK.get()));
             }
         }
 
