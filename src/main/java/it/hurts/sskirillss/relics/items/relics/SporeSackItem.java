@@ -14,6 +14,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -43,6 +45,8 @@ public class SporeSackItem extends Item implements ICurioItem, IHasTooltip {
                                 && player.getEntityWorld().getRandom().nextFloat() <= RelicsConfig.SporeSack.SPORE_CHANCE.get()) {
                             ParticleUtils.createBall(new CircleTintData(new Color(0.25F, 1.0F, 0.0F), 0.5F, 40, 0.94F, true),
                                     projectile.getPositionVec(), player.getEntityWorld(), 3, 0.1F);
+                            player.getEntityWorld().playSound(null, projectile.getPosition(), SoundEvents.BLOCK_FIRE_EXTINGUISH,
+                                    SoundCategory.PLAYERS, 1.0F, 0.5F);
                             player.getCooldownTracker().setCooldown(ItemRegistry.SPORE_SACK.get(), RelicsConfig.SporeSack.SPORE_COOLDOWN.get() * 20);
                             for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, projectile.getBoundingBox()
                                     .grow(RelicsConfig.SporeSack.SPORE_RADIUS.get()))) {
