@@ -85,7 +85,7 @@ public class ElytraBoosterItem extends Item implements ICurioItem, IHasTooltip {
                     for (AreaEffectCloudEntity cloud : player.getEntityWorld().getEntitiesWithinAABB(AreaEffectCloudEntity.class,
                             player.getBoundingBox().grow(RelicsConfig.ElytraBooster.BREATH_CONSUMPTION_RADIUS.get()))) {
                         if (cloud.getParticleData() == ParticleTypes.DRAGON_BREATH) {
-                            if (player.ticksExisted % 10 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
+                            if (player.ticksExisted % 5 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
                             if (cloud.getRadius() <= 0) cloud.remove();
                             cloud.setRadius(cloud.getRadius() - RelicsConfig.ElytraBooster.BREATH_CONSUMPTION_AMOUNT.get().floatValue());
                             Vector3d direction = player.getPositionVec().add(0, 1, 0).subtract(cloud.getPositionVec()).normalize();
