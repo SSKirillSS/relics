@@ -52,11 +52,11 @@ public class ElytraBoosterItem extends Item implements ICurioItem, IHasTooltip {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity instanceof PlayerEntity && livingEntity.isSneaking()) {
+        if (livingEntity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) livingEntity;
             int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
             if (player.isElytraFlying()) {
-                if (breath > 0) {
+                if (player.isSneaking() && breath > 0) {
                     Vector3d look = player.getLookVec();
                     Vector3d motion = player.getMotion();
                     player.setMotion(motion.add(look.x * 0.1D + (look.x * RelicsConfig.ElytraBooster.MOVEMENT_SPEED_MULTIPLIER.get() - motion.x) * 0.5D,
@@ -78,22 +78,23 @@ public class ElytraBoosterItem extends Item implements ICurioItem, IHasTooltip {
                 }
             } else {
                 if (breath < RelicsConfig.ElytraBooster.BREATH_CAPACITY.get()) {
-                    if (player.getEntityWorld().getDimensionKey() == World.THE_END
-                            && player.ticksExisted % RelicsConfig.ElytraBooster.BREATH_REGENERATION_COOLDOWN.get() * 20 == 0) {
+                    if (player.getEntityWorld().getDimensionKey() == World.THE_END && player.ticksExisted %
+                            (RelicsConfig.ElytraBooster.BREATH_REGENERATION_COOLDOWN.get() * 20) == 0)
                         NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
-                    }
-                    for (AreaEffectCloudEntity cloud : player.getEntityWorld().getEntitiesWithinAABB(AreaEffectCloudEntity.class,
-                            player.getBoundingBox().grow(RelicsConfig.ElytraBooster.BREATH_CONSUMPTION_RADIUS.get()))) {
-                        if (cloud.getParticleData() == ParticleTypes.DRAGON_BREATH) {
-                            if (player.ticksExisted % 5 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
-                            if (cloud.getRadius() <= 0) cloud.remove();
-                            cloud.setRadius(cloud.getRadius() - RelicsConfig.ElytraBooster.BREATH_CONSUMPTION_AMOUNT.get().floatValue());
-                            Vector3d direction = player.getPositionVec().add(0, 1, 0).subtract(cloud.getPositionVec()).normalize();
-                            player.getEntityWorld().addParticle(new CircleTintData(new Color(0.35F, 0.0F, 1.0F),
-                                            (float) player.getPositionVec().add(0, 1, 0).distanceTo(cloud.getPositionVec()) * 0.075F,
-                                            (int) player.getPositionVec().add(0, 1, 0).distanceTo(cloud.getPositionVec()) * 5,
-                                            0.95F, false), cloud.getPosX(), cloud.getPosY(), cloud.getPosZ(),
-                                    direction.x * 0.2F, direction.y * 0.2F, direction.z * 0.2F);
+                    if (player.isSneaking()) {
+                        for (AreaEffectCloudEntity cloud : player.getEntityWorld().getEntitiesWithinAABB(AreaEffectCloudEntity.class,
+                                player.getBoundingBox().grow(RelicsConfig.ElytraBooster.BREATH_CONSUMPTION_RADIUS.get()))) {
+                            if (cloud.getParticleData() == ParticleTypes.DRAGON_BREATH) {
+                                if (player.ticksExisted % 5 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
+                                if (cloud.getRadius() <= 0) cloud.remove();
+                                cloud.setRadius(cloud.getRadius() - RelicsConfig.ElytraBooster.BREATH_CONSUMPTION_AMOUNT.get().floatValue());
+                                Vector3d direction = player.getPositionVec().add(0, 1, 0).subtract(cloud.getPositionVec()).normalize();
+                                player.getEntityWorld().addParticle(new CircleTintData(new Color(0.35F, 0.0F, 1.0F),
+                                                (float) player.getPositionVec().add(0, 1, 0).distanceTo(cloud.getPositionVec()) * 0.075F,
+                                                (int) player.getPositionVec().add(0, 1, 0).distanceTo(cloud.getPositionVec()) * 5,
+                                                0.95F, false), cloud.getPosX(), cloud.getPosY(), cloud.getPosZ(),
+                                        direction.x * 0.2F, direction.y * 0.2F, direction.z * 0.2F);
+                            }
                         }
                     }
                 }
