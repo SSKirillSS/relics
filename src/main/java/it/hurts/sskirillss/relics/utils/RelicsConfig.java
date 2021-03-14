@@ -104,6 +104,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue BREATH_CONSUMPTION_RADIUS;
         public static ForgeConfigSpec.IntValue BREATH_CAPACITY;
         public static ForgeConfigSpec.DoubleValue BREATH_CONSUMPTION_AMOUNT;
+        public static ForgeConfigSpec.IntValue BREATH_REGENERATION_COOLDOWN;
 
         private static void setupElytraBoosterConfig(ForgeConfigSpec.Builder builder) {
             builder.push("elytra_booster");
@@ -113,6 +114,7 @@ public class RelicsConfig {
             BREATH_CONSUMPTION_RADIUS = builder.defineInRange("breath_consumption_radius", 10.0, 0, Integer.MAX_VALUE);
             BREATH_CAPACITY = builder.defineInRange("breath_capacity", 1000, 0, Integer.MAX_VALUE);
             BREATH_CONSUMPTION_AMOUNT = builder.defineInRange("breath_consumption_amount", 0.02, 0, Integer.MAX_VALUE);
+            BREATH_REGENERATION_COOLDOWN = builder.defineInRange("breath_regeneration_cooldown", 2, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }
