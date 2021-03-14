@@ -46,8 +46,12 @@ public class SporeSackItem extends Item implements ICurioItem, IHasTooltip {
                             player.getCooldownTracker().setCooldown(ItemRegistry.SPORE_SACK.get(), RelicsConfig.SporeSack.SPORE_COOLDOWN.get() * 20);
                             for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, projectile.getBoundingBox()
                                     .grow(RelicsConfig.SporeSack.SPORE_RADIUS.get()))) {
-                                if (entity != player) entity.addPotionEffect(new EffectInstance(Effects.POISON, RelicsConfig.SporeSack.POISON_DURATION.get() * 20,
-                                        RelicsConfig.SporeSack.POISON_LEVEL.get()));
+                                if (entity != player) {
+                                    entity.addPotionEffect(new EffectInstance(Effects.POISON, RelicsConfig.SporeSack.POISON_DURATION.get() * 20,
+                                            RelicsConfig.SporeSack.POISON_AMPLIFIER.get()));
+                                    entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, RelicsConfig.SporeSack.SLOWNESS_DURATION.get() * 20,
+                                            RelicsConfig.SporeSack.SLOWNESS_AMPLIFIER.get()));
+                                }
                             }
                         }
                     }

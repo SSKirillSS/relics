@@ -423,16 +423,20 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue SPORE_CHANCE;
         public static ForgeConfigSpec.IntValue SPORE_RADIUS;
         public static ForgeConfigSpec.IntValue SPORE_COOLDOWN;
-        public static ForgeConfigSpec.IntValue POISON_LEVEL;
+        public static ForgeConfigSpec.IntValue POISON_AMPLIFIER;
         public static ForgeConfigSpec.IntValue POISON_DURATION;
+        public static ForgeConfigSpec.IntValue SLOWNESS_AMPLIFIER;
+        public static ForgeConfigSpec.IntValue SLOWNESS_DURATION;
 
         private static void setupSporeSackConfig(ForgeConfigSpec.Builder builder) {
             builder.push("spore_sack");
             SPORE_CHANCE = builder.defineInRange("spore_chance", 0.3, 0, 1);
             SPORE_RADIUS = builder.defineInRange("spore_radius", 3, 0, Integer.MAX_VALUE);
             SPORE_COOLDOWN = builder.defineInRange("spore_cooldown", 8, 0, Integer.MAX_VALUE);
-            POISON_LEVEL = builder.defineInRange("poison_level", 3, 0, Integer.MAX_VALUE);
+            POISON_AMPLIFIER = builder.defineInRange("poison_amplifier", 2, 0, Integer.MAX_VALUE);
             POISON_DURATION = builder.defineInRange("poison_duration", 5, 0, Integer.MAX_VALUE);
+            SLOWNESS_AMPLIFIER = builder.defineInRange("slowness_amplifier", 0, 0, Integer.MAX_VALUE);
+            SLOWNESS_DURATION = builder.defineInRange("slowness_duration", 5, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }
