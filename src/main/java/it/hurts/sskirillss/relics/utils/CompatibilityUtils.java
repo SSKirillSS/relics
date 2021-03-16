@@ -8,8 +8,10 @@ import net.minecraftforge.versions.forge.ForgeVersion;
 
 public class CompatibilityUtils {
     public static boolean isValidForgeVersion() {
-        String[] version = ForgeVersion.getVersion().split("\\.");
-        return Integer.parseInt(version[0] + version[1] + version[2]) >= 36014;
+        String[] s1 = ForgeVersion.getVersion().split("\\.");
+        String s2 = s1[0] + s1[1] + s1[2];
+        while (s2.length() < 5) s2 = String.valueOf(Integer.parseInt(s2) * 10);
+        return Integer.parseInt(s2) >= 36014;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
