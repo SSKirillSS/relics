@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.GrassBlock;
 import net.minecraft.block.IGrowable;
@@ -66,9 +67,10 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) livingEntity;
+            World world = player.getEntityWorld();
             int nectar = NBTUtils.getInt(stack, TAG_NECTAR_AMOUNT, 0);
             int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
-            for (BeeEntity bee : player.getEntityWorld().getEntitiesWithinAABB(BeeEntity.class,
+            for (BeeEntity bee : world.getEntitiesWithinAABB(BeeEntity.class,
                     player.getBoundingBox().grow(RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get(),
                             RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get()))) {
                 if (bee.getAngerTarget() != null && bee.getAngerTarget().equals(player.getUniqueID())) {
@@ -82,7 +84,7 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
                     if (player.getPositionVec().distanceTo(bee.getPositionVec()) < RelicsConfig.FragrantFlower.NECTAR_CONSUMPTION_RADIUS.get()) {
                         NBTUtils.setInt(stack, TAG_NECTAR_AMOUNT, nectar + 1);
                         bee.onHoneyDelivered();
-                        player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
+                        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
                                 SoundEvents.ENTITY_BEE_POLLINATE, SoundCategory.NEUTRAL, 1.0F, 1.0F);
                     }
                 }
@@ -95,7 +97,7 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
                         float angle = (0.01F * (player.ticksExisted * 3 + i * 125));
                         double extraX = (double) (radius * MathHelper.sin((float) (Math.PI + angle))) + player.getPosX();
                         double extraZ = (double) (radius * MathHelper.cos(angle)) + player.getPosZ();
-                        player.getEntityWorld().addParticle(new CircleTintData(
+                        world.addParticle(new CircleTintData(
                                         new Color(1.0F, 0.4F, 0.7F), 0.5F,
                                         30, 0.95F, false),
                                 extraX, extraY, extraZ, 0F, 0F, 0F);
@@ -104,7 +106,7 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
                         float angle = (-0.02F * (player.ticksExisted * 3 + i * 160));
                         double extraX = (double) (radius * 0.5F * MathHelper.sin((float) (Math.PI + angle))) + player.getPosX();
                         double extraZ = (double) (radius * 0.5F * MathHelper.cos(angle)) + player.getPosZ();
-                        player.getEntityWorld().addParticle(new CircleTintData(
+                        world.addParticle(new CircleTintData(
                                         new Color(0.2F, 1.0F, 0.0F), 0.5F,
                                         40, 0.95F, false),
                                 extraX, extraY, extraZ, 0F, 0F, 0F);
@@ -120,27 +122,28 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
                             ParticleUtils.createBall(new CircleTintData(
                                             new Color(0.2F, 1.0F, 0.0F), 0.5F,
                                             40, 0.93F, false),
-                                    player.getPositionVec(), player.getEntityWorld(), 2, 0.3F);
+                                    player.getPositionVec(), world, 2, 0.3F);
                             for (BlockPos pos : sphere) {
-                                BlockState state = player.getEntityWorld().getBlockState(pos);
-                                if (state.getBlock() instanceof IGrowable && !(state.getBlock() instanceof GrassBlock)) {
-                                    IGrowable plant = (IGrowable) state.getBlock();
-                                    if (!player.getEntityWorld().isRemote()) {
+                                BlockState state = world.getBlockState(pos);
+                                Block block = state.getBlock();
+                                if (block instanceof IGrowable && !(block instanceof GrassBlock)) {
+                                    IGrowable plant = (IGrowable) block;
+                                    if (!world.isRemote()) {
                                         for (int i = 0; i < RelicsConfig.FragrantFlower.GROW_EFFICIENCY.get(); i++) {
-                                            state = player.getEntityWorld().getBlockState(pos);
-                                            if (plant.canGrow(player.getEntityWorld(), pos, state, player.getEntityWorld().isRemote)
-                                                    && plant.canUseBonemeal(player.getEntityWorld(), player.getEntityWorld().rand, pos, state)) {
-                                                plant.grow((ServerWorld) player.getEntityWorld(),
-                                                        player.getEntityWorld().getRandom(), pos, state);
+                                            state = world.getBlockState(pos);
+                                            if (plant.canGrow(world, pos, state, world.isRemote)
+                                                    && plant.canUseBonemeal(world, world.rand, pos, state)) {
+                                                plant.grow((ServerWorld) world,
+                                                        world.getRandom(), pos, state);
                                             }
                                         }
                                     }
-                                    if (player.getEntityWorld().isRemote()) {
-                                        BoneMealItem.spawnBonemealParticles(player.getEntityWorld(), pos, 0);
+                                    if (world.isRemote) {
+                                        BoneMealItem.spawnBonemealParticles(world, pos, 0);
                                     }
                                 }
                             }
-                            for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
+                            for (LivingEntity entity : world.getEntitiesWithinAABB(LivingEntity.class,
                                     player.getBoundingBox().grow(radius))) {
                                 if (entity.isEntityUndead()) {
                                     entity.attackEntityFrom(DamageSource.causePlayerDamage(player),
