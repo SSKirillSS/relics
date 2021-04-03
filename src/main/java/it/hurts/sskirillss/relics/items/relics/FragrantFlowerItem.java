@@ -130,7 +130,6 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
                                     IGrowable plant = (IGrowable) block;
                                     if (!world.isRemote()) {
                                         for (int i = 0; i < RelicsConfig.FragrantFlower.GROW_EFFICIENCY.get(); i++) {
-                                            state = world.getBlockState(pos);
                                             if (plant.canGrow(world, pos, state, world.isRemote)
                                                     && plant.canUseBonemeal(world, world.rand, pos, state)) {
                                                 plant.grow((ServerWorld) world,
