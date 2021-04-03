@@ -135,7 +135,9 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
                                             }
                                         }
                                     }
-                                    BoneMealItem.spawnBonemealParticles(player.getEntityWorld(), pos, 0);
+                                    if (player.getEntityWorld().isRemote()) {
+                                        BoneMealItem.spawnBonemealParticles(player.getEntityWorld(), pos, 0);
+                                    }
                                 }
                             }
                             for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
