@@ -172,18 +172,20 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
 
         @SubscribeEvent
         public static void onOverlayRender(RenderGameOverlayEvent.Pre event) {
-            PlayerEntity player = (PlayerEntity) Minecraft.getInstance().getRenderViewEntity();
-            if (player != null && !player.isCreative() && !player.isSpectator()
-                    && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), player).isPresent()) {
-                ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), player).get().getRight();
-                Minecraft.getInstance().getTextureManager().bindTexture(HUD_TEXTURE);
-                int x = event.getWindow().getScaledWidth() / 2 - 91;
-                int y = event.getWindow().getScaledHeight() - 39;
-                for (int i = 0; i < NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0); i++) {
-                    AbstractGui.blit(event.getMatrixStack(), x, y, 9, 9, 0F, 0F, 1, 1, 1, 1);
-                    x += 8;
+            if (Minecraft.getInstance().getRenderViewEntity() instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) Minecraft.getInstance().getRenderViewEntity();
+                if (player != null && !player.isCreative() && !player.isSpectator()
+                        && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), player).isPresent()) {
+                    ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), player).get().getRight();
+                    Minecraft.getInstance().getTextureManager().bindTexture(HUD_TEXTURE);
+                    int x = event.getWindow().getScaledWidth() / 2 - 91;
+                    int y = event.getWindow().getScaledHeight() - 39;
+                    for (int i = 0; i < NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0); i++) {
+                        AbstractGui.blit(event.getMatrixStack(), x, y, 9, 9, 0F, 0F, 1, 1, 1, 1);
+                        x += 8;
+                    }
+                    Minecraft.getInstance().textureManager.bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                 }
-                Minecraft.getInstance().textureManager.bindTexture(AbstractGui.GUI_ICONS_LOCATION);
             }
         }
 
