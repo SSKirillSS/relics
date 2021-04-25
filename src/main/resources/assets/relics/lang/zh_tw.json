@@ -31,7 +31,7 @@
   "item.relics.chalk": "白土",
 
   "item.relics.spatial_sign": "時空符號",
-  "tooltip.relics.spatial_sign.tooltip_1": "Stored destination: %1$s",
+  "tooltip.relics.spatial_sign.tooltip_1": "Stored destination: X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.spatial_sign.tooltip_2": "Time left: %1$s",
   "tooltip.relics.spatial_sign.shift_1": "使用後,紀錄當前玩家位置,並在一定時間後自動傳送到紀錄位置",
   "tooltip.relics.spatial_sign.shift_2": "受到致命傷害時庫存中的時空標示符拯救你並傳送紀錄位置,但會破壞遺物",

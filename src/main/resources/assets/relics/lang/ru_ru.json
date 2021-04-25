@@ -31,7 +31,7 @@
   "item.relics.chalk": "Мел",
 
   "item.relics.spatial_sign": "Пространственная печать",
-  "tooltip.relics.spatial_sign.tooltip_1": "Позиция: %1$s",
+  "tooltip.relics.spatial_sign.tooltip_1": "Позиция: X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.spatial_sign.tooltip_2": "Время: %1$s",
   "tooltip.relics.spatial_sign.shift_1": "Телепортирует к запомненной позиции спустя определенное время после активации",
   "tooltip.relics.spatial_sign.shift_2": "Получение фатального урона с активированной печатью в инвентаре сохранит жизнь и телепортирует на запомненную позицию, разрушив реликвию",
