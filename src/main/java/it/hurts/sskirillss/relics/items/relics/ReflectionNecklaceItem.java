@@ -121,6 +121,7 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
                 if (NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) > 0
                         && event.getSource().getTrueSource() instanceof LivingEntity) {
                     LivingEntity attacker = (LivingEntity) event.getSource().getTrueSource();
+                    if (attacker == null) return;
                     if (player.getPositionVec().distanceTo(attacker.getPositionVec()) < RelicsConfig.ReflectionNecklace.MAX_THROW_DISTANCE.get()) {
                         Vector3d motion = attacker.getPositionVec().subtract(player.getPositionVec()).normalize().mul(2F, 1.5F, 2F);
                         if (attacker instanceof PlayerEntity) {
@@ -132,7 +133,8 @@ public class ReflectionNecklaceItem extends Item implements ICurioItem, IHasTool
                                 SoundEvents.ENTITY_WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                         event.setCanceled(true);
                     }
-                    attacker.attackEntityFrom(DamageSource.causePlayerDamage(player), event.getAmount() * RelicsConfig.ReflectionNecklace.REFLECTION_DAMAGE_MULTIPLIER.get().floatValue());
+                    if (attacker != player) attacker.attackEntityFrom(DamageSource.causePlayerDamage(player),
+                            event.getAmount() * RelicsConfig.ReflectionNecklace.REFLECTION_DAMAGE_MULTIPLIER.get().floatValue());
                     NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) - 1);
                 }
             }
