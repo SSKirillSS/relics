@@ -27,6 +27,8 @@ public class DungeonLootModifier extends LootModifier {
     @Nonnull
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
+        if (!RelicsConfig.RelicsWorldgen.RELICS_WORLDGEN_ENABLED.get() || !CompatibilityUtils.isValidForgeVersion()) return generatedLoot;
+
         ResourceLocation id = context.getQueriedLootTableId();
         if (id.equals(LootTables.CHESTS_DESERT_PYRAMID) || id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SCARAB_TALISMAN_GEN_CHANCE.get())
