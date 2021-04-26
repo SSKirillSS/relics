@@ -44,22 +44,20 @@ public class MagicMirrorItem extends Item implements IHasTooltip {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if (handIn == Hand.MAIN_HAND && !playerIn.getCooldownTracker().hasCooldown(ItemRegistry.MAGIC_MIRROR.get())) {
-            if (!worldIn.isRemote()) {
-                ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;
-                BlockPos pos = serverPlayer.func_241140_K_();
-                if (pos != null) {
-                    EntityUtils.teleportWithMount(playerIn, worldIn.getDimensionKey() == serverPlayer.func_241141_L_()
-                                    ? (ServerWorld) worldIn : serverPlayer.getServer().getWorld(serverPlayer.func_241141_L_()),
-                            new Vector3d(pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F));
-                    worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(),
-                            SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    playerIn.getCooldownTracker().setCooldown(ItemRegistry.MAGIC_MIRROR.get(), RelicsConfig.MagicMirror.USAGE_COOLDOWN.get() * 20);
-                } else {
-                    playerIn.sendStatusMessage(new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_location"), true);
-                }
-            }
-        }
+        ItemStack stack = playerIn.getHeldItem(handIn);
+        if (playerIn.getCooldownTracker().hasCooldown(ItemRegistry.MAGIC_MIRROR.get())
+                || worldIn.isRemote()) return ActionResult.resultFail(stack);
+        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;
+        BlockPos pos = serverPlayer.func_241140_K_();
+        ServerWorld world = worldIn.getDimensionKey() == serverPlayer.func_241141_L_()
+                ? (ServerWorld) worldIn : serverPlayer.getServer().getWorld(serverPlayer.func_241141_L_());
+        if (pos != null && world != null) {
+            EntityUtils.teleportWithMount(playerIn, world, new Vector3d(pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F));
+            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(),
+                    SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            if (!playerIn.abilities.isCreativeMode) playerIn.getCooldownTracker().setCooldown(ItemRegistry.MAGIC_MIRROR.get(),
+                    RelicsConfig.MagicMirror.USAGE_COOLDOWN.get() * 20);
+        } else playerIn.sendStatusMessage(new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_location"), true);
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 }
