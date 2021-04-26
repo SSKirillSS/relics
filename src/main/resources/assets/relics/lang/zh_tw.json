@@ -110,6 +110,8 @@
   "tooltip.relics.bastion_ring.shift_1": "殺死豬布林時可以定位最近的堡壘",
 
   "item.relics.chorus_inhibitor": "歌萊抑符",
+  "tooltip.relics.chorus_inhibitor.tooltip_1": "Stored destination: X:%1$s Y:%2$s Z:%3$s",
+  "tooltip.relics.chorus_inhibitor.tooltip_2": "Time left: %1$s",
   "tooltip.relics.chorus_inhibitor.shift_1": "記住使用歌萊果的位置,並在一定時間後返回",
   "tooltip.relics.chorus_inhibitor.shift_2": "在時間用盡之前使用合唱水果會增加額外時間",
   "tooltip.relics.chorus_inhibitor.shift_3": "完全消除遠距攻擊的傷害",

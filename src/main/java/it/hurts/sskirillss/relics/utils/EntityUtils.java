@@ -22,14 +22,13 @@ public class EntityUtils {
     }
 
     public static void teleportWithMount(Entity entity, ServerWorld targetWorld, Vector3d targetPos) {
+        if (targetWorld == null) return;
         if (entity.getRidingEntity() != null) {
             Entity mount = entity.getRidingEntity();
             entity.stopRiding();
             if (entity.getEntityWorld() != targetWorld) entity.changeDimension(targetWorld);
             else mount.setPositionAndUpdate(targetPos.getX(), targetPos.getY(), targetPos.getZ());
-        } else {
-            if (entity.getEntityWorld() != targetWorld) entity.changeDimension(targetWorld);
-        }
+        } else if (entity.getEntityWorld() != targetWorld) entity.changeDimension(targetWorld);
         entity.setPositionAndUpdate(targetPos.getX(), targetPos.getY(), targetPos.getZ());
     }
 
@@ -62,7 +61,7 @@ public class EntityUtils {
         double d0 = distance * distance;
         Entity entity = null;
         Vector3d vector3d = null;
-        for(Entity entity1 : world.getEntitiesInAABBexcluding(shooter, shooter.getBoundingBox()
+        for (Entity entity1 : world.getEntitiesInAABBexcluding(shooter, shooter.getBoundingBox()
                 .expand(shooter.getLook(1.0F).scale(distance * distance)).grow(1.0D), filter)) {
             AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow(entity1.getCollisionBorderSize());
             Optional<Vector3d> optional = axisalignedbb.rayTrace(startVec, endVec);

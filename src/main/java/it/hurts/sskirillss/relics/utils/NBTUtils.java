@@ -1,6 +1,14 @@
 package it.hurts.sskirillss.relics.utils;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+
+import javax.annotation.Nullable;
 
 public class NBTUtils {
     public static void setBoolean(ItemStack stack, String tag, boolean value) {
@@ -45,5 +53,23 @@ public class NBTUtils {
 
     public static boolean safeCheck(ItemStack stack, String tag) {
         return !stack.isEmpty() && stack.getOrCreateTag().contains(tag);
+    }
+
+    public static String writePosition(Vector3d vec) {
+        return (Math.round(vec.getX() * 10F) / 10F) + "," + (Math.round(vec.getY() * 10F) / 10F) + "," + (Math.round(vec.getZ() * 10F) / 10F);
+    }
+
+    @Nullable
+    public static Vector3d parsePosition(String value) {
+        if (value != null && !value.equals("")) {
+            String[] pos = value.split(",");
+            return new Vector3d(Double.parseDouble(pos[0]), Double.parseDouble(pos[1]), Double.parseDouble(pos[2]));
+        }
+        return null;
+    }
+
+    @Nullable
+    public static ServerWorld parseWorld(World world, String value) {
+        return world.getServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(value)));
     }
 }

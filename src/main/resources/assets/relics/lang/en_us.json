@@ -121,6 +121,8 @@
   "tooltip.relics.blazing_flask.shift_2": "Fully removes damage from fire",
 
   "item.relics.chorus_inhibitor": "Chorus Inhibitor",
+  "tooltip.relics.chorus_inhibitor.tooltip_1": "Stored destination: X:%1$s Y:%2$s Z:%3$s",
+  "tooltip.relics.chorus_inhibitor.tooltip_2": "Time left: %1$s",
   "tooltip.relics.chorus_inhibitor.shift_1": "Remembers position of the chorus fruit usage, and returns to it after a certain time",
   "tooltip.relics.chorus_inhibitor.shift_2": "Additional using of the chorus fruit before time runs out will increase its supply",
   "tooltip.relics.chorus_inhibitor.shift_3": "Fully removes damage from teleportation",

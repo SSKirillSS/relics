@@ -121,6 +121,8 @@
   "tooltip.relics.blazing_flask.shift_2": "免疫火焰造成的伤害",
 
   "item.relics.chorus_inhibitor": "紫颂抑制剂",
+  "tooltip.relics.chorus_inhibitor.tooltip_1": "存储位置：X:%1$s Y:%2$s Z:%3$s",
+  "tooltip.relics.chorus_inhibitor.tooltip_2": "剩余：%1$s",
   "tooltip.relics.chorus_inhibitor.shift_1": "记住使用紫颂果时的位置，在一段时间后传送回该位置",
   "tooltip.relics.chorus_inhibitor.shift_2": "在未传送前额外使用紫颂果会增加补给量",
   "tooltip.relics.chorus_inhibitor.shift_3": "免疫传送造成的伤害",
@@ -130,7 +132,6 @@
 
   "item.relics.lucky_horseshoe": "幸运马蹄",
   "tooltip.relics.lucky_horseshoe.shift_1": "有几率增加掠夺和时运效果",
-
 
   "item.relics.magic_mirror": "魔镜",
   "tooltip.relics.magic_mirror.shift_1": "传送到上一个重生点",

@@ -121,6 +121,8 @@
   "tooltip.relics.blazing_flask.shift_2": "Remove totalmente os danos por fogo",
 
   "item.relics.chorus_inhibitor": "Inibidor de Coro",
+  "tooltip.relics.chorus_inhibitor.tooltip_1": "Posição: X:%1$s Y:%2$s Z:%3$s",
+  "tooltip.relics.chorus_inhibitor.tooltip_2": "Tempo: %1$s",
   "tooltip.relics.chorus_inhibitor.shift_1": "Comer uma Fruta do Coro memorizaa posição do jogador e iniciará um cronômetro de 30 segundos, após o qual o jogador será teletransportado para a posição memorizada",
   "tooltip.relics.chorus_inhibitor.shift_2": "Comer a Fruta do Coro novamante antes que o cronômetro acabe aumentará o tempo 30 segundos.",
   "tooltip.relics.chorus_inhibitor.shift_3": "Remove o dano do teletransporte",

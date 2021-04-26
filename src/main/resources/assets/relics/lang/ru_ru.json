@@ -121,6 +121,8 @@
   "tooltip.relics.blazing_flask.shift_2": "Полностью нивелирует урон от огня",
 
   "item.relics.chorus_inhibitor": "Хорусовый ингибитор",
+  "tooltip.relics.chorus_inhibitor.tooltip_1": "Позиция: X:%1$s Y:%2$s Z:%3$s",
+  "tooltip.relics.chorus_inhibitor.tooltip_2": "Время: %1$s",
   "tooltip.relics.chorus_inhibitor.shift_1": "Запоминает позицию использования плода хоруса, и возвращает к ней спустя определенное время",
   "tooltip.relics.chorus_inhibitor.shift_2": "Дополнительное использование плода хоруса увеличит запас времени до возвращения к запомненной точке",
   "tooltip.relics.chorus_inhibitor.shift_3": "Полностью нивелирует урон при телепортации",
