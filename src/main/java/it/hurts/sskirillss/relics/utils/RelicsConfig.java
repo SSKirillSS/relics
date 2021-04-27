@@ -339,6 +339,36 @@ public class RelicsConfig {
         }
     }
 
+    public static class ShadowGlaive {
+        public static ForgeConfigSpec.DoubleValue SUMMON_CHANCE;
+        public static ForgeConfigSpec.DoubleValue MIN_DAMAGE_FOR_SUMMON;
+        public static ForgeConfigSpec.IntValue MAX_DISTANCE_FOR_SUMMON;
+        public static ForgeConfigSpec.DoubleValue INITIAL_DAMAGE_MULTIPLIER;
+        public static ForgeConfigSpec.IntValue SUMMON_COOLDOWN;
+        public static ForgeConfigSpec.DoubleValue ADDITIONAL_BOUNCE_CHANCE_MULTIPLIER;
+        public static ForgeConfigSpec.IntValue ADDITIONAL_BOUNCE_RADIUS;
+        public static ForgeConfigSpec.DoubleValue MOVEMENT_SPEED;
+        public static ForgeConfigSpec.IntValue MAX_BOUNCES_AMOUNT;
+        public static ForgeConfigSpec.DoubleValue MIN_DAMAGE_PER_BOUNCE;
+        public static ForgeConfigSpec.DoubleValue DAMAGE_MULTIPLIER_PER_BOUNCE;
+
+        private static void setupShadowGlaiveConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("shadow_glaive");
+            SUMMON_CHANCE = builder.defineInRange("summon_chance", 0.2, 0, 1);
+            MIN_DAMAGE_FOR_SUMMON = builder.defineInRange("min_damage_for_summon", 1.0, 0, Integer.MAX_VALUE);
+            MAX_DISTANCE_FOR_SUMMON = builder.defineInRange("max_distance_for_summon", 5, 0, Integer.MAX_VALUE);
+            INITIAL_DAMAGE_MULTIPLIER = builder.defineInRange("initial_damage_multiplier", 1.25, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            SUMMON_COOLDOWN = builder.defineInRange("summon_cooldown", 1, 0, Integer.MAX_VALUE);
+            ADDITIONAL_BOUNCE_CHANCE_MULTIPLIER = builder.defineInRange("additional_bounce_chance_multiplier", 0.025, 0, Integer.MAX_VALUE);
+            ADDITIONAL_BOUNCE_RADIUS = builder.defineInRange("additional_bounce_radius", 7, 0, Integer.MAX_VALUE);
+            MOVEMENT_SPEED = builder.defineInRange("movement_speed", 0.45, 0, Integer.MAX_VALUE);
+            MAX_BOUNCES_AMOUNT = builder.defineInRange("max_bounces_amount", 10, 0, Integer.MAX_VALUE);
+            MIN_DAMAGE_PER_BOUNCE = builder.defineInRange("min_damage_per_bounce", 1.0, 0, Integer.MAX_VALUE);
+            DAMAGE_MULTIPLIER_PER_BOUNCE = builder.defineInRange("damage_multiplier_per_bounce", 0.05, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class SoulDevourer {
         public static ForgeConfigSpec.IntValue TIME_PER_SOUL_DECREASE;
         public static ForgeConfigSpec.IntValue MIN_SOUL_DECREASE_AMOUNT;
@@ -483,6 +513,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue RAGE_GLOVE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue REFLECTION_NECKLACE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SCARAB_TALISMAN_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue SHADOW_GLAIVE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SOUL_DEVOURER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPACE_DISSECTOR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SPATIAL_SIGN_GEN_CHANCE;
@@ -514,6 +545,7 @@ public class RelicsConfig {
             RAGE_GLOVE_GEN_CHANCE = builder.defineInRange("rage_glove_gen_chance", 0.05, 0, 1);
             REFLECTION_NECKLACE_GEN_CHANCE = builder.defineInRange("reflection_necklace_gen_chance", 0.05, 0, 1);
             SCARAB_TALISMAN_GEN_CHANCE = builder.defineInRange("scarab_talisman_gen_chance", 0.14, 0, 1);
+            SHADOW_GLAIVE_GEN_CHANCE = builder.defineInRange("shdow_glaive_gen_chance", 0.025, 0, 1);
             SOUL_DEVOURER_GEN_CHANCE = builder.defineInRange("soul_devourer_gen_chance", 0.05, 0, 1);
             SPACE_DISSECTOR_GEN_CHANCE = builder.defineInRange("space_dissector_gen_chance", 0.05, 0, 1);
             SPATIAL_SIGN_GEN_CHANCE = builder.defineInRange("spatial_sign_gen_chance", 0.25, 0, 1);
@@ -557,6 +589,7 @@ public class RelicsConfig {
         RageGlove.setupRageGloveConfig(builder);
         ReflectionNecklace.setupReflectionNecklaceConfig(builder);
         ScarabTalisman.setupScarabTalismanConfig(builder);
+        ShadowGlaive.setupShadowGlaiveConfig(builder);
         SoulDevourer.setupSoulDevourerConfig(builder);
         SpaceDissector.setupSpaceDissectorConfig(builder);
         SpatialSign.setupSpatialSignConfig(builder);
@@ -566,7 +599,6 @@ public class RelicsConfig {
 
         builder.pop();
     }
-
 
     public static ForgeConfigSpec RELICS_CONFIG;
 

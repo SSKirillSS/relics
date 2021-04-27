@@ -24,6 +24,12 @@ public class EntityRegistry {
                     .build("space_dissector")
     );
 
+    public static final RegistryObject<EntityType<ShadowGlaiveEntity>> SHADOW_GLAIVE = ENTITIES.register("shadow_glaive", () ->
+            EntityType.Builder.<ShadowGlaiveEntity>create(ShadowGlaiveEntity::new, EntityClassification.MISC)
+                    .size(0.9F, 0.1F)
+                    .build("shadow_glaive")
+    );
+
     public static void registerEntities() {
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

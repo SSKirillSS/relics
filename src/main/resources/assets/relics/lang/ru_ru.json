@@ -67,6 +67,10 @@
   "tooltip.relics.scarab_talisman.shift_1": "Увеличивает скорость передвижения и высоту шага на песке",
   "tooltip.relics.scarab_talisman.shift_2": "Увеличивает скорость разрушения песка и полностью нивелирует урон от удушья в блоках",
 
+  "item.relics.shadow_glaive": "Теневая глефа",
+  "tooltip.relics.shadow_glaive.shift_1": "Когда в левой руке, наделяет способность выпустить глефу, отскакивающую от мобов вокруг",
+  "tooltip.relics.shadow_glaive.shift_2": "Урон глефы пропорционален урону от атаки, нанесенному перед её вызовом, и уменьшается с каждым отскоком от моба",
+
   "item.relics.stellar_catalyst": "Звёздный катализатор",
   "tooltip.relics.stellar_catalyst.shift_1": "Наделяет способностью призвать падающую звезду при атаке",
 

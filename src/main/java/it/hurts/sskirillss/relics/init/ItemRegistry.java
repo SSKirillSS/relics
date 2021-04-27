@@ -54,6 +54,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> BLAZING_FLASK = ITEMS.register("blazing_flask", BlazingFlaskItem::new);
     public static final RegistryObject<Item> SPIDER_NECKLACE = ITEMS.register("spider_necklace", SpiderNecklaceItem::new);
     public static final RegistryObject<Item> SPORE_SACK = ITEMS.register("spore_sack", SporeSackItem::new);
+    public static final RegistryObject<Item> SHADOW_GLAIVE = ITEMS.register("shadow_glaive", ShadowGlaiveItem::new);
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
