@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.init;
 import it.hurts.sskirillss.relics.entities.renderer.NullRenderer;
 import it.hurts.sskirillss.relics.entities.renderer.ShadowGlaiveRenderer;
 import it.hurts.sskirillss.relics.entities.renderer.SpaceDissectorRenderer;
+import it.hurts.sskirillss.relics.entities.renderer.StellarCatalystProjectileRenderer;
 import it.hurts.sskirillss.relics.items.relics.ReflectionNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -24,7 +25,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientRegistry {
     @SubscribeEvent
     public static void setupClient(final FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), NullRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), new StellarCatalystProjectileRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.SPACE_DISSECTOR.get(), new SpaceDissectorRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.SHADOW_GLAIVE.get(), new ShadowGlaiveRenderer.RenderFactory());
         RenderTypeLookup.setRenderLayer(BlockRegistry.CHALK_BLOCK.get(), RenderType.getCutout());

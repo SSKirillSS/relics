@@ -51,20 +51,21 @@ public class StellarCatalystItem extends Item implements ICurioItem, IHasTooltip
     public static class MoonlightWellServerEvents {
         @SubscribeEvent
         public static void onEntityDamage(LivingHurtEvent event) {
-            if (event.getSource().getTrueSource() instanceof PlayerEntity) {
-                if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.STELLAR_CATALYST.get(), (LivingEntity) event.getSource().getTrueSource()).isPresent()) {
-                    LivingEntity target = event.getEntityLiving();
-                    if (event.getAmount() > RelicsConfig.StellarCatalyst.MIN_DAMAGE_AMOUNT.get()
-                            && (target.getEntityWorld().isNightTime() || target.getEntityWorld().getDimensionKey() == World.THE_END)
-                            && target.getEntityWorld().canSeeSky(target.getPosition())
-                            && random.nextFloat() <= RelicsConfig.StellarCatalyst.FALLING_STAR_SUMMON_CHANCE.get()) {
-                        StellarCatalystProjectileEntity projectile = new StellarCatalystProjectileEntity((LivingEntity) event.getSource().getTrueSource(),
-                                event.getEntityLiving(), event.getAmount() * RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_MULTIPLIER.get().floatValue());
-                        projectile.setPosition(target.getPosX(), Math.min(target.getEntityWorld().getHeight(),
-                                target.getPosY() + target.getEntityWorld().getRandom().nextInt(10) + 20), target.getPosZ());
-                        projectile.getEntityWorld().addEntity(projectile);
-                    }
-                }
+            if (!(event.getSource().getTrueSource() instanceof PlayerEntity)) return;
+            PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
+            if (!CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.STELLAR_CATALYST.get(), player).isPresent()) return;
+            LivingEntity target = event.getEntityLiving();
+            if (event.getAmount() > RelicsConfig.StellarCatalyst.MIN_DAMAGE_AMOUNT.get()
+                    && (target.getEntityWorld().isNightTime() || target.getEntityWorld().getDimensionKey() == World.THE_END)
+                    && target.getEntityWorld().canSeeSky(target.getPosition())
+                    && random.nextFloat() <= RelicsConfig.StellarCatalyst.FALLING_STAR_SUMMON_CHANCE.get()) {
+                StellarCatalystProjectileEntity projectile = new StellarCatalystProjectileEntity((LivingEntity) event.getSource().getTrueSource(),
+                        event.getEntityLiving(), event.getAmount() * RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_MULTIPLIER.get().floatValue());
+                projectile.setPosition(target.getPosX(), Math.min(target.getEntityWorld().getHeight(), Math.min(target.getEntityWorld().getHeight(),
+                        target.getPosY() + target.getEntityWorld().getRandom().nextInt(RelicsConfig.StellarCatalyst.ADDITIONAL_FALLING_STAR_SUMMON_HEIGHT.get())
+                                + RelicsConfig.StellarCatalyst.MIN_FALLING_STAR_SUMMON_HEIGHT.get())), target.getPosZ());
+                projectile.owner = player;
+                projectile.getEntityWorld().addEntity(projectile);
             }
         }
     }

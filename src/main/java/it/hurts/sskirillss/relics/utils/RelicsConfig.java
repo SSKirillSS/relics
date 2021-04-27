@@ -476,15 +476,23 @@ public class RelicsConfig {
     public static class StellarCatalyst {
         public static ForgeConfigSpec.DoubleValue FALLING_STAR_SUMMON_CHANCE;
         public static ForgeConfigSpec.DoubleValue FALLING_STAR_DAMAGE_MULTIPLIER;
+        public static ForgeConfigSpec.IntValue MIN_FALLING_STAR_SUMMON_HEIGHT;
+        public static ForgeConfigSpec.IntValue ADDITIONAL_FALLING_STAR_SUMMON_HEIGHT;
         public static ForgeConfigSpec.IntValue FALLING_STAR_DAMAGE_RADIUS;
+        public static ForgeConfigSpec.DoubleValue FALLING_STAR_IMPACT_MOTION_MULTIPLIER;
         public static ForgeConfigSpec.DoubleValue MIN_DAMAGE_AMOUNT;
+        public static ForgeConfigSpec.DoubleValue FALLING_STAR_SPEED;
 
         private static void setupStellarCatalystConfig(ForgeConfigSpec.Builder builder) {
             builder.push("stellar_catalyst");
             FALLING_STAR_SUMMON_CHANCE = builder.defineInRange("falling_star_summon_chance", 0.15, 0, 1);
-            FALLING_STAR_DAMAGE_MULTIPLIER = builder.defineInRange("falling_star_damage_multiplier", 0.5, Integer.MIN_VALUE, Integer.MAX_VALUE);
-            FALLING_STAR_DAMAGE_RADIUS = builder.defineInRange("falling_star_damage_radius", 3, Integer.MIN_VALUE, Integer.MAX_VALUE);
-            MIN_DAMAGE_AMOUNT = builder.defineInRange("min_damage_amount", 3.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            FALLING_STAR_DAMAGE_MULTIPLIER = builder.defineInRange("falling_star_damage_multiplier", 0.75, 0, Integer.MAX_VALUE);
+            MIN_FALLING_STAR_SUMMON_HEIGHT = builder.defineInRange("min_falling_star_summon_height", 20, 0, 256);
+            ADDITIONAL_FALLING_STAR_SUMMON_HEIGHT = builder.defineInRange("additional_falling_star_summon_height", 20, 0, 256);
+            FALLING_STAR_DAMAGE_RADIUS = builder.defineInRange("falling_star_damage_radius", 3, 0, Integer.MAX_VALUE);
+            FALLING_STAR_IMPACT_MOTION_MULTIPLIER = builder.defineInRange("falling_star_impact_motion_multiplier", 1.0, 0, Integer.MAX_VALUE);
+            MIN_DAMAGE_AMOUNT = builder.defineInRange("min_damage_amount", 3.0, 0, Integer.MAX_VALUE);
+            FALLING_STAR_SPEED = builder.defineInRange("falling_star_speed", 0.7, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }

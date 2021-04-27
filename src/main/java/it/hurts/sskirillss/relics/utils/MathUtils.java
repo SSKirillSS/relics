@@ -4,7 +4,6 @@ import java.util.Random;
 
 public class MathUtils {
     public static float generateReallyRandomFloat(Random random) {
-        float randomFloat = random.nextFloat();
-        return !random.nextBoolean() ? randomFloat * -1 : randomFloat;
+        return -1 + 2 * random.nextFloat();
     }
 }
