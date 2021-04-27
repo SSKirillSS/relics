@@ -545,7 +545,7 @@ public class RelicsConfig {
             RAGE_GLOVE_GEN_CHANCE = builder.defineInRange("rage_glove_gen_chance", 0.05, 0, 1);
             REFLECTION_NECKLACE_GEN_CHANCE = builder.defineInRange("reflection_necklace_gen_chance", 0.05, 0, 1);
             SCARAB_TALISMAN_GEN_CHANCE = builder.defineInRange("scarab_talisman_gen_chance", 0.14, 0, 1);
-            SHADOW_GLAIVE_GEN_CHANCE = builder.defineInRange("shdow_glaive_gen_chance", 0.025, 0, 1);
+            SHADOW_GLAIVE_GEN_CHANCE = builder.defineInRange("shadow_glaive_gen_chance", 0.025, 0, 1);
             SOUL_DEVOURER_GEN_CHANCE = builder.defineInRange("soul_devourer_gen_chance", 0.05, 0, 1);
             SPACE_DISSECTOR_GEN_CHANCE = builder.defineInRange("space_dissector_gen_chance", 0.05, 0, 1);
             SPATIAL_SIGN_GEN_CHANCE = builder.defineInRange("spatial_sign_gen_chance", 0.25, 0, 1);
