@@ -354,7 +354,7 @@ public class RelicsConfig {
 
         private static void setupShadowGlaiveConfig(ForgeConfigSpec.Builder builder) {
             builder.push("shadow_glaive");
-            SUMMON_CHANCE = builder.defineInRange("summon_chance", 0.2, 0, 1);
+            SUMMON_CHANCE = builder.defineInRange("summon_chance", 0.35, 0, 1);
             MIN_DAMAGE_FOR_SUMMON = builder.defineInRange("min_damage_for_summon", 1.0, 0, Integer.MAX_VALUE);
             MAX_DISTANCE_FOR_SUMMON = builder.defineInRange("max_distance_for_summon", 5, 0, Integer.MAX_VALUE);
             INITIAL_DAMAGE_MULTIPLIER = builder.defineInRange("initial_damage_multiplier", 1.25, Integer.MIN_VALUE, Integer.MAX_VALUE);
