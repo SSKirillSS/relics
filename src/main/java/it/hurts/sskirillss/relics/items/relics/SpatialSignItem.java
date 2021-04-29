@@ -31,8 +31,8 @@ public class SpatialSignItem extends Item implements IHasTooltip {
 
     public SpatialSignItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -45,34 +45,34 @@ public class SpatialSignItem extends Item implements IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         if (!NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
             Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
-            tooltip.add(new TranslationTextComponent("tooltip.relics.spatial_sign.tooltip_1", pos.getX(), pos.getY(), pos.getZ()));
+            tooltip.add(new TranslationTextComponent("tooltip.relics.spatial_sign.tooltip_1", pos.x(), pos.y(), pos.z()));
             tooltip.add(new TranslationTextComponent("tooltip.relics.spatial_sign.tooltip_2", NBTUtils.getInt(stack, TAG_TIME, 0)));
         }
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        ItemStack stack = playerIn.getHeldItem(handIn);
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack stack = playerIn.getItemInHand(handIn);
         if (NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
-            NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.getPositionVec()));
-            NBTUtils.setString(stack, TAG_WORLD, playerIn.getEntityWorld().getDimensionKey().getLocation().toString());
+            NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.position()));
+            NBTUtils.setString(stack, TAG_WORLD, playerIn.getCommandSenderWorld().dimension().location().toString());
             NBTUtils.setInt(stack, TAG_TIME, RelicsConfig.SpatialSign.TIME_BEFORE_ACTIVATION.get());
-            worldIn.playSound(playerIn, playerIn.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
-        } else if (playerIn.isSneaking()) teleportPlayer(playerIn, stack);
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+            worldIn.playSound(playerIn, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        } else if (playerIn.isShiftKeyDown()) teleportPlayer(playerIn, stack);
+        return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (worldIn.isRemote()) return;
+        if (worldIn.isClientSide()) return;
         if (!(entityIn instanceof PlayerEntity)) return;
         PlayerEntity player = (PlayerEntity) entityIn;
-        if (player.ticksExisted % 20 == 0 && NBTUtils.getInt(stack, TAG_TIME, -1) >= 0) {
+        if (player.tickCount % 20 == 0 && NBTUtils.getInt(stack, TAG_TIME, -1) >= 0) {
             int time = NBTUtils.getInt(stack, TAG_TIME, -1);
             if (time > 0) NBTUtils.setInt(stack, TAG_TIME, time - 1);
             else teleportPlayer(player, stack);
@@ -86,19 +86,19 @@ public class SpatialSignItem extends Item implements IHasTooltip {
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         return NBTUtils.getInt(stack, TAG_TIME, 0) > 0;
     }
 
     public static void teleportPlayer(PlayerEntity player, ItemStack stack) {
-        if (player.getEntityWorld().isRemote()) return;
+        if (player.getCommandSenderWorld().isClientSide()) return;
         Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
-        ServerWorld world = NBTUtils.parseWorld(player.getEntityWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
+        ServerWorld world = NBTUtils.parseWorld(player.getCommandSenderWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
         if (pos == null || world == null) return;
         EntityUtils.teleportWithMount(player, world, pos);
-        player.getEntityWorld().playSound(player, pos.getX(), pos.getY(), pos.getZ(),
-                SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-        if (!player.abilities.isCreativeMode) player.getCooldownTracker().setCooldown(stack.getItem(),
+        player.getCommandSenderWorld().playSound(player, pos.x(), pos.y(), pos.z(),
+                SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        if (!player.abilities.instabuild) player.getCooldowns().addCooldown(stack.getItem(),
                 (RelicsConfig.SpatialSign.TIME_BEFORE_ACTIVATION.get() - NBTUtils.getInt(stack, TAG_TIME, 0)) * 20);
         NBTUtils.setString(stack, TAG_WORLD, "");
         NBTUtils.setString(stack, TAG_POSITION, "");
@@ -112,7 +112,7 @@ public class SpatialSignItem extends Item implements IHasTooltip {
             if (!(event.getEntity() instanceof PlayerEntity)) return;
             PlayerEntity player = (PlayerEntity) event.getEntity();
             if (EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()) == -1) return;
-            ItemStack stack = player.inventory.getStackInSlot(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
+            ItemStack stack = player.inventory.getItem(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
             if (!NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
                 teleportPlayer(player, stack);
                 player.setHealth(1.0F);

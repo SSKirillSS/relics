@@ -33,8 +33,8 @@ import java.util.List;
 public class MagmaWalkerItem extends Item implements ICurioItem, IHasTooltip {
     public MagmaWalkerItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -47,23 +47,23 @@ public class MagmaWalkerItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        World world = livingEntity.getEntityWorld();
-        if (world.getBlockState(livingEntity.getPosition().down()) == Fluids.LAVA.getStillFluid().getDefaultState().getBlockState()) {
-            BlockPos pos = livingEntity.getPosition();
-            world.setBlockState(pos.down(), BlockRegistry.MAGMA_STONE_BLOCK.get().getDefaultState());
+        World world = livingEntity.getCommandSenderWorld();
+        if (world.getBlockState(livingEntity.blockPosition().below()) == Fluids.LAVA.getSource().defaultFluidState().createLegacyBlock()) {
+            BlockPos pos = livingEntity.blockPosition();
+            world.setBlockAndUpdate(pos.below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState());
             world.addParticle(ParticleTypes.LAVA, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, 1, 1, 1);
         }
 
-        if (world.getBlockState(livingEntity.getPosition().down()).getBlock() == BlockRegistry.MAGMA_STONE_BLOCK.get()
-                && world.getBlockState(livingEntity.getPosition().down()).get(MagmaStoneBlock.AGE) > 0) {
-            world.setBlockState(livingEntity.getPosition().down(), BlockRegistry.MAGMA_STONE_BLOCK.get().getDefaultState(), 2);
+        if (world.getBlockState(livingEntity.blockPosition().below()).getBlock() == BlockRegistry.MAGMA_STONE_BLOCK.get()
+                && world.getBlockState(livingEntity.blockPosition().below()).getValue(MagmaStoneBlock.AGE) > 0) {
+            world.setBlock(livingEntity.blockPosition().below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState(), 2);
         }
     }
 

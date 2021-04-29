@@ -44,8 +44,8 @@ public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
 
     public IceBreakerItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -58,8 +58,8 @@ public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -67,17 +67,17 @@ public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) livingEntity;
-            Vector3d motion = player.getMotion();
+            Vector3d motion = player.getDeltaMovement();
             ModifiableAttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
             ModifiableAttributeInstance knockbackResistance = player.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
-            if (!movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) movementSpeed.applyNonPersistentModifier(ICE_BREAKER_SPEED_BOOST);
-            if (!knockbackResistance.hasModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE)) knockbackResistance.applyNonPersistentModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE);
-            if (player.fallDistance >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && player.isSneaking())
-                player.setMotion(motion.getX(), motion.getY() * RelicsConfig.IceBreaker.FALL_MOTION_MULTIPLIER.get(), motion.getZ());
-            if (player.collidedHorizontally && player.isSneaking()) {
-                player.setMotion(0, -RelicsConfig.IceBreaker.WALL_SLIPPING_SPEED.get(), 0);
+            if (!movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) movementSpeed.addTransientModifier(ICE_BREAKER_SPEED_BOOST);
+            if (!knockbackResistance.hasModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE)) knockbackResistance.addTransientModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE);
+            if (player.fallDistance >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && player.isShiftKeyDown())
+                player.setDeltaMovement(motion.x(), motion.y() * RelicsConfig.IceBreaker.FALL_MOTION_MULTIPLIER.get(), motion.z());
+            if (player.horizontalCollision && player.isShiftKeyDown()) {
+                player.setDeltaMovement(0, -RelicsConfig.IceBreaker.WALL_SLIPPING_SPEED.get(), 0);
                 player.fallDistance = 0;
-                player.getEntityWorld().addParticle(ParticleTypes.CRIT, player.getPosX(), player.getPosY() - 0.15D, player.getPosZ(), 0, 0, 0);
+                player.getCommandSenderWorld().addParticle(ParticleTypes.CRIT, player.getX(), player.getY() - 0.15D, player.getZ(), 0, 0, 0);
             }
         }
     }
@@ -97,25 +97,25 @@ public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ICE_BREAKER.get(), player).isPresent()
-                        && !player.getCooldownTracker().hasCooldown(ItemRegistry.ICE_BREAKER.get())) {
-                    if (event.getDistance() >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && player.isSneaking()) {
-                        player.getEntityWorld().playSound(null, player.getPosition(), SoundEvents.ENTITY_WITHER_BREAK_BLOCK,
+                        && !player.getCooldowns().isOnCooldown(ItemRegistry.ICE_BREAKER.get())) {
+                    if (event.getDistance() >= RelicsConfig.IceBreaker.MIN_FALL_DISTANCE.get() && player.isShiftKeyDown()) {
+                        player.getCommandSenderWorld().playSound(null, player.blockPosition(), SoundEvents.WITHER_BREAK_BLOCK,
                                 SoundCategory.PLAYERS, 0.75F, 1.0F);
-                        player.getCooldownTracker().setCooldown(ItemRegistry.ICE_BREAKER.get(), Math.round(event.getDistance()
+                        player.getCooldowns().addCooldown(ItemRegistry.ICE_BREAKER.get(), Math.round(event.getDistance()
                                 * RelicsConfig.IceBreaker.STOMP_COOLDOWN_MULTIPLIER.get().floatValue() * 20));
-                        for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
-                                player.getBoundingBox().grow(event.getDistance() * RelicsConfig.IceBreaker.STOMP_RADIUS_MULTIPLIER.get()))) {
+                        for (LivingEntity entity : player.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class,
+                                player.getBoundingBox().inflate(event.getDistance() * RelicsConfig.IceBreaker.STOMP_RADIUS_MULTIPLIER.get()))) {
                             if (entity != player) {
-                                entity.attackEntityFrom(DamageSource.causePlayerDamage(player), Math.min(RelicsConfig.IceBreaker.MAX_DEALT_DAMAGE.get().floatValue(),
+                                entity.hurt(DamageSource.playerAttack(player), Math.min(RelicsConfig.IceBreaker.MAX_DEALT_DAMAGE.get().floatValue(),
                                         event.getDistance() * RelicsConfig.IceBreaker.DEALT_DAMAGE_MULTIPLIER.get().floatValue()));
-                                entity.setMotion(entity.getPositionVec().subtract(player.getPositionVec()).add(0, 1.005F, 0).mul(
+                                entity.setDeltaMovement(entity.position().subtract(player.position()).add(0, 1.005F, 0).multiply(
                                         RelicsConfig.IceBreaker.STOMP_MOTION_MULTIPLIER.get(),
                                         RelicsConfig.IceBreaker.STOMP_MOTION_MULTIPLIER.get(),
                                         RelicsConfig.IceBreaker.STOMP_MOTION_MULTIPLIER.get()));
                             }
                         }
-                        if (player.getEntityWorld().getBlockState(player.getPosition().down()).isIn(BlockTags.ICE))
-                            player.getEntityWorld().destroyBlock(player.getPosition().down(), false, player);
+                        if (player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).is(BlockTags.ICE))
+                            player.getCommandSenderWorld().destroyBlock(player.blockPosition().below(), false, player);
                         event.setDamageMultiplier(RelicsConfig.IceBreaker.INCOMING_FALL_DAMAGE_MULTIPLIER.get().floatValue());
                     }
                 }

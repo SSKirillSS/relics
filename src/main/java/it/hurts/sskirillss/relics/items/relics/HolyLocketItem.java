@@ -26,8 +26,8 @@ import java.util.List;
 public class HolyLocketItem extends Item implements IHasTooltip {
     public HolyLocketItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.UNCOMMON));
     }
 
@@ -39,8 +39,8 @@ public class HolyLocketItem extends Item implements IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -48,13 +48,13 @@ public class HolyLocketItem extends Item implements IHasTooltip {
     static class HolyLocketServerEvents {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
-            if (event.getSource().getTrueSource() instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
+            if (event.getSource().getEntity() instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 LivingEntity entity = event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HOLY_LOCKET.get(), player).isPresent()
-                        && entity.isEntityUndead()) {
-                    if (player.getEntityWorld().rand.nextFloat() <= RelicsConfig.HolyLocket.ARSON_CHANCE.get())
-                        entity.setFire(RelicsConfig.HolyLocket.BURN_DURATION.get());
+                        && entity.isInvertedHealAndHarm()) {
+                    if (player.getCommandSenderWorld().random.nextFloat() <= RelicsConfig.HolyLocket.ARSON_CHANCE.get())
+                        entity.setSecondsOnFire(RelicsConfig.HolyLocket.BURN_DURATION.get());
                     event.setAmount(event.getAmount() * RelicsConfig.HolyLocket.DAMAGE_MULTIPLIER.get().floatValue());
                 }
             }

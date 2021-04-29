@@ -40,8 +40,8 @@ public class IceSkatesItem extends Item implements ICurioItem, IHasTooltip {
 
     public IceSkatesItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.UNCOMMON));
     }
 
@@ -54,8 +54,8 @@ public class IceSkatesItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -63,33 +63,33 @@ public class IceSkatesItem extends Item implements ICurioItem, IHasTooltip {
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         int time = NBTUtils.getInt(stack, TAG_SPEEDUP_TIME, 0);
-        BlockPos pos = WorldUtils.getSolidBlockUnderFeet(livingEntity.getEntityWorld(), livingEntity.getPosition());
+        BlockPos pos = WorldUtils.getSolidBlockUnderFeet(livingEntity.getCommandSenderWorld(), livingEntity.blockPosition());
         if (pos != null) {
-            if (livingEntity.getEntityWorld().getBlockState(pos).isIn(BlockTags.ICE)) {
+            if (livingEntity.getCommandSenderWorld().getBlockState(pos).is(BlockTags.ICE)) {
                 if (livingEntity.isSprinting()) {
                     if (!movementSpeed.hasModifier(ICE_SKATES_SPEED_BOOST)) {
-                        movementSpeed.applyNonPersistentModifier(ICE_SKATES_SPEED_BOOST);
+                        movementSpeed.addTransientModifier(ICE_SKATES_SPEED_BOOST);
                     }
-                    if (livingEntity.ticksExisted % 20 == 0) {
+                    if (livingEntity.tickCount % 20 == 0) {
                         if (time < RelicsConfig.IceSkates.MAX_SPEEDUP_TIME.get()) {
                             NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, time + 1);
                         }
                     }
                     if (time > RelicsConfig.IceSkates.SPEEDUP_TIME_PER_RAM.get()) {
-                        livingEntity.getEntityWorld().addParticle(ParticleTypes.CLOUD, livingEntity.getPosX(), livingEntity.getPosY() + 0.1F, livingEntity.getPosZ(), 0, 0, 0);
-                        for (LivingEntity entity : livingEntity.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, livingEntity.getBoundingBox().grow(RelicsConfig.IceSkates.RAM_RADIUS.get()))) {
+                        livingEntity.getCommandSenderWorld().addParticle(ParticleTypes.CLOUD, livingEntity.getX(), livingEntity.getY() + 0.1F, livingEntity.getZ(), 0, 0, 0);
+                        for (LivingEntity entity : livingEntity.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox().inflate(RelicsConfig.IceSkates.RAM_RADIUS.get()))) {
                             if (entity != livingEntity) {
-                                entity.setMotion(entity.getPositionVec().subtract(livingEntity.getPositionVec()).normalize().mul(time * 0.25F, time * 0.1F, time * 0.25F));
-                                entity.attackEntityFrom(DamageSource.FLY_INTO_WALL, RelicsConfig.IceSkates.BASE_RAM_DAMAGE_AMOUNT.get().floatValue() + time);
+                                entity.setDeltaMovement(entity.position().subtract(livingEntity.position()).normalize().multiply(time * 0.25F, time * 0.1F, time * 0.25F));
+                                entity.hurt(DamageSource.FLY_INTO_WALL, RelicsConfig.IceSkates.BASE_RAM_DAMAGE_AMOUNT.get().floatValue() + time);
                                 NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, Math.max(time - RelicsConfig.IceSkates.SPEEDUP_TIME_PER_RAM.get(), 0));
                             }
                         }
                     }
                 }
             } else {
-                if (livingEntity.getEntityWorld().getBlockState(livingEntity.getPosition().down()) == Fluids.WATER.getStillFluid()
-                        .getDefaultState().getBlockState() && time > 0) {
-                    livingEntity.getEntityWorld().setBlockState(livingEntity.getPosition().down(), Blocks.FROSTED_ICE.getDefaultState());
+                if (livingEntity.getCommandSenderWorld().getBlockState(livingEntity.blockPosition().below()) == Fluids.WATER.getSource()
+                        .defaultFluidState().createLegacyBlock() && time > 0) {
+                    livingEntity.getCommandSenderWorld().setBlockAndUpdate(livingEntity.blockPosition().below(), Blocks.FROSTED_ICE.defaultBlockState());
                     NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, time - 1);
                 } else {
                     NBTUtils.setInt(stack, TAG_SPEEDUP_TIME, 0);
@@ -105,7 +105,7 @@ public class IceSkatesItem extends Item implements ICurioItem, IHasTooltip {
     public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         if (movementSpeed.hasModifier(ICE_SKATES_SPEED_BOOST)
-                && !livingEntity.getEntityWorld().getBlockState(livingEntity.getPosition().down()).isIn(BlockTags.ICE)
+                && !livingEntity.getCommandSenderWorld().getBlockState(livingEntity.blockPosition().below()).is(BlockTags.ICE)
                 && !livingEntity.isSprinting()) {
             movementSpeed.removeModifier(ICE_SKATES_SPEED_BOOST);
         }
@@ -119,7 +119,7 @@ public class IceSkatesItem extends Item implements ICurioItem, IHasTooltip {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), player).isPresent()
                         && event.getSource() == DamageSource.FALL
-                        && player.getEntityWorld().getBlockState(player.getPosition().down()).isIn(BlockTags.ICE)) {
+                        && player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).is(BlockTags.ICE)) {
                     event.setAmount(event.getAmount() * RelicsConfig.IceSkates.FALLING_DAMAGE_MULTIPLIER.get().floatValue());
                 }
             }

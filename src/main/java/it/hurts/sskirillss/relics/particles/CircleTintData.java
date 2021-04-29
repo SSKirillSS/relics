@@ -15,6 +15,8 @@ import java.awt.*;
 import java.util.Locale;
 
 
+import net.minecraft.particles.IParticleData.IDeserializer;
+
 public class CircleTintData implements IParticleData {
     private final Color tint;
     private final float diameter;
@@ -57,7 +59,7 @@ public class CircleTintData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buf) {
+    public void writeToNetwork(PacketBuffer buf) {
         buf.writeInt(tint.getRed());
         buf.writeInt(tint.getGreen());
         buf.writeInt(tint.getBlue());
@@ -69,7 +71,7 @@ public class CircleTintData implements IParticleData {
 
     @Nonnull
     @Override
-    public String getParameters() {
+    public String writeToString() {
         return String.format(Locale.ROOT, "%s %i %i %i %.2f %i %f %b",
                 this.getType().getRegistryName(), tint.getRed(), tint.getGreen(), tint.getBlue(), diameter, lifeTime, resizeSpeed, shouldCollide);
     }
@@ -100,7 +102,7 @@ public class CircleTintData implements IParticleData {
     public static final IDeserializer<CircleTintData> DESERIALIZER = new IDeserializer<CircleTintData>() {
         @Nonnull
         @Override
-        public CircleTintData deserialize(@Nonnull ParticleType<CircleTintData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
+        public CircleTintData fromCommand(@Nonnull ParticleType<CircleTintData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             int red = MathHelper.clamp(reader.readInt(), 0, 255);
             reader.expect(' ');
@@ -124,7 +126,7 @@ public class CircleTintData implements IParticleData {
         }
 
         @Override
-        public CircleTintData read(@Nonnull ParticleType<CircleTintData> type, PacketBuffer buf) {
+        public CircleTintData fromNetwork(@Nonnull ParticleType<CircleTintData> type, PacketBuffer buf) {
             int red = MathHelper.clamp(buf.readInt(), 0, 255);
             int green = MathHelper.clamp(buf.readInt(), 0, 255);
             int blue = MathHelper.clamp(buf.readInt(), 0, 255);

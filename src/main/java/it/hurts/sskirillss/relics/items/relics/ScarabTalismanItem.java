@@ -44,8 +44,8 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
 
     public ScarabTalismanItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -58,24 +58,24 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (livingEntity.getEntityWorld().getBiome(livingEntity.getPosition()).getCategory() == Biome.Category.DESERT
-                || livingEntity.getEntityWorld().getBiome(livingEntity.getPosition()).getCategory() == Biome.Category.MESA) {
+        if (livingEntity.getCommandSenderWorld().getBiome(livingEntity.blockPosition()).getBiomeCategory() == Biome.Category.DESERT
+                || livingEntity.getCommandSenderWorld().getBiome(livingEntity.blockPosition()).getBiomeCategory() == Biome.Category.MESA) {
             if (!movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
-                movementSpeed.applyNonPersistentModifier(SCARAB_TALISMAN_SPEED_BOOST);
-                livingEntity.stepHeight = Math.max(livingEntity.stepHeight,
+                movementSpeed.addTransientModifier(SCARAB_TALISMAN_SPEED_BOOST);
+                livingEntity.maxUpStep = Math.max(livingEntity.maxUpStep,
                         RelicsConfig.ScarabTalisman.STEP_HEIGHT.get().floatValue());
             }
         } else if (movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
             movementSpeed.removeModifier(SCARAB_TALISMAN_SPEED_BOOST);
-            livingEntity.stepHeight = 0.6F;
+            livingEntity.maxUpStep = 0.6F;
         }
     }
 
@@ -84,7 +84,7 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         if (movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
             movementSpeed.removeModifier(SCARAB_TALISMAN_SPEED_BOOST);
-            livingEntity.stepHeight = 0.6F;
+            livingEntity.maxUpStep = 0.6F;
         }
     }
 
@@ -95,9 +95,9 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
         ICurio.RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
         matrixStack.scale(0.12F, 0.12F, 0.12F);
         matrixStack.translate(1.1F, 2.5F, -1.1F);
-        matrixStack.rotate(Direction.DOWN.getRotation());
+        matrixStack.mulPose(Direction.DOWN.getRotation());
         Minecraft.getInstance().getItemRenderer()
-                .renderItem(new ItemStack(ItemRegistry.SCARAB_TALISMAN.get()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY,
+                .renderStatic(new ItemStack(ItemRegistry.SCARAB_TALISMAN.get()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY,
                         matrixStack, renderTypeBuffer);
     }
 
@@ -114,7 +114,7 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), player).isPresent()
                         && (event.getSource() == DamageSource.IN_WALL
-                        || (event.getSource() == DamageSource.FALL && player.getEntityWorld().getBlockState(player.getPosition().down()).getBlock() == Blocks.SAND))) {
+                        || (event.getSource() == DamageSource.FALL && player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).getBlock() == Blocks.SAND))) {
                     event.setCanceled(true);
                 }
             }
@@ -126,7 +126,7 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), player).isPresent()
                         && (event.getSource() == DamageSource.IN_WALL
-                        || (event.getSource() == DamageSource.FALL && player.getEntityWorld().getBlockState(player.getPosition().down()).getBlock() == Blocks.SAND))) {
+                        || (event.getSource() == DamageSource.FALL && player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).getBlock() == Blocks.SAND))) {
                     event.setCanceled(true);
                 }
             }
@@ -136,7 +136,7 @@ public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip 
         public static void onBlockBreakCalculate(PlayerEvent.BreakSpeed event) {
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-                if (player.getEntityWorld().getBlockState(event.getPos()).getBlock() == Blocks.SAND
+                if (player.getCommandSenderWorld().getBlockState(event.getPos()).getBlock() == Blocks.SAND
                         && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), player).isPresent()) {
                     event.setNewSpeed(event.getNewSpeed() * 2.0F);
                 }

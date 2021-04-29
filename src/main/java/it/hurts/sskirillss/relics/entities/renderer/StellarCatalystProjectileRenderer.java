@@ -23,12 +23,12 @@ public class StellarCatalystProjectileRenderer extends EntityRenderer<StellarCat
 
     @Override
     public void render(StellarCatalystProjectileEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        float time = entityIn.ticksExisted + (Minecraft.getInstance().isGamePaused() ? 0 : partialTicks);
+        float time = entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks);
         RenderUtils.renderBeams(matrixStackIn, bufferIn, time, 20, time * 0.035F, new Color(255, 0, 255));
     }
 
     @Override
-    public ResourceLocation getEntityTexture(StellarCatalystProjectileEntity entity) {
+    public ResourceLocation getTextureLocation(StellarCatalystProjectileEntity entity) {
         return new ResourceLocation(Reference.MODID, "textures/item/stellar_catalyst.png");
     }
 

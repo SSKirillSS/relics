@@ -27,11 +27,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ShadowGlaiveEntity extends ThrowableEntity {
-    private static final DataParameter<Integer> BOUNCES = EntityDataManager.createKey(ShadowGlaiveEntity.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> DAMAGE = EntityDataManager.createKey(ShadowGlaiveEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<String> OWNER = EntityDataManager.createKey(ShadowGlaiveEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> TARGET = EntityDataManager.createKey(ShadowGlaiveEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> BOUNCED_ENTITIES = EntityDataManager.createKey(ShadowGlaiveEntity.class, DataSerializers.STRING);
+    private static final DataParameter<Integer> BOUNCES = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.INT);
+    private static final DataParameter<Float> DAMAGE = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> OWNER = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.STRING);
+    private static final DataParameter<String> TARGET = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.STRING);
+    private static final DataParameter<String> BOUNCED_ENTITIES = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.STRING);
 
     private static final String TAG_BOUNCES_AMOUNT = "bounces";
     private static final String TAG_DAMAGE_AMOUNT = "damage";
@@ -54,32 +54,32 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     public void setOwner(PlayerEntity playerIn) {
         this.owner = playerIn;
         if (playerIn != null)
-            dataManager.set(OWNER, playerIn.getUniqueID().toString());
+            entityData.set(OWNER, playerIn.getUUID().toString());
     }
 
     public void setTarget(LivingEntity target) {
         this.target = target;
         if (target != null)
-            dataManager.set(TARGET, target.getUniqueID().toString());
+            entityData.set(TARGET, target.getUUID().toString());
     }
 
     public void setDamage(float damage) {
         this.damage = damage;
-        dataManager.set(DAMAGE, damage);
+        entityData.set(DAMAGE, damage);
     }
 
     private void locateNearestTarget() {
-        int bounces = dataManager.get(BOUNCES);
-        if (world.getRandom().nextFloat() < Math.min(1, bounces * RelicsConfig.ShadowGlaive.ADDITIONAL_BOUNCE_CHANCE_MULTIPLIER.get())) {
+        int bounces = entityData.get(BOUNCES);
+        if (level.getRandom().nextFloat() < Math.min(1, bounces * RelicsConfig.ShadowGlaive.ADDITIONAL_BOUNCE_CHANCE_MULTIPLIER.get())) {
             this.remove();
             return;
         }
-        String bouncedEntitiesString = dataManager.get(BOUNCED_ENTITIES);
+        String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
         List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
-        List<LivingEntity> entitiesAround = world.getEntitiesWithinAABB(LivingEntity.class,
-                this.getBoundingBox().grow(RelicsConfig.ShadowGlaive.ADDITIONAL_BOUNCE_RADIUS.get()));
-        entitiesAround.removeIf(target -> bouncedEntities.contains(target.getUniqueID().toString()) || target == owner);
-        entitiesAround.sort((o1, o2) -> (int) Math.round(o1.getPositionVec().distanceTo(o2.getPositionVec())));
+        List<LivingEntity> entitiesAround = level.getEntitiesOfClass(LivingEntity.class,
+                this.getBoundingBox().inflate(RelicsConfig.ShadowGlaive.ADDITIONAL_BOUNCE_RADIUS.get()));
+        entitiesAround.removeIf(target -> bouncedEntities.contains(target.getUUID().toString()) || target == owner);
+        entitiesAround.sort((o1, o2) -> (int) Math.round(o1.position().distanceTo(o2.position())));
         if (entitiesAround.isEmpty()) {
             this.remove();
             return;
@@ -100,22 +100,22 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     @Override
     public void tick() {
         super.tick();
-        world.addParticle(new CircleTintData(new Color(0.5F, 0.05F, 0.7F), 0.1F, 40, 0.95F, false),
-                this.prevPosX, this.prevPosY, this.prevPosZ, 0.0D, 0.0D, 0.0D);
-        if (world.isRemote()) return;
-        if (this.ticksExisted > 300) this.remove();
+        level.addParticle(new CircleTintData(new Color(0.5F, 0.05F, 0.7F), 0.1F, 40, 0.95F, false),
+                this.xo, this.yo, this.zo, 0.0D, 0.0D, 0.0D);
+        if (level.isClientSide()) return;
+        if (this.tickCount > 300) this.remove();
         if (target == null) this.locateNearestTarget();
-        if (target.isAlive()) EntityUtils.moveTowardsPosition(this, new Vector3d(target.getPosX(),
-                target.getPosY() + target.getHeight() * 0.5F, target.getPosZ()), RelicsConfig.ShadowGlaive.MOVEMENT_SPEED.get().floatValue());
+        if (target.isAlive()) EntityUtils.moveTowardsPosition(this, new Vector3d(target.getX(),
+                target.getY() + target.getBbHeight() * 0.5F, target.getZ()), RelicsConfig.ShadowGlaive.MOVEMENT_SPEED.get().floatValue());
         else this.locateNearestTarget();
     }
 
     @Override
-    protected void onImpact(@Nonnull RayTraceResult rayTraceResult) {
-        if (world.isRemote()) return;
+    protected void onHit(@Nonnull RayTraceResult rayTraceResult) {
+        if (level.isClientSide()) return;
         switch (rayTraceResult.getType()) {
             case BLOCK: {
-                if (world.getBlockState(((BlockRayTraceResult) rayTraceResult).getPos()).isSolid()) this.remove();
+                if (level.getBlockState(((BlockRayTraceResult) rayTraceResult).getBlockPos()).canOcclude()) this.remove();
                 break;
             }
             case ENTITY: {
@@ -123,17 +123,17 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
                 if (!(entityRayTraceResult.getEntity() instanceof LivingEntity)) return;
                 LivingEntity entity = (LivingEntity) entityRayTraceResult.getEntity();
                 if (entity == owner) return;
-                int bounces = dataManager.get(BOUNCES);
+                int bounces = entityData.get(BOUNCES);
                 if (bounces > RelicsConfig.ShadowGlaive.MAX_BOUNCES_AMOUNT.get()) this.remove();
-                String bouncedEntitiesString = dataManager.get(BOUNCED_ENTITIES);
+                String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
-                if (!bouncedEntities.contains(entity.getUniqueID().toString())) {
-                    entity.attackEntityFrom(owner != null ? DamageSource.causePlayerDamage(owner)
+                if (!bouncedEntities.contains(entity.getUUID().toString())) {
+                    entity.hurt(owner != null ? DamageSource.playerAttack(owner)
                             : DamageSource.GENERIC, Math.max(RelicsConfig.ShadowGlaive.MIN_DAMAGE_PER_BOUNCE.get().floatValue(),
                             damage - (bounces * (damage * RelicsConfig.ShadowGlaive.DAMAGE_MULTIPLIER_PER_BOUNCE.get().floatValue()))));
-                    dataManager.set(BOUNCED_ENTITIES, bouncedEntitiesString + "," + entity.getUniqueID());
+                    entityData.set(BOUNCED_ENTITIES, bouncedEntitiesString + "," + entity.getUUID());
                 }
-                dataManager.set(BOUNCES, bounces + 1);
+                entityData.set(BOUNCES, bounces + 1);
                 this.locateNearestTarget();
                 break;
             }
@@ -141,49 +141,49 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     }
 
     @Override
-    protected void registerData() {
-        dataManager.register(BOUNCES, 0);
-        dataManager.register(DAMAGE, 0F);
-        dataManager.register(OWNER, "");
-        dataManager.register(TARGET, "");
-        dataManager.register(BOUNCED_ENTITIES, "");
+    protected void defineSynchedData() {
+        entityData.define(BOUNCES, 0);
+        entityData.define(DAMAGE, 0F);
+        entityData.define(OWNER, "");
+        entityData.define(TARGET, "");
+        entityData.define(BOUNCED_ENTITIES, "");
     }
 
     @Override
-    public void writeAdditional(CompoundNBT tag) {
-        tag.putInt(TAG_BOUNCES_AMOUNT, dataManager.get(BOUNCES));
-        tag.putFloat(TAG_DAMAGE_AMOUNT, dataManager.get(DAMAGE));
-        tag.putString(TAG_OWNER_UUID, dataManager.get(OWNER));
-        tag.putString(TAG_TARGET_UUID, dataManager.get(TARGET));
-        tag.putString(TAG_BOUNCED_ENTITIES, dataManager.get(BOUNCED_ENTITIES));
+    public void addAdditionalSaveData(CompoundNBT tag) {
+        tag.putInt(TAG_BOUNCES_AMOUNT, entityData.get(BOUNCES));
+        tag.putFloat(TAG_DAMAGE_AMOUNT, entityData.get(DAMAGE));
+        tag.putString(TAG_OWNER_UUID, entityData.get(OWNER));
+        tag.putString(TAG_TARGET_UUID, entityData.get(TARGET));
+        tag.putString(TAG_BOUNCED_ENTITIES, entityData.get(BOUNCED_ENTITIES));
 
-        super.writeAdditional(tag);
+        super.addAdditionalSaveData(tag);
     }
 
     @Override
-    public void readAdditional(CompoundNBT tag) {
-        dataManager.set(BOUNCES, tag.getInt(TAG_BOUNCES_AMOUNT));
-        dataManager.set(DAMAGE, tag.getFloat(TAG_DAMAGE_AMOUNT));
-        dataManager.set(OWNER, tag.getString(TAG_OWNER_UUID));
-        dataManager.set(TARGET, tag.getString(TAG_TARGET_UUID));
-        dataManager.set(BOUNCED_ENTITIES, tag.getString(TAG_BOUNCED_ENTITIES));
+    public void readAdditionalSaveData(CompoundNBT tag) {
+        entityData.set(BOUNCES, tag.getInt(TAG_BOUNCES_AMOUNT));
+        entityData.set(DAMAGE, tag.getFloat(TAG_DAMAGE_AMOUNT));
+        entityData.set(OWNER, tag.getString(TAG_OWNER_UUID));
+        entityData.set(TARGET, tag.getString(TAG_TARGET_UUID));
+        entityData.set(BOUNCED_ENTITIES, tag.getString(TAG_BOUNCED_ENTITIES));
 
-        super.readAdditional(tag);
+        super.readAdditionalSaveData(tag);
     }
 
     @Override
-    public boolean isPushedByWater() {
+    public boolean isPushedByFluid() {
         return false;
     }
 
     @Override
-    protected float getGravityVelocity() {
+    protected float getGravity() {
         return 0;
     }
 
     @Nonnull
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

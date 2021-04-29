@@ -36,8 +36,8 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
 
     public MidnightRobeItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -50,8 +50,8 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -60,16 +60,16 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (livingEntity.ticksExisted % 20 == 0 && time > 0) {
+        if (livingEntity.tickCount % 20 == 0 && time > 0) {
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
         }
 
         if (livingEntity.getHealth() < livingEntity.getMaxHealth() * RelicsConfig.MidnightRobe.HEALTH_PERCENTAGE.get()) {
             if (time <= 0) {
-                if (livingEntity.getEntityWorld().isNightTime()) {
+                if (livingEntity.getCommandSenderWorld().isNight()) {
                     livingEntity.setInvisible(true);
                     if (!movementSpeed.hasModifier(MIDNIGHT_ROBE_SPEED_BOOST))
-                        movementSpeed.applyNonPersistentModifier(MIDNIGHT_ROBE_SPEED_BOOST);
+                        movementSpeed.addTransientModifier(MIDNIGHT_ROBE_SPEED_BOOST);
                 }
             } else {
                 livingEntity.setInvisible(false);
@@ -96,11 +96,11 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
     public static class MidnightRobeServerEvents {
         @SubscribeEvent
         public static void onEntityDamage(LivingHurtEvent event) {
-            if (event.getSource().getTrueSource() instanceof PlayerEntity
+            if (event.getSource().getEntity() instanceof PlayerEntity
                     && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MIDNIGHT_ROBE.get(),
-                    (LivingEntity) event.getSource().getTrueSource()).isPresent()) {
+                    (LivingEntity) event.getSource().getEntity()).isPresent()) {
                 ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MIDNIGHT_ROBE.get(),
-                        (LivingEntity) event.getSource().getTrueSource()).get().getRight();
+                        (LivingEntity) event.getSource().getEntity()).get().getRight();
                 if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) <= 0)
                     event.setAmount(event.getAmount() * RelicsConfig.MidnightRobe.STEALTH_DAMAGE_MULTIPLIER.get().floatValue());
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, RelicsConfig.MidnightRobe.ATTACK_INVISIBILITY_PENALTY.get());
@@ -115,8 +115,8 @@ public class MidnightRobeItem extends Item implements ICurioItem, IHasTooltip {
             PlayerEntity player = event.getPlayer();
             if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MIDNIGHT_ROBE.get(), player).isPresent()
                     && player.getHealth() < player.getMaxHealth() * RelicsConfig.MidnightRobe.HEALTH_PERCENTAGE.get()
-                    && player.getEntityWorld().func_242415_f(1.0F) > 0.26F
-                    && player.getEntityWorld().func_242415_f(1.0F) < 0.827F) event.setCanceled(true);
+                    && player.getCommandSenderWorld().getTimeOfDay(1.0F) > 0.26F
+                    && player.getCommandSenderWorld().getTimeOfDay(1.0F) < 0.827F) event.setCanceled(true);
         }
     }
 }

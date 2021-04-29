@@ -24,7 +24,7 @@ public class NullRenderer<T extends Entity> extends EntityRenderer<T> {
 
     @Nonnull
     @Override
-    public ResourceLocation getEntityTexture(@Nonnull T entity) {
-        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
+    public ResourceLocation getTextureLocation(@Nonnull T entity) {
+        return AtlasTexture.LOCATION_BLOCKS;
     }
 }

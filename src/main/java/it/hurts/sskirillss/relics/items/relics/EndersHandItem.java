@@ -35,8 +35,8 @@ public class EndersHandItem extends Item implements ICurioItem, IHasTooltip {
 
     public EndersHandItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -48,8 +48,8 @@ public class EndersHandItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -58,22 +58,22 @@ public class EndersHandItem extends Item implements ICurioItem, IHasTooltip {
         if (livingEntity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) livingEntity;
             int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
-            if (!player.getCooldownTracker().hasCooldown(stack.getItem())) {
-                if (player.isSneaking()) {
-                    Predicate<Entity> predicate = (entity) -> !entity.isSpectator() && entity.canBeCollidedWith();
+            if (!player.getCooldowns().isOnCooldown(stack.getItem())) {
+                if (player.isShiftKeyDown()) {
+                    Predicate<Entity> predicate = (entity) -> !entity.isSpectator() && entity.isPickable();
                     EntityRayTraceResult result = EntityUtils.rayTraceEntity(player, predicate, RelicsConfig.EndersHand.MAX_TELEPORT_DISTANCE.get());
                     if (result != null && result.getEntity() instanceof EndermanEntity) {
                         if (time >= RelicsConfig.EndersHand.TIME_BEFORE_TELEPORTING.get() * 20) {
-                            Vector3d swapVec = player.getPositionVec();
+                            Vector3d swapVec = player.position();
                             EndermanEntity enderman = (EndermanEntity) result.getEntity();
-                            player.setPositionAndUpdate(enderman.getPosX(), enderman.getPosY(), enderman.getPosZ());
-                            player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
-                                    SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                            enderman.setPositionAndUpdate(swapVec.getX(), swapVec.getY(), swapVec.getZ());
-                            player.getEntityWorld().playSound(null, swapVec.getX(), swapVec.getY(), swapVec.getZ(),
-                                    SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            player.teleportTo(enderman.getX(), enderman.getY(), enderman.getZ());
+                            player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
+                                    SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            enderman.teleportTo(swapVec.x(), swapVec.y(), swapVec.z());
+                            player.getCommandSenderWorld().playSound(null, swapVec.x(), swapVec.y(), swapVec.z(),
+                                    SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                             NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-                            player.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.EndersHand.TELEPORT_COOLDOWN.get() * 20);
+                            player.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.EndersHand.TELEPORT_COOLDOWN.get() * 20);
                         } else {
                             NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
                         }

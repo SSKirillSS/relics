@@ -28,12 +28,12 @@ public class ClientRegistry {
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), new StellarCatalystProjectileRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.SPACE_DISSECTOR.get(), new SpaceDissectorRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.SHADOW_GLAIVE.get(), new ShadowGlaiveRenderer.RenderFactory());
-        RenderTypeLookup.setRenderLayer(BlockRegistry.CHALK_BLOCK.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(BlockRegistry.CHALK_BLOCK.get(), RenderType.cutout());
 
-        ItemModelsProperties.registerProperty(
+        ItemModelsProperties.register(
                 ItemRegistry.SPACE_DISSECTOR.get(), new ResourceLocation(Reference.MODID, "mode"),
                 (stack, world, entity) -> NBTUtils.getBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false) ? 2
-                        : (entity instanceof PlayerEntity && ((PlayerEntity) entity).getCooldownTracker().hasCooldown(stack.getItem())) ? 1 : 0);
+                        : (entity instanceof PlayerEntity && ((PlayerEntity) entity).getCooldowns().isOnCooldown(stack.getItem())) ? 1 : 0);
     }
 
     @SubscribeEvent

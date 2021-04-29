@@ -21,8 +21,8 @@ import java.util.List;
 public class LuckyHorseshoeItem extends Item implements ICurioItem, IHasTooltip {
     public LuckyHorseshoeItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -34,20 +34,20 @@ public class LuckyHorseshoeItem extends Item implements ICurioItem, IHasTooltip 
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override
     public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return livingEntity.getEntityWorld().getRandom().nextFloat() <= RelicsConfig.LuckyHorseshoe.LOOTING_CHANCE.get()
+        return livingEntity.getCommandSenderWorld().getRandom().nextFloat() <= RelicsConfig.LuckyHorseshoe.LOOTING_CHANCE.get()
                 ? RelicsConfig.LuckyHorseshoe.ADDITIONAL_LOOTING.get() : 0;
     }
 
     @Override
     public int getFortuneBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return livingEntity.getEntityWorld().getRandom().nextFloat() <= RelicsConfig.LuckyHorseshoe.FORTUNA_CHANCE.get()
+        return livingEntity.getCommandSenderWorld().getRandom().nextFloat() <= RelicsConfig.LuckyHorseshoe.FORTUNA_CHANCE.get()
                 ? RelicsConfig.LuckyHorseshoe.ADDITIONAL_FORTUNE.get() : 0;
     }
 }

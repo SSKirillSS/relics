@@ -30,8 +30,8 @@ import java.util.List;
 public class SpiderNecklaceItem extends Item implements ICurioItem, IHasTooltip {
     public SpiderNecklaceItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -43,8 +43,8 @@ public class SpiderNecklaceItem extends Item implements ICurioItem, IHasTooltip 
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -52,8 +52,8 @@ public class SpiderNecklaceItem extends Item implements ICurioItem, IHasTooltip 
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) livingEntity;
-            if (!player.isSpectator() && player.collidedHorizontally && player.moveForward > 0) {
-                player.setMotion(player.getMotion().getX(), RelicsConfig.SpiderNecklace.CLIMBING_SPEED.get(), player.getMotion().getZ());
+            if (!player.isSpectator() && player.horizontalCollision && player.zza > 0) {
+                player.setDeltaMovement(player.getDeltaMovement().x(), RelicsConfig.SpiderNecklace.CLIMBING_SPEED.get(), player.getDeltaMovement().z());
                 player.fallDistance = 0F;
             }
         }
@@ -66,9 +66,9 @@ public class SpiderNecklaceItem extends Item implements ICurioItem, IHasTooltip 
         ICurio.RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
         matrixStack.scale(0.35F, 0.35F, 0.35F);
         matrixStack.translate(0.0F, 0.25F, -0.4F);
-        matrixStack.rotate(Direction.DOWN.getRotation());
+        matrixStack.mulPose(Direction.DOWN.getRotation());
         Minecraft.getInstance().getItemRenderer()
-                .renderItem(new ItemStack(ItemRegistry.SPIDER_NECKLACE.get()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY,
+                .renderStatic(new ItemStack(ItemRegistry.SPIDER_NECKLACE.get()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY,
                         matrixStack, renderTypeBuffer);
     }
 

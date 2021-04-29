@@ -13,7 +13,7 @@ public class PacketMouseScroll {
 
     public PacketMouseScroll(PacketBuffer buf) {
         delta = buf.readDouble();
-        stack = buf.readItemStack();
+        stack = buf.readItem();
     }
 
     public PacketMouseScroll(double delta, ItemStack stack) {
@@ -23,7 +23,7 @@ public class PacketMouseScroll {
 
     public void toBytes(PacketBuffer buf) {
         buf.writeDouble(delta);
-        buf.writeItemStack(stack);
+        buf.writeItem(stack);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {

@@ -30,14 +30,14 @@ public class DungeonLootModifier extends LootModifier {
         if (!RelicsConfig.RelicsWorldgen.RELICS_WORLDGEN_ENABLED.get() || !CompatibilityUtils.isValidForgeVersion()) return generatedLoot;
 
         ResourceLocation id = context.getQueriedLootTableId();
-        if (id.equals(LootTables.CHESTS_DESERT_PYRAMID) || id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_DESERT_HOUSE)) {
+        if (id.equals(LootTables.DESERT_PYRAMID) || id.equals(LootTables.VILLAGE_DESERT_HOUSE)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SCARAB_TALISMAN_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.SCARAB_TALISMAN.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.HOLY_LOCKET_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.HOLY_LOCKET.get()));
         }
 
-        if (id.equals(LootTables.CHESTS_ABANDONED_MINESHAFT)) {
+        if (id.equals(LootTables.ABANDONED_MINESHAFT)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPATIAL_SIGN_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.FRAGRANT_FLOWER_GEN_CHANCE.get())
@@ -48,8 +48,8 @@ public class DungeonLootModifier extends LootModifier {
                 generatedLoot.add(new ItemStack(ItemRegistry.SPIDER_NECKLACE.get()));
         }
 
-        if (id.equals(LootTables.CHESTS_STRONGHOLD_CORRIDOR) || id.equals(LootTables.CHESTS_STRONGHOLD_CROSSING)
-                || id.equals(LootTables.CHESTS_STRONGHOLD_LIBRARY)) {
+        if (id.equals(LootTables.STRONGHOLD_CORRIDOR) || id.equals(LootTables.STRONGHOLD_CROSSING)
+                || id.equals(LootTables.STRONGHOLD_LIBRARY)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPATIAL_SIGN_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.SPATIAL_SIGN.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ENDERS_HAND_GEN_CHANCE.get())
@@ -61,7 +61,7 @@ public class DungeonLootModifier extends LootModifier {
         }
 
         if (id.equals(LootTables.BASTION_BRIDGE) || id.equals(LootTables.BASTION_OTHER) || id.equals(LootTables.BASTION_TREASURE)
-                || id.equals(LootTables.BASTION_HOGLIN_STABLE) || id.equals(LootTables.CHESTS_NETHER_BRIDGE)) {
+                || id.equals(LootTables.BASTION_HOGLIN_STABLE) || id.equals(LootTables.NETHER_BRIDGE)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.REFLECTION_NECKLACE_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.REFLECTION_NECKLACE.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.MAGMA_WALKER_GEN_CHANCE.get())
@@ -79,7 +79,7 @@ public class DungeonLootModifier extends LootModifier {
                 generatedLoot.add(new ItemStack(ItemRegistry.MAGMA_WALKER.get()));
         }
 
-        if (id.equals(LootTables.CHESTS_END_CITY_TREASURE)) {
+        if (id.equals(LootTables.END_CITY_TREASURE)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.MIDNIGHT_ROBE_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.MIDNIGHT_ROBE.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.STELLAR_CATALYST_GEN_CHANCE.get())
@@ -100,40 +100,40 @@ public class DungeonLootModifier extends LootModifier {
                 generatedLoot.add(new ItemStack(ItemRegistry.SHADOW_GLAIVE.get()));
         }
 
-        if (id.equals(LootTables.CHESTS_UNDERWATER_RUIN_BIG) || id.equals(LootTables.CHESTS_UNDERWATER_RUIN_SMALL)
-                || id.equals(LootTables.CHESTS_SHIPWRECK_TREASURE)) {
+        if (id.equals(LootTables.UNDERWATER_RUIN_BIG) || id.equals(LootTables.UNDERWATER_RUIN_SMALL)
+                || id.equals(LootTables.SHIPWRECK_TREASURE)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.DROWNED_BELT_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.DROWNED_BELT.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.JELLYFISH_NECKLACE_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.JELLYFISH_NECKLACE.get()));
         }
 
-        if (id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_FLETCHER)) {
+        if (id.equals(LootTables.VILLAGE_FLETCHER)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ARROW_QUIVER_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.ARROW_QUIVER.get()));
         }
 
-        if (id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_BUTCHER)) {
+        if (id.equals(LootTables.VILLAGE_BUTCHER)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.HUNTER_BELT_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.HUNTER_BELT.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ARROW_QUIVER_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.ARROW_QUIVER.get()));
         }
 
-        if (id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SHEPHERD)) {
+        if (id.equals(LootTables.VILLAGE_SHEPHERD)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.LUCKY_HORSESHOE_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.LUCKY_HORSESHOE.get()));
         }
 
-        if (id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SNOWY_HOUSE) || id.equals(LootTables.CHESTS_VILLAGE_VILLAGE_TAIGA_HOUSE)
-                || id.equals(LootTables.CHESTS_IGLOO_CHEST)) {
+        if (id.equals(LootTables.VILLAGE_SNOWY_HOUSE) || id.equals(LootTables.VILLAGE_TAIGA_HOUSE)
+                || id.equals(LootTables.IGLOO_CHEST)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ICE_SKATES_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.ICE_SKATES.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.ICE_BREAKER_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.ICE_BREAKER.get()));
         }
 
-        if (id.equals(LootTables.CHESTS_JUNGLE_TEMPLE)) {
+        if (id.equals(LootTables.JUNGLE_TEMPLE)) {
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.CAMOUFLAGE_RING_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.CAMOUFLAGE_RING.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.FRAGRANT_FLOWER_GEN_CHANCE.get())

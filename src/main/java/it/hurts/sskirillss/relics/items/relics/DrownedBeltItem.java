@@ -36,8 +36,8 @@ public class DrownedBeltItem extends Item implements ICurioItem, IHasTooltip {
 
     public DrownedBeltItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.UNCOMMON));
     }
 
@@ -49,15 +49,15 @@ public class DrownedBeltItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity.isInWater()) {
-            livingEntity.setAir(livingEntity.getMaxAir());
+            livingEntity.setAirSupply(livingEntity.getMaxAirSupply());
         }
     }
 
@@ -80,8 +80,8 @@ public class DrownedBeltItem extends Item implements ICurioItem, IHasTooltip {
                 }
             }
 
-            if (event.getSource().getTrueSource() instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
+            if (event.getSource().getEntity() instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(), player).isPresent()
                         && player.isInWater()) {
                     event.setAmount(event.getAmount() * RelicsConfig.DrownedBelt.DEALT_DAMAGE_MULTIPLIER.get().floatValue());

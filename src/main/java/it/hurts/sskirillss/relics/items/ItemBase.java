@@ -5,6 +5,6 @@ import net.minecraft.item.Item;
 
 public class ItemBase extends Item {
     public ItemBase() {
-        super(new Item.Properties().group(RelicsTab.RELICS_TAB));
+        super(new Item.Properties().tab(RelicsTab.RELICS_TAB));
     }
 }

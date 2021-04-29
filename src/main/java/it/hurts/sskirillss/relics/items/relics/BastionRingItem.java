@@ -34,8 +34,8 @@ import java.util.List;
 public class BastionRingItem extends Item implements ICurioItem, IHasTooltip {
     public BastionRingItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -47,8 +47,8 @@ public class BastionRingItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -58,25 +58,25 @@ public class BastionRingItem extends Item implements ICurioItem, IHasTooltip {
         public static void onEntityKill(LivingDeathEvent event) {
             if (event.getEntityLiving() instanceof PiglinEntity) {
                 PiglinEntity entity = (PiglinEntity) event.getEntityLiving();
-                if (event.getSource().getTrueSource() instanceof PlayerEntity) {
-                    PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
-                    if (entity.getEntityWorld().getDimensionKey() == World.THE_NETHER
+                if (event.getSource().getEntity() instanceof PlayerEntity) {
+                    PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
+                    if (entity.getCommandSenderWorld().dimension() == World.NETHER
                             && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BASTION_RING.get(), player).isPresent()
                             && random.nextFloat() <= RelicsConfig.BastionRing.LOCATE_CHANCE.get()) {
-                        ServerWorld world = (ServerWorld) entity.getEntityWorld();
-                        BlockPos bastionPos = world.getChunkProvider().getChunkGenerator().func_235956_a_(world, Structure.BASTION_REMNANT, player.getPosition(), 100, false);
+                        ServerWorld world = (ServerWorld) entity.getCommandSenderWorld();
+                        BlockPos bastionPos = world.getChunkSource().getGenerator().findNearestMapFeature(world, Structure.BASTION_REMNANT, player.blockPosition(), 100, false);
                         if (bastionPos != null) {
-                            BlockPos pos = entity.getPosition();
-                            Vector3d currentVec = entity.getPositionVec();
-                            Vector3d targetVec = new Vector3d(bastionPos.getX(), entity.getPosY(), bastionPos.getZ());
-                            Vector3d finalVec = currentVec.add(targetVec.subtract(currentVec).normalize().mul(5, 5, 5));
+                            BlockPos pos = entity.blockPosition();
+                            Vector3d currentVec = entity.position();
+                            Vector3d targetVec = new Vector3d(bastionPos.getX(), entity.getY(), bastionPos.getZ());
+                            Vector3d finalVec = currentVec.add(targetVec.subtract(currentVec).normalize().multiply(5, 5, 5));
                             int distance = (int) Math.round(currentVec.distanceTo(finalVec)) * 3;
                             for (int i = 0; i < distance; i++) {
                                 float x = (float) (((finalVec.x - currentVec.x) * i / distance) + currentVec.x);
                                 float z = (float) (((finalVec.z - currentVec.z) * i / distance) + currentVec.z);
                                 CircleTintData circleTintData = new CircleTintData(
                                         new Color(1.0F - i * 0.01F, 1.0F, 0.5F), 0.4F - i * 0.0125F, 180, 0.99F, false);
-                                world.spawnParticle(circleTintData,
+                                world.sendParticles(circleTintData,
                                         x, pos.getY() + 1.5F, z,
                                         1, 0F, 0F, 0F, 0);
                             }

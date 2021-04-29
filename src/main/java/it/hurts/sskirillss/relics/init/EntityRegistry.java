@@ -13,20 +13,20 @@ public class EntityRegistry {
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MODID);
 
     public static final RegistryObject<EntityType<StellarCatalystProjectileEntity>> STELLAR_CATALYST_PROJECTILE = ENTITIES.register("stellar_catalyst_projectile", () ->
-            EntityType.Builder.<StellarCatalystProjectileEntity>create(StellarCatalystProjectileEntity::new, EntityClassification.MISC)
-                    .size(1.0F, 1.0F)
+            EntityType.Builder.<StellarCatalystProjectileEntity>of(StellarCatalystProjectileEntity::new, EntityClassification.MISC)
+                    .sized(1.0F, 1.0F)
                     .build("stellar_catalyst_projectile")
     );
 
     public static final RegistryObject<EntityType<SpaceDissectorEntity>> SPACE_DISSECTOR = ENTITIES.register("space_dissector", () ->
-            EntityType.Builder.<SpaceDissectorEntity>create(SpaceDissectorEntity::new, EntityClassification.MISC)
-                    .size(0.9F, 0.1F)
+            EntityType.Builder.<SpaceDissectorEntity>of(SpaceDissectorEntity::new, EntityClassification.MISC)
+                    .sized(0.9F, 0.1F)
                     .build("space_dissector")
     );
 
     public static final RegistryObject<EntityType<ShadowGlaiveEntity>> SHADOW_GLAIVE = ENTITIES.register("shadow_glaive", () ->
-            EntityType.Builder.<ShadowGlaiveEntity>create(ShadowGlaiveEntity::new, EntityClassification.MISC)
-                    .size(0.9F, 0.1F)
+            EntityType.Builder.<ShadowGlaiveEntity>of(ShadowGlaiveEntity::new, EntityClassification.MISC)
+                    .sized(0.9F, 0.1F)
                     .build("shadow_glaive")
     );
 

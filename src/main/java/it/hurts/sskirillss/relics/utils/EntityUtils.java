@@ -16,25 +16,25 @@ import java.util.function.Predicate;
 
 public class EntityUtils {
     public static void moveTowardsPosition(Entity entity, Vector3d targetPos, float speed) {
-        Vector3d motion = targetPos.subtract(entity.getPositionVec());
+        Vector3d motion = targetPos.subtract(entity.position());
         motion = motion.normalize().scale(speed);
-        entity.setMotion(motion.x, motion.y, motion.z);
+        entity.setDeltaMovement(motion.x, motion.y, motion.z);
     }
 
     public static void teleportWithMount(Entity entity, ServerWorld targetWorld, Vector3d targetPos) {
         if (targetWorld == null) return;
-        if (entity.getRidingEntity() != null) {
-            Entity mount = entity.getRidingEntity();
+        if (entity.getVehicle() != null) {
+            Entity mount = entity.getVehicle();
             entity.stopRiding();
-            if (entity.getEntityWorld() != targetWorld) entity.changeDimension(targetWorld);
-            else mount.setPositionAndUpdate(targetPos.getX(), targetPos.getY(), targetPos.getZ());
-        } else if (entity.getEntityWorld() != targetWorld) entity.changeDimension(targetWorld);
-        entity.setPositionAndUpdate(targetPos.getX(), targetPos.getY(), targetPos.getZ());
+            if (entity.getCommandSenderWorld() != targetWorld) entity.changeDimension(targetWorld);
+            else mount.teleportTo(targetPos.x(), targetPos.y(), targetPos.z());
+        } else if (entity.getCommandSenderWorld() != targetWorld) entity.changeDimension(targetWorld);
+        entity.teleportTo(targetPos.x(), targetPos.y(), targetPos.z());
     }
 
     public static int getSlotWithItem(PlayerEntity player, Item item) {
-        for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
-            if (player.inventory.getStackInSlot(i).getItem() == item) {
+        for (int i = 0; i < player.inventory.getContainerSize(); ++i) {
+            if (player.inventory.getItem(i).getItem() == item) {
                 return i;
             }
         }
@@ -43,10 +43,10 @@ public class EntityUtils {
 
     public static List<Integer> getSlotsWithItem(PlayerEntity player, Item item) {
         List<Integer> list = Lists.newArrayList();
-        for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
-            if (player.inventory.getStackInSlot(i).getItem() == item) {
+        for (int i = 0; i < player.inventory.getContainerSize(); ++i) {
+            if (player.inventory.getItem(i).getItem() == item) {
                 list.add(i);
-                if (i == player.inventory.getSizeInventory()) {
+                if (i == player.inventory.getContainerSize()) {
                     return list;
                 }
             }
@@ -55,16 +55,16 @@ public class EntityUtils {
     }
 
     public static EntityRayTraceResult rayTraceEntity(Entity shooter, Predicate<Entity> filter, double distance) {
-        World world = shooter.world;
+        World world = shooter.level;
         Vector3d startVec = shooter.getEyePosition(1.0F);
-        Vector3d endVec = shooter.getEyePosition(1.0F).add(shooter.getLook(1.0F).scale(distance));
+        Vector3d endVec = shooter.getEyePosition(1.0F).add(shooter.getViewVector(1.0F).scale(distance));
         double d0 = distance * distance;
         Entity entity = null;
         Vector3d vector3d = null;
-        for (Entity entity1 : world.getEntitiesInAABBexcluding(shooter, shooter.getBoundingBox()
-                .expand(shooter.getLook(1.0F).scale(distance * distance)).grow(1.0D), filter)) {
-            AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow(entity1.getCollisionBorderSize());
-            Optional<Vector3d> optional = axisalignedbb.rayTrace(startVec, endVec);
+        for (Entity entity1 : world.getEntities(shooter, shooter.getBoundingBox()
+                .expandTowards(shooter.getViewVector(1.0F).scale(distance * distance)).inflate(1.0D), filter)) {
+            AxisAlignedBB axisalignedbb = entity1.getBoundingBox().inflate(entity1.getPickRadius());
+            Optional<Vector3d> optional = axisalignedbb.clip(startVec, endVec);
             if (axisalignedbb.contains(startVec)) {
                 if (d0 >= 0.0D) {
                     entity = entity1;
@@ -73,9 +73,9 @@ public class EntityUtils {
                 }
             } else if (optional.isPresent()) {
                 Vector3d vector3d1 = optional.get();
-                double d1 = startVec.squareDistanceTo(vector3d1);
+                double d1 = startVec.distanceToSqr(vector3d1);
                 if (d1 < d0 || d0 == 0.0D) {
-                    if (entity1.getLowestRidingEntity() == shooter.getLowestRidingEntity() && !entity1.canRiderInteract()) {
+                    if (entity1.getRootVehicle() == shooter.getRootVehicle() && !entity1.canRiderInteract()) {
                         if (d0 == 0.0D) {
                             entity = entity1;
                             vector3d = vector3d1;

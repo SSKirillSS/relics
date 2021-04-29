@@ -26,23 +26,23 @@ public class SpaceDissectorRenderer extends EntityRenderer<SpaceDissectorEntity>
 
     @Override
     public void render(SpaceDissectorEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        float time = entityIn.ticksExisted + (Minecraft.getInstance().isGamePaused() ? 0 : partialTicks);
+        float time = entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks);
 
-        matrixStackIn.push();
+        matrixStackIn.pushPose();
 
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw) - 90.0F));
-        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch)));
-        matrixStackIn.rotate(Vector3f.XP.rotationDegrees(90F));
-        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(time * 40F));
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 90.0F));
+        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)));
+        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(90F));
+        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(time * 40F));
         matrixStackIn.scale(0.75F, 0.75F, 0.75F);
-        Minecraft.getInstance().getItemRenderer().renderItem(new ItemStack(ItemRegistry.SPACE_DISSECTOR.get()),
+        Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(ItemRegistry.SPACE_DISSECTOR.get()),
                 ItemCameraTransforms.TransformType.FIXED, packedLightIn, OverlayTexture.NO_OVERLAY, matrixStackIn, bufferIn);
 
-        matrixStackIn.pop();
+        matrixStackIn.popPose();
     }
 
     @Override
-    public ResourceLocation getEntityTexture(SpaceDissectorEntity entity) {
+    public ResourceLocation getTextureLocation(SpaceDissectorEntity entity) {
         return new ResourceLocation(Reference.MODID, "textures/item/space_dissector.png");
     }
 

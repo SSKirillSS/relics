@@ -32,8 +32,8 @@ public class CamouflageRingItem extends Item implements ICurioItem, IHasTooltip 
 
     public CamouflageRingItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.UNCOMMON));
     }
 
@@ -45,8 +45,8 @@ public class CamouflageRingItem extends Item implements ICurioItem, IHasTooltip 
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -54,20 +54,20 @@ public class CamouflageRingItem extends Item implements ICurioItem, IHasTooltip 
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
         if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
-            if (time > 0 && livingEntity.isSneaking()
-                    && livingEntity.getEntityWorld().getBlockState(livingEntity.getPosition()).getBlock() instanceof DoublePlantBlock) {
-                if (livingEntity.ticksExisted % 20 == 0) NBTUtils.setInt(stack, TAG_TIME, time - 1);
+            if (time > 0 && livingEntity.isShiftKeyDown()
+                    && livingEntity.getCommandSenderWorld().getBlockState(livingEntity.blockPosition()).getBlock() instanceof DoublePlantBlock) {
+                if (livingEntity.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_TIME, time - 1);
                 livingEntity.setInvisible(true);
             } else {
                 NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, false);
                 livingEntity.setInvisible(false);
             }
         } else {
-            if (livingEntity.ticksExisted % 20 == 0 && time < RelicsConfig.CamouflageRing.MAX_INVISIBILITY_TIME.get()) {
+            if (livingEntity.tickCount % 20 == 0 && time < RelicsConfig.CamouflageRing.MAX_INVISIBILITY_TIME.get()) {
                 NBTUtils.setInt(stack, TAG_TIME, time + 1);
             }
-            if (livingEntity.isSneaking() && time > 0
-                    && livingEntity.getEntityWorld().getBlockState(livingEntity.getPosition()).getBlock() instanceof DoublePlantBlock) {
+            if (livingEntity.isShiftKeyDown() && time > 0
+                    && livingEntity.getCommandSenderWorld().getBlockState(livingEntity.blockPosition()).getBlock() instanceof DoublePlantBlock) {
                 NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, true);
             }
         }
@@ -77,8 +77,8 @@ public class CamouflageRingItem extends Item implements ICurioItem, IHasTooltip 
     public static class CamouflageRingServerEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
-            if (event.getSource().getTrueSource() instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
+            if (event.getSource().getEntity() instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CAMOUFLAGE_RING.get(), player).isPresent()) {
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CAMOUFLAGE_RING.get(), player).get().getRight();
                     if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {

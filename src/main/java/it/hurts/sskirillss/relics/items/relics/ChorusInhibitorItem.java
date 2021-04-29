@@ -35,8 +35,8 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
 
     public ChorusInhibitorItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -50,11 +50,11 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         if (!NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
             Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
-            tooltip.add(new TranslationTextComponent("tooltip.relics.chorus_inhibitor.tooltip_1", pos.getX(), pos.getY(), pos.getZ()));
+            tooltip.add(new TranslationTextComponent("tooltip.relics.chorus_inhibitor.tooltip_1", pos.x(), pos.y(), pos.z()));
             tooltip.add(new TranslationTextComponent("tooltip.relics.chorus_inhibitor.tooltip_2", NBTUtils.getInt(stack, TAG_TIME, 0)));
         }
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
@@ -62,17 +62,17 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || livingEntity.getEntityWorld().isRemote() || livingEntity.ticksExisted % 20 != 0) return;
+        if (!(livingEntity instanceof PlayerEntity) || livingEntity.getCommandSenderWorld().isClientSide() || livingEntity.tickCount % 20 != 0) return;
         PlayerEntity player = (PlayerEntity) livingEntity;
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
         if (time > 0) NBTUtils.setInt(stack, TAG_TIME, time - 1);
         else if (!NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
             Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
             if (pos == null) return;
-            ServerWorld world = NBTUtils.parseWorld(player.getEntityWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
+            ServerWorld world = NBTUtils.parseWorld(player.getCommandSenderWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
             if (world != null) EntityUtils.teleportWithMount(player, world, pos);
-            player.getEntityWorld().playSound(player, pos.getX(), pos.getY(), pos.getZ(),
-                    SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            player.getCommandSenderWorld().playSound(player, pos.x(), pos.y(), pos.z(),
+                    SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
             NBTUtils.setString(stack, TAG_POSITION, "");
             NBTUtils.setString(stack, TAG_WORLD, "");
             NBTUtils.setInt(stack, TAG_TIME, 0);
@@ -85,16 +85,16 @@ public class ChorusInhibitorItem extends Item implements ICurioItem, IHasTooltip
         public static void onItemUse(PlayerInteractEvent.RightClickItem event) {
             if (!(event.getEntityLiving() instanceof PlayerEntity)) return;
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-            if (player.getHeldItemMainhand().getItem() == Items.CHORUS_FRUIT && !player.isSneaking()) {
+            if (player.getMainHandItem().getItem() == Items.CHORUS_FRUIT && !player.isShiftKeyDown()) {
                 CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CHORUS_INHIBITOR.get(), player).ifPresent(triple -> {
                     ItemStack stack = triple.getRight();
                     int time = NBTUtils.getInt(stack, TAG_TIME, 0);
                     NBTUtils.setInt(stack, TAG_TIME, time + RelicsConfig.ChorusInhibitor.TIME_PER_CHORUS.get());
                     if (time <= 0) {
-                        NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(player.getPositionVec()));
-                        NBTUtils.setString(stack, TAG_WORLD, player.getEntityWorld().getDimensionKey().getLocation().toString());
+                        NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(player.position()));
+                        NBTUtils.setString(stack, TAG_WORLD, player.getCommandSenderWorld().dimension().location().toString());
                     }
-                    player.getHeldItemMainhand().shrink(1);
+                    player.getMainHandItem().shrink(1);
                     event.setCanceled(true);
                 });
             }

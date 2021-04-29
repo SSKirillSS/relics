@@ -11,7 +11,7 @@ import java.util.List;
 
 public class WorldUtils {
     public static BlockPos getSolidBlockUnderFeet(World world, BlockPos blockPos) {
-        for (BlockPos pos = blockPos.down(); pos.getY() > 0; pos = pos.down()) {
+        for (BlockPos pos = blockPos.below(); pos.getY() > 0; pos = pos.below()) {
             if (world.getBlockState(pos).getBlock() != Blocks.AIR && !(world.getBlockState(pos).getBlock() instanceof BushBlock)) {
                 return pos;
             }
@@ -26,7 +26,7 @@ public class WorldUtils {
             for (int j = -(int) r1; j <= r1; j++) {
                 float r2 = MathHelper.sqrt(radius * radius - i * i - j * j);
                 for (int k = -(int) r2; k <= r2; k++) {
-                    sphere.add(center.add(i, j, k));
+                    sphere.add(center.offset(i, j, k));
                 }
             }
         }

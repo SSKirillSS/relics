@@ -43,8 +43,8 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
 
     public FragrantFlowerItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.UNCOMMON));
     }
 
@@ -57,8 +57,8 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.add(new TranslationTextComponent("tooltip.relics.fragrant_flower.tooltip_1", NBTUtils.getInt(stack, TAG_NECTAR_AMOUNT, 0)));
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
@@ -67,85 +67,85 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) livingEntity;
-            World world = player.getEntityWorld();
+            World world = player.getCommandSenderWorld();
             int nectar = NBTUtils.getInt(stack, TAG_NECTAR_AMOUNT, 0);
             int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
-            for (BeeEntity bee : world.getEntitiesWithinAABB(BeeEntity.class,
-                    player.getBoundingBox().grow(RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get(),
+            for (BeeEntity bee : world.getEntitiesOfClass(BeeEntity.class,
+                    player.getBoundingBox().inflate(RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get(),
                             RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get()))) {
-                if (bee.getAngerTarget() != null && bee.getAngerTarget().equals(player.getUniqueID())) {
-                    bee.setRevengeTarget(null);
-                    bee.setAngerTarget(null);
-                    bee.setAttackTarget(null);
-                    bee.setAngerTime(0);
+                if (bee.getPersistentAngerTarget() != null && bee.getPersistentAngerTarget().equals(player.getUUID())) {
+                    bee.setLastHurtByMob(null);
+                    bee.setPersistentAngerTarget(null);
+                    bee.setTarget(null);
+                    bee.setRemainingPersistentAngerTime(0);
                 }
                 if (bee.hasNectar() && nectar < RelicsConfig.FragrantFlower.NECTAR_CAPACITY.get()) {
-                    bee.getNavigator().tryMoveToXYZ(player.getPosX(), player.getPosY(), player.getPosZ(), 1.0F);
-                    if (player.getPositionVec().distanceTo(bee.getPositionVec()) < RelicsConfig.FragrantFlower.NECTAR_CONSUMPTION_RADIUS.get()) {
+                    bee.getNavigation().moveTo(player.getX(), player.getY(), player.getZ(), 1.0F);
+                    if (player.position().distanceTo(bee.position()) < RelicsConfig.FragrantFlower.NECTAR_CONSUMPTION_RADIUS.get()) {
                         NBTUtils.setInt(stack, TAG_NECTAR_AMOUNT, nectar + 1);
-                        bee.onHoneyDelivered();
-                        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
-                                SoundEvents.ENTITY_BEE_POLLINATE, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+                        bee.dropOffNectar();
+                        world.playSound(null, player.getX(), player.getY(), player.getZ(),
+                                SoundEvents.BEE_POLLINATE, SoundCategory.NEUTRAL, 1.0F, 1.0F);
                     }
                 }
             }
-            if (player.isSneaking()) {
-                if (!player.getCooldownTracker().hasCooldown(stack.getItem()) && nectar > 0) {
+            if (player.isShiftKeyDown()) {
+                if (!player.getCooldowns().isOnCooldown(stack.getItem()) && nectar > 0) {
                     float radius = RelicsConfig.FragrantFlower.EFFECT_RADIUS.get();
-                    double extraY = player.getPosY() + 0.5F;
+                    double extraY = player.getY() + 0.5F;
                     for (int i = 0; i < 5; i++) {
-                        float angle = (0.01F * (player.ticksExisted * 3 + i * 125));
-                        double extraX = (double) (radius * MathHelper.sin((float) (Math.PI + angle))) + player.getPosX();
-                        double extraZ = (double) (radius * MathHelper.cos(angle)) + player.getPosZ();
+                        float angle = (0.01F * (player.tickCount * 3 + i * 125));
+                        double extraX = (double) (radius * MathHelper.sin((float) (Math.PI + angle))) + player.getX();
+                        double extraZ = (double) (radius * MathHelper.cos(angle)) + player.getZ();
                         world.addParticle(new CircleTintData(
                                         new Color(1.0F, 0.4F, 0.7F), 0.5F,
                                         30, 0.95F, false),
                                 extraX, extraY, extraZ, 0F, 0F, 0F);
                     }
                     for (int i = 0; i < 2; i++) {
-                        float angle = (-0.02F * (player.ticksExisted * 3 + i * 160));
-                        double extraX = (double) (radius * 0.5F * MathHelper.sin((float) (Math.PI + angle))) + player.getPosX();
-                        double extraZ = (double) (radius * 0.5F * MathHelper.cos(angle)) + player.getPosZ();
+                        float angle = (-0.02F * (player.tickCount * 3 + i * 160));
+                        double extraX = (double) (radius * 0.5F * MathHelper.sin((float) (Math.PI + angle))) + player.getX();
+                        double extraZ = (double) (radius * 0.5F * MathHelper.cos(angle)) + player.getZ();
                         world.addParticle(new CircleTintData(
                                         new Color(0.2F, 1.0F, 0.0F), 0.5F,
                                         40, 0.95F, false),
                                 extraX, extraY, extraZ, 0F, 0F, 0F);
                     }
-                    if (player.ticksExisted % 20 == 0) {
-                        List<BlockPos> sphere = WorldUtils.getBlockSphere(player.getPosition(), radius);
+                    if (player.tickCount % 20 == 0) {
+                        List<BlockPos> sphere = WorldUtils.getBlockSphere(player.blockPosition(), radius);
                         if (time < 5) {
                             NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
                         } else {
                             NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                             NBTUtils.setInt(stack, TAG_NECTAR_AMOUNT, nectar - 1);
-                            player.getCooldownTracker().setCooldown(stack.getItem(), 10 * 20);
+                            player.getCooldowns().addCooldown(stack.getItem(), 10 * 20);
                             ParticleUtils.createBall(new CircleTintData(
                                             new Color(0.2F, 1.0F, 0.0F), 0.5F,
                                             40, 0.93F, false),
-                                    player.getPositionVec(), world, 2, 0.3F);
+                                    player.position(), world, 2, 0.3F);
                             for (BlockPos pos : sphere) {
                                 BlockState state = world.getBlockState(pos);
                                 Block block = state.getBlock();
                                 if (block instanceof IGrowable && !(block instanceof GrassBlock)) {
                                     IGrowable plant = (IGrowable) block;
-                                    if (!world.isRemote()) {
+                                    if (!world.isClientSide()) {
                                         for (int i = 0; i < RelicsConfig.FragrantFlower.GROW_EFFICIENCY.get(); i++) {
-                                            if (plant.canGrow(world, pos, state, world.isRemote)
-                                                    && plant.canUseBonemeal(world, world.rand, pos, state)) {
-                                                plant.grow((ServerWorld) world,
+                                            if (plant.isValidBonemealTarget(world, pos, state, world.isClientSide)
+                                                    && plant.isBonemealSuccess(world, world.random, pos, state)) {
+                                                plant.performBonemeal((ServerWorld) world,
                                                         world.getRandom(), pos, state);
                                             }
                                         }
                                     }
-                                    if (world.isRemote) {
-                                        BoneMealItem.spawnBonemealParticles(world, pos, 0);
+                                    if (world.isClientSide) {
+                                        BoneMealItem.addGrowthParticles(world, pos, 0);
                                     }
                                 }
                             }
-                            for (LivingEntity entity : world.getEntitiesWithinAABB(LivingEntity.class,
-                                    player.getBoundingBox().grow(radius))) {
-                                if (entity.isEntityUndead()) {
-                                    entity.attackEntityFrom(DamageSource.causePlayerDamage(player),
+                            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class,
+                                    player.getBoundingBox().inflate(radius))) {
+                                if (entity.isInvertedHealAndHarm()) {
+                                    entity.hurt(DamageSource.playerAttack(player),
                                             RelicsConfig.FragrantFlower.HEAL_AMOUNT.get().floatValue());
                                 } else {
                                     entity.heal(RelicsConfig.FragrantFlower.HEAL_AMOUNT.get().floatValue());
@@ -164,26 +164,26 @@ public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip 
     public static class FragrantFlowerServerEvents {
         @SubscribeEvent
         public static void onEntityDamage(LivingHurtEvent event) {
-            if (event.getSource().getTrueSource() instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
+            if (event.getSource().getEntity() instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.FRAGRANT_FLOWER.get(), player).isPresent()) {
-                    for (BeeEntity bee : player.getEntityWorld().getEntitiesWithinAABB(BeeEntity.class, player.getBoundingBox()
-                            .grow(RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(),
+                    for (BeeEntity bee : player.getCommandSenderWorld().getEntitiesOfClass(BeeEntity.class, player.getBoundingBox()
+                            .inflate(RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(),
                                     RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get()))) {
                         if (!(event.getEntityLiving() instanceof BeeEntity)) {
-                            bee.setRevengeTarget(event.getEntityLiving());
-                            bee.setAngerTarget(event.getEntityLiving().getUniqueID());
-                            bee.setAttackTarget(event.getEntityLiving());
-                            bee.setAngerTime(TickRangeConverter.convertRange(20, 39)
-                                    .getRandomWithinRange(bee.getEntityWorld().getRandom()));
+                            bee.setLastHurtByMob(event.getEntityLiving());
+                            bee.setPersistentAngerTarget(event.getEntityLiving().getUUID());
+                            bee.setTarget(event.getEntityLiving());
+                            bee.setRemainingPersistentAngerTime(TickRangeConverter.rangeOfSeconds(20, 39)
+                                    .randomValue(bee.getCommandSenderWorld().getRandom()));
                         }
                     }
                 }
             }
-            if (event.getSource().getTrueSource() instanceof BeeEntity) {
-                BeeEntity bee = (BeeEntity) event.getSource().getTrueSource();
-                for (PlayerEntity player : bee.getEntityWorld().getEntitiesWithinAABB(PlayerEntity.class, bee.getBoundingBox()
-                        .grow(RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(),
+            if (event.getSource().getEntity() instanceof BeeEntity) {
+                BeeEntity bee = (BeeEntity) event.getSource().getEntity();
+                for (PlayerEntity player : bee.getCommandSenderWorld().getEntitiesOfClass(PlayerEntity.class, bee.getBoundingBox()
+                        .inflate(RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(),
                                 RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get()))) {
                     if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.FRAGRANT_FLOWER.get(), player).isPresent()) {
                         event.setAmount(event.getAmount() * RelicsConfig.FragrantFlower.BEE_DAMAGE_MULTIPLIER.get().floatValue());

@@ -33,7 +33,7 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     }
 
     public StellarCatalystProjectileEntity(LivingEntity throwerIn, LivingEntity target, float damage) {
-        super(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), throwerIn, target.getEntityWorld());
+        super(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), throwerIn, target.getCommandSenderWorld());
         this.damage = damage;
         if (throwerIn instanceof PlayerEntity) this.owner = (PlayerEntity) throwerIn;
     }
@@ -41,55 +41,55 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     @Override
     public void tick() {
         super.tick();
-        Random random = this.getEntityWorld().getRandom();
+        Random random = this.getCommandSenderWorld().getRandom();
         for (int i = 0; i < 3; i++)
-            world.addParticle(new CircleTintData(new Color(255 - random.nextInt(150), 0, 255 - random.nextInt(150)),
-                            0.2F + random.nextFloat() * 0.15F, 20, 0.95F, false), this.prevPosX, this.prevPosY, this.prevPosZ,
+            level.addParticle(new CircleTintData(new Color(255 - random.nextInt(150), 0, 255 - random.nextInt(150)),
+                            0.2F + random.nextFloat() * 0.15F, 20, 0.95F, false), this.xo, this.yo, this.zo,
                     MathUtils.generateReallyRandomFloat(random) * 0.2F, random.nextFloat() * 0.75F, MathUtils.generateReallyRandomFloat(random) * 0.2F);
-        if (this.ticksExisted > 100) this.remove();
-        this.setMotion(0.0F, -RelicsConfig.StellarCatalyst.FALLING_STAR_SPEED.get(), 0.0F);
+        if (this.tickCount > 100) this.remove();
+        this.setDeltaMovement(0.0F, -RelicsConfig.StellarCatalyst.FALLING_STAR_SPEED.get(), 0.0F);
     }
 
     @Override
-    protected void onImpact(RayTraceResult result) {
-        Random random = this.getEntityWorld().getRandom();
+    protected void onHit(RayTraceResult result) {
+        Random random = this.getCommandSenderWorld().getRandom();
         ParticleUtils.createBall(new CircleTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(100)),
-                0.4F, 40, 0.90F, true), this.getPositionVec(), this.getEntityWorld(), 2, 0.2F);
+                0.4F, 40, 0.90F, true), this.position(), this.getCommandSenderWorld(), 2, 0.2F);
         ParticleUtils.createBall(new CircleTintData(new Color(175 - random.nextInt(100), 0, 255 - random.nextInt(50)),
-                0.4F, 40, 0.90F, true), this.getPositionVec(), this.getEntityWorld(), 1, 0.1F);
-        if (world.isRemote()) return;
-        for (LivingEntity entity : this.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class,
-                this.getBoundingBox().grow(RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_RADIUS.get()))) {
+                0.4F, 40, 0.90F, true), this.position(), this.getCommandSenderWorld(), 1, 0.1F);
+        if (level.isClientSide()) return;
+        for (LivingEntity entity : this.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class,
+                this.getBoundingBox().inflate(RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_RADIUS.get()))) {
             float multiplier = RelicsConfig.StellarCatalyst.FALLING_STAR_IMPACT_MOTION_MULTIPLIER.get().floatValue();
-            Vector3d motion = entity.getPositionVec().subtract(this.getPositionVec()).normalize().mul(multiplier, multiplier, multiplier);
+            Vector3d motion = entity.position().subtract(this.position()).normalize().multiply(multiplier, multiplier, multiplier);
             if (entity instanceof ServerPlayerEntity && entity != owner)
                 NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) entity);
-            else entity.setMotion(motion);
+            else entity.setDeltaMovement(motion);
             if (owner != null) {
-                if (entity != owner) entity.attackEntityFrom(DamageSource.causePlayerDamage(owner), damage);
-            } else entity.attackEntityFrom(DamageSource.GENERIC, (float) (RelicsConfig.StellarCatalyst.MIN_DAMAGE_AMOUNT.get()
+                if (entity != owner) entity.hurt(DamageSource.playerAttack(owner), damage);
+            } else entity.hurt(DamageSource.GENERIC, (float) (RelicsConfig.StellarCatalyst.MIN_DAMAGE_AMOUNT.get()
                     * RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_MULTIPLIER.get()));
         }
-        this.setDead();
+        this.removeAfterChangingDimensions();
     }
 
     @Override
-    protected void writeAdditional(@Nonnull CompoundNBT compound) {
+    protected void addAdditionalSaveData(@Nonnull CompoundNBT compound) {
         compound.putFloat(TAG_DAMAGE, damage);
     }
 
     @Override
-    protected void readAdditional(@Nonnull CompoundNBT compound) {
+    protected void readAdditionalSaveData(@Nonnull CompoundNBT compound) {
         damage = compound.getFloat(TAG_DAMAGE);
     }
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
 
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

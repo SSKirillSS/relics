@@ -18,7 +18,7 @@ public class ParticleRegistry {
     public static class ClientParticleRegistry {
         @SubscribeEvent
         public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
-            Minecraft.getInstance().particles.registerFactory(CIRCLE_TINT, CircleTintFactory::new);
+            Minecraft.getInstance().particleEngine.register(CIRCLE_TINT, CircleTintFactory::new);
         }
     }
 

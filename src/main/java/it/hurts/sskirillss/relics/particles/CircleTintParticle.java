@@ -31,26 +31,26 @@ public class CircleTintParticle extends SpriteTexturedParticle {
         setColor(spark.getRed() / 255.0F, spark.getGreen() / 255.0F, spark.getBlue() / 255.0F);
         setSize(diameter, diameter);
 
-        maxAge = lifeTime;
+        lifetime = lifeTime;
 
-        particleScale = diameter;
-        this.particleAlpha = 1.0F;
+        quadSize = diameter;
+        this.alpha = 1.0F;
 
-        motionX = velocityX;
-        motionY = velocityY;
-        motionZ = velocityZ;
+        xd = velocityX;
+        yd = velocityY;
+        zd = velocityZ;
 
-        this.canCollide = shouldCollide;
+        this.hasPhysics = shouldCollide;
     }
 
     @Override
-    public float getScale(float scaleFactor) {
-        return this.particleScale;
+    public float getQuadSize(float scaleFactor) {
+        return this.quadSize;
     }
 
     @Override
-    protected int getBrightnessForRender(float partialTick) {
-        return LightTexture.packLight(15, 15);
+    protected int getLightColor(float partialTick) {
+        return LightTexture.pack(15, 15);
     }
 
     @Nonnull
@@ -61,46 +61,46 @@ public class CircleTintParticle extends SpriteTexturedParticle {
 
     @Override
     public void tick() {
-        this.particleScale *= this.resizeSpeed;
+        this.quadSize *= this.resizeSpeed;
 
-        prevPosX = posX;
-        prevPosY = posY;
-        prevPosZ = posZ;
+        xo = x;
+        yo = y;
+        zo = z;
 
-        move(motionX, motionY, motionZ);
+        move(xd, yd, zd);
 
         if (onGround) {
-            this.setExpired();
+            this.remove();
         }
 
-        if (prevPosY == posY && motionY > 0) {
-            this.setExpired();
+        if (yo == y && yd > 0) {
+            this.remove();
         }
 
-        if (this.age++ >= this.maxAge) {
-            this.setExpired();
+        if (this.age++ >= this.lifetime) {
+            this.remove();
         }
     }
 
     private static final IParticleRenderType RENDERER = new IParticleRenderType() {
         @Override
-        public void beginRender(BufferBuilder bufferBuilder, TextureManager textureManager) {
+        public void begin(BufferBuilder bufferBuilder, TextureManager textureManager) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0.001F);
             RenderSystem.disableLighting();
 
-            textureManager.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
-            textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE).setBlurMipmap(true, false);
-            bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+            textureManager.bind(AtlasTexture.LOCATION_PARTICLES);
+            textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES).setBlurMipmap(true, false);
+            bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE);
         }
 
         @Override
-        public void finishRender(Tessellator tessellator) {
-            tessellator.draw();
+        public void end(Tessellator tessellator) {
+            tessellator.end();
             RenderSystem.enableDepthTest();
-            Minecraft.getInstance().textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE).restoreLastBlurMipmap();
+            Minecraft.getInstance().textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES).restoreLastBlurMipmap();
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
             RenderSystem.disableBlend();
             RenderSystem.depthMask(true);

@@ -28,61 +28,61 @@ public class SpaceDissectorItem extends Item implements IHasTooltip {
 
     public SpaceDissectorItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.EPIC));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        ItemStack stack = playerIn.getHeldItemMainhand();
-        if (handIn == Hand.MAIN_HAND && !playerIn.getCooldownTracker().hasCooldown(stack.getItem())) {
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack stack = playerIn.getMainHandItem();
+        if (handIn == Hand.MAIN_HAND && !playerIn.getCooldowns().isOnCooldown(stack.getItem())) {
             if (!NBTUtils.getBoolean(stack, TAG_IS_THROWN, false)) {
                 SpaceDissectorEntity entity = new SpaceDissectorEntity(worldIn, playerIn);
-                entity.func_234612_a_(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 1.0F,
+                entity.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, 1.0F,
                         RelicsConfig.SpaceDissector.MOVEMENT_SPEED.get().floatValue(), 0.0F);
                 NBTUtils.setBoolean(stack, TAG_IS_THROWN, true);
-                NBTUtils.setString(stack, TAG_UUID, entity.getUniqueID().toString());
+                NBTUtils.setString(stack, TAG_UUID, entity.getUUID().toString());
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-                entity.stack = playerIn.getHeldItemMainhand();
+                entity.stack = playerIn.getMainHandItem();
                 entity.setOwner(playerIn);
-                worldIn.addEntity(entity);
+                worldIn.addFreshEntity(entity);
             } else {
                 if (!NBTUtils.getString(stack, TAG_UUID, "").equals("")) {
                     UUID uuid = UUID.fromString(NBTUtils.getString(stack, TAG_UUID, ""));
                     if (worldIn instanceof ServerWorld) {
-                        if (((ServerWorld) worldIn).getEntityByUuid(uuid) != null) {
-                            if (((ServerWorld) worldIn).getEntityByUuid(uuid) instanceof SpaceDissectorEntity) {
-                                SpaceDissectorEntity dissector = (SpaceDissectorEntity) ((ServerWorld) worldIn).getEntityByUuid(uuid);
-                                if (!playerIn.isSneaking()) {
-                                    if (!dissector.getDataManager().get(SpaceDissectorEntity.IS_RETURNING)) {
-                                        dissector.getDataManager().set(SpaceDissectorEntity.IS_RETURNING, true);
+                        if (((ServerWorld) worldIn).getEntity(uuid) != null) {
+                            if (((ServerWorld) worldIn).getEntity(uuid) instanceof SpaceDissectorEntity) {
+                                SpaceDissectorEntity dissector = (SpaceDissectorEntity) ((ServerWorld) worldIn).getEntity(uuid);
+                                if (!playerIn.isShiftKeyDown()) {
+                                    if (!dissector.getEntityData().get(SpaceDissectorEntity.IS_RETURNING)) {
+                                        dissector.getEntityData().set(SpaceDissectorEntity.IS_RETURNING, true);
                                     }
                                 } else {
-                                    if (playerIn.getPositionVec().distanceTo(dissector.getPositionVec()) > RelicsConfig.SpaceDissector.DISTANCE_FOR_TELEPORT.get()) {
-                                        playerIn.setPositionAndUpdate(dissector.getPosX(), dissector.getPosY(), dissector.getPosZ());
-                                        worldIn.playSound(null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(),
-                                                SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                    if (playerIn.position().distanceTo(dissector.position()) > RelicsConfig.SpaceDissector.DISTANCE_FOR_TELEPORT.get()) {
+                                        playerIn.teleportTo(dissector.getX(), dissector.getY(), dissector.getZ());
+                                        worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(),
+                                                SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                         dissector.remove();
-                                        playerIn.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
+                                        playerIn.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
                                         NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
                                     }
                                 }
                             }
                         } else {
-                            playerIn.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
+                            playerIn.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
                             NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
                         }
                     }
                 }
             }
         }
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (entityIn.ticksExisted % 20 == 0 && NBTUtils.getBoolean(stack, TAG_IS_THROWN, false)) {
+        if (entityIn.tickCount % 20 == 0 && NBTUtils.getBoolean(stack, TAG_IS_THROWN, false)) {
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) + 1);
             if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) > RelicsConfig.SpaceDissector.MAX_THROWN_TIME.get()) {
                 NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
@@ -101,8 +101,8 @@ public class SpaceDissectorItem extends Item implements IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 

@@ -10,17 +10,17 @@ import net.minecraft.util.ActionResultType;
 public class ChalkItem extends Item {
     public ChalkItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
-                .maxDamage(100));
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
+                .durability(100));
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        if (context.getWorld().getBlockState(context.getPos()).isSolid()
-                && context.getWorld().getBlockState(context.getPos().up()).getBlock() == Blocks.AIR) {
-            context.getWorld().setBlockState(context.getPos().up(), BlockRegistry.CHALK_BLOCK.get().getDefaultState());
-            if (!context.getPlayer().isCreative()) context.getItem().damageItem(1, context.getPlayer(), (player) -> context.getPlayer().sendBreakAnimation(context.getHand()));
+    public ActionResultType useOn(ItemUseContext context) {
+        if (context.getLevel().getBlockState(context.getClickedPos()).canOcclude()
+                && context.getLevel().getBlockState(context.getClickedPos().above()).getBlock() == Blocks.AIR) {
+            context.getLevel().setBlockAndUpdate(context.getClickedPos().above(), BlockRegistry.CHALK_BLOCK.get().defaultBlockState());
+            if (!context.getPlayer().isCreative()) context.getItemInHand().hurtAndBreak(1, context.getPlayer(), (player) -> context.getPlayer().broadcastBreakEvent(context.getHand()));
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;

@@ -12,20 +12,20 @@ import net.minecraft.world.server.ServerWorld;
 import java.util.Random;
 
 public class ChalkBlock extends Block implements IVoidBlock {
-    protected static final VoxelShape AABB = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
+    protected static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
 
     public ChalkBlock() {
-        super(Block.Properties.create(Material.SNOW)
-                .zeroHardnessAndResistance()
-                .doesNotBlockMovement()
-                .tickRandomly()
-                .notSolid());
+        super(AbstractBlock.Properties.of(Material.TOP_SNOW)
+                .instabreak()
+                .noCollission()
+                .randomTicks()
+                .noOcclusion());
     }
 
     @Override
     public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if (!worldIn.getBlockState(pos.down()).isSolid()) {
-            worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+        if (!worldIn.getBlockState(pos.below()).canOcclude()) {
+            worldIn.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
     }
 
@@ -35,14 +35,14 @@ public class ChalkBlock extends Block implements IVoidBlock {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos) {
+    public VoxelShape getBlockSupportShape(BlockState state, IBlockReader reader, BlockPos pos) {
         return AABB;
     }
 
     @Override
     public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
         if (worldIn.isRainingAt(pos)) {
-            worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+            worldIn.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
     }
 }

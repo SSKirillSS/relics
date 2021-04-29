@@ -27,8 +27,8 @@ import java.util.List;
 public class ShadowGlaiveItem extends Item implements IHasTooltip {
     public ShadowGlaiveItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.EPIC));
     }
 
@@ -41,8 +41,8 @@ public class ShadowGlaiveItem extends Item implements IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -50,23 +50,23 @@ public class ShadowGlaiveItem extends Item implements IHasTooltip {
     public static class ShadowGlaiveServerEvents {
         @SubscribeEvent
         public static void onEntityDamage(LivingDamageEvent event) {
-            if (!(event.getSource().getTrueSource() instanceof PlayerEntity)) return;
-            PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
-            if (player.getHeldItemOffhand().getItem() != ItemRegistry.SHADOW_GLAIVE.get()
-                    || player.getCooldownTracker().hasCooldown(ItemRegistry.SHADOW_GLAIVE.get())) return;
-            World world = player.getEntityWorld();
+            if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
+            PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
+            if (player.getOffhandItem().getItem() != ItemRegistry.SHADOW_GLAIVE.get()
+                    || player.getCooldowns().isOnCooldown(ItemRegistry.SHADOW_GLAIVE.get())) return;
+            World world = player.getCommandSenderWorld();
             if (world.getRandom().nextFloat() > RelicsConfig.ShadowGlaive.SUMMON_CHANCE.get()
                     || event.getAmount() < RelicsConfig.ShadowGlaive.MIN_DAMAGE_FOR_SUMMON.get()) return;
             LivingEntity entity = event.getEntityLiving();
-            if (entity == null || !entity.isAlive() || player.getPositionVec().distanceTo(entity.getPositionVec())
+            if (entity == null || !entity.isAlive() || player.position().distanceTo(entity.position())
                     > RelicsConfig.ShadowGlaive.MAX_DISTANCE_FOR_SUMMON.get()) return;
             ShadowGlaiveEntity glaive = new ShadowGlaiveEntity(world, player);
             glaive.setDamage(event.getAmount() * RelicsConfig.ShadowGlaive.INITIAL_DAMAGE_MULTIPLIER.get().floatValue());
             glaive.setOwner(player);
             glaive.setTarget(entity);
-            glaive.setPositionAndUpdate(player.getPosX(), player.getPosY() + player.getHeight() * 0.5F, player.getPosZ());
-            player.getCooldownTracker().setCooldown(ItemRegistry.SHADOW_GLAIVE.get(), RelicsConfig.ShadowGlaive.SUMMON_COOLDOWN.get() * 20);
-            world.addEntity(glaive);
+            glaive.teleportTo(player.getX(), player.getY() + player.getBbHeight() * 0.5F, player.getZ());
+            player.getCooldowns().addCooldown(ItemRegistry.SHADOW_GLAIVE.get(), RelicsConfig.ShadowGlaive.SUMMON_COOLDOWN.get() * 20);
+            world.addFreshEntity(glaive);
         }
     }
 }

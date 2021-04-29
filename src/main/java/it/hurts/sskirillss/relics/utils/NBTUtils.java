@@ -56,7 +56,7 @@ public class NBTUtils {
     }
 
     public static String writePosition(Vector3d vec) {
-        return (Math.round(vec.getX() * 10F) / 10F) + "," + (Math.round(vec.getY() * 10F) / 10F) + "," + (Math.round(vec.getZ() * 10F) / 10F);
+        return (Math.round(vec.x() * 10F) / 10F) + "," + (Math.round(vec.y() * 10F) / 10F) + "," + (Math.round(vec.z() * 10F) / 10F);
     }
 
     @Nullable
@@ -70,6 +70,6 @@ public class NBTUtils {
 
     @Nullable
     public static ServerWorld parseWorld(World world, String value) {
-        return world.getServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(value)));
+        return world.getServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(value)));
     }
 }

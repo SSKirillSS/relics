@@ -32,8 +32,8 @@ import java.util.List;
 public class SporeSackItem extends Item implements ICurioItem, IHasTooltip {
     public SporeSackItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.UNCOMMON));
     }
 
@@ -45,8 +45,8 @@ public class SporeSackItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -56,22 +56,22 @@ public class SporeSackItem extends Item implements ICurioItem, IHasTooltip {
         public static void onProjectileImpact(ProjectileImpactEvent event) {
             if (event.getEntity() instanceof ProjectileEntity) {
                 ProjectileEntity projectile = (ProjectileEntity) event.getEntity();
-                if (projectile.func_234616_v_() != null && projectile.func_234616_v_() instanceof PlayerEntity) {
-                    PlayerEntity player = (PlayerEntity) projectile.func_234616_v_();
+                if (projectile.getOwner() != null && projectile.getOwner() instanceof PlayerEntity) {
+                    PlayerEntity player = (PlayerEntity) projectile.getOwner();
                     if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SPORE_SACK.get(), player).isPresent()) {
-                        if (!player.getCooldownTracker().hasCooldown(ItemRegistry.SPORE_SACK.get())
-                                && player.getEntityWorld().getRandom().nextFloat() <= RelicsConfig.SporeSack.SPORE_CHANCE.get()) {
+                        if (!player.getCooldowns().isOnCooldown(ItemRegistry.SPORE_SACK.get())
+                                && player.getCommandSenderWorld().getRandom().nextFloat() <= RelicsConfig.SporeSack.SPORE_CHANCE.get()) {
                             ParticleUtils.createBall(new CircleTintData(new Color(0.25F, 1.0F, 0.0F), 0.5F, 40, 0.94F, true),
-                                    projectile.getPositionVec(), player.getEntityWorld(), 3, 0.1F);
-                            player.getEntityWorld().playSound(null, projectile.getPosition(), SoundEvents.BLOCK_FIRE_EXTINGUISH,
+                                    projectile.position(), player.getCommandSenderWorld(), 3, 0.1F);
+                            player.getCommandSenderWorld().playSound(null, projectile.blockPosition(), SoundEvents.FIRE_EXTINGUISH,
                                     SoundCategory.PLAYERS, 1.0F, 0.5F);
-                            player.getCooldownTracker().setCooldown(ItemRegistry.SPORE_SACK.get(), RelicsConfig.SporeSack.SPORE_COOLDOWN.get() * 20);
-                            for (LivingEntity entity : player.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, projectile.getBoundingBox()
-                                    .grow(RelicsConfig.SporeSack.SPORE_RADIUS.get()))) {
+                            player.getCooldowns().addCooldown(ItemRegistry.SPORE_SACK.get(), RelicsConfig.SporeSack.SPORE_COOLDOWN.get() * 20);
+                            for (LivingEntity entity : player.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox()
+                                    .inflate(RelicsConfig.SporeSack.SPORE_RADIUS.get()))) {
                                 if (entity != player) {
-                                    entity.addPotionEffect(new EffectInstance(Effects.POISON, RelicsConfig.SporeSack.POISON_DURATION.get() * 20,
+                                    entity.addEffect(new EffectInstance(Effects.POISON, RelicsConfig.SporeSack.POISON_DURATION.get() * 20,
                                             RelicsConfig.SporeSack.POISON_AMPLIFIER.get()));
-                                    entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, RelicsConfig.SporeSack.SLOWNESS_DURATION.get() * 20,
+                                    entity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, RelicsConfig.SporeSack.SLOWNESS_DURATION.get() * 20,
                                             RelicsConfig.SporeSack.SLOWNESS_AMPLIFIER.get()));
                                 }
                             }

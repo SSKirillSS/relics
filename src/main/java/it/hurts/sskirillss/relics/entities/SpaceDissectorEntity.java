@@ -29,10 +29,10 @@ import javax.annotation.Nonnull;
 import java.awt.*;
 
 public class SpaceDissectorEntity extends ThrowableEntity {
-    private static final DataParameter<Integer> UPDATE_TIME = EntityDataManager.createKey(SpaceDissectorEntity.class, DataSerializers.VARINT);
-    public static final DataParameter<Boolean> IS_RETURNING = EntityDataManager.createKey(SpaceDissectorEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> BOUNCES = EntityDataManager.createKey(SpaceDissectorEntity.class, DataSerializers.VARINT);
-    private static final DataParameter<String> OWNER = EntityDataManager.createKey(SpaceDissectorEntity.class, DataSerializers.STRING);
+    private static final DataParameter<Integer> UPDATE_TIME = EntityDataManager.defineId(SpaceDissectorEntity.class, DataSerializers.INT);
+    public static final DataParameter<Boolean> IS_RETURNING = EntityDataManager.defineId(SpaceDissectorEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> BOUNCES = EntityDataManager.defineId(SpaceDissectorEntity.class, DataSerializers.INT);
+    private static final DataParameter<String> OWNER = EntityDataManager.defineId(SpaceDissectorEntity.class, DataSerializers.STRING);
 
     private static final String TAG_UPDATE_TIME = "time";
     private static final String TAG_IS_RETURNING = "returning";
@@ -55,49 +55,49 @@ public class SpaceDissectorEntity extends ThrowableEntity {
     public void setOwner(PlayerEntity playerIn) {
         this.owner = playerIn;
         if (playerIn != null)
-            dataManager.set(OWNER, playerIn.getUniqueID().toString());
+            entityData.set(OWNER, playerIn.getUUID().toString());
     }
 
     @Override
     public void tick() {
-        Vector3d defaultMotion = getMotion();
+        Vector3d defaultMotion = getDeltaMovement();
 
         super.tick();
 
         CircleTintData circleTintData = new CircleTintData(
                 new Color(0.5F, 0.05F, 0.7F), 0.1F, 40, 0.95F, false);
-        world.addParticle(circleTintData, this.prevPosX, this.prevPosY, this.prevPosZ, 0.0D, 0.0D, 0.0D);
+        level.addParticle(circleTintData, this.xo, this.yo, this.zo, 0.0D, 0.0D, 0.0D);
 
-        if (!world.isRemote()) {
-            if (this.ticksExisted % 20 == 0) {
-                if (dataManager.get(UPDATE_TIME) > RelicsConfig.SpaceDissector.MAX_THROWN_TIME.get()) {
+        if (!level.isClientSide()) {
+            if (this.tickCount % 20 == 0) {
+                if (entityData.get(UPDATE_TIME) > RelicsConfig.SpaceDissector.MAX_THROWN_TIME.get()) {
                     if (owner != null && stack != null && stack != ItemStack.EMPTY) {
-                        owner.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
+                        owner.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
                         NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
                     }
                     this.remove();
                 }
 
-                if (!dataManager.get(IS_RETURNING)) {
-                    if (dataManager.get(UPDATE_TIME) < RelicsConfig.SpaceDissector.TIME_BEFORE_RETURN.get()) {
-                        dataManager.set(UPDATE_TIME, dataManager.get(UPDATE_TIME) + 1);
+                if (!entityData.get(IS_RETURNING)) {
+                    if (entityData.get(UPDATE_TIME) < RelicsConfig.SpaceDissector.TIME_BEFORE_RETURN.get()) {
+                        entityData.set(UPDATE_TIME, entityData.get(UPDATE_TIME) + 1);
                     } else {
-                        dataManager.set(IS_RETURNING, true);
+                        entityData.set(IS_RETURNING, true);
                     }
                 }
             }
 
-            if (!dataManager.get(IS_RETURNING)) {
-                if (!bounced) setMotion(defaultMotion);
+            if (!entityData.get(IS_RETURNING)) {
+                if (!bounced) setDeltaMovement(defaultMotion);
             } else {
                 if (owner != null) {
-                    EntityUtils.moveTowardsPosition(this, new Vector3d(owner.getPosX(),
-                            owner.getPosY() + 1.0F, owner.getPosZ()), RelicsConfig.SpaceDissector.MOVEMENT_SPEED.get().floatValue());
-                    for (PlayerEntity player : world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(2.0F))) {
-                        if (owner.getUniqueID().equals(player.getUniqueID()) && stack != null && stack != ItemStack.EMPTY) {
+                    EntityUtils.moveTowardsPosition(this, new Vector3d(owner.getX(),
+                            owner.getY() + 1.0F, owner.getZ()), RelicsConfig.SpaceDissector.MOVEMENT_SPEED.get().floatValue());
+                    for (PlayerEntity player : level.getEntitiesOfClass(PlayerEntity.class, this.getBoundingBox().inflate(2.0F))) {
+                        if (owner.getUUID().equals(player.getUUID()) && stack != null && stack != ItemStack.EMPTY) {
                             this.remove();
                             NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
-                            owner.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
+                            owner.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
                         }
                     }
                 } else {
@@ -106,7 +106,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                 }
             }
 
-            if (this.isBurning()) this.extinguish();
+            if (this.isOnFire()) this.clearFire();
 
             time++;
             bounced = false;
@@ -114,32 +114,32 @@ public class SpaceDissectorEntity extends ThrowableEntity {
     }
 
     @Override
-    protected void onImpact(@Nonnull RayTraceResult rayTraceResult) {
+    protected void onHit(@Nonnull RayTraceResult rayTraceResult) {
         switch (rayTraceResult.getType()) {
             case BLOCK: {
                 BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) rayTraceResult;
-                if (world.getBlockState(blockRayTraceResult.getPos()).isSolid()) {
-                    if (dataManager.get(BOUNCES) < RelicsConfig.SpaceDissector.MAX_BOUNCES_AMOUNT.get()) {
-                        if (!dataManager.get(IS_RETURNING)) {
-                            Direction dir = blockRayTraceResult.getFace();
-                            Vector3d normalVector = new Vector3d(-2 * dir.getXOffset(), -2 * dir.getYOffset(), -2 * dir.getZOffset()).normalize();
-                            setMotion(normalVector.mul(
-                                    -1.91 * this.getMotion().dotProduct(normalVector),
-                                    -1.91 * this.getMotion().dotProduct(normalVector),
-                                    -1.91 * this.getMotion().dotProduct(normalVector))
-                                    .add(this.getMotion()));
+                if (level.getBlockState(blockRayTraceResult.getBlockPos()).canOcclude()) {
+                    if (entityData.get(BOUNCES) < RelicsConfig.SpaceDissector.MAX_BOUNCES_AMOUNT.get()) {
+                        if (!entityData.get(IS_RETURNING)) {
+                            Direction dir = blockRayTraceResult.getDirection();
+                            Vector3d normalVector = new Vector3d(-2 * dir.getStepX(), -2 * dir.getStepY(), -2 * dir.getStepZ()).normalize();
+                            setDeltaMovement(normalVector.multiply(
+                                    -1.91 * this.getDeltaMovement().dot(normalVector),
+                                    -1.91 * this.getDeltaMovement().dot(normalVector),
+                                    -1.91 * this.getDeltaMovement().dot(normalVector))
+                                    .add(this.getDeltaMovement()));
                             if (time > 5) {
-                                world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundRegistry.RICOCHET, SoundCategory.MASTER,
-                                        0.5F, 0.75F + (rand.nextFloat() * 0.5F));
+                                level.playSound(null, getX(), getY(), getZ(), SoundRegistry.RICOCHET, SoundCategory.MASTER,
+                                        0.5F, 0.75F + (random.nextFloat() * 0.5F));
                                 time = 0;
                             }
                             bounced = true;
-                            dataManager.set(BOUNCES, dataManager.get(BOUNCES) + 1);
-                            dataManager.set(UPDATE_TIME, Math.max(dataManager.get(UPDATE_TIME)
+                            entityData.set(BOUNCES, entityData.get(BOUNCES) + 1);
+                            entityData.set(UPDATE_TIME, Math.max(entityData.get(UPDATE_TIME)
                                     - RelicsConfig.SpaceDissector.ADDITIONAL_TIME_PER_BOUNCE.get(), 0));
                         }
                     } else {
-                        dataManager.set(IS_RETURNING, true);
+                        entityData.set(IS_RETURNING, true);
                     }
                 }
                 break;
@@ -148,16 +148,16 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                 EntityRayTraceResult entityRayTraceResult = (EntityRayTraceResult) rayTraceResult;
                 if (entityRayTraceResult.getEntity() instanceof LivingEntity) {
                     LivingEntity entity = (LivingEntity) entityRayTraceResult.getEntity();
-                    if (owner != null && owner.getUniqueID().equals(entity.getUniqueID())) {
+                    if (owner != null && owner.getUUID().equals(entity.getUUID())) {
                         if (stack != null && stack != ItemStack.EMPTY) {
                             NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
-                            owner.getCooldownTracker().setCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
+                            owner.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
                         }
                         this.remove();
                         break;
                     } else {
-                        entity.attackEntityFrom(owner != null ? DamageSource.causePlayerDamage(owner) : DamageSource.GENERIC,
-                                RelicsConfig.SpaceDissector.BASE_DAMAGE_AMOUNT.get().floatValue() + (dataManager.get(BOUNCES)
+                        entity.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC,
+                                RelicsConfig.SpaceDissector.BASE_DAMAGE_AMOUNT.get().floatValue() + (entityData.get(BOUNCES)
                                         * RelicsConfig.SpaceDissector.DAMAGE_MULTIPLIER_PER_BOUNCE.get().floatValue()));
                     }
                 }
@@ -168,46 +168,46 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
 
     @Override
-    protected void registerData() {
-        dataManager.register(UPDATE_TIME, 0);
-        dataManager.register(IS_RETURNING, false);
-        dataManager.register(BOUNCES, 0);
-        dataManager.register(OWNER, "");
+    protected void defineSynchedData() {
+        entityData.define(UPDATE_TIME, 0);
+        entityData.define(IS_RETURNING, false);
+        entityData.define(BOUNCES, 0);
+        entityData.define(OWNER, "");
     }
 
     @Override
-    public void writeAdditional(CompoundNBT tag) {
-        tag.putInt(TAG_UPDATE_TIME, dataManager.get(UPDATE_TIME));
-        tag.putString(TAG_OWNER_UUID, dataManager.get(OWNER));
-        tag.putBoolean(TAG_IS_RETURNING, dataManager.get(IS_RETURNING));
-        tag.putInt(TAG_BOUNCES_AMOUNT, dataManager.get(BOUNCES));
-        stack.write(tag);
-        super.writeAdditional(tag);
+    public void addAdditionalSaveData(CompoundNBT tag) {
+        tag.putInt(TAG_UPDATE_TIME, entityData.get(UPDATE_TIME));
+        tag.putString(TAG_OWNER_UUID, entityData.get(OWNER));
+        tag.putBoolean(TAG_IS_RETURNING, entityData.get(IS_RETURNING));
+        tag.putInt(TAG_BOUNCES_AMOUNT, entityData.get(BOUNCES));
+        stack.save(tag);
+        super.addAdditionalSaveData(tag);
     }
 
     @Override
-    public void readAdditional(CompoundNBT tag) {
-        dataManager.set(UPDATE_TIME, tag.getInt(TAG_UPDATE_TIME));
-        dataManager.set(OWNER, tag.getString(TAG_OWNER_UUID));
-        dataManager.set(IS_RETURNING, tag.getBoolean(TAG_IS_RETURNING));
-        dataManager.set(BOUNCES, tag.getInt(TAG_BOUNCES_AMOUNT));
-        stack = ItemStack.read(tag);
-        super.readAdditional(tag);
+    public void readAdditionalSaveData(CompoundNBT tag) {
+        entityData.set(UPDATE_TIME, tag.getInt(TAG_UPDATE_TIME));
+        entityData.set(OWNER, tag.getString(TAG_OWNER_UUID));
+        entityData.set(IS_RETURNING, tag.getBoolean(TAG_IS_RETURNING));
+        entityData.set(BOUNCES, tag.getInt(TAG_BOUNCES_AMOUNT));
+        stack = ItemStack.of(tag);
+        super.readAdditionalSaveData(tag);
     }
 
     @Override
-    public boolean isPushedByWater() {
+    public boolean isPushedByFluid() {
         return false;
     }
 
     @Override
-    protected float getGravityVelocity() {
+    protected float getGravity() {
         return 0;
     }
 
     @Nonnull
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

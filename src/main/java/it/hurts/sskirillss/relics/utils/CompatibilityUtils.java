@@ -19,7 +19,7 @@ public class CompatibilityUtils {
         @SubscribeEvent
         public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
             if (!isValidForgeVersion() && RelicsConfig.RelicsCompatibility.WARN_ABOUT_OLD_FORGE.get()) {
-                event.getPlayer().sendStatusMessage(new TranslationTextComponent("message.relics.version.forge"), false);
+                event.getPlayer().displayClientMessage(new TranslationTextComponent("message.relics.version.forge"), false);
             }
         }
     }

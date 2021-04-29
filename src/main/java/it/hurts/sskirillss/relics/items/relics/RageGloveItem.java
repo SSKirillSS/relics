@@ -31,8 +31,8 @@ public class RageGloveItem extends Item implements ICurioItem, IHasTooltip {
 
     public RageGloveItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -44,14 +44,14 @@ public class RageGloveItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity.ticksExisted % 20 == 0) {
+        if (livingEntity.tickCount % 20 == 0) {
             int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
             int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
             if (stacks > 0) {
@@ -68,32 +68,32 @@ public class RageGloveItem extends Item implements ICurioItem, IHasTooltip {
     public static class RageGloveEvents {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
-            if (event.getSource().getTrueSource() instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
+            if (event.getSource().getEntity() instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 if (event.getAmount() > RelicsConfig.RageGlove.MIN_DAMAGE_AMOUNT.get()
                         && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), player).isPresent()) {
                     LivingEntity entity = event.getEntityLiving();
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), player).get().getRight();
                     if (!NBTUtils.getString(stack, TAG_TARGETED_ENTITY, "").equals("")
-                            && UUID.fromString(NBTUtils.getString(stack, TAG_TARGETED_ENTITY, "")).equals(entity.getUniqueID())) {
+                            && UUID.fromString(NBTUtils.getString(stack, TAG_TARGETED_ENTITY, "")).equals(entity.getUUID())) {
                         NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0) + 1);
                         NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                         event.setAmount(event.getAmount() + (event.getAmount() * RelicsConfig.RageGlove.DEALING_DAMAGE_MULTIPLIER_PER_STACK.get().floatValue() * NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0)));
                     } else {
                         NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                         NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, 1);
-                        NBTUtils.setString(stack, TAG_TARGETED_ENTITY, entity.getUniqueID().toString());
+                        NBTUtils.setString(stack, TAG_TARGETED_ENTITY, entity.getUUID().toString());
                     }
                 }
             }
 
-            if (event.getSource().getTrueSource() instanceof LivingEntity
+            if (event.getSource().getEntity() instanceof LivingEntity
                     && event.getEntityLiving() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), player).isPresent()) {
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), player).get().getRight();
                     if (!NBTUtils.getString(stack, TAG_TARGETED_ENTITY, "").equals("")
-                            && event.getSource().getTrueSource() == ((ServerWorld) player.getEntityWorld()).getEntityByUuid(UUID.fromString(NBTUtils.getString(stack, TAG_TARGETED_ENTITY, "")))) {
+                            && event.getSource().getEntity() == ((ServerWorld) player.getCommandSenderWorld()).getEntity(UUID.fromString(NBTUtils.getString(stack, TAG_TARGETED_ENTITY, "")))) {
                         event.setAmount(event.getAmount() + (event.getAmount() * RelicsConfig.RageGlove.INCOMING_DAMAGE_MULTIPLIER_PER_STACK.get().floatValue() * NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0)));
                     }
                 }

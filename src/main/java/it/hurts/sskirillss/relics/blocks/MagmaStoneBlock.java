@@ -24,17 +24,19 @@ import net.minecraftforge.common.ToolType;
 
 import java.util.Random;
 
+import net.minecraft.block.AbstractBlock;
+
 public class MagmaStoneBlock extends Block {
-    public static final IntegerProperty AGE = BlockStateProperties.AGE_0_3;
+    public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
 
     public MagmaStoneBlock() {
-        super(Block.Properties.create(Material.ROCK, MaterialColor.NETHERRACK)
-                .tickRandomly()
-                .hardnessAndResistance(0.5F)
+        super(AbstractBlock.Properties.of(Material.STONE, MaterialColor.NETHER)
+                .randomTicks()
+                .strength(0.5F)
                 .harvestTool(ToolType.PICKAXE)
-                .setRequiresTool()
-                .setLightLevel((state) -> 3));
-        this.setDefaultState(this.stateContainer.getBaseState().with(AGE, 0));
+                .requiresCorrectToolForDrops()
+                .lightLevel((state) -> 3));
+        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
     }
 
     @Override
@@ -50,26 +52,26 @@ public class MagmaStoneBlock extends Block {
 
     private static void updateState(World worldIn, BlockPos pos, BlockState state) {
         worldIn.addParticle(ParticleTypes.LAVA, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, 1, 1, 1);
-        int age = state.get(AGE);
+        int age = state.getValue(AGE);
         if (age < 3) {
-            worldIn.setBlockState(pos, state.with(AGE, state.get(AGE) + 1), 2);
+            worldIn.setBlock(pos, state.setValue(AGE, state.getValue(AGE) + 1), 2);
         } else {
-            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            worldIn.setBlockState(pos, Blocks.LAVA.getDefaultState());
+            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            worldIn.setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
         }
     }
 
     @Override
-    public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
+    public void stepOn(World worldIn, BlockPos pos, Entity entityIn) {
         BlockState state = worldIn.getBlockState(pos);
-        if (!entityIn.isImmuneToFire() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn) && state.get(AGE) > 0) {
-            entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 1.0F);
+        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn) && state.getValue(AGE) > 0) {
+            entityIn.hurt(DamageSource.HOT_FLOOR, 1.0F);
         }
-        super.onEntityWalk(worldIn, pos, entityIn);
+        super.stepOn(worldIn, pos, entityIn);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(AGE);
     }
 }

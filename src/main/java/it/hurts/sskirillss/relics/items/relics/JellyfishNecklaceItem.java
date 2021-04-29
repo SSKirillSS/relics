@@ -37,8 +37,8 @@ public class JellyfishNecklaceItem extends Item implements ICurioItem, IHasToolt
 
     public JellyfishNecklaceItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.UNCOMMON));
     }
 
@@ -51,15 +51,15 @@ public class JellyfishNecklaceItem extends Item implements ICurioItem, IHasToolt
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity instanceof PlayerEntity) {
-            if (livingEntity.ticksExisted % 20 == 0) {
+            if (livingEntity.tickCount % 20 == 0) {
                 int time = NBTUtils.getInt(stack, TAG_TIME, 0);
                 int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
                 if (livingEntity.isInWater()) {
@@ -71,13 +71,13 @@ public class JellyfishNecklaceItem extends Item implements ICurioItem, IHasToolt
                     }
 
                     if (charges > 0) {
-                        List<LivingEntity> entities = livingEntity.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, livingEntity.getBoundingBox()
-                                .grow(RelicsConfig.JellyfishNecklace.ATTACK_RADIUS_MULTIPLIER.get()));
+                        List<LivingEntity> entities = livingEntity.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox()
+                                .inflate(RelicsConfig.JellyfishNecklace.ATTACK_RADIUS_MULTIPLIER.get()));
                         if (!entities.isEmpty()) {
                             for (LivingEntity entity : entities) {
                                 if (entity.isInWater() && entity != livingEntity && !(entity instanceof TameableEntity
-                                        && ((TameableEntity) entity).isOwner(livingEntity))) {
-                                    entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) livingEntity), RelicsConfig.JellyfishNecklace.DAMAGE_PER_CHARGE.get().floatValue());
+                                        && ((TameableEntity) entity).isOwnedBy(livingEntity))) {
+                                    entity.hurt(DamageSource.playerAttack((PlayerEntity) livingEntity), RelicsConfig.JellyfishNecklace.DAMAGE_PER_CHARGE.get().floatValue());
                                     NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
                                 }
                             }
@@ -97,9 +97,9 @@ public class JellyfishNecklaceItem extends Item implements ICurioItem, IHasToolt
         ICurio.RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
         matrixStack.scale(0.35F, 0.35F, 0.35F);
         matrixStack.translate(0.0F, 0.25F, -0.4F);
-        matrixStack.rotate(Direction.DOWN.getRotation());
+        matrixStack.mulPose(Direction.DOWN.getRotation());
         Minecraft.getInstance().getItemRenderer()
-                .renderItem(new ItemStack(ItemRegistry.JELLYFISH_NECKLACE.get()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY,
+                .renderStatic(new ItemStack(ItemRegistry.JELLYFISH_NECKLACE.get()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY,
                         matrixStack, renderTypeBuffer);
     }
 

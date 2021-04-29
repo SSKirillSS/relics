@@ -14,11 +14,11 @@ public class CircleTintFactory implements IParticleFactory<CircleTintData> {
 
     @Nullable
     @Override
-    public Particle makeParticle(CircleTintData circleTintData, ClientWorld world, double xPos, double yPos,
+    public Particle createParticle(CircleTintData circleTintData, ClientWorld world, double xPos, double yPos,
                                  double zPos, double xVelocity, double yVelocity, double zVelocity) {
         CircleTintParticle particle = new CircleTintParticle(world, xPos, yPos, zPos, xVelocity, yVelocity, zVelocity,
                 circleTintData.getTint(), circleTintData.getDiameter(), circleTintData.getLifeTime(), circleTintData.getResizeSpeed(), circleTintData.shouldCollide(), sprites);
-        particle.selectSpriteRandomly(sprites);
+        particle.pickSprite(sprites);
         return particle;
     }
 
@@ -32,7 +32,7 @@ public class CircleTintFactory implements IParticleFactory<CircleTintData> {
         }
 
         @Override
-        public Codec<CircleTintData> func_230522_e_() {
+        public Codec<CircleTintData> codec() {
             return CircleTintData.CODEC;
         }
     }

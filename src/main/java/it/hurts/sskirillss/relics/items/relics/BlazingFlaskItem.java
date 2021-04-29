@@ -41,8 +41,8 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
 
     public BlazingFlaskItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.EPIC));
     }
 
@@ -55,8 +55,8 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         if (NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0) > 0) {
             tooltip.add(new TranslationTextComponent("tooltip.relics.blazing_flask.tooltip_1", NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0)));
         }
@@ -67,63 +67,63 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) livingEntity;
-            World world = player.getEntityWorld();
+            World world = player.getCommandSenderWorld();
             int fire = NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0);
-            if (!(player.abilities.isCreativeMode)) {
-                player.abilities.allowFlying = fire > 0;
-                if (player.abilities.isFlying) {
+            if (!(player.abilities.instabuild)) {
+                player.abilities.mayfly = fire > 0;
+                if (player.abilities.flying) {
                     for (int i = 0; i < 3; i++)
                         world.addParticle(player.isInWater() ? ParticleTypes.CLOUD : ParticleTypes.LARGE_SMOKE,
-                                player.getPosX() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
-                                player.getPosY() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
-                                player.getPosZ() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
+                                player.getX() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
+                                player.getY() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
+                                player.getZ() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
                                 0, player.isInWater() ? 0 : -0.1, 0);
                     if (!player.isInWater()) {
                         world.addParticle(ParticleTypes.FLAME,
-                                player.getPosX() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
-                                player.getPosY() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
-                                player.getPosZ() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, 0, -0.25F, 0);
-                        for (LivingEntity entity : world.getEntitiesWithinAABB(LivingEntity.class, player.getBoundingBox()
-                                .grow(0.5D).expand(0, -getGroundHeight(player) - 1, 0))) {
-                            if (entity != player) entity.setFire(RelicsConfig.BlazingFlask.IGNITE_DURATION.get());
+                                player.getX() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
+                                player.getY() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
+                                player.getZ() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, 0, -0.25F, 0);
+                        for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox()
+                                .inflate(0.5D).expandTowards(0, -getGroundHeight(player) - 1, 0))) {
+                            if (entity != player) entity.setSecondsOnFire(RelicsConfig.BlazingFlask.IGNITE_DURATION.get());
                         }
                     }
                     player.fallDistance = 0.0F;
                     double riseVelocity = 0.0D;
-                    player.abilities.isFlying = fire > 0;
-                    player.setMotion(player.getMotion().mul(RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get(),
+                    player.abilities.flying = fire > 0;
+                    player.setDeltaMovement(player.getDeltaMovement().multiply(RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get(),
                             RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get(), RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get()));
-                    if (player.moveForward > 0) player.setMotion(player.getMotion().getX() + new Vector3d(player.getLookVec().x,
-                                    0, player.getLookVec().z).normalize().getX() * 0.025F, player.getMotion().getY(),
-                            player.getMotion().getZ() + new Vector3d(player.getLookVec().x, 0, player.getLookVec().z).normalize().getZ() * 0.025F);
-                    if (world.isRemote && player instanceof ClientPlayerEntity && ((ClientPlayerEntity) player).movementInput.jump) riseVelocity = 0.04D;
-                    if (!player.isSneaking()) player.setMotion(player.getMotion().getX(), riseVelocity * ((getGroundHeight(player)
-                            - (player.getPosY() - RelicsConfig.BlazingFlask.LEVITATION_HEIGHT.get()))), player.getMotion().getZ());
-                    if (player.getPosY() - RelicsConfig.BlazingFlask.LEVITATION_HEIGHT.get() > getGroundHeight(player)) {
-                        if (player.getMotion().getY() > 0) player.setMotion(player.getMotion().getX(), 0, player.getMotion().getZ());
-                        player.setMotion(player.getMotion().getX(), -Math.min(player.getPosY() - RelicsConfig.BlazingFlask.LEVITATION_HEIGHT.get()
-                                - getGroundHeight(player), 2) / 8, player.getMotion().getZ());
+                    if (player.zza > 0) player.setDeltaMovement(player.getDeltaMovement().x() + new Vector3d(player.getLookAngle().x,
+                                    0, player.getLookAngle().z).normalize().x() * 0.025F, player.getDeltaMovement().y(),
+                            player.getDeltaMovement().z() + new Vector3d(player.getLookAngle().x, 0, player.getLookAngle().z).normalize().z() * 0.025F);
+                    if (world.isClientSide && player instanceof ClientPlayerEntity && ((ClientPlayerEntity) player).input.jumping) riseVelocity = 0.04D;
+                    if (!player.isShiftKeyDown()) player.setDeltaMovement(player.getDeltaMovement().x(), riseVelocity * ((getGroundHeight(player)
+                            - (player.getY() - RelicsConfig.BlazingFlask.LEVITATION_HEIGHT.get()))), player.getDeltaMovement().z());
+                    if (player.getY() - RelicsConfig.BlazingFlask.LEVITATION_HEIGHT.get() > getGroundHeight(player)) {
+                        if (player.getDeltaMovement().y() > 0) player.setDeltaMovement(player.getDeltaMovement().x(), 0, player.getDeltaMovement().z());
+                        player.setDeltaMovement(player.getDeltaMovement().x(), -Math.min(player.getY() - RelicsConfig.BlazingFlask.LEVITATION_HEIGHT.get()
+                                - getGroundHeight(player), 2) / 8, player.getDeltaMovement().z());
                     }
-                    if (player.ticksExisted % 20 == 0) NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, fire - 1);
+                    if (player.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, fire - 1);
                 }
             }
-            if (!world.isRemote() && !player.isSpectator() && player.ticksExisted % RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_COOLDOWN.get() == 0
+            if (!world.isClientSide() && !player.isSpectator() && player.tickCount % RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_COOLDOWN.get() == 0
                     && fire < RelicsConfig.BlazingFlask.FIRE_CAPACITY.get()) {
-                List<BlockPos> sphere = WorldUtils.getBlockSphere(player.getPosition(), RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_RADIUS.get());
+                List<BlockPos> sphere = WorldUtils.getBlockSphere(player.blockPosition(), RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_RADIUS.get());
                 for (BlockPos pos : sphere) {
                     if (world.getBlockState(pos).getBlock() instanceof AbstractFireBlock) {
-                        world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                        ((ServerWorld) world).spawnParticle(ParticleTypes.CLOUD, pos.getX() + 0.5F,
+                        world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        ((ServerWorld) world).sendParticles(ParticleTypes.CLOUD, pos.getX() + 0.5F,
                                 pos.getY() + 0.5F, pos.getZ() + 0.5F, 5, 0.35, 0.2, 0.35, 0.01);
-                        world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                        world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                         NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, fire + 1);
                         return;
                     }
                 }
             }
             if (fire > 0) {
-                if (player.ticksExisted % 20 == 0 && (world.isRainingAt(player.getPosition()) || player.isInWater())) {
-                    world.playSound(player, player.getPosition(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 1.0F);
+                if (player.tickCount % 20 == 0 && (world.isRainingAt(player.blockPosition()) || player.isInWater())) {
+                    world.playSound(player, player.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 1.0F);
                     NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, Math.max(0, fire - 1));
                 }
             }
@@ -131,19 +131,19 @@ public class BlazingFlaskItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     private double getGroundHeight(PlayerEntity player) {
-        RayTraceResult result = player.world.rayTraceBlocks(new RayTraceContext(player.getPositionVec(), new Vector3d(player.getPosX(),
-                player.getPosY() - 64, player.getPosZ()), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, player));
-        if (result.getType() == RayTraceResult.Type.BLOCK) return result.getHitVec().getY();
-        return -player.getEntityWorld().getHeight();
+        RayTraceResult result = player.level.clip(new RayTraceContext(player.position(), new Vector3d(player.getX(),
+                player.getY() - 64, player.getZ()), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, player));
+        if (result.getType() == RayTraceResult.Type.BLOCK) return result.getLocation().y();
+        return -player.getCommandSenderWorld().getMaxBuildHeight();
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         if (NBTUtils.getInt(newStack, TAG_FIRE_AMOUNT, 0) <= 0 && slotContext.getWearer() instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) slotContext.getWearer();
-            player.abilities.allowFlying = false;
-            player.abilities.isFlying = false;
-            player.sendPlayerAbilities();
+            player.abilities.mayfly = false;
+            player.abilities.flying = false;
+            player.onUpdateAbilities();
         }
     }
 

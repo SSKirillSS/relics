@@ -31,8 +31,8 @@ public class HunterBeltItem extends Item implements ICurioItem, IHasTooltip {
 
     public HunterBeltItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.UNCOMMON));
     }
 
@@ -44,8 +44,8 @@ public class HunterBeltItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -58,15 +58,15 @@ public class HunterBeltItem extends Item implements ICurioItem, IHasTooltip {
     public static class HunterBeltEvents {
         @SubscribeEvent
         public static void onLivingDamage(LivingHurtEvent event) {
-            if (event.getSource().getTrueSource() instanceof PlayerEntity
+            if (event.getSource().getEntity() instanceof PlayerEntity
                     && event.getEntityLiving() instanceof AnimalEntity) {
-                PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
+                PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), player).isPresent()) {
                     event.setAmount(event.getAmount() * RelicsConfig.HunterBelt.PLAYER_DAMAGE_MULTIPLIER.get().floatValue());
                 }
             }
-            if (event.getSource().getTrueSource() instanceof TameableEntity) {
-                TameableEntity pet = (TameableEntity) event.getSource().getTrueSource();
+            if (event.getSource().getEntity() instanceof TameableEntity) {
+                TameableEntity pet = (TameableEntity) event.getSource().getEntity();
                 if (pet.getOwner() != null && pet.getOwner() instanceof PlayerEntity
                         && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), pet.getOwner()).isPresent()) {
                     event.setAmount(event.getAmount() * RelicsConfig.HunterBelt.PET_DAMAGE_MULTIPLIER.get().floatValue());

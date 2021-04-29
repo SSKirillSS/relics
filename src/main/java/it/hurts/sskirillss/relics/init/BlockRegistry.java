@@ -40,7 +40,7 @@ public class BlockRegistry {
                 .filter(block -> !(block instanceof IVoidBlock))
                 .forEach(block -> {
                     final Item.Properties prop = new Item.Properties();
-                    prop.group(RelicsTab.RELICS_TAB);
+                    prop.tab(RelicsTab.RELICS_TAB);
                     final BlockItem blockItem = new BlockItem(block, prop);
                     blockItem.setRegistryName(block.getRegistryName());
                     registry.register(blockItem);

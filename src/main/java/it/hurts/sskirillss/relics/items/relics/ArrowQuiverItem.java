@@ -28,8 +28,8 @@ import java.util.List;
 public class ArrowQuiverItem extends Item implements ICurioItem, IHasTooltip {
     public ArrowQuiverItem() {
         super(new Item.Properties()
-                .group(RelicsTab.RELICS_TAB)
-                .maxStackSize(1)
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
 
@@ -41,8 +41,8 @@ public class ArrowQuiverItem extends Item implements ICurioItem, IHasTooltip {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
@@ -55,27 +55,27 @@ public class ArrowQuiverItem extends Item implements ICurioItem, IHasTooltip {
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ARROW_QUIVER.get(), player).isPresent()
                         && random.nextFloat() <= RelicsConfig.ArrowQuiver.MULTISHOT_CHANCE.get()) {
                     for (int i = 0; i < RelicsConfig.ArrowQuiver.ADDITIONAL_ARROW_AMOUNT.get(); i++) {
-                        ItemStack bow = player.getHeldItemMainhand();
-                        ItemStack ammo = player.findAmmo(bow);
+                        ItemStack bow = player.getMainHandItem();
+                        ItemStack ammo = player.getProjectile(bow);
                         AbstractArrowEntity projectile = ((ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW))
-                                .createArrow(player.getEntityWorld(), ammo, player);
-                        projectile.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
-                        projectile.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F,
-                                BowItem.getArrowVelocity(event.getCharge()) * 3.0F, player.isSneaking() ? 2.0F : 5.0F);
+                                .createArrow(player.getCommandSenderWorld(), ammo, player);
+                        projectile.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+                        projectile.shootFromRotation(player, player.xRot, player.yRot, 0.0F,
+                                BowItem.getPowerForTime(event.getCharge()) * 3.0F, player.isShiftKeyDown() ? 2.0F : 5.0F);
 
-                        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, bow) > 0) {
-                            projectile.setDamage(projectile.getDamage() + (double) EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, bow) * 0.5D + 0.5D);
+                        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, bow) > 0) {
+                            projectile.setBaseDamage(projectile.getBaseDamage() + (double) EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, bow) * 0.5D + 0.5D);
                         }
 
-                        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, bow) > 0) {
-                            projectile.setKnockbackStrength(EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, bow));
+                        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, bow) > 0) {
+                            projectile.setKnockback(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, bow));
                         }
 
-                        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, bow) > 0) {
-                            projectile.setFire(100);
+                        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, bow) > 0) {
+                            projectile.setSecondsOnFire(100);
                         }
 
-                        player.getEntityWorld().addEntity(projectile);
+                        player.getCommandSenderWorld().addFreshEntity(projectile);
                     }
                 }
             }

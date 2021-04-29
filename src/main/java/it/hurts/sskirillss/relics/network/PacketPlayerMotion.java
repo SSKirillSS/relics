@@ -33,7 +33,7 @@ public class PacketPlayerMotion {
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Vector3d motion = new Vector3d(this.motionX, this.motionY, this.motionZ);
-            Minecraft.getInstance().player.setMotion(motion);
+            Minecraft.getInstance().player.setDeltaMovement(motion);
         });
         return true;
     }
