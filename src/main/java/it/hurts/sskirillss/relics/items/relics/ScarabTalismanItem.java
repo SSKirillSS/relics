@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -16,7 +17,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.DamageSource;
@@ -38,15 +38,12 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 import java.util.UUID;
 
-public class ScarabTalismanItem extends Item implements ICurioItem, IHasTooltip {
+public class ScarabTalismanItem extends RelicItem implements ICurioItem, IHasTooltip {
     private static final AttributeModifier SCARAB_TALISMAN_SPEED_BOOST = new AttributeModifier(UUID.fromString("09bc5b60-3277-45ee-8bf0-aae7acba4385"),
             Reference.MODID + ":" + "scarab_talisman_movement_speed", RelicsConfig.ScarabTalisman.SPEED_MULTIPLIER.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
     public ScarabTalismanItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.RARE));
+        super(Rarity.RARE);
     }
 
     @Override

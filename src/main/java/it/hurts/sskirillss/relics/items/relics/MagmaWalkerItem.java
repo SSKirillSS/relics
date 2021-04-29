@@ -5,13 +5,12 @@ import it.hurts.sskirillss.relics.blocks.MagmaStoneBlock;
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
@@ -30,12 +29,9 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class MagmaWalkerItem extends Item implements ICurioItem, IHasTooltip {
+public class MagmaWalkerItem extends RelicItem implements ICurioItem, IHasTooltip {
     public MagmaWalkerItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.RARE));
+        super(Rarity.RARE);
     }
 
     @Override

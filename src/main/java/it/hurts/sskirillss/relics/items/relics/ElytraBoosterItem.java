@@ -2,13 +2,13 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
@@ -23,14 +23,11 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.awt.*;
 import java.util.List;
 
-public class ElytraBoosterItem extends Item implements ICurioItem, IHasTooltip {
+public class ElytraBoosterItem extends RelicItem implements ICurioItem, IHasTooltip {
     public static final String TAG_BREATH_AMOUNT = "breath";
 
     public ElytraBoosterItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.RARE));
+        super(Rarity.RARE);
     }
 
     @Override

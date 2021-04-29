@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.entities.SpaceDissectorEntity;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -21,16 +22,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class SpaceDissectorItem extends Item implements IHasTooltip {
+public class SpaceDissectorItem extends RelicItem implements IHasTooltip {
     public static final String TAG_IS_THROWN = "thrown";
     public static final String TAG_UUID = "uuid";
     public static final String TAG_UPDATE_TIME = "time";
 
     public SpaceDissectorItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.EPIC));
+        super(Rarity.EPIC);
     }
 
     @Override

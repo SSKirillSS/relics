@@ -3,9 +3,9 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -13,7 +13,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
@@ -36,17 +35,14 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 import java.util.UUID;
 
-public class IceBreakerItem extends Item implements ICurioItem, IHasTooltip {
+public class IceBreakerItem extends RelicItem implements ICurioItem, IHasTooltip {
     private static final AttributeModifier ICE_BREAKER_SPEED_BOOST = new AttributeModifier(UUID.fromString("90af8e8a-93aa-4b0f-8ddc-8986dd2a8461"),
             Reference.MODID + ":" + "ice_breaker_movement_speed", RelicsConfig.IceBreaker.MOVEMENT_SPEED_MULTIPLIER.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
     private static final AttributeModifier ICE_BREAKER_KNOCKBACK_RESISTANCE = new AttributeModifier(UUID.fromString("70c6b1a0-e025-44bf-8dcd-c165c59b7eb4"),
             Reference.MODID + ":" + "ice_breaker_knockback resistance", RelicsConfig.IceBreaker.ADDITIONAL_KNOCKBACK_RESISTANCE.get(), AttributeModifier.Operation.ADDITION);
 
     public IceBreakerItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.RARE));
+        super(Rarity.RARE);
     }
 
     @Override

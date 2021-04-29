@@ -4,14 +4,13 @@ import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.text.ITextComponent;
@@ -24,12 +23,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ShadowGlaiveItem extends Item implements IHasTooltip {
+public class ShadowGlaiveItem extends RelicItem implements IHasTooltip {
     public ShadowGlaiveItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.EPIC));
+        super(Rarity.EPIC);
     }
 
     @Override

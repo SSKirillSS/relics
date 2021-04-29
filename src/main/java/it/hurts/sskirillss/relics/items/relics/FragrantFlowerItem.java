@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.block.Block;
@@ -14,7 +15,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.BeeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BoneMealItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.DamageSource;
@@ -37,15 +37,12 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.awt.*;
 import java.util.List;
 
-public class FragrantFlowerItem extends Item implements ICurioItem, IHasTooltip {
+public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasTooltip {
     public static final String TAG_NECTAR_AMOUNT = "nectar";
     public static final String TAG_UPDATE_TIME = "time";
 
     public FragrantFlowerItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.UNCOMMON));
+        super(Rarity.UNCOMMON);
     }
 
     @Override

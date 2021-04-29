@@ -3,11 +3,11 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.*;
@@ -24,16 +24,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.lang.*;
 
-public class SpatialSignItem extends Item implements IHasTooltip {
+public class SpatialSignItem extends RelicItem implements IHasTooltip {
     public static final String TAG_POSITION = "pos";
     public static final String TAG_TIME = "time";
     public static final String TAG_WORLD = "world";
 
     public SpatialSignItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.RARE));
+        super(Rarity.RARE);
     }
 
     @Override

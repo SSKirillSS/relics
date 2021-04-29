@@ -4,16 +4,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.text.ITextComponent;
@@ -30,15 +29,12 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 import java.util.UUID;
 
-public class DrownedBeltItem extends Item implements ICurioItem, IHasTooltip {
+public class DrownedBeltItem extends RelicItem implements ICurioItem, IHasTooltip {
     private static final AttributeModifier DROWNED_BELT_SWIM_SPEED = new AttributeModifier(UUID.fromString("1a0aa526-7a44-42a7-9d6d-a3d2fae599ef"),
             Reference.MODID + ":" + "drowned_belt_swim_speed", RelicsConfig.DrownedBelt.UNDERWATER_SPEED_MULTIPLIER.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
     public DrownedBeltItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.UNCOMMON));
+        super(Rarity.UNCOMMON);
     }
 
     @Override

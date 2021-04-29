@@ -388,7 +388,7 @@ public class RelicsConfig {
             builder.push("soul_devourer");
             TIME_PER_SOUL_DECREASE = builder.defineInRange("time_per_soul_decrease", 10, 0, Integer.MAX_VALUE);
             MIN_SOUL_DECREASE_AMOUNT = builder.defineInRange("min_soul_decrease_amount", 5, 0, Integer.MAX_VALUE);
-            SOUL_DECREASE_MULTIPLIER_PER_SOUL = builder.defineInRange("soul_decrease_multiplier_per_soul", 0.1F, 0, Integer.MAX_VALUE);
+            SOUL_DECREASE_MULTIPLIER_PER_SOUL = builder.defineInRange("soul_decrease_multiplier_per_soul", 0.1, 0, Integer.MAX_VALUE);
             MIN_SOUL_AMOUNT_FOR_EXPLOSION = builder.defineInRange("min_soul_amount_for_explosion", 50, 0, Integer.MAX_VALUE);
             EXPLOSION_PREPARING_TIME = builder.defineInRange("explosion_preparing_time", 12, 0, Integer.MAX_VALUE);
             EXPLOSION_RADIUS = builder.defineInRange("explosion_radius", 10.0F, 0, Integer.MAX_VALUE);
@@ -530,6 +530,8 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue STELLAR_CATALYST_GEN_CHANCE;
 
         private static void setupWorldgenConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("worldgen");
+
             RELICS_WORLDGEN_ENABLED = builder.define("relics_worldgen_enabled", true);
             ARROW_QUIVER_GEN_CHANCE = builder.defineInRange("arrow_quiver_gen_chance", 0.2, 0, 1);
             BASTION_RING_GEN_CHANCE = builder.defineInRange("bastion_ring_gen_chance", 0.15, 0, 1);
@@ -569,7 +571,25 @@ public class RelicsConfig {
         public static ForgeConfigSpec.BooleanValue WARN_ABOUT_OLD_FORGE;
 
         private static void setupCompatibilityConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("compatibility");
+
             WARN_ABOUT_OLD_FORGE = builder.define("warn_about_old_forge", true);
+
+            builder.pop();
+        }
+    }
+
+    public static class RelicsGeneral {
+        public static ForgeConfigSpec.BooleanValue STORE_RELIC_OWNER;
+        public static ForgeConfigSpec.DoubleValue DAMAGE_NON_RELIC_OWNER_AMOUNT;
+
+        private static void setupGeneralConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("general");
+
+            STORE_RELIC_OWNER = builder.define("store_relic_owner", true);
+            DAMAGE_NON_RELIC_OWNER_AMOUNT = builder.defineInRange("damage_non_relic_owner_amount", 1.0, 0.0, Integer.MAX_VALUE);
+
+            builder.pop();
         }
     }
 
@@ -615,14 +635,11 @@ public class RelicsConfig {
         builder.push("general");
 
         builder.push("relics");
+
+        RelicsGeneral.setupGeneralConfig(builder);
         setupRelicsStatsConfig(builder);
-
-        builder.push("worldgen");
         RelicsWorldgen.setupWorldgenConfig(builder);
-
-        builder.push("compatibility");
         RelicsCompatibility.setupCompatibilityConfig(builder);
-        builder.pop();
 
         RELICS_CONFIG = builder.build();
     }

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.particles.CircleTintData;
@@ -31,17 +32,13 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.awt.*;
 import java.util.List;
 
-public class SoulDevourerItem extends Item implements ICurioItem, IHasTooltip {
+public class SoulDevourerItem extends RelicItem implements ICurioItem, IHasTooltip {
     private static final String TAG_UPDATE_TIME = "time";
     private static final String TAG_SOUL_AMOUNT = "soul";
     private static final String TAG_EXPLOSION_READINESS = "readiness";
-    private static final Color color = new Color(180, 250, 255);
 
     public SoulDevourerItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.EPIC));
+        super(Rarity.EPIC);
     }
 
     @Override
@@ -87,7 +84,7 @@ public class SoulDevourerItem extends Item implements ICurioItem, IHasTooltip {
                     double extraX = (double) (radius * MathHelper.sin((float) (Math.PI + angle))) + player.getX();
                     double extraZ = (double) (radius * MathHelper.cos(angle)) + player.getZ();
                     player.getCommandSenderWorld().addParticle(new CircleTintData(
-                                    color, 0.2F + (readiness * 0.004F), 40, 0.95F, false),
+                                    new Color(180, 250, 255), 0.2F + (readiness * 0.004F), 40, 0.95F, false),
                             extraX, player.getY() + 0.5F, extraZ, 0F, 0F, 0F);
                 }
             } else explode(player, stack, soul);
