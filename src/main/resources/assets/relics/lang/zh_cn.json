@@ -67,6 +67,10 @@
   "tooltip.relics.scarab_talisman.shift_1": "增加移速，在沙地上增加跳跃高度",
   "tooltip.relics.scarab_talisman.shift_2": "增加挖沙速度，免疫卡入方块造成的窒息伤害",
 
+  "item.relics.shadow_glaive": "暗影之刃",
+  "tooltip.relics.shadow_glaive.shift_1": "戴在副手时有几率召唤暗影之刃在怪物间弹射造成伤害",
+  "tooltip.relics.shadow_glaive.shift_2": "其伤害基于你之前对怪物造成的伤害，每次弹射的伤害递减",
+  
   "item.relics.stellar_catalyst": "星辰催化剂",
   "tooltip.relics.stellar_catalyst.shift_1": "攻击时有几率召唤流星",
 
@@ -116,11 +120,11 @@
   "tooltip.relics.bastion_ring.shift_1": "可在杀死猪灵时获得附近堡垒遗迹的位置",
 
   "item.relics.blazing_flask": "燃烧瓶",
-  "tooltip.relics.blazing_flask.tooltip_1": "火焰含量：%1$s",
+  "tooltip.relics.blazing_flask.tooltip_1": "火焰储量：%1$s",
   "tooltip.relics.blazing_flask.shift_1": "消耗火焰微弱浮空，可点燃脚下的怪物",
   "tooltip.relics.blazing_flask.shift_2": "免疫火焰造成的伤害",
 
-  "item.relics.chorus_inhibitor": "紫颂抑制剂",
+  "item.relics.chorus_inhibitor": "紫颂抑制器",
   "tooltip.relics.chorus_inhibitor.tooltip_1": "存储位置：X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.chorus_inhibitor.tooltip_2": "剩余：%1$s",
   "tooltip.relics.chorus_inhibitor.shift_1": "记住使用紫颂果时的位置，在一段时间后传送回该位置",
@@ -140,5 +144,6 @@
   "item.relics.ice_breaker": "破冰鞋",
   "tooltip.relics.ice_breaker.shift_1": "当玩家按住[Shift]摔落时会产生冲击波。",
   "tooltip.relics.ice_breaker.shift_2": "增加击退距离，可在墙上滑行",
+  
   "block.relics.magma_stone": "岩浆石"
 }
