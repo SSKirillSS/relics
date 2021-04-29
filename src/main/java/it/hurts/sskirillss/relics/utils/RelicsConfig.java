@@ -394,11 +394,11 @@ public class RelicsConfig {
             EXPLOSION_RADIUS = builder.defineInRange("explosion_radius", 10.0F, 0, Integer.MAX_VALUE);
             EXPLOSION_VELOCITY_MULTIPLIER = builder.defineInRange("explosion_velocity_multiplier", 5.0F, 0, Integer.MAX_VALUE);
             MIN_EXPLOSION_DAMAGE_AMOUNT = builder.defineInRange("min_explosion_damage_amount", 2.0, 0, Integer.MAX_VALUE);
-            EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER = builder.defineInRange("explosion_damage_per_soul_multiplier", 0.25, 0, Integer.MAX_VALUE);
+            EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER = builder.defineInRange("explosion_damage_per_soul_multiplier", 0.75, 0, Integer.MAX_VALUE);
             EXPLOSION_COOLDOWN = builder.defineInRange("explosion_cooldown", 60, 0, Integer.MAX_VALUE);
             SOUL_CAPACITY = builder.defineInRange("soul_capacity", 100, 0, Integer.MAX_VALUE);
             SOUL_PER_HEALTH_MULTIPLIER = builder.defineInRange("soul_per_health_multiplier", 0.25, 0, Integer.MAX_VALUE);
-            ADDITIONAL_DAMAGE_PER_SOUL_MULTIPLIER = builder.defineInRange("additional_damage_per_soul_multiplier", 0.05, 0, Integer.MAX_VALUE);
+            ADDITIONAL_DAMAGE_PER_SOUL_MULTIPLIER = builder.defineInRange("additional_damage_per_soul_multiplier", 0.1, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }
