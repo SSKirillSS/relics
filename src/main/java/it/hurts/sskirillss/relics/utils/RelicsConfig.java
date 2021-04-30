@@ -5,12 +5,18 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class RelicsConfig {
     public static class ArrowQuiver {
         public static ForgeConfigSpec.DoubleValue MULTISHOT_CHANCE;
+        public static ForgeConfigSpec.IntValue MULTISHOT_COOLDOWN;
         public static ForgeConfigSpec.IntValue ADDITIONAL_ARROW_AMOUNT;
+        public static ForgeConfigSpec.IntValue ARROW_PICKUP_RADIUS;
+        public static ForgeConfigSpec.IntValue ARROW_PICKUP_COOLDOWN;
 
         private static void setupArrowQuiverConfig(ForgeConfigSpec.Builder builder) {
             builder.push("arrow_quiver");
             MULTISHOT_CHANCE = builder.defineInRange("multishot_chance", 0.2, 0, 1);
-            ADDITIONAL_ARROW_AMOUNT = builder.defineInRange("additional_arrow_count", 2, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            MULTISHOT_COOLDOWN = builder.defineInRange("multishot_cooldown", 2, 0, Integer.MAX_VALUE);
+            ADDITIONAL_ARROW_AMOUNT = builder.defineInRange("additional_arrow_count", 4, 0, Integer.MAX_VALUE);
+            ARROW_PICKUP_RADIUS = builder.defineInRange("arrow_pickup_radius", 16, 0, Integer.MAX_VALUE);
+            ARROW_PICKUP_COOLDOWN = builder.defineInRange("arrow_pickup_cooldown", 3, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }

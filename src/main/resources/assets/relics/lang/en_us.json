@@ -136,6 +136,7 @@
 
   "item.relics.arrow_quiver": "Arrow Quiver",
   "tooltip.relics.arrow_quiver.shift_1": "Adds chance to shoot multiple arrows",
+  "tooltip.relics.arrow_quiver.shift_2": "Grants ability co collect nearby arrows while sneaking",
 
   "item.relics.lucky_horseshoe": "Lucky Horseshoe",
   "tooltip.relics.lucky_horseshoe.shift_1": "With a random chance increases player's looting and fortune",

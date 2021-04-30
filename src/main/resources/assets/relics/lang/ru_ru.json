@@ -136,6 +136,7 @@
 
   "item.relics.arrow_quiver": "Колчан",
   "tooltip.relics.arrow_quiver.shift_1": "Позволяет с определенным шансом выстрелить сразу несколькими стрелами",
+  "tooltip.relics.arrow_quiver.shift_2": "Позволяет собирать стрелы поблизости с зажатой клавишей [Shift]",
 
   "item.relics.lucky_horseshoe": "Счастливая подкова",
   "tooltip.relics.lucky_horseshoe.shift_1": "Со случайным шансом увеличивает уровень удачи и добычи носителя",
