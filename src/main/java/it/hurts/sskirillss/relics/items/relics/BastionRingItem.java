@@ -52,32 +52,26 @@ public class BastionRingItem extends RelicItem implements ICurioItem, IHasToolti
     public static class BastionRingEvents {
         @SubscribeEvent
         public static void onEntityKill(LivingDeathEvent event) {
-            if (event.getEntityLiving() instanceof PiglinEntity) {
-                PiglinEntity entity = (PiglinEntity) event.getEntityLiving();
-                if (event.getSource().getEntity() instanceof PlayerEntity) {
-                    PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
-                    if (entity.getCommandSenderWorld().dimension() == World.NETHER
-                            && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BASTION_RING.get(), player).isPresent()
-                            && random.nextFloat() <= RelicsConfig.BastionRing.LOCATE_CHANCE.get()) {
-                        ServerWorld world = (ServerWorld) entity.getCommandSenderWorld();
-                        BlockPos bastionPos = world.getChunkSource().getGenerator().findNearestMapFeature(world, Structure.BASTION_REMNANT, player.blockPosition(), 100, false);
-                        if (bastionPos != null) {
-                            BlockPos pos = entity.blockPosition();
-                            Vector3d currentVec = entity.position();
-                            Vector3d targetVec = new Vector3d(bastionPos.getX(), entity.getY(), bastionPos.getZ());
-                            Vector3d finalVec = currentVec.add(targetVec.subtract(currentVec).normalize().multiply(5, 5, 5));
-                            int distance = (int) Math.round(currentVec.distanceTo(finalVec)) * 3;
-                            for (int i = 0; i < distance; i++) {
-                                float x = (float) (((finalVec.x - currentVec.x) * i / distance) + currentVec.x);
-                                float z = (float) (((finalVec.z - currentVec.z) * i / distance) + currentVec.z);
-                                CircleTintData circleTintData = new CircleTintData(
-                                        new Color(1.0F - i * 0.01F, 1.0F, 0.5F), 0.4F - i * 0.0125F, 180, 0.99F, false);
-                                world.sendParticles(circleTintData,
-                                        x, pos.getY() + 1.5F, z,
-                                        1, 0F, 0F, 0F, 0);
-                            }
-                        }
-                    }
+            if (!(event.getEntityLiving() instanceof PiglinEntity)) return;
+            PiglinEntity entity = (PiglinEntity) event.getEntityLiving();
+            if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
+            PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
+            if (entity.getCommandSenderWorld().dimension() == World.NETHER
+                    && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BASTION_RING.get(), player).isPresent()
+                    && random.nextFloat() <= RelicsConfig.BastionRing.LOCATE_CHANCE.get()) {
+                ServerWorld world = (ServerWorld) entity.getCommandSenderWorld();
+                BlockPos bastionPos = world.getChunkSource().getGenerator().findNearestMapFeature(world, Structure.BASTION_REMNANT, player.blockPosition(), 100, false);
+                if (bastionPos == null) return;
+                Vector3d currentVec = entity.position();
+                Vector3d finalVec = currentVec.add(new Vector3d(bastionPos.getX(), entity.getY(),
+                        bastionPos.getZ()).subtract(currentVec).normalize().multiply(5, 5, 5));
+                int distance = (int) Math.round(currentVec.distanceTo(finalVec)) * 3;
+                for (int i = 0; i < distance; i++) {
+                    float x = (float) (((finalVec.x - currentVec.x) * i / distance) + currentVec.x);
+                    float z = (float) (((finalVec.z - currentVec.z) * i / distance) + currentVec.z);
+                    world.sendParticles(new CircleTintData(new Color(255, 240, 150),
+                                    0.4F - i * 0.0125F, 180, 0.99F, false),
+                            x, entity.getY() + 1.5F, z, 1, 0F, 0F, 0F, 0);
                 }
             }
         }
