@@ -593,7 +593,7 @@ public class RelicsConfig {
             builder.push("general");
 
             STORE_RELIC_OWNER = builder.define("store_relic_owner", true);
-            DAMAGE_NON_RELIC_OWNER_AMOUNT = builder.defineInRange("damage_non_relic_owner_amount", 1.0, 0.0, Integer.MAX_VALUE);
+            DAMAGE_NON_RELIC_OWNER_AMOUNT = builder.defineInRange("damage_non_relic_owner_amount", 3.0, 0.0, Integer.MAX_VALUE);
 
             builder.pop();
         }
