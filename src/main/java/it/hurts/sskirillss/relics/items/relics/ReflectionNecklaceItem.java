@@ -130,8 +130,8 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
                                 SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                         event.setCanceled(true);
                     }
-                    if (attacker != player) attacker.hurt(DamageSource.playerAttack(player),
-                            event.getAmount() * RelicsConfig.ReflectionNecklace.REFLECTION_DAMAGE_MULTIPLIER.get().floatValue());
+                    if (attacker != player && !CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), attacker).isPresent())
+                        attacker.hurt(DamageSource.playerAttack(player), event.getAmount() * RelicsConfig.ReflectionNecklace.REFLECTION_DAMAGE_MULTIPLIER.get().floatValue());
                     NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) - 1);
                 }
             }
@@ -204,7 +204,7 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
                         float f = player.getSwimAmount(player.tickCount);
                         if (player.isFallFlying()) {
                             matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - player.yRot));
-                            float f1 = (float)player.getFallFlyingTicks() + player.tickCount;
+                            float f1 = (float) player.getFallFlyingTicks() + player.tickCount;
                             float f2 = MathHelper.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
                             if (!player.isAutoSpinAttack()) {
                                 matrixStack.mulPose(Vector3f.XP.rotationDegrees(f2 * (-90.0F - player.xRot)));
@@ -217,14 +217,14 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
                             if (d0 > 0.0D && d1 > 0.0D) {
                                 double d2 = (vector3d1.x * vector3d.x + vector3d1.z * vector3d.z) / Math.sqrt(d0 * d1);
                                 double d3 = vector3d1.x * vector3d.z - vector3d1.z * vector3d.x;
-                                matrixStack.mulPose(Vector3f.YP.rotation((float)(Math.signum(d3) * Math.acos(d2))));
+                                matrixStack.mulPose(Vector3f.YP.rotation((float) (Math.signum(d3) * Math.acos(d2))));
                             }
                         } else if (f > 0.0F) {
                             float f3 = player.isInWater() ? -90.0F - player.xRot : -90.0F;
                             float f4 = MathHelper.lerp(f, 0.0F, f3);
                             matrixStack.mulPose(Vector3f.XP.rotationDegrees(f4));
                             if (player.isVisuallySwimming()) {
-                                matrixStack.translate(0.0D, -1.0D, (double)0.3F);
+                                matrixStack.translate(0.0D, -1.0D, (double) 0.3F);
                             }
                         }
                         matrixStack.translate(0, 0.75, 0);
