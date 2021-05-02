@@ -45,7 +45,7 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
         for (int i = 0; i < 3; i++)
             level.addParticle(new CircleTintData(new Color(255 - random.nextInt(150), 0, 255 - random.nextInt(150)),
                             0.2F + random.nextFloat() * 0.15F, 20, 0.95F, false), this.xo, this.yo, this.zo,
-                    MathUtils.generateReallyRandomFloat(random) * 0.2F, random.nextFloat() * 0.75F, MathUtils.generateReallyRandomFloat(random) * 0.2F);
+                    MathUtils.randomFloat(random) * 0.2F, random.nextFloat() * 0.75F, MathUtils.randomFloat(random) * 0.2F);
         if (this.tickCount > 100) this.remove();
         this.setDeltaMovement(0.0F, -RelicsConfig.StellarCatalyst.FALLING_STAR_SPEED.get(), 0.0F);
     }

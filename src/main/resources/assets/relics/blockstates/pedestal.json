@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "direction=up": { "model": "relics:block/pedestal" },
+    "direction=down":  { "model": "relics:block/pedestal", "x": 180 },
+    "direction=east":  { "model": "relics:block/pedestal", "x": 90, "y": 90 },
+    "direction=north":  { "model": "relics:block/pedestal", "x": 90 },
+    "direction=south":  { "model": "relics:block/pedestal", "x": 90, "y": 180 },
+    "direction=west": { "model": "relics:block/pedestal", "x": 90, "y": 270 }
+  }
+}

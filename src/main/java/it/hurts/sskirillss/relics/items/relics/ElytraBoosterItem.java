@@ -60,9 +60,9 @@ public class ElytraBoosterItem extends RelicItem implements ICurioItem, IHasTool
                             look.y * 0.1D + (look.y * RelicsConfig.ElytraBooster.MOVEMENT_SPEED_MULTIPLIER.get() - motion.y) * 0.5D,
                             look.z * 0.1D + (look.z * RelicsConfig.ElytraBooster.MOVEMENT_SPEED_MULTIPLIER.get() - motion.z) * 0.5D));
                     player.getCommandSenderWorld().addParticle(ParticleTypes.DRAGON_BREATH,
-                            player.getX() + (MathUtils.generateReallyRandomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
-                            player.getY() + (MathUtils.generateReallyRandomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
-                            player.getZ() + (MathUtils.generateReallyRandomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
+                            player.getX() + (MathUtils.randomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
+                            player.getY() + (MathUtils.randomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
+                            player.getZ() + (MathUtils.randomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
                             0, 0, 0);
                     if (player.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath - 1);
                     for (LivingEntity entity : player.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(2.0F))) {

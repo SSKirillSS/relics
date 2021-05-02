@@ -26,7 +26,7 @@ import java.util.Random;
 
 import net.minecraft.block.AbstractBlock;
 
-public class MagmaStoneBlock extends Block {
+public class MagmaStoneBlock extends Block implements IVoidBlock {
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
 
     public MagmaStoneBlock() {

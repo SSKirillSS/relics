@@ -503,6 +503,18 @@ public class RelicsConfig {
         }
     }
 
+    public static class Pedestal {
+        public static ForgeConfigSpec.BooleanValue ACCEPT_ANY_ITEM;
+        public static ForgeConfigSpec.BooleanValue SPAWN_PARTICLES;
+
+        private static void setupPedestalConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("pedestal");
+            ACCEPT_ANY_ITEM = builder.define("accept_any_item", true);
+            SPAWN_PARTICLES = builder.define("spawn_particles", true);
+            builder.pop();
+        }
+    }
+
     public static class RelicsWorldgen {
         public static ForgeConfigSpec.BooleanValue RELICS_WORLDGEN_ENABLED;
         public static ForgeConfigSpec.DoubleValue ARROW_QUIVER_GEN_CHANCE;
@@ -634,11 +646,20 @@ public class RelicsConfig {
         builder.pop();
     }
 
+    public static void setupRelicsBlockConfig(ForgeConfigSpec.Builder builder) {
+        builder.push("blocks");
+
+        Pedestal.setupPedestalConfig(builder);
+
+        builder.pop();
+    }
+
     public static ForgeConfigSpec RELICS_CONFIG;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.push("general");
+        setupRelicsBlockConfig(builder);
 
         builder.push("relics");
 

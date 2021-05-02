@@ -1,8 +1,6 @@
 package it.hurts.sskirillss.relics;
 
-import it.hurts.sskirillss.relics.init.BlockRegistry;
-import it.hurts.sskirillss.relics.init.EntityRegistry;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
@@ -27,6 +25,7 @@ public class Relics {
         MinecraftForge.EVENT_BUS.register(this);
         ItemRegistry.registerItems();
         BlockRegistry.registerBlocks();
+        TileRegistry.registerTiles();
         EntityRegistry.registerEntities();
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RelicsConfig.RELICS_CONFIG);
     }

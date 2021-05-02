@@ -71,15 +71,15 @@ public class BlazingFlaskItem extends RelicItem implements ICurioItem, IHasToolt
                 if (player.abilities.flying) {
                     for (int i = 0; i < 3; i++)
                         world.addParticle(player.isInWater() ? ParticleTypes.CLOUD : ParticleTypes.LARGE_SMOKE,
-                                player.getX() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
-                                player.getY() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
-                                player.getZ() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
+                                player.getX() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
+                                player.getY() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
+                                player.getZ() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
                                 0, player.isInWater() ? 0 : -0.1, 0);
                     if (!player.isInWater()) {
                         world.addParticle(ParticleTypes.FLAME,
-                                player.getX() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
-                                player.getY() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F,
-                                player.getZ() + MathUtils.generateReallyRandomFloat(world.getRandom()) * 0.5F, 0, -0.25F, 0);
+                                player.getX() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
+                                player.getY() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
+                                player.getZ() + MathUtils.randomFloat(world.getRandom()) * 0.5F, 0, -0.25F, 0);
                         for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox()
                                 .inflate(0.5D).expandTowards(0, -getGroundHeight(player) - 1, 0))) {
                             if (entity != player) entity.setSecondsOnFire(RelicsConfig.BlazingFlask.IGNITE_DURATION.get());

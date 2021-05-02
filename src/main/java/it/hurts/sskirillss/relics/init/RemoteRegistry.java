@@ -1,11 +1,11 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.entities.renderer.NullRenderer;
 import it.hurts.sskirillss.relics.entities.renderer.ShadowGlaiveRenderer;
 import it.hurts.sskirillss.relics.entities.renderer.SpaceDissectorRenderer;
 import it.hurts.sskirillss.relics.entities.renderer.StellarCatalystProjectileRenderer;
 import it.hurts.sskirillss.relics.items.relics.ReflectionNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
+import it.hurts.sskirillss.relics.tiles.renderer.PedestalTileRenderer;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.renderer.RenderType;
@@ -17,17 +17,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ClientRegistry {
+public class RemoteRegistry {
     @SubscribeEvent
     public static void setupClient(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), new StellarCatalystProjectileRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.SPACE_DISSECTOR.get(), new SpaceDissectorRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.SHADOW_GLAIVE.get(), new ShadowGlaiveRenderer.RenderFactory());
+        ClientRegistry.bindTileEntityRenderer(TileRegistry.PEDESTAL_TILE.get(), PedestalTileRenderer::new);
         RenderTypeLookup.setRenderLayer(BlockRegistry.CHALK_BLOCK.get(), RenderType.cutout());
 
         ItemModelsProperties.register(
