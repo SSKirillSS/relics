@@ -1,0 +1,154 @@
+{
+  "itemGroup.relics": "Reliquias",
+
+  "tooltip.relics.shift.tooltip": "§7Hold §8[Shift] §7for more info",
+  "tooltip.relics.shift.divider_up": "§8---------------§e[Info]§8---------------",
+  "tooltip.relics.shift.divider_down": "§8-----------------------------------",
+
+  "tooltip.relics.alt.tooltip": "§7Hold §8[Alt] §7for more info",
+  "tooltip.relics.alt.divider_up": "§8---------------§b[Info]§8---------------",
+  "tooltip.relics.alt.divider_down": "§8-----------------------------------",
+
+  "tooltip.relics.ctrl.tooltip": "§7Hold §8[Ctrl] §7for more info",
+  "tooltip.relics.ctrl.divider_up": "§8---------------§a[Info]§8---------------",
+  "tooltip.relics.ctrl.divider_down": "§8-----------------------------------",
+
+  "message.relics.version.forge": "§4[RELIQUIAS_ADVERTENCIA] §cPARECE QUE ESTÁS UTILIZANDO UNA VERSIÓN ANTIGUA DE FORGE. SIGNIFICA QUE LAS RELIQUIAS NO APARECEN EN LOS Cofres de botín de las mazmorras. PARA SOLUCIONAR ESTE PROBLEMA, ACTUALICE SU VERSIÓN DE FORGE A 1.16.5-36.0.14 O SUPERIOR. SI USTED POR ALGUNAS RAZONES NO QUIERE ACTUALIZAR SU VERSIÓN DE FORGE, PUEDE AÑADIR FORMAS PROPIAS PARA OBTENER RELICAS. ESTE MENSAJE SE PUEDE DESHABILITAR EN CONFIG",
+
+  "curios.identifier.feet": "Pies",
+  "curios.modifiers.feet": "Cuando de pie:",
+
+  "item.relics.chrysolite": "Crisolito",
+  "item.relics.aquasteel_ingot": "Lingote de Acero de Agua",
+  "item.relics.firesteel_ingot": "Lingote de Acero de Fuego",
+  "item.relics.terrasteel_ingot": "Lingote de Acero de Tierra",
+  "item.relics.airsteel_ingot": "Lingote de Acero de Aire",
+  "item.relics.mithril_ingot": "Lingote de Mithril",
+  "item.relics.obsidian_ingot": "Lingote de Obsidiana",
+  "item.relics.steel_ingot": "Lingote de Acero",
+  "item.relics.flaming_amber_geode": "Geoda de Ámbar Llameante",
+  "item.relics.flaming_amber_dust": "Polvo de Ámbar Llameante",
+  "item.relics.chalk": "Tiza",
+
+  "tooltip.relics.owner": "Dueño: %1$s",
+  "tooltip.relics.owner.unknown": "Desconocido",
+
+  "item.relics.spatial_sign": "Signo Espacial",
+  "tooltip.relics.spatial_sign.tooltip_1": "Destino almacenado: %1$s",
+  "tooltip.relics.spatial_sign.tooltip_2": "Tiempo restante: %1$s",
+  "tooltip.relics.spatial_sign.shift_1": "Después de usar, almacena la posición actual del jugador y lo teletransporta automáticamente al destino almacenado después de cierto tiempo",
+  "tooltip.relics.spatial_sign.shift_2": "Recibir daño fatal con el inventario de inicio de sesión activo te salvará la vida y te teletransportará al destino almacenado, pero rompe la reliquia.",
+
+  "item.relics.spider_necklace": "Collar Araña",
+  "tooltip.relics.spider_necklace.shift_1": "Otorga la capacidad de escalar las paredes.",
+  
+  "item.relics.spore_sack": "Saco de Esporas",
+  "tooltip.relics.spore_sack.shift_1": "Otorga la capacidad de dispersar esporas venenosas cuando un proyectil golpea un bloque o una mafia.",
+
+  "item.relics.reflection_necklace": "Collar de Reflexión",
+  "tooltip.relics.reflection_necklace.shift_1": "Acumula cargas lentamente para reflejar completamente los proyectiles y el daño recibido",
+
+  "item.relics.space_dissector": "Disector Espacial",
+  "tooltip.relics.space_dissector.shift_1": "Lanza un disco que rebota en las superficies y daña a todos a su paso",
+  "tooltip.relics.space_dissector.shift_2": "El daño infligido y el tiempo antes de que el disco regrese al lanzador depende del número total de rebotes de superficies.",
+  "tooltip.relics.space_dissector.shift_3": "La activación del disco lo obligará a regresar al propietario. Activar el disco mientras se mantiene presionada la tecla [Shift] teletransportará al propietario a la posición actual del disco",
+
+  "item.relics.soul_devourer": "Devorador de Almas",
+  "tooltip.relics.soul_devourer.tooltip_1": "Cantidad de alma almacenada: %1$s",
+  "tooltip.relics.soul_devourer.shift_1": "Acumula las almas de las entidades derrotadas, aumentando proporcionalmente el daño que inflige.",
+  "tooltip.relics.soul_devourer.shift_2": "Mantener presionada la tecla [Shift] liberará todas las almas acumuladas, causando daño y golpeando a todos a su alrededor.",
+
+  "item.relics.magma_walker": "Caminante de Magma",
+  "tooltip.relics.magma_walker.shift_1": "Condensa la lava bajo los pies, transformándola temporalmente en una piedra de magma sólida sobre la que puede caminar.",
+  "tooltip.relics.magma_walker.shift_2": "Elimina completamente el daño de los bloques calientes",
+
+  "item.relics.midnight_robe": "Bata de Medianoche",
+  "tooltip.relics.midnight_robe.shift_1": "Otorga invisibilidad temporal y aumento de velocidad de movimiento por la noche si la salud del usuario cae a un nivel bajo",
+  "tooltip.relics.midnight_robe.shift_2": "Los ataques sigilosos de la invisibilidad causarán el doble de daño, pero eliminarán temporalmente los efectos de invisibilidad y aumento de velocidad de movimiento",
+
+  "item.relics.scarab_talisman": "Talismán de Escarabajo",
+  "tooltip.relics.scarab_talisman.shift_1": "Aumenta la velocidad de movimiento y la altura de los pasos en el desierto y las mesetas.",
+  "tooltip.relics.scarab_talisman.shift_2": "Aumenta la velocidad de ruptura de arena, elimina completamente el daño por asfixia en bloques y caída sobre arena.",
+
+  "item.relics.shadow_glaive": "Glaive Sombrío",
+  "tooltip.relics.shadow_glaive.shift_1": "Cuando está en la mano, otorga la posibilidad de invocar glaive, que rebota entre mobs alrededor.",
+  "tooltip.relics.shadow_glaive.shift_2": "El daño de Glaive se basa en el daño infligido antes de la invocación y disminuye después de cada rebote.",
+
+  "item.relics.stellar_catalyst": "Catalizador Estelar",
+  "tooltip.relics.stellar_catalyst.shift_1": "Otorga la posibilidad de invocar una estrella fugaz mientras ataca a una mafia, que inflige la mitad del daño de invocación para todos en la posición de impacto",
+
+  "item.relics.drowned_belt": "Cinturón de Ahogado",
+  "tooltip.relics.drowned_belt.shift_1": "Otorga respiración subacuática infinita, aumenta la entrada bajo el agua e inflige daño, reduce ligeramente la velocidad de natación",
+
+  "item.relics.elytra_booster": "Potenciador de Elytra",
+  "tooltip.relics.elytra_booster.tooltip_1": "Carga: %1$s",
+  "tooltip.relics.elytra_booster.shift_1": "Acumula energía de las nubes de aliento de dragón más cercanas mientras mantiene presionada la tecla [Shift] y la usa para aumentar la velocidad de vuelo de los élitros mientras mantiene presionada la misma tecla",
+  "tooltip.relics.elytra_booster.shift_2": "Otorga la capacidad de embestir mobs mientras vuela en élitros con impulso activado",
+
+  "item.relics.enders_hand": "Mano de Ender",
+  "tooltip.relics.enders_hand.shift_1": "Mientras mantiene presionada la tecla [Shift], intercambia las posiciones del jugador y el enderman que está mirando.",
+
+  "item.relics.fragrant_flower": "Flor Fragante",
+  "tooltip.relics.fragrant_flower.tooltip_1": "Nectar: %1$s",
+  "tooltip.relics.fragrant_flower.shift_1": "Obliga a las abejas a luchar junto con el portador de la reliquia y las hace amigables con el jugador.",
+  "tooltip.relics.fragrant_flower.shift_2": "Las abejas alrededor también recolectarán néctar para el búfer de esta reliquia, que luego se puede liberar manteniendo presionada la tecla [Shift] para cultivar y curar a las entidades (o dañar a los muertos vivientes) alrededor.",
+
+  "item.relics.holy_locket": "Relicario Sagrado",
+  "tooltip.relics.holy_locket.shift_1": "Aumenta el daño infligido a las entidades no muertas y otorga la capacidad de prenderles fuego.",
+
+  "item.relics.jellyfish_necklace": "Collar de Medusas",
+  "tooltip.relics.jellyfish_necklace.shift_1": "Acumula lentamente cargas bajo el agua que luego se pueden usar para causar daños eléctricos en caso de colisión con monstruos.",
+  "tooltip.relics.jellyfish_necklace.shift_2": "Duplica la velocidad de regeneración de salud bajo el agua",
+
+  "item.relics.hunter_belt": "Cinturón de Cazador",
+  "tooltip.relics.hunter_belt.shift_1": "Duplica el daño infligido a los animales y el botín recibido de las turbas. Aumenta el daño infligido por las mascotas de los usuarios.",
+
+  "item.relics.rage_glove": "Guante de Rabia",
+  "tooltip.relics.rage_glove.shift_1": "Aumenta el daño infligido y recibido del mismo objetivo por cada ataque combinado.",
+
+  "item.relics.ice_skates": "Patines de Hielo",
+  "tooltip.relics.ice_skates.shift_1": "Aumenta la velocidad de movimiento y otorga la capacidad de embestir a las turbas en el hielo, en alta velocidad de movimiento agrega la capacidad de congelar el agua bajo los pies",
+  "tooltip.relics.ice_skates.shift_2": "El daño infligido y la fuerza de retroceso dependen de la cantidad de tiempo que se pasa en el hielo",
+
+  "item.relics.camouflage_ring": "Anillo de Camuflaje",
+  "tooltip.relics.camouflage_ring.shift_1": "Otorga la capacidad de esconderse temporalmente en una hierba alta, los ataques sigilosos causarán el doble de daño.",
+
+  "item.relics.delay_ring": "Anillo de Retardo",
+  "tooltip.relics.delay_ring.tooltip_1": "Tiempo: %1$s",
+  "tooltip.relics.delay_ring.tooltip_2": "Salud: %1$s",
+  "tooltip.relics.delay_ring.shift_1": "Altera temporalmente el destino de un usuario, lo que retrasa cualquier curación y daño recibido durante los próximos 10 segundos.",
+  "tooltip.relics.delay_ring.shift_2": "Cualquier curación retrasada por el anillo se duplicaría.",
+
+  "item.relics.bastion_ring": "Anillo de Bastión",
+  "tooltip.relics.bastion_ring.shift_1": "Otorga la capacidad de ubicar el bastión más cercano al matar piglins",
+
+  "item.relics.blazing_flask": "Frasco Llameante",
+  "tooltip.relics.blazing_flask.tooltip_1": "Cantidad de fuego: %1$s",
+  "tooltip.relics.blazing_flask.shift_1": "Consume fuego alrededor y lo usa para una capacidad de levitación débil con mobs encendidos debajo de los pies.",
+  "tooltip.relics.blazing_flask.shift_2": "Elimina por completo el daño del fuego",
+
+  "item.relics.chorus_inhibitor": "Inhibidor de Chorus",
+  "tooltip.relics.chorus_inhibitor.tooltip_1": "Destino almacenado: X:%1$s Y:%2$s Z:%3$s",
+  "tooltip.relics.chorus_inhibitor.tooltip_2": "Tiempo restante: %1$s",
+  "tooltip.relics.chorus_inhibitor.shift_1": "Recuerda la posición del uso de la fruta de coro y vuelve a ella después de cierto tiempo.",
+  "tooltip.relics.chorus_inhibitor.shift_2": "El uso adicional de la fruta de coro antes de que acabe el tiempo aumentará su suministro.",
+  "tooltip.relics.chorus_inhibitor.shift_3": "Elimina por completo el daño de la teletransportación",
+
+  "item.relics.arrow_quiver": "Carcaj de Flecha",
+  "tooltip.relics.arrow_quiver.shift_1": "Agrega la posibilidad de disparar múltiples flechas",
+  "tooltip.relics.arrow_quiver.shift_2": "Grants ability co collect nearby arrows while sneaking",
+
+  "item.relics.lucky_horseshoe": "Herradura de la suerte",
+  "tooltip.relics.lucky_horseshoe.shift_1": "Con una probabilidad aleatoria aumenta el botín y la fortuna del jugador.",
+
+  "item.relics.magic_mirror": "Espejo Mágico",
+  "tooltip.relics.magic_mirror.shift_1": "Se teletransporta a la última posición de reaparición conocida",
+  "tooltip.relics.magic_mirror.invalid_location": "Posición de reaparición desconocida",
+
+  "item.relics.ice_breaker": "Rompehielos",
+  "tooltip.relics.ice_breaker.shift_1": "Provoca una onda de choque después de que el jugador cae al suelo mientras mantiene pulsado [Mayús]. Otorga capacidad de deslizamiento de la pared",
+  "tooltip.relics.ice_breaker.shift_2": "Aumenta la resistencia al retroceso y otorga la capacidad de deslizamiento de la pared",
+
+  "block.relics.magma_stone": "Piedra de Magma",
+  "block.relics.pedestal": "Pedestal"  
+}
