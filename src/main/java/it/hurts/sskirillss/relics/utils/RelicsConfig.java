@@ -470,7 +470,7 @@ public class RelicsConfig {
             builder.push("spore_sack");
             SPORE_CHANCE = builder.defineInRange("spore_chance", 0.3, 0, 1);
             SPORE_RADIUS = builder.defineInRange("spore_radius", 3, 0, Integer.MAX_VALUE);
-            SPORE_COOLDOWN = builder.defineInRange("spore_cooldown", 8, 0, Integer.MAX_VALUE);
+            SPORE_COOLDOWN = builder.defineInRange("spore_cooldown", 5, 0, Integer.MAX_VALUE);
             POISON_AMPLIFIER = builder.defineInRange("poison_amplifier", 2, 0, Integer.MAX_VALUE);
             POISON_DURATION = builder.defineInRange("poison_duration", 5, 0, Integer.MAX_VALUE);
             SLOWNESS_AMPLIFIER = builder.defineInRange("slowness_amplifier", 0, 0, Integer.MAX_VALUE);
