@@ -104,10 +104,11 @@ public class SoulDevourerItem extends RelicItem implements ICurioItem, IHasToolt
     public static void explode(PlayerEntity player, ItemStack stack, int soul) {
         for (LivingEntity entity : player.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class,
                 player.getBoundingBox().inflate(RelicsConfig.SoulDevourer.EXPLOSION_RADIUS.get()))) {
+            if (entity == player) continue;
             double velocity = RelicsConfig.SoulDevourer.EXPLOSION_VELOCITY_MULTIPLIER.get();
             Vector3d motion = entity.position().add(0.0F, 1.0F, 0.0F)
                     .subtract(player.position()).normalize().multiply(velocity, velocity, velocity);
-            if (entity instanceof ServerPlayerEntity) if (entity != player) NetworkHandler.sendToClient(
+            if (entity instanceof ServerPlayerEntity) NetworkHandler.sendToClient(
                     new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) entity);
             else entity.setDeltaMovement(motion);
             entity.hurt(DamageSource.playerAttack(player), (float) (RelicsConfig.SoulDevourer.MIN_EXPLOSION_DAMAGE_AMOUNT.get()
