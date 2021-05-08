@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.Rarity;
@@ -65,9 +66,9 @@ public class ChorusInhibitorItem extends RelicItem implements ICurioItem, IHasTo
         if (time > 0) NBTUtils.setInt(stack, TAG_TIME, time - 1);
         else if (!NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
             Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
-            if (pos == null) return;
             ServerWorld world = NBTUtils.parseWorld(player.getCommandSenderWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
-            if (world != null) EntityUtils.teleportWithMount(player, world, pos);
+            if (pos == null || world == null) return;
+            ((ServerPlayerEntity) player).teleportTo(world, pos.x(), pos.y(), pos.z(), player.yRot, player.xRot);
             player.getCommandSenderWorld().playSound(player, pos.x(), pos.y(), pos.z(),
                     SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
             NBTUtils.setString(stack, TAG_POSITION, "");

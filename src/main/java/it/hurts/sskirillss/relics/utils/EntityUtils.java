@@ -8,7 +8,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,17 +18,6 @@ public class EntityUtils {
         Vector3d motion = targetPos.subtract(entity.position());
         motion = motion.normalize().scale(speed);
         entity.setDeltaMovement(motion.x, motion.y, motion.z);
-    }
-
-    public static void teleportWithMount(Entity entity, ServerWorld targetWorld, Vector3d targetPos) {
-        if (targetWorld == null) return;
-        if (entity.getVehicle() != null) {
-            Entity mount = entity.getVehicle();
-            entity.stopRiding();
-            if (entity.getCommandSenderWorld() != targetWorld) entity.changeDimension(targetWorld);
-            else mount.teleportTo(targetPos.x(), targetPos.y(), targetPos.z());
-        } else if (entity.getCommandSenderWorld() != targetWorld) entity.changeDimension(targetWorld);
-        entity.teleportTo(targetPos.x(), targetPos.y(), targetPos.z());
     }
 
     public static int getSlotWithItem(PlayerEntity player, Item item) {

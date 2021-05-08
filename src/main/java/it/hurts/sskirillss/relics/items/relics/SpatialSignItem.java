@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.*;
@@ -92,7 +93,7 @@ public class SpatialSignItem extends RelicItem implements IHasTooltip {
         Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
         ServerWorld world = NBTUtils.parseWorld(player.getCommandSenderWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
         if (pos == null || world == null) return;
-        EntityUtils.teleportWithMount(player, world, pos);
+        ((ServerPlayerEntity) player).teleportTo(world, pos.x(), pos.y(), pos.z(), player.yRot, player.xRot);
         player.getCommandSenderWorld().playSound(player, pos.x(), pos.y(), pos.z(),
                 SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
         if (!player.abilities.instabuild) player.getCooldowns().addCooldown(stack.getItem(),

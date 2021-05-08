@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -46,10 +45,10 @@ public class MagicMirrorItem extends RelicItem implements IHasTooltip {
                 || worldIn.isClientSide()) return ActionResult.fail(stack);
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;
         BlockPos pos = serverPlayer.getRespawnPosition();
-        ServerWorld world = worldIn.dimension() == serverPlayer.getRespawnDimension()
-                ? (ServerWorld) worldIn : serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
+        ServerWorld world = serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
         if (pos != null && world != null) {
-            EntityUtils.teleportWithMount(playerIn, world, new Vector3d(pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F));
+            if (playerIn.getVehicle() != null) playerIn.stopRiding();
+            serverPlayer.teleportTo(world, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, playerIn.yRot, playerIn.xRot);
             worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(),
                     SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
             if (!playerIn.abilities.instabuild) playerIn.getCooldowns().addCooldown(ItemRegistry.MAGIC_MIRROR.get(),
