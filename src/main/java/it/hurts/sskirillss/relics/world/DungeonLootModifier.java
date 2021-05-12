@@ -46,6 +46,8 @@ public class DungeonLootModifier extends LootModifier {
                 generatedLoot.add(new ItemStack(ItemRegistry.MAGIC_MIRROR.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPIDER_NECKLACE_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.SPIDER_NECKLACE.get()));
+            if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.OUT_RUNNER_GEN_CHANCE.get())
+                generatedLoot.add(new ItemStack(ItemRegistry.OUT_RUNNER.get()));
         }
 
         if (id.equals(LootTables.STRONGHOLD_CORRIDOR) || id.equals(LootTables.STRONGHOLD_CROSSING)
@@ -58,6 +60,8 @@ public class DungeonLootModifier extends LootModifier {
                 generatedLoot.add(new ItemStack(ItemRegistry.MAGIC_MIRROR.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SPIDER_NECKLACE_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.SPIDER_NECKLACE.get()));
+            if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.OUT_RUNNER_GEN_CHANCE.get())
+                generatedLoot.add(new ItemStack(ItemRegistry.OUT_RUNNER.get()));
         }
 
         if (id.equals(LootTables.BASTION_BRIDGE) || id.equals(LootTables.BASTION_OTHER) || id.equals(LootTables.BASTION_TREASURE)
@@ -98,6 +102,8 @@ public class DungeonLootModifier extends LootModifier {
                 generatedLoot.add(new ItemStack(ItemRegistry.ELYTRA_BOOSTER.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SHADOW_GLAIVE_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.SHADOW_GLAIVE.get()));
+            if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.OUT_RUNNER_GEN_CHANCE.get())
+                generatedLoot.add(new ItemStack(ItemRegistry.OUT_RUNNER.get()));
         }
 
         if (id.equals(LootTables.UNDERWATER_RUIN_BIG) || id.equals(LootTables.UNDERWATER_RUIN_SMALL)

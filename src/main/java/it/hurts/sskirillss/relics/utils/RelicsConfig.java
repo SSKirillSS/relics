@@ -301,6 +301,20 @@ public class RelicsConfig {
         }
     }
 
+    public static class OutRunner {
+        public static ForgeConfigSpec.DoubleValue SPEED_MULTIPLIER;
+        public static ForgeConfigSpec.DoubleValue STEP_HEIGHT;
+        public static ForgeConfigSpec.IntValue TIME_BEFORE_ACTIVATION;
+
+        private static void setupOutRunnerConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("out_runner");
+            SPEED_MULTIPLIER = builder.defineInRange("speed_multiplier", 1.25, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            STEP_HEIGHT = builder.defineInRange("step_height", 1.1, 0, Integer.MAX_VALUE);
+            TIME_BEFORE_ACTIVATION = builder.defineInRange("time_before_activation", 5, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+    }
+
     public static class RageGlove {
         public static ForgeConfigSpec.IntValue STACK_TIME;
         public static ForgeConfigSpec.DoubleValue MIN_DAMAGE_AMOUNT;
@@ -536,6 +550,7 @@ public class RelicsConfig {
         public static ForgeConfigSpec.DoubleValue MAGIC_MIRROR_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue MAGMA_WALKER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue MIDNIGHT_ROBE_GEN_CHANCE;
+        public static ForgeConfigSpec.DoubleValue OUT_RUNNER_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue RAGE_GLOVE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue REFLECTION_NECKLACE_GEN_CHANCE;
         public static ForgeConfigSpec.DoubleValue SCARAB_TALISMAN_GEN_CHANCE;
@@ -570,6 +585,7 @@ public class RelicsConfig {
             MAGIC_MIRROR_GEN_CHANCE = builder.defineInRange("magic_mirror_gen_chance", 0.15, 0, 1);
             MAGMA_WALKER_GEN_CHANCE = builder.defineInRange("magma_walker_gen_chance", 0.12, 0, 1);
             MIDNIGHT_ROBE_GEN_CHANCE = builder.defineInRange("midnight_robe_gen_chance", 0.15, 0, 1);
+            OUT_RUNNER_GEN_CHANCE = builder.defineInRange("out_runner_gen_chance", 0.05, 0, 1);
             RAGE_GLOVE_GEN_CHANCE = builder.defineInRange("rage_glove_gen_chance", 0.05, 0, 1);
             REFLECTION_NECKLACE_GEN_CHANCE = builder.defineInRange("reflection_necklace_gen_chance", 0.05, 0, 1);
             SCARAB_TALISMAN_GEN_CHANCE = builder.defineInRange("scarab_talisman_gen_chance", 0.14, 0, 1);
@@ -632,6 +648,7 @@ public class RelicsConfig {
         LuckyHorseshoe.setupLuckyHorseshoeConfig(builder);
         MagicMirror.setupMagicMirrorConfig(builder);
         MidnightRobe.setupMidnightRobeConfig(builder);
+        OutRunner.setupOutRunnerConfig(builder);
         RageGlove.setupRageGloveConfig(builder);
         ReflectionNecklace.setupReflectionNecklaceConfig(builder);
         ScarabTalisman.setupScarabTalismanConfig(builder);

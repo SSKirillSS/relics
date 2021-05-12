@@ -66,6 +66,9 @@
   "tooltip.relics.midnight_robe.shift_1": "Grants temporary invisibility and movement speed boost at night if wearer's health falls to a low level",
   "tooltip.relics.midnight_robe.shift_2": "Stealth attacks from invisibility will deal double damage, but temporarily remove invisibility and movement speed boost effects",
 
+  "item.relics.out_runner": "Out Runner",
+  "tooltip.relics.out_runner.shift_1": "Grants ability to gain a movement speed and step height boost after running for a certain distance continuously",
+
   "item.relics.scarab_talisman": "Scarab Talisman",
   "tooltip.relics.scarab_talisman.shift_1": "Increases movement speed and step height in desert and mesas",
   "tooltip.relics.scarab_talisman.shift_2": "Increases sand breaking speed, fully removes damage from suffocating in blocks and falling on sand",
