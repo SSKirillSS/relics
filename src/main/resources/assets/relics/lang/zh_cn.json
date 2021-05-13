@@ -30,6 +30,9 @@
   "item.relics.flaming_amber_dust": "燃烧琥珀粉",
   "item.relics.chalk": "粉笔",
 
+  "tooltip.relics.owner": "拥有者：%1$s",
+  "tooltip.relics.owner.unknown": "未知",
+  
   "item.relics.spatial_sign": "时空符号",
   "tooltip.relics.spatial_sign.tooltip_1": "存储位置：X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.spatial_sign.tooltip_2": "剩余：%1$s",
@@ -62,7 +65,10 @@
   "item.relics.midnight_robe": "午夜长袍",
   "tooltip.relics.midnight_robe.shift_1": "在夜晚穿戴者生命值较低时获得隐身和速度效果",
   "tooltip.relics.midnight_robe.shift_2": "潜行攻击会造成双倍伤害，但此时会暂时失去隐身和速度效果",
-
+  
+  "item.relics.out_runner": "领跑鞋",
+  "tooltip.relics.out_runner.shift_1": "连续奔跑一定距离后，增加移速和越过方块高度。",
+  
   "item.relics.scarab_talisman": "圣甲虫护符",
   "tooltip.relics.scarab_talisman.shift_1": "增加移速，在沙地上增加跳跃高度",
   "tooltip.relics.scarab_talisman.shift_2": "增加挖沙速度，免疫卡入方块造成的窒息伤害",
@@ -85,8 +91,6 @@
   "item.relics.enders_hand": "末影之手",
   "tooltip.relics.enders_hand.shift_1": "按·[Shift]时可交换玩家和其所视末影人所在位置",
   
-  "item.relics.jellyfish_necklace": "水母项链",
-  "tooltip.relics.jellyfish_necklace.shift_1": "缓慢充能的饰品，可对碰撞到的生物造成电属性伤害",
   "tooltip.relics.jellyfish_necklace.shift_2": "在水下回血速度加倍",
 
   "item.relics.fragrant_flower": "芳香花朵",
@@ -94,8 +98,11 @@
   "tooltip.relics.fragrant_flower.shift_1": "强制附近的蜜蜂与穿戴者并肩作战",
   "tooltip.relics.fragrant_flower.shift_2": "蜜蜂会为该遗物收集花蜜，按[Shift]可促进作物生长和治疗实体（或对亡灵生物造成伤害）",
 
-  "item.relics.holy_locket": "圣盒",
+  "item.relics.holy_locket": "神圣吊坠",
   "tooltip.relics.holy_locket.shift_1": "增加对亡灵生物造成的伤害并对使其燃烧",
+  
+  "item.relics.jellyfish_necklace": "水母项链",
+  "tooltip.relics.jellyfish_necklace.shift_1": "缓慢充能的饰品，可对碰撞到的生物造成电属性伤害",
   
   "item.relics.hunter_belt": "狩猎腰带",
   "tooltip.relics.hunter_belt.shift_1": "对动物造成双倍伤害，怪物掉落物加倍",
@@ -145,5 +152,6 @@
   "tooltip.relics.ice_breaker.shift_1": "当玩家按住[Shift]摔落时会产生冲击波。",
   "tooltip.relics.ice_breaker.shift_2": "增加击退距离，可在墙上滑行",
   
-  "block.relics.magma_stone": "岩浆石"
+  "block.relics.magma_stone": "岩浆石",
+  "block.relics.pedestal": "底座"
 }
