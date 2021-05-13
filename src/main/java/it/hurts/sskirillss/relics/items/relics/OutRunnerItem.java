@@ -53,18 +53,18 @@ public class OutRunnerItem extends RelicItem implements ICurioItem, IHasTooltip 
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (!(livingEntity instanceof PlayerEntity)) return;
         PlayerEntity player = (PlayerEntity) livingEntity;
-        if (player.isShiftKeyDown() || player.isInWater()) return;
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         int duration = NBTUtils.getInt(stack, TAG_RUN_DURATION, 0);
-        if (!player.isSprinting()) {
+        if (!player.isSprinting() || player.isShiftKeyDown() || player.isInWater()) {
             if (duration > 0) NBTUtils.setInt(stack, TAG_RUN_DURATION, 0);
             if (!movementSpeed.hasModifier(OUT_RUNNER_SPEED_BOOST)) return;
             movementSpeed.removeModifier(OUT_RUNNER_SPEED_BOOST);
             player.maxUpStep = 0.6F;
             return;
         }
-        if (duration < 5) if (player.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_RUN_DURATION, duration + 1);
-        else {
+        if (duration < 5) {
+            if (player.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_RUN_DURATION, duration + 1);
+        } else {
             player.getCommandSenderWorld().addParticle(ParticleTypes.CLOUD, player.getX(), player.getY() + 0.15F, player.getZ(), 0, 0.25F, 0);
             if (movementSpeed.hasModifier(OUT_RUNNER_SPEED_BOOST)) return;
             movementSpeed.addTransientModifier(OUT_RUNNER_SPEED_BOOST);
