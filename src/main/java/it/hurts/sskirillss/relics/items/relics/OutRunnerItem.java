@@ -62,7 +62,7 @@ public class OutRunnerItem extends RelicItem implements ICurioItem, IHasTooltip 
             player.maxUpStep = 0.6F;
             return;
         }
-        if (duration < 5) {
+        if (duration < RelicsConfig.OutRunner.TIME_BEFORE_ACTIVATION.get()) {
             if (player.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_RUN_DURATION, duration + 1);
         } else {
             player.getCommandSenderWorld().addParticle(ParticleTypes.CLOUD, player.getX(), player.getY() + 0.15F, player.getZ(), 0, 0.25F, 0);
