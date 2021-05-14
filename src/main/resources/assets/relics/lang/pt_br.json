@@ -30,6 +30,9 @@
   "item.relics.flaming_amber_dust": "Pó de Âmbar Flamejante",
   "item.relics.chalk": "Giz",
 
+  "tooltip.relics.owner": "Dono: %1$s",
+  "tooltip.relics.owner.unknown": "Desconhecido(a)",
+
   "item.relics.spatial_sign": "Selo Espacial",
   "tooltip.relics.spatial_sign.tooltip_1": "Posição: X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.spatial_sign.tooltip_2": "Tempo: %1$s",
@@ -63,9 +66,16 @@
   "tooltip.relics.midnight_robe.shift_1": "Concede invisibilidade e aumento da velocidade de movimento durante a noite, se a saúde do usuário estiver abaixo 20% da saúde máxima.",
   "tooltip.relics.midnight_robe.shift_2": "Ataque furtivo causa o dobro de dano, mas a invisibilidade será desativada temporariamente pelos próximos 5 segundos",
 
+  "item.relics.out_runner": "fugitivo",
+  "tooltip.relics.out_runner.shift_1": "Concede a capacidade de ganhar velocidade de movimento e aumentar a altura do passo depois de correr uma certa distância continuamente",
+
   "item.relics.scarab_talisman": "Talismã de Escaravelho",
   "tooltip.relics.scarab_talisman.shift_1": "Concede aumento da velocidade de movimento e a altura do passo enquanto estiver em biomas de deserto",
   "tooltip.relics.scarab_talisman.shift_2": "Concede aumento da velocidade de quebra de areia e remove totalmente os danos causados por sufocamento em blocos",
+
+  "item.relics.shadow_glaive": "Gladio Sombrio",
+  "tooltip.relics.shadow_glaive.shift_1": "Quando na mão secundaria, concede chance de sumonar um gládio, que salta entre redor mobs",
+  "tooltip.relics.shadow_glaive.shift_2": "O dano do gládio se baseia no dano causado antes de sumonalo e diminui após cada salto",
 
   "item.relics.stellar_catalyst": "Catalisador Estelar",
   "tooltip.relics.stellar_catalyst.shift_1": "Concede a chance de invocar uma estrela cadente ao ataca uma criatura",
@@ -83,7 +93,7 @@
 
   "item.relics.fragrant_flower": "Flor Perfumada",
   "tooltip.relics.fragrant_flower.tooltip_1": "Néctar: %1$s",
-  "tooltip.relics.fragrant_flower.shift_1": "Torna as abelhas amigáveis ​​e faz com que as elas a lutem ao lado do portador da relíquia",
+  "tooltip.relics.fragrant_flower.shift_1": "Torna as abelhas amigáveis e faz com que as elas a lutem ao lado do portador da relíquia",
   "tooltip.relics.fragrant_flower.shift_2": "As abelhas próximas coletarão néctar para esta relíquia, Presione [Shift] para liberar o néctar fazendo as plantações ao redor crescerem. O néctar cura entidades ao ser liberado e causa dano em mortos-vivos.",
 
   "item.relics.holy_locket": "Medalhão Sagrado",
@@ -129,6 +139,7 @@
 
   "item.relics.arrow_quiver": "Aljava",
   "tooltip.relics.arrow_quiver.shift_1": "Concede 20% de chance de atirar 3 flechas com o arco",
+  "tooltip.relics.arrow_quiver.shift_2": "Concede a capacidade de coletar flechas próximas enquanto se esgueira",
 
   "item.relics.lucky_horseshoe": "Ferradura da Sorte",
   "tooltip.relics.lucky_horseshoe.shift_1": "Concede 10% de chance, triplica o Saque e a Fortuna do jogador.",
@@ -141,5 +152,6 @@
   "tooltip.relics.ice_breaker.shift_1": "Causa uma onda de choque após o jogador cair no chão enquanto segura [Shift]. Concede capacidade de deslizar na parede",
   "tooltip.relics.ice_breaker.shift_2": "Aumenta a resistência ao repulção e concede a capacidade de deslizar na parede",
 
-  "block.relics.magma_stone": "Pedra de Magma"
+  "block.relics.magma_stone": "Pedra de Magma",
+  "block.relics.pedestal": "Pedestal"
 }
