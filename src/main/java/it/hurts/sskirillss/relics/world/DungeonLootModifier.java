@@ -102,8 +102,6 @@ public class DungeonLootModifier extends LootModifier {
                 generatedLoot.add(new ItemStack(ItemRegistry.ELYTRA_BOOSTER.get()));
             if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.SHADOW_GLAIVE_GEN_CHANCE.get())
                 generatedLoot.add(new ItemStack(ItemRegistry.SHADOW_GLAIVE.get()));
-            if (context.getRandom().nextFloat() <= RelicsConfig.RelicsWorldgen.OUT_RUNNER_GEN_CHANCE.get())
-                generatedLoot.add(new ItemStack(ItemRegistry.OUT_RUNNER.get()));
         }
 
         if (id.equals(LootTables.UNDERWATER_RUIN_BIG) || id.equals(LootTables.UNDERWATER_RUIN_SMALL)
