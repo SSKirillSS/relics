@@ -30,6 +30,19 @@
   "item.relics.flaming_amber_dust": "Пыль из пламенного янтаря",
   "item.relics.chalk": "Мел",
 
+  "item.relics.blank_rune": "Пустая руна",
+  "item.relics.rune_of_air": "Руна воздуха",
+  "item.relics.rune_of_earth": "Руна земли",
+  "item.relics.rune_of_explosion": "Руна взрыва",
+  "item.relics.rune_of_fire": "Руна огня",
+  "item.relics.rune_of_lightning": "Руна молнии",
+  "item.relics.rune_of_love": "Руна любви",
+  "item.relics.rune_of_luck": "Руна удачи",
+  "item.relics.rune_of_moon": "Руна Луны",
+  "item.relics.rune_of_redstone": "Руна редстоуна",
+  "item.relics.rune_of_sun": "Руна Солнца",
+  "item.relics.rune_of_water": "Руна воды",
+
   "tooltip.relics.owner": "Владелец: %1$s",
   "tooltip.relics.owner.unknown": "Неизвестен",
 

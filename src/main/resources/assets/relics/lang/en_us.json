@@ -30,6 +30,19 @@
   "item.relics.flaming_amber_dust": "Flaming Amber Dust",
   "item.relics.chalk": "Chalk",
 
+  "item.relics.blank_rune": "Blank Rune",
+  "item.relics.rune_of_air": "Rune of Air",
+  "item.relics.rune_of_earth": "Rune of Earth",
+  "item.relics.rune_of_explosion": "Rune of Explosion",
+  "item.relics.rune_of_fire": "Rune of Fire",
+  "item.relics.rune_of_lightning": "Rune of Lightning",
+  "item.relics.rune_of_love": "Rune of Love",
+  "item.relics.rune_of_luck": "Rune of Luck",
+  "item.relics.rune_of_moon": "Rune of Moon",
+  "item.relics.rune_of_redstone": "Rune of Redstone",
+  "item.relics.rune_of_sun": "Rune of Sun",
+  "item.relics.rune_of_water": "Rune of Water",
+
   "tooltip.relics.owner": "Owner: %1$s",
   "tooltip.relics.owner.unknown": "Unknown",
 

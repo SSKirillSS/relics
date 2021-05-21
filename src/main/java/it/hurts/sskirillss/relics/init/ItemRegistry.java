@@ -10,6 +10,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.awt.*;
+
 @Mod.EventBusSubscriber(modid = Reference.MODID)
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MODID);
@@ -24,6 +26,19 @@ public class ItemRegistry {
     public static final RegistryObject<Item> FLAMING_AMBER_GEODE = ITEMS.register("flaming_amber_geode", ItemBase::new);
     public static final RegistryObject<Item> FLAMING_AMBER_DUST = ITEMS.register("flaming_amber_dust", ItemBase::new);
     public static final RegistryObject<Item> CHRYSOLITE = ITEMS.register("chrysolite", ItemBase::new);
+
+    public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", ItemBase::new);
+    public static final RegistryObject<Item> RUNE_OF_AIR = ITEMS.register("rune_of_air", () -> new RuneItem(new Color(255, 255, 255)));
+    public static final RegistryObject<Item> RUNE_OF_EARTH = ITEMS.register("rune_of_earth", () -> new RuneItem(new Color(80, 255, 0)));
+    public static final RegistryObject<Item> RUNE_OF_WATER = ITEMS.register("rune_of_water", () -> new RuneItem(new Color(0, 255, 215)));
+    public static final RegistryObject<Item> RUNE_OF_FIRE = ITEMS.register("rune_of_fire", () -> new RuneItem(new Color(255, 0, 0)));
+    public static final RegistryObject<Item> RUNE_OF_LIGHTNING = ITEMS.register("rune_of_lightning", () -> new RuneItem(new Color(255, 245, 0)));
+    public static final RegistryObject<Item> RUNE_OF_LOVE = ITEMS.register("rune_of_love", () -> new RuneItem(new Color(255, 0, 240)));
+    public static final RegistryObject<Item> RUNE_OF_SUN = ITEMS.register("rune_of_sun", () -> new RuneItem(new Color(255, 212, 0)));
+    public static final RegistryObject<Item> RUNE_OF_MOON = ITEMS.register("rune_of_moon", () -> new RuneItem(new Color(110, 255, 233)));
+    public static final RegistryObject<Item> RUNE_OF_EXPLOSION = ITEMS.register("rune_of_explosion", () -> new RuneItem(new Color(55, 255, 0)));
+    public static final RegistryObject<Item> RUNE_OF_REDSTONE = ITEMS.register("rune_of_redstone", () -> new RuneItem(new Color(255, 0, 0)));
+    public static final RegistryObject<Item> RUNE_OF_LUCK = ITEMS.register("rune_of_luck", () -> new RuneItem(new Color(200, 255, 0)));
 
     public static final RegistryObject<Item> SPATIAL_SIGN = ITEMS.register("spatial_sign", SpatialSignItem::new);
     public static final RegistryObject<Item> CHALK = ITEMS.register("chalk", ChalkItem::new);
