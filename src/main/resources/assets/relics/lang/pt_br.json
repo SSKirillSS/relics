@@ -41,12 +41,7 @@
   "item.relics.rune_of_moon": "Rune lua",
   "item.relics.rune_of_redstone": "Runa redstone",
   "item.relics.rune_of_sun": "Runa sol",
-  "item.relics.rune_of_water": "Runa agua,
-  
-  "block.relics.pedestal": "Pedestal",
-  "block.relics.runic_altar": "Altar runas"
-  
-  
+  "item.relics.rune_of_water": "Runa agua",
   
   "tooltip.relics.owner": "Dono: %1$s",
   "tooltip.relics.owner.unknown": "Desconhecido(a)",
@@ -171,5 +166,6 @@
   "tooltip.relics.ice_breaker.shift_2": "Aumenta a resistência ao repulção e concede a capacidade de deslizar na parede",
 
   "block.relics.magma_stone": "Pedra de Magma",
-  "block.relics.pedestal": "Pedestal"
+  "block.relics.pedestal": "Pedestal",
+  "block.relics.runic_altar": "Altar runas"
 }
