@@ -166,5 +166,6 @@
   "tooltip.relics.ice_breaker.shift_2": "Увеличивает сопротивление отдаче и позволяет скользить по стенам",
 
   "block.relics.magma_stone": "Магмовый камень",
-  "block.relics.pedestal": "Пьедестал"
+  "block.relics.pedestal": "Пьедестал",
+  "block.relics.runic_altar": "Рунический алтарь"
 }

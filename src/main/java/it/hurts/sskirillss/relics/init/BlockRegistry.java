@@ -21,6 +21,7 @@ public class BlockRegistry {
     public static final RegistryObject<MagmaStoneBlock> MAGMA_STONE_BLOCK = BLOCKS.register("magma_stone", MagmaStoneBlock::new);
     public static final RegistryObject<ChalkBlock> CHALK_BLOCK = BLOCKS.register("chalk", ChalkBlock::new);
     public static final RegistryObject<PedestalBlock> PEDESTAL_BLOCK = BLOCKS.register("pedestal", PedestalBlock::new);
+    public static final RegistryObject<RunicAltarBlock> RUNIC_ALTAR_BLOCK = BLOCKS.register("runic_altar", RunicAltarBlock::new);
 
     public static void registerBlocks() {
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());

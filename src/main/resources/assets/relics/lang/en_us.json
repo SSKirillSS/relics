@@ -166,5 +166,6 @@
   "tooltip.relics.ice_breaker.shift_2": "Increases knockback resistance and grants wall slipping ability",
 
   "block.relics.magma_stone": "Magma Stone",
-  "block.relics.pedestal": "Pedestal"
+  "block.relics.pedestal": "Pedestal",
+  "block.relics.runic_altar": "Runic Altar"
 }
