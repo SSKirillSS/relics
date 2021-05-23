@@ -30,6 +30,21 @@
   "item.relics.flaming_amber_dust": "Pó de Âmbar Flamejante",
   "item.relics.chalk": "Giz",
 
+  "item.relics.blank_rune": "Runa em Branco",
+  "item.relics.rune_of_air": "Runa do Ar",
+  "item.relics.rune_of_earth": "Runa do terra",
+  "item.relics.rune_of_explosion": "Runa de Explosão",
+  "item.relics.rune_of_fire": "Runa do fogo",
+  "item.relics.rune_of_lightning": "Runa do Relâmpago",
+  "item.relics.rune_of_love": "Runa do amor",
+  "item.relics.rune_of_luck": "Runa da sorte",
+  "item.relics.rune_of_moon": "Rune da lua",
+  "item.relics.rune_of_redstone": "Runa da Redstone",
+  "item.relics.rune_of_sun": "Runa do sol",
+  "item.relics.rune_of_water": "Runa da agua,
+  
+  
+  
   "tooltip.relics.owner": "Dono: %1$s",
   "tooltip.relics.owner.unknown": "Desconhecido(a)",
 
