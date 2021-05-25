@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.tiles;
 
 import it.hurts.sskirillss.relics.init.TileRegistry;
+import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.particles.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.block.BlockState;
@@ -25,6 +26,7 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
     private ItemStack southStack = ItemStack.EMPTY;
     private ItemStack northStack = ItemStack.EMPTY;
     public int ticksExisted;
+    private int progress;
 
     public static final Direction[] runeDirections = {Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH};
 
@@ -73,17 +75,35 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
         return Arrays.stream(runeDirections).map(this::getStack).filter(stack -> !stack.isEmpty()).collect(Collectors.toList());
     }
 
+    public void addCraftingProgress(int progress) {
+        setCraftingProgress(this.progress + progress);
+    }
+
+    public void setCraftingProgress(int progress) {
+        this.progress = Math.min(100, progress);
+    }
+
+    public int getCraftingProgress() {
+        return progress;
+    }
+
     @Override
     public void tick() {
         if (level == null) return;
         ticksExisted++;
         Random random = level.getRandom();
         BlockPos pos = this.getBlockPos();
-        if (relicStack.isEmpty()) return;
+        if (relicStack.isEmpty() || getCraftingProgress() == 0) return;
         level.addParticle(new CircleTintData(relicStack.getRarity().color.getColor() != null ? new Color(relicStack.getRarity().color.getColor(),
                         false) : new Color(255, 255, 255), random.nextFloat() * 0.025F + 0.04F, 20, 0.94F, true),
                 pos.getX() + 0.5F + MathUtils.randomFloat(random) * 0.2F, pos.getY() + 0.85F,
                 pos.getZ() + 0.5F + MathUtils.randomFloat(random) * 0.2F, 0, random.nextFloat() * 0.05D, 0);
+        if (ticksExisted % 20 != 0 || getRunes().isEmpty()) return;
+        for (ItemStack stack : getRunes()) {
+            if (!(stack.getItem() instanceof RuneItem)) continue;
+            RuneItem rune = (RuneItem) stack.getItem();
+            rune.applyAbility(level, pos);
+        }
     }
 
     @Override
@@ -93,6 +113,7 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
         westStack = ItemStack.of((CompoundNBT) compound.get("westStack"));
         southStack = ItemStack.of((CompoundNBT) compound.get("southStack"));
         northStack = ItemStack.of((CompoundNBT) compound.get("northStack"));
+        progress = compound.getInt("progress");
         super.load(state, compound);
     }
 
@@ -123,6 +144,7 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
             northStack.save(compoundNBT);
             compound.put("northStack", compoundNBT);
         }
+        compound.putInt("progress", getCraftingProgress());
         return super.save(compound);
     }
 

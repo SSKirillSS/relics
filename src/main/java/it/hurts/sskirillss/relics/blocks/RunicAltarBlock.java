@@ -1,6 +1,10 @@
 package it.hurts.sskirillss.relics.blocks;
 
 import com.google.common.collect.ImmutableList;
+import it.hurts.sskirillss.relics.crafting.RunicAltarContext;
+import it.hurts.sskirillss.relics.crafting.RunicAltarRecipe;
+import it.hurts.sskirillss.relics.crafting.SingletonInventory;
+import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.tiles.RunicAltarTile;
@@ -23,7 +27,9 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class RunicAltarBlock extends Block {
     public RunicAltarBlock() {
@@ -42,22 +48,35 @@ public class RunicAltarBlock extends Block {
         if (altar == null) return ActionResultType.FAIL;
         Direction direction = hit.getDirection();
         if (direction == Direction.DOWN) return ActionResultType.FAIL;
-        ItemStack stack = altar.getStack(direction);
-        if (stack == null) return ActionResultType.FAIL;
-        if (stack.isEmpty()) {
-            ItemStack handStack = player.getItemInHand(handIn);
-            if (handStack.isEmpty()) return ActionResultType.FAIL;
-            if (direction == Direction.UP && !(handStack.getItem() instanceof RelicItem)) return ActionResultType.FAIL;
-            if (direction != Direction.UP && !(handStack.getItem() instanceof RuneItem)) return ActionResultType.FAIL;
-            altar.setStack(handStack.split(1), direction);
-        } else {
-            if (player.getMainHandItem().isEmpty()) player.setItemInHand(Hand.MAIN_HAND, stack);
-            else {
-                ItemEntity drop = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), altar.getStack(direction));
-                drop.setPickUpDelay(0);
-                world.addFreshEntity(drop);
+        ItemStack handStack = player.getItemInHand(handIn);
+        if (handStack.getItem() != ItemRegistry.BLANK_RUNE.get()) {
+            if (altar.getCraftingProgress() != 0) return ActionResultType.FAIL;
+            ItemStack stack = altar.getStack(direction);
+            if (stack == null) return ActionResultType.FAIL;
+            if (stack.isEmpty()) {
+                if (handStack.isEmpty()) return ActionResultType.FAIL;
+                if (direction == Direction.UP && !(handStack.getItem() instanceof RelicItem)) return ActionResultType.FAIL;
+                if (direction != Direction.UP && !(handStack.getItem() instanceof RuneItem)) return ActionResultType.FAIL;
+                altar.setStack(handStack.split(1), direction);
+            } else {
+                if (player.getMainHandItem().isEmpty()) player.setItemInHand(Hand.MAIN_HAND, stack);
+                else {
+                    ItemEntity drop = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), altar.getStack(direction));
+                    drop.setPickUpDelay(0);
+                    world.addFreshEntity(drop);
+                }
+                altar.setStack(ItemStack.EMPTY, direction);
             }
-            altar.setStack(ItemStack.EMPTY, direction);
+        } else {
+            Optional<RunicAltarRecipe> optional = world.getRecipeManager().getRecipeFor(RunicAltarRecipe.RECIPE, new RunicAltarContext(
+                    new SingletonInventory(altar.getStack(Direction.UP)), player, altar.getRunes(), altar.getStack(Direction.UP)), world);
+            if (!optional.isPresent()) return ActionResultType.FAIL;
+            RunicAltarRecipe recipe = optional.get();
+            altar.addCraftingProgress(5);
+            if (altar.getCraftingProgress() < 100) return ActionResultType.SUCCESS;
+            Arrays.stream(RunicAltarTile.runeDirections).map(altar::getStack).forEach(stack -> stack.shrink(1));
+            altar.setStack(recipe.getResultItem(), Direction.UP);
+            altar.setCraftingProgress(0);
         }
         return ActionResultType.SUCCESS;
     }
