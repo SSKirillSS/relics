@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.items.relics;
+package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.init.ItemRegistry;

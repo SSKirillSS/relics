@@ -46,22 +46,21 @@ public class RunicAltarRecipe implements IRecipe<RunicAltarContext> {
 
     @Override
     public boolean matches(RunicAltarContext context, World worldIn) {
-//        if (inputs.isEmpty()) return false;
-//        List<Ingredient> ingredients = new ArrayList<>(inputs);
-//        for (int i = 0; i < context.getInputs().size(); i++) {
-//            ItemStack input = context.getInputs().get(i);
-//            if (input.isEmpty()) break;
-//            int index = -1;
-//            for (int j = 0; j < ingredients.size(); j++) {
-//                if (!ingredients.get(j).test(input)) continue;
-//                index = j;
-//                break;
-//            }
-//            if (index != -1) ingredients.remove(index);
-//            else return false;
-//        }
-//        return ingredients.isEmpty();
-        return true;
+        if (inputs.isEmpty()) return false;
+        List<Ingredient> ingredients = new ArrayList<>(inputs);
+        for (int i = 0; i < context.getInputs().size(); i++) {
+            ItemStack input = context.getInputs().get(i);
+            if (input.isEmpty()) break;
+            int index = -1;
+            for (int j = 0; j < ingredients.size(); j++) {
+                if (!ingredients.get(j).test(input)) continue;
+                index = j;
+                break;
+            }
+            if (index != -1) ingredients.remove(index);
+            else return false;
+        }
+        return ingredients.isEmpty();
     }
 
     @Override
