@@ -79,6 +79,9 @@
   "tooltip.relics.midnight_robe.shift_1": "Grants temporary invisibility and movement speed boost at night if wearer's health falls to a low level",
   "tooltip.relics.midnight_robe.shift_2": "Stealth attacks from invisibility will deal double damage, but temporarily remove invisibility and movement speed boost effects",
 
+  "item.relics.old_boot": "Old Boot",
+  "tooltip.relics.old_boot.shift_1": "This boot seems old... By the way, it still can increase my movement speed",
+
   "item.relics.out_runner": "Out Runner",
   "tooltip.relics.out_runner.shift_1": "Grants ability to gain a movement speed and step height boost after running for a certain distance continuously",
 

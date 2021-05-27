@@ -2,10 +2,8 @@ package it.hurts.sskirillss.relics.init;
 
 import it.hurts.sskirillss.relics.items.*;
 import it.hurts.sskirillss.relics.items.relics.*;
-import it.hurts.sskirillss.relics.items.runes.AirRuneItem;
-import it.hurts.sskirillss.relics.items.runes.EarthRuneItem;
-import it.hurts.sskirillss.relics.items.runes.FireRuneItem;
-import it.hurts.sskirillss.relics.items.runes.WaterRuneItem;
+import it.hurts.sskirillss.relics.items.relics.boots.*;
+import it.hurts.sskirillss.relics.items.runes.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
@@ -75,6 +73,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> SPORE_SACK = ITEMS.register("spore_sack", SporeSackItem::new);
     public static final RegistryObject<Item> SHADOW_GLAIVE = ITEMS.register("shadow_glaive", ShadowGlaiveItem::new);
     public static final RegistryObject<Item> OUT_RUNNER = ITEMS.register("out_runner", OutRunnerItem::new);
+
+    public static final RegistryObject<Item> OLD_BOOT = ITEMS.register("old_boot", OldBootItem::new);
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());

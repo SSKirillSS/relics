@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "relics:old_boot",
     "relics:magma_walker",
     "relics:ice_skates",
     "relics:ice_breaker",
