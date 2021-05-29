@@ -36,6 +36,8 @@ public class RelicItem extends Item {
                 entityIn.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC,
                         RelicsConfig.RelicsGeneral.DAMAGE_NON_RELIC_OWNER_AMOUNT.get().floatValue());
         }
+        if (RelicUtils.Rarity.getRarity(stack) == -1)
+            RelicUtils.Rarity.setRarity(stack, RelicUtils.Rarity.calculateRandomRarity(worldIn.getRandom()));
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
@@ -45,6 +47,9 @@ public class RelicItem extends Item {
         PlayerEntity owner = RelicUtils.Owner.getOwner(stack, worldIn);
         if (RelicsConfig.RelicsGeneral.STORE_RELIC_OWNER.get()) tooltip.add(new TranslationTextComponent("tooltip.relics.owner",
                 owner != null ? owner.getDisplayName() : new TranslationTextComponent("tooltip.relics.owner.unknown")));
+        int rarity = RelicUtils.Rarity.getRarity(stack);
+        tooltip.add(new TranslationTextComponent("tooltip.relics.rarity",
+                rarity != -1 ? rarity : new TranslationTextComponent("tooltip.relics.rarity.unknown")));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 }

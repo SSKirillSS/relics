@@ -46,6 +46,9 @@
   "tooltip.relics.owner": "Owner: %1$s",
   "tooltip.relics.owner.unknown": "Unknown",
 
+  "tooltip.relics.rarity": "Rarity: %1$s",
+  "tooltip.relics.rarity.unknown": "Unknown",
+
   "item.relics.spatial_sign": "Spatial Sign",
   "tooltip.relics.spatial_sign.tooltip_1": "Stored destination: X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.spatial_sign.tooltip_2": "Time left: %1$s",

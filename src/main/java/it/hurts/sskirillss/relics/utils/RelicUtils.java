@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 import java.util.UUID;
 
 public class RelicUtils {
@@ -25,6 +26,22 @@ public class RelicUtils {
 
         public static void setOwnerUUID(ItemStack stack, UUID uuid) {
             NBTUtils.setString(stack, TAG_OWNER, uuid.toString());
+        }
+    }
+
+    public static class Rarity {
+        private static final String TAG_RARITY = "rarity";
+
+        public static int getRarity(ItemStack stack) {
+            return NBTUtils.getInt(stack, TAG_RARITY, -1);
+        }
+
+        public static void setRarity(ItemStack stack, int rarity) {
+            NBTUtils.setInt(stack, TAG_RARITY, rarity);
+        }
+
+        public static int calculateRandomRarity(Random random) {
+            return random.nextInt(5);
         }
     }
 }
