@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.particles;
+package it.hurts.sskirillss.relics.particles.spark;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -14,22 +14,15 @@ import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.Locale;
 
-
-import net.minecraft.particles.IParticleData.IDeserializer;
-
-public class CircleTintData implements IParticleData {
+public class SparkTintData implements IParticleData {
     private final Color tint;
     private final float diameter;
     private final int lifeTime;
-    private final float resizeSpeed;
-    private final boolean shouldCollide;
 
-    public CircleTintData(Color tint, float diameter, int lifeTime, float resizeSpeed, boolean shouldCollide) {
+    public SparkTintData(Color tint, float diameter, int lifeTime) {
         this.tint = tint;
         this.lifeTime = lifeTime;
         this.diameter = validateDiameter(diameter);
-        this.resizeSpeed = resizeSpeed;
-        this.shouldCollide = shouldCollide;
     }
 
     public Color getTint() {
@@ -44,18 +37,10 @@ public class CircleTintData implements IParticleData {
         return diameter;
     }
 
-    public float getResizeSpeed() {
-        return resizeSpeed;
-    }
-
-    public boolean shouldCollide() {
-        return shouldCollide;
-    }
-
     @Nonnull
     @Override
-    public ParticleType<CircleTintData> getType() {
-        return ParticleRegistry.CIRCLE_TINT;
+    public ParticleType<SparkTintData> getType() {
+        return ParticleRegistry.SPARK_TINT;
     }
 
     @Override
@@ -65,44 +50,38 @@ public class CircleTintData implements IParticleData {
         buf.writeInt(tint.getBlue());
         buf.writeFloat(diameter);
         buf.writeInt(lifeTime);
-        buf.writeFloat(resizeSpeed);
-        buf.writeBoolean(shouldCollide);
     }
 
     @Nonnull
     @Override
     public String writeToString() {
-        return String.format(Locale.ROOT, "%s %i %i %i %.2f %i %f %b",
-                this.getType().getRegistryName(), tint.getRed(), tint.getGreen(), tint.getBlue(), diameter, lifeTime, resizeSpeed, shouldCollide);
+        return String.format(Locale.ROOT, "%s %i %i %i %.2f %i",
+                this.getType().getRegistryName(), tint.getRed(), tint.getGreen(), tint.getBlue(), diameter, lifeTime);
     }
 
     private static float validateDiameter(float diameter) {
         return (float) MathHelper.clamp(diameter, 0.05, 5.0);
     }
 
-    public static final Codec<CircleTintData> CODEC = RecordCodecBuilder.create(
+    public static final Codec<SparkTintData> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     Codec.INT.fieldOf("tint").forGetter(d -> d.tint.getRGB()),
                     Codec.FLOAT.fieldOf("diameter").forGetter(d -> d.diameter),
-                    Codec.INT.fieldOf("life_time").forGetter(d -> d.lifeTime),
-                    Codec.FLOAT.fieldOf("resize_speed").forGetter(d -> d.resizeSpeed),
-                    Codec.BOOL.fieldOf("should_collide").forGetter(d -> d.shouldCollide)
-            ).apply(instance, CircleTintData::new)
+                    Codec.INT.fieldOf("life_time").forGetter(d -> d.lifeTime)
+            ).apply(instance, SparkTintData::new)
     );
 
-    private CircleTintData(int tintRGB, float diameter, int lifeTime, float resizeSpeed, boolean shouldCollide) {
+    private SparkTintData(int tintRGB, float diameter, int lifeTime) {
         this.tint = new Color(tintRGB);
         this.lifeTime = lifeTime;
         this.diameter = validateDiameter(diameter);
-        this.resizeSpeed = resizeSpeed;
-        this.shouldCollide = shouldCollide;
 
     }
 
-    public static final IDeserializer<CircleTintData> DESERIALIZER = new IDeserializer<CircleTintData>() {
+    public static final IDeserializer<SparkTintData> DESERIALIZER = new IDeserializer<SparkTintData>() {
         @Nonnull
         @Override
-        public CircleTintData fromCommand(@Nonnull ParticleType<CircleTintData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
+        public SparkTintData fromCommand(@Nonnull ParticleType<SparkTintData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             int red = MathHelper.clamp(reader.readInt(), 0, 255);
             reader.expect(' ');
@@ -116,17 +95,11 @@ public class CircleTintData implements IParticleData {
             reader.expect(' ');
             int lifeTime = reader.readInt();
 
-            reader.expect(' ');
-            float resizeSpeed = reader.readFloat();
-
-            reader.expect(' ');
-            boolean shouldCollide = reader.readBoolean();
-
-            return new CircleTintData(new Color(red, green, blue), diameter, lifeTime, resizeSpeed, shouldCollide);
+            return new SparkTintData(new Color(red, green, blue), diameter, lifeTime);
         }
 
         @Override
-        public CircleTintData fromNetwork(@Nonnull ParticleType<CircleTintData> type, PacketBuffer buf) {
+        public SparkTintData fromNetwork(@Nonnull ParticleType<SparkTintData> type, PacketBuffer buf) {
             int red = MathHelper.clamp(buf.readInt(), 0, 255);
             int green = MathHelper.clamp(buf.readInt(), 0, 255);
             int blue = MathHelper.clamp(buf.readInt(), 0, 255);
@@ -136,11 +109,7 @@ public class CircleTintData implements IParticleData {
 
             int lifeTime = buf.readInt();
 
-            float resizeSpeed = buf.readFloat();
-
-            boolean shouldCollide = buf.readBoolean();
-
-            return new CircleTintData(color, diameter, lifeTime, resizeSpeed, shouldCollide);
+            return new SparkTintData(color, diameter, lifeTime);
         }
     };
 }

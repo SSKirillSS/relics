@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.particles;
+package it.hurts.sskirillss.relics.particles.circle;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.client.particle.IAnimatedSprite;

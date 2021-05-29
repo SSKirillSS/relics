@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.particles.CircleTintData;
-import it.hurts.sskirillss.relics.particles.CircleTintFactory;
+import it.hurts.sskirillss.relics.particles.circle.*;
+import it.hurts.sskirillss.relics.particles.spark.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleType;
@@ -13,12 +13,14 @@ import net.minecraftforge.fml.common.Mod;
 
 public class ParticleRegistry {
     public static ParticleType<CircleTintData> CIRCLE_TINT;
+    public static ParticleType<SparkTintData> SPARK_TINT;
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientParticleRegistry {
         @SubscribeEvent
         public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
             Minecraft.getInstance().particleEngine.register(CIRCLE_TINT, CircleTintFactory::new);
+            Minecraft.getInstance().particleEngine.register(SPARK_TINT, SparkTintFactory::new);
         }
     }
 
@@ -29,6 +31,10 @@ public class ParticleRegistry {
             CIRCLE_TINT = new CircleTintFactory.CircleTintType();
             CIRCLE_TINT.setRegistryName(Reference.MODID + ":" + "circle_tint");
             event.getRegistry().register(CIRCLE_TINT);
+
+            SPARK_TINT = new SparkTintFactory.SparkTintType();
+            SPARK_TINT.setRegistryName(Reference.MODID + ":" + "spark_tint");
+            event.getRegistry().register(SPARK_TINT);
         }
     }
 }

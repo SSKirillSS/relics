@@ -3,8 +3,9 @@ package it.hurts.sskirillss.relics.entities;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
-import it.hurts.sskirillss.relics.particles.CircleTintData;
+import it.hurts.sskirillss.relics.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.entity.EntityType;
@@ -64,9 +65,9 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
         super.tick();
 
-        CircleTintData circleTintData = new CircleTintData(
-                new Color(0.5F, 0.05F, 0.7F), 0.1F, 40, 0.95F, false);
-        level.addParticle(circleTintData, this.xo, this.yo, this.zo, 0.0D, 0.0D, 0.0D);
+        for (int i = 0; i < 3; i++)
+            level.addParticle(new SparkTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(100)), 0.2F, 30),
+                    this.xo, this.yo, this.zo, MathUtils.randomFloat(random) * 0.01F, 0, MathUtils.randomFloat(random) * 0.01F);
 
         if (!level.isClientSide()) {
             if (this.tickCount % 20 == 0) {
@@ -128,7 +129,13 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                                     -1.91 * this.getDeltaMovement().dot(normalVector),
                                     -1.91 * this.getDeltaMovement().dot(normalVector))
                                     .add(this.getDeltaMovement()));
-                            if (time > 5) {
+                            for (int i = 0; i < 20; i++)
+                                level.addParticle(new SparkTintData(new Color(255, 255 - random.nextInt(50), 0), 0.15F,
+                                                random.nextInt(7) + 1), this.getX() + MathUtils.randomFloat(random) * 0.25F,
+                                        this.getY() + 0.1F, this.getZ() + MathUtils.randomFloat(random) * 0.25F,
+                                        this.getDeltaMovement().x * 1.25F + MathUtils.randomFloat(random) * 0.35F, this.getDeltaMovement().y,
+                                        this.getDeltaMovement().z * 1.25F + MathUtils.randomFloat(random) * 0.35F);
+                            if (time > 3) {
                                 level.playSound(null, getX(), getY(), getZ(), SoundRegistry.RICOCHET, SoundCategory.MASTER,
                                         0.5F, 0.75F + (random.nextFloat() * 0.5F));
                                 time = 0;

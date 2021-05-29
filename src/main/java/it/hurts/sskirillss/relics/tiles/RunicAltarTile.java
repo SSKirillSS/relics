@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.tiles;
 
 import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
-import it.hurts.sskirillss.relics.particles.CircleTintData;
+import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
