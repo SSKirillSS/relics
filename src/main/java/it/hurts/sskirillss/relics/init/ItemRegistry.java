@@ -41,6 +41,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> RUNE_OF_EXPLOSION = ITEMS.register("rune_of_explosion", () -> new RuneItem(new Color(55, 255, 0)));
     public static final RegistryObject<Item> RUNE_OF_REDSTONE = ITEMS.register("rune_of_redstone", () -> new RuneItem(new Color(255, 0, 0)));
     public static final RegistryObject<Item> RUNE_OF_LUCK = ITEMS.register("rune_of_luck", () -> new RuneItem(new Color(200, 255, 0)));
+    public static final RegistryObject<Item> RUNE_OF_COLD = ITEMS.register("rune_of_cold", () -> new RuneItem(new Color(0, 125, 255)));
 
     public static final RegistryObject<Item> SPATIAL_SIGN = ITEMS.register("spatial_sign", SpatialSignItem::new);
     public static final RegistryObject<Item> CHALK = ITEMS.register("chalk", ChalkItem::new);

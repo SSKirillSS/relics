@@ -5,9 +5,9 @@
   },
   "ingredients": [
     { "item": "relics:rune_of_earth" },
-    { "item": "relics:rune_of_water" },
+    { "item": "relics:rune_of_cold" },
     { "item": "relics:rune_of_earth" },
-    { "item": "relics:rune_of_water" }
+    { "item": "relics:rune_of_cold" }
   ],
   "result": {
     "item": "relics:ice_breaker"

@@ -42,6 +42,7 @@
   "item.relics.rune_of_redstone": "Руна редстоуна",
   "item.relics.rune_of_sun": "Руна Солнца",
   "item.relics.rune_of_water": "Руна воды",
+  "item.relics.rune_of_cold": "Руна холода",
 
   "tooltip.relics.owner": "Владелец: %1$s",
   "tooltip.relics.owner.unknown": "Неизвестен",

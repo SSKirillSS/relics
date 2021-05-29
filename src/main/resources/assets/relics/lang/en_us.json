@@ -42,6 +42,7 @@
   "item.relics.rune_of_redstone": "Rune of Redstone",
   "item.relics.rune_of_sun": "Rune of Sun",
   "item.relics.rune_of_water": "Rune of Water",
+  "item.relics.rune_of_cold": "Rune of Cold",
 
   "tooltip.relics.owner": "Owner: %1$s",
   "tooltip.relics.owner.unknown": "Unknown",
