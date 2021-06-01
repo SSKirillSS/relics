@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics;
 
+import it.hurts.sskirillss.relics.configs.JSONManager;
 import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -56,5 +57,6 @@ public class Relics {
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         NetworkHandler.registerMessages();
+        JSONManager.setupLevelingConfig();
     }
 }

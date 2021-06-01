@@ -10,8 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,8 +35,6 @@ public class RelicItem extends Item {
                 entityIn.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC,
                         RelicsConfig.RelicsGeneral.DAMAGE_NON_RELIC_OWNER_AMOUNT.get().floatValue());
         }
-        if (RelicUtils.Rarity.getRarity(stack) == -1)
-            RelicUtils.Rarity.setRarity(stack, RelicUtils.Rarity.calculateRandomRarity(worldIn.getRandom()));
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
@@ -47,9 +44,36 @@ public class RelicItem extends Item {
         PlayerEntity owner = RelicUtils.Owner.getOwner(stack, worldIn);
         if (RelicsConfig.RelicsGeneral.STORE_RELIC_OWNER.get()) tooltip.add(new TranslationTextComponent("tooltip.relics.owner",
                 owner != null ? owner.getDisplayName() : new TranslationTextComponent("tooltip.relics.owner.unknown")));
-        int rarity = RelicUtils.Rarity.getRarity(stack);
-        tooltip.add(new TranslationTextComponent("tooltip.relics.rarity",
-                rarity != -1 ? rarity : new TranslationTextComponent("tooltip.relics.rarity.unknown")));
+
+        int level = RelicUtils.Level.getLevel(stack);
+        int prevExp = RelicUtils.Level.getTotalExperienceForLevel(stack, Math.max(level, level - 1));
+        tooltip.add(new TranslationTextComponent("tooltip.relics.level", level, RelicUtils.Level.getExperience(stack) - prevExp,
+                RelicUtils.Level.getTotalExperienceForLevel(stack, level + 1) - prevExp));
+        float percentage = (RelicUtils.Level.getExperience(stack) - prevExp) * 1.0F / (RelicUtils.Level.getTotalExperienceForLevel(stack,
+                RelicUtils.Level.getLevel(stack) + 1) - prevExp) * 100;
+        StringBuilder string = new StringBuilder(RelicsConfig.RelicsGeneral.LEVELING_BAR_STYLE.get());
+        int offset = (int) Math.min(100, Math.floor(string.length() * percentage / 100));
+        Color color = Color.parseColor(percentage > 33.3 ? percentage > 66.6 ? RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_HIGH.get()
+                : RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_MEDIUM.get() : RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_LOW.get());
+        StringTextComponent component = new StringTextComponent("");
+        component.append(new StringTextComponent(string.substring(0, offset)).setStyle(Style.EMPTY.withColor(color)));
+        component.append(new StringTextComponent(string.substring(offset, string.length())).setStyle(Style.EMPTY
+                .withColor(Color.parseColor(RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_NEUTRAL.get()))));
+        component.append(new StringTextComponent(" " + Math.round(percentage * 10.0F) / 10.0F + "%").setStyle(Style.EMPTY.withColor(color)));
+        tooltip.add(component);
+
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    }
+
+    public int getMaxLevel() {
+        return 10;
+    }
+
+    public int getInitialExp() {
+        return 100;
+    }
+
+    public int getExpRatio() {
+        return 250;
     }
 }

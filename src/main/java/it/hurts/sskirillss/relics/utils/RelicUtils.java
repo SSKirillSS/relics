@@ -1,11 +1,14 @@
 package it.hurts.sskirillss.relics.utils;
 
+import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
+import it.hurts.sskirillss.relics.items.RelicItem;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.Random;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class RelicUtils {
@@ -29,19 +32,86 @@ public class RelicUtils {
         }
     }
 
-    public static class Rarity {
-        private static final String TAG_RARITY = "rarity";
+    public static class Level {
+        public static HashMap<RelicItem, RelicLevel> LEVEL = new HashMap<RelicItem, RelicLevel>();
 
-        public static int getRarity(ItemStack stack) {
-            return NBTUtils.getInt(stack, TAG_RARITY, -1);
+        private static final String TAG_LEVEL = "level";
+        private static final String TAG_EXPERIENCE = "experience";
+
+        public static int getLevel(ItemStack stack) {
+            if (!(stack.getItem() instanceof RelicItem)) return 0;
+            return NBTUtils.getInt(stack, TAG_LEVEL, 0);
         }
 
-        public static void setRarity(ItemStack stack, int rarity) {
-            NBTUtils.setInt(stack, TAG_RARITY, rarity);
+        public static int getLevelFromExperience(ItemStack stack, int experience) {
+            if (!(stack.getItem() instanceof RelicItem)) return 0;
+            RelicLevel relicLevel = getRelicLevel(stack.getItem());
+            int min = 0;
+            int max = relicLevel.getMaxLevel();
+            while (min <= max) {
+                int mid = (min + max) / 2;
+                int exp = getTotalExperienceForLevel(stack, mid);
+                if (exp > experience) max = mid - 1;
+                else min = mid + 1;
+            }
+            return max;
         }
 
-        public static int calculateRandomRarity(Random random) {
-            return random.nextInt(5);
+        public static void setLevel(ItemStack stack, int level) {
+            if (!(stack.getItem() instanceof RelicItem)) return;
+            setExperience(stack, getTotalExperienceForLevel(stack, level));
+        }
+
+        public static void addLevel(ItemStack stack, int level) {
+            if (!(stack.getItem() instanceof RelicItem)) return;
+            setLevel(stack, getLevel(stack) + level);
+        }
+
+        public static void takeLevel(ItemStack stack, int level) {
+            if (!(stack.getItem() instanceof RelicItem)) return;
+            setLevel(stack, getLevel(stack) - level);
+        }
+
+        public static int getExperience(ItemStack stack) {
+            if (!(stack.getItem() instanceof RelicItem)) return 0;
+            return NBTUtils.getInt(stack, TAG_EXPERIENCE, 0);
+        }
+
+        public static int getExperienceForLevel(ItemStack stack, int level) {
+            if (!(stack.getItem() instanceof RelicItem)) return 0;
+            return getTotalExperienceForLevel(stack, level + 1) - getTotalExperienceForLevel(stack, level);
+        }
+
+        public static int getTotalExperienceForLevel(ItemStack stack, int level) {
+            if (!(stack.getItem() instanceof RelicItem)) return 0;
+            return getTotalExperienceForLevel(getRelicLevel(stack.getItem()), level);
+        }
+
+        public static int getTotalExperienceForLevel(RelicLevel relicLevel, int level) {
+            return (2 * relicLevel.getInitialExp() + relicLevel.getExpRatio() * (level - 1)) * level / 2;
+        }
+
+        public static void setExperience(ItemStack stack, int experience) {
+            if (!(stack.getItem() instanceof RelicItem)) return;
+            RelicLevel relicLevel = getRelicLevel(stack.getItem());
+            experience = Math.max(0, Math.min(relicLevel.getMaxExperience(), experience));
+            NBTUtils.setInt(stack, TAG_LEVEL, Math.max(0, Math.min(relicLevel.getMaxLevel(), getLevelFromExperience(stack, experience))));
+            NBTUtils.setInt(stack, TAG_EXPERIENCE, experience);
+        }
+
+        public static void addExperience(ItemStack stack, int experience) {
+            if (!(stack.getItem() instanceof RelicItem)) return;
+            setExperience(stack, getExperience(stack) + experience);
+        }
+
+        public static void takeExperience(ItemStack stack, int experience) {
+            if (!(stack.getItem() instanceof RelicItem)) return;
+            setExperience(stack, getExperience(stack) - experience);
+        }
+
+        protected static RelicLevel getRelicLevel(Item item) {
+            if (!(item instanceof RelicItem)) return null;
+            return LEVEL.get(item);
         }
     }
 }
