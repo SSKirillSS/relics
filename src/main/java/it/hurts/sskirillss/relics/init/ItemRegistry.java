@@ -74,6 +74,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> SPORE_SACK = ITEMS.register("spore_sack", SporeSackItem::new);
     public static final RegistryObject<Item> SHADOW_GLAIVE = ITEMS.register("shadow_glaive", ShadowGlaiveItem::new);
     public static final RegistryObject<Item> OUT_RUNNER = ITEMS.register("out_runner", OutRunnerItem::new);
+    public static final RegistryObject<Item> AMPHIBIAN_BOOT = ITEMS.register("amphibian_boot", AmphibianBootItem::new);
 
     public static final RegistryObject<Item> OLD_BOOT = ITEMS.register("old_boot", OldBootItem::new);
 
