@@ -11,6 +11,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -68,6 +69,11 @@ public class CamouflageRingItem extends RelicItem implements ICurioItem, IHasToo
                 NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, true);
             }
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.CAVE;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

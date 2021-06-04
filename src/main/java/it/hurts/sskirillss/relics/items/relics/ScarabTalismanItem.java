@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -83,6 +84,11 @@ public class ScarabTalismanItem extends RelicItem implements ICurioItem, IHasToo
             movementSpeed.removeModifier(SCARAB_TALISMAN_SPEED_BOOST);
             livingEntity.maxUpStep = 0.6F;
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.DESERT;
     }
 
     @Override

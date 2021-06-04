@@ -12,6 +12,7 @@ import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -82,6 +83,11 @@ public class EndersHandItem extends RelicItem implements ICurioItem, IHasTooltip
                 }
             }
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.CAVE;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)

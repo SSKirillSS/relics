@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items;
 
+import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -10,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -75,5 +77,13 @@ public class RelicItem extends Item {
 
     public int getExpRatio() {
         return 250;
+    }
+
+    public float getWorldgenChance() {
+        return 0.2F;
+    }
+
+    public List<ResourceLocation> getLootChests() {
+        return Lists.newArrayList();
     }
 }

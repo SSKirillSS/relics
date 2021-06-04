@@ -6,6 +6,7 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -15,6 +16,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -62,6 +64,11 @@ public class DrownedBeltItem extends RelicItem implements ICurioItem, IHasToolti
         Multimap<Attribute, AttributeModifier> result = ICurioItem.super.getAttributeModifiers(identifier, stack);
         result.put(ForgeMod.SWIM_SPEED.get(), DROWNED_BELT_SWIM_SPEED);
         return result;
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.AQUATIC;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

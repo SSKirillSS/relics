@@ -13,6 +13,7 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -87,6 +88,11 @@ public class MidnightRobeItem extends RelicItem implements ICurioItem, IHasToolt
             movementSpeed.removeModifier(MIDNIGHT_ROBE_SPEED_BOOST);
             livingEntity.setInvisible(false);
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.CAVE;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

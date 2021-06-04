@@ -17,10 +17,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BoneMealItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.TickRangeConverter;
+import net.minecraft.loot.LootTables;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -35,6 +33,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.List;
 
 public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasTooltip {
@@ -155,6 +154,11 @@ public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasToo
                 if (time > 0) NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
             }
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return Collections.singletonList(LootTables.JUNGLE_TEMPLE);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

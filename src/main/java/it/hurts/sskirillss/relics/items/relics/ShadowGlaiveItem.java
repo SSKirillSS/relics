@@ -13,6 +13,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.loot.LootTables;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -21,6 +23,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ShadowGlaiveItem extends RelicItem implements IHasTooltip {
@@ -40,6 +43,11 @@ public class ShadowGlaiveItem extends RelicItem implements IHasTooltip {
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return Collections.singletonList(LootTables.END_CITY_TREASURE);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

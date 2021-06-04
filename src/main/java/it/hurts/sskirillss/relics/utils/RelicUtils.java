@@ -1,14 +1,19 @@
 package it.hurts.sskirillss.relics.utils;
 
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
+import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootTables;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class RelicUtils {
@@ -113,5 +118,42 @@ public class RelicUtils {
             if (!(item instanceof RelicItem)) return null;
             return LEVEL.get(item);
         }
+    }
+
+    public static class Worldgen {
+        public static HashMap<RelicItem, RelicLoot> LOOT = new HashMap<RelicItem, RelicLoot>();
+
+        public static final List<ResourceLocation> AQUATIC = Arrays.asList(
+                LootTables.UNDERWATER_RUIN_BIG,
+                LootTables.UNDERWATER_RUIN_SMALL,
+                LootTables.SHIPWRECK_TREASURE
+        );
+
+        public static final List<ResourceLocation> NETHER = Arrays.asList(
+                LootTables.NETHER_BRIDGE,
+                LootTables.BASTION_BRIDGE,
+                LootTables.BASTION_OTHER,
+                LootTables.BASTION_TREASURE,
+                LootTables.BASTION_HOGLIN_STABLE,
+                LootTables.RUINED_PORTAL
+        );
+
+        public static final List<ResourceLocation> COLD = Arrays.asList(
+                LootTables.IGLOO_CHEST,
+                LootTables.VILLAGE_SNOWY_HOUSE,
+                LootTables.VILLAGE_TAIGA_HOUSE
+        );
+
+        public static final List<ResourceLocation> DESERT = Arrays.asList(
+                LootTables.DESERT_PYRAMID,
+                LootTables.VILLAGE_DESERT_HOUSE
+        );
+
+        public static final List<ResourceLocation> CAVE = Arrays.asList(
+                LootTables.STRONGHOLD_CORRIDOR,
+                LootTables.STRONGHOLD_CROSSING,
+                LootTables.STRONGHOLD_LIBRARY,
+                LootTables.ABANDONED_MINESHAFT
+        );
     }
 }

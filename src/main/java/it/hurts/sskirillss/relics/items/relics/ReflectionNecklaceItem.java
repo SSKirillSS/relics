@@ -86,6 +86,11 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
         }
     }
 
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.NETHER;
+    }
+
     public static final ModelResourceLocation RL = new ModelResourceLocation(new ResourceLocation(Reference.MODID, "rn_shield"), "inventory");
     private static final Direction[] DIR = ArrayUtils.add(Direction.values(), null);
 

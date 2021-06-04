@@ -6,6 +6,7 @@ import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -13,6 +14,7 @@ import net.minecraft.entity.monster.piglin.PiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -46,6 +48,11 @@ public class BastionRingItem extends RelicItem implements ICurioItem, IHasToolti
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.addAll(TooltipUtils.applyTooltip(stack));
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.NETHER;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

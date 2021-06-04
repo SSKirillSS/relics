@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -12,6 +13,7 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -63,5 +65,15 @@ public class AmphibianBootItem extends RelicItem implements ICurioItem, IHasTool
         ModifiableAttributeInstance swimSpeed = slotContext.getWearer().getAttribute(ForgeMod.SWIM_SPEED.get());
         if (!swimSpeed.hasModifier(AMPHIBIAN_BOOT_SWIM_SPEED)) return;
         swimSpeed.removeModifier(AMPHIBIAN_BOOT_SWIM_SPEED);
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.AQUATIC;
+    }
+
+    @Override
+    public float getWorldgenChance() {
+        return super.getWorldgenChance();
     }
 }

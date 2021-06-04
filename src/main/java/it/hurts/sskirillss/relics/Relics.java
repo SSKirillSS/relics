@@ -57,6 +57,6 @@ public class Relics {
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         NetworkHandler.registerMessages();
-        JSONManager.setupLevelingConfig();
+        JSONManager.setupJSONConfig();
     }
 }

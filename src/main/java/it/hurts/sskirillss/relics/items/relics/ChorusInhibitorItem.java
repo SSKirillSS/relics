@@ -12,6 +12,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.Rarity;
+import net.minecraft.loot.LootTables;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
@@ -27,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ChorusInhibitorItem extends RelicItem implements ICurioItem, IHasTooltip {
@@ -75,6 +78,11 @@ public class ChorusInhibitorItem extends RelicItem implements ICurioItem, IHasTo
             NBTUtils.setString(stack, TAG_WORLD, "");
             NBTUtils.setInt(stack, TAG_TIME, 0);
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return Collections.singletonList(LootTables.END_CITY_TREASURE);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

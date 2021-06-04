@@ -103,6 +103,11 @@ public class SpatialSignItem extends RelicItem implements IHasTooltip {
         NBTUtils.setInt(stack, TAG_TIME, -1);
     }
 
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.CAVE;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class SpatialSignServerEvents {
         @SubscribeEvent

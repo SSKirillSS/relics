@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.loot.LootTables;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -34,6 +35,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SporeSackItem extends RelicItem implements ICurioItem, IHasTooltip {
@@ -81,6 +83,11 @@ public class SporeSackItem extends RelicItem implements ICurioItem, IHasTooltip 
                         RelicsConfig.SporeSack.SLOWNESS_AMPLIFIER.get()));
             }
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return Collections.singletonList(LootTables.JUNGLE_TEMPLE);
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/spore_sack.png");

@@ -11,7 +11,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.loot.LootTables;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -25,6 +27,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -108,6 +111,11 @@ public class DelayRingItem extends RelicItem implements ICurioItem, IHasTooltip 
             ParticleUtils.createBall(new CircleTintData(new Color(0.4F, 0.05F, 0.7F), 0.5F, 40, 0.94F, true),
                     livingEntity.position(), livingEntity.getCommandSenderWorld(), 3, 0.2F);
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return Collections.singletonList(LootTables.END_CITY_TREASURE);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

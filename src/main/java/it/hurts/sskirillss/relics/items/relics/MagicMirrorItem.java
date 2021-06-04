@@ -56,4 +56,9 @@ public class MagicMirrorItem extends RelicItem implements IHasTooltip {
         } else playerIn.displayClientMessage(new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_location"), true);
         return super.use(worldIn, playerIn, handIn);
     }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.CAVE;
+    }
 }

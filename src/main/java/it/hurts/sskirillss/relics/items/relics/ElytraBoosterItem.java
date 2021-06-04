@@ -11,8 +11,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.loot.LootTables;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -21,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.List;
 
 public class ElytraBoosterItem extends RelicItem implements ICurioItem, IHasTooltip {
@@ -97,5 +100,10 @@ public class ElytraBoosterItem extends RelicItem implements ICurioItem, IHasTool
                 }
             }
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return Collections.singletonList(LootTables.END_CITY_TREASURE);
     }
 }

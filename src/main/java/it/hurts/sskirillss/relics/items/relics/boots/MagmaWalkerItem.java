@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -15,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -61,6 +63,11 @@ public class MagmaWalkerItem extends RelicItem implements ICurioItem, IHasToolti
                 && world.getBlockState(livingEntity.blockPosition().below()).getValue(MagmaStoneBlock.AGE) > 0) {
             world.setBlock(livingEntity.blockPosition().below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState(), 2);
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.NETHER;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -18,6 +19,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
@@ -84,6 +86,11 @@ public class IceBreakerItem extends RelicItem implements ICurioItem, IHasTooltip
         ModifiableAttributeInstance knockbackResistance = slotContext.getWearer().getAttribute(Attributes.KNOCKBACK_RESISTANCE);
         if (movementSpeed.hasModifier(ICE_BREAKER_SPEED_BOOST)) movementSpeed.removeModifier(ICE_BREAKER_SPEED_BOOST);
         if (knockbackResistance.hasModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE)) knockbackResistance.removeModifier(ICE_BREAKER_KNOCKBACK_RESISTANCE);
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.COLD;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

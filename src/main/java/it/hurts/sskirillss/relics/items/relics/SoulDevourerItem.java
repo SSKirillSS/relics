@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -92,13 +93,8 @@ public class SoulDevourerItem extends RelicItem implements ICurioItem, IHasToolt
     }
 
     @Override
-    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
-
-    }
-
-    @Override
-    public boolean canRender(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        return true;
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.NETHER;
     }
 
     public static void explode(PlayerEntity player, ItemStack stack, int soul) {

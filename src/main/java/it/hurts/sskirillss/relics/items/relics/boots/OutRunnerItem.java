@@ -3,10 +3,7 @@ package it.hurts.sskirillss.relics.items.relics.boots;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
-import it.hurts.sskirillss.relics.utils.TooltipUtils;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -16,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -78,5 +76,10 @@ public class OutRunnerItem extends RelicItem implements ICurioItem, IHasTooltip 
         if (!movementSpeed.hasModifier(OUT_RUNNER_SPEED_BOOST)) return;
         movementSpeed.removeModifier(OUT_RUNNER_SPEED_BOOST);
         slotContext.getWearer().maxUpStep = 0.6F;
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.CAVE;
     }
 }

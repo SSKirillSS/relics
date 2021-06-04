@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -142,6 +143,11 @@ public class BlazingFlaskItem extends RelicItem implements ICurioItem, IHasToolt
             player.abilities.flying = false;
             player.onUpdateAbilities();
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.NETHER;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

@@ -529,78 +529,6 @@ public class RelicsConfig {
         }
     }
 
-    public static class RelicsWorldgen {
-        public static ForgeConfigSpec.BooleanValue RELICS_WORLDGEN_ENABLED;
-        public static ForgeConfigSpec.DoubleValue ARROW_QUIVER_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue BASTION_RING_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue BLAZING_FLASK_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue CAMOUFLAGE_RING_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue CHORUS_INHIBITOR_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue DELAY_RING_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue DROWNED_BELT_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue ELYTRA_BOOSTER_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue ENDERS_HAND_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue FRAGRANT_FLOWER_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue HOLY_LOCKET_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue HUNTER_BELT_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue ICE_BREAKER_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue ICE_SKATES_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue JELLYFISH_NECKLACE_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue LUCKY_HORSESHOE_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue MAGIC_MIRROR_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue MAGMA_WALKER_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue MIDNIGHT_ROBE_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue OUT_RUNNER_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue RAGE_GLOVE_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue REFLECTION_NECKLACE_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue SCARAB_TALISMAN_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue SHADOW_GLAIVE_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue SOUL_DEVOURER_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue SPACE_DISSECTOR_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue SPATIAL_SIGN_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue SPIDER_NECKLACE_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue SPORE_SACK_GEN_CHANCE;
-        public static ForgeConfigSpec.DoubleValue STELLAR_CATALYST_GEN_CHANCE;
-
-        private static void setupWorldgenConfig(ForgeConfigSpec.Builder builder) {
-            builder.push("worldgen");
-
-            RELICS_WORLDGEN_ENABLED = builder.define("relics_worldgen_enabled", true);
-            ARROW_QUIVER_GEN_CHANCE = builder.defineInRange("arrow_quiver_gen_chance", 0.2, 0, 1);
-            BASTION_RING_GEN_CHANCE = builder.defineInRange("bastion_ring_gen_chance", 0.15, 0, 1);
-            BLAZING_FLASK_GEN_CHANCE = builder.defineInRange("blazing_flask_gen_chance", 0.05, 0, 1);
-            CAMOUFLAGE_RING_GEN_CHANCE = builder.defineInRange("camouflage_ring_gen_chance", 0.2, 0, 1);
-            CHORUS_INHIBITOR_GEN_CHANCE = builder.defineInRange("chorus_inhibitor_gen_chance", 0.15, 0, 1);
-            DELAY_RING_GEN_CHANCE = builder.defineInRange("delay_ring_gen_chance", 0.05, 0, 1);
-            DROWNED_BELT_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.15, 0, 1);
-            ELYTRA_BOOSTER_GEN_CHANCE = builder.defineInRange("elytra_booster_gen_chance", 0.15, 0, 1);
-            ENDERS_HAND_GEN_CHANCE = builder.defineInRange("enders_hand_gen_chance", 0.3, 0, 1);
-            FRAGRANT_FLOWER_GEN_CHANCE = builder.defineInRange("fragrant_flower_gen_chance", 0.2, 0, 1);
-            HOLY_LOCKET_GEN_CHANCE = builder.defineInRange("drowned_belt_gen_chance", 0.3, 0, 1);
-            HUNTER_BELT_GEN_CHANCE = builder.defineInRange("hunter_belt_gen_chance", 0.2, 0, 1);
-            ICE_BREAKER_GEN_CHANCE = builder.defineInRange("ice_breaker_gen_chance", 0.01, 0, 1);
-            ICE_SKATES_GEN_CHANCE = builder.defineInRange("ice_skates_gen_chance", 0.01, 0, 1);
-            JELLYFISH_NECKLACE_GEN_CHANCE = builder.defineInRange("jellyfish_necklace_gen_chance", 0.2, 0, 1);
-            LUCKY_HORSESHOE_GEN_CHANCE = builder.defineInRange("lucky_horseshoe_gen_chance", 0.15, 0, 1);
-            MAGIC_MIRROR_GEN_CHANCE = builder.defineInRange("magic_mirror_gen_chance", 0.15, 0, 1);
-            MAGMA_WALKER_GEN_CHANCE = builder.defineInRange("magma_walker_gen_chance", 0.01, 0, 1);
-            MIDNIGHT_ROBE_GEN_CHANCE = builder.defineInRange("midnight_robe_gen_chance", 0.15, 0, 1);
-            OUT_RUNNER_GEN_CHANCE = builder.defineInRange("out_runner_gen_chance", 0.01, 0, 1);
-            RAGE_GLOVE_GEN_CHANCE = builder.defineInRange("rage_glove_gen_chance", 0.05, 0, 1);
-            REFLECTION_NECKLACE_GEN_CHANCE = builder.defineInRange("reflection_necklace_gen_chance", 0.05, 0, 1);
-            SCARAB_TALISMAN_GEN_CHANCE = builder.defineInRange("scarab_talisman_gen_chance", 0.14, 0, 1);
-            SHADOW_GLAIVE_GEN_CHANCE = builder.defineInRange("shadow_glaive_gen_chance", 0.025, 0, 1);
-            SOUL_DEVOURER_GEN_CHANCE = builder.defineInRange("soul_devourer_gen_chance", 0.05, 0, 1);
-            SPACE_DISSECTOR_GEN_CHANCE = builder.defineInRange("space_dissector_gen_chance", 0.05, 0, 1);
-            SPATIAL_SIGN_GEN_CHANCE = builder.defineInRange("spatial_sign_gen_chance", 0.25, 0, 1);
-            SPIDER_NECKLACE_GEN_CHANCE = builder.defineInRange("spider_necklace_gen_chance", 0.25, 0, 1);
-            SPORE_SACK_GEN_CHANCE = builder.defineInRange("spore_sack_gen_chance", 0.3, 0, 1);
-            STELLAR_CATALYST_GEN_CHANCE = builder.defineInRange("stellar_catalyst_gen_chance", 0.05, 0, 1);
-
-            builder.pop();
-        }
-    }
-
     public static class RelicsCompatibility {
         public static ForgeConfigSpec.BooleanValue WARN_ABOUT_OLD_FORGE;
 
@@ -692,7 +620,6 @@ public class RelicsConfig {
 
         RelicsGeneral.setupGeneralConfig(builder);
         setupRelicsStatsConfig(builder);
-        RelicsWorldgen.setupWorldgenConfig(builder);
         RelicsCompatibility.setupCompatibilityConfig(builder);
 
         RELICS_CONFIG = builder.build();

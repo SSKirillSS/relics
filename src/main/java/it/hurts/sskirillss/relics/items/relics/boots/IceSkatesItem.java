@@ -18,6 +18,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -106,6 +107,11 @@ public class IceSkatesItem extends RelicItem implements ICurioItem, IHasTooltip 
                 && !livingEntity.isSprinting()) {
             movementSpeed.removeModifier(ICE_SKATES_SPEED_BOOST);
         }
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.Worldgen.COLD;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

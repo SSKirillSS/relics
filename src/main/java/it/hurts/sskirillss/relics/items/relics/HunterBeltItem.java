@@ -14,6 +14,8 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.loot.LootTables;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import java.util.Collections;
 import java.util.List;
 
 public class HunterBeltItem extends RelicItem implements ICurioItem, IHasTooltip {
@@ -48,6 +51,11 @@ public class HunterBeltItem extends RelicItem implements ICurioItem, IHasTooltip
     @Override
     public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
         return RelicsConfig.HunterBelt.ADDITIONAL_LOOTING.get();
+    }
+
+    @Override
+    public List<ResourceLocation> getLootChests() {
+        return Collections.singletonList(LootTables.VILLAGE_BUTCHER);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
