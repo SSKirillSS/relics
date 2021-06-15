@@ -182,27 +182,6 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
     public static class ReflectionNecklaceClientEvents {
-        public static final ResourceLocation HUD_TEXTURE = new ResourceLocation(Reference.MODID, "textures/hud/rn_heart.png");
-
-        @SubscribeEvent
-        public static void onOverlayRender(RenderGameOverlayEvent.Pre event) {
-            if (Minecraft.getInstance().getCameraEntity() instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) Minecraft.getInstance().getCameraEntity();
-                if (player != null && !player.isCreative() && !player.isSpectator()
-                        && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), player).isPresent()) {
-                    ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), player).get().getRight();
-                    Minecraft.getInstance().getTextureManager().bind(HUD_TEXTURE);
-                    int x = event.getWindow().getGuiScaledWidth() / 2 - 91;
-                    int y = event.getWindow().getGuiScaledHeight() - 39;
-                    for (int i = 0; i < NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0); i++) {
-                        AbstractGui.blit(event.getMatrixStack(), x, y, 9, 9, 0F, 0F, 1, 1, 1, 1);
-                        x += 8;
-                    }
-                    Minecraft.getInstance().textureManager.bind(AbstractGui.GUI_ICONS_LOCATION);
-                }
-            }
-        }
-
         @SubscribeEvent
         public static void onPlayerRender(RenderPlayerEvent event) {
             if (!event.getPlayer().isSpectator() && !event.getPlayer().isInvisible()
