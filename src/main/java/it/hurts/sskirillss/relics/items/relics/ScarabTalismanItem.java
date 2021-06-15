@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -31,6 +32,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
@@ -39,9 +41,9 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 import java.util.UUID;
 
-public class ScarabTalismanItem extends RelicItem implements ICurioItem, IHasTooltip {
-    private static final AttributeModifier SCARAB_TALISMAN_SPEED_BOOST = new AttributeModifier(UUID.fromString("09bc5b60-3277-45ee-8bf0-aae7acba4385"),
-            Reference.MODID + ":" + "scarab_talisman_movement_speed", RelicsConfig.ScarabTalisman.SPEED_MULTIPLIER.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
+public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> implements ICurioItem, IHasTooltip {
+    private final MutablePair<String, UUID> SPEED_INFO = new MutablePair<>(Reference.MODID
+            + ":" + "scarab_talisman_movement_speed", UUID.fromString("09bc5b60-3277-45ee-8bf0-aae7acba4385"));
 
     public ScarabTalismanItem() {
         super(Rarity.RARE);
@@ -66,13 +68,12 @@ public class ScarabTalismanItem extends RelicItem implements ICurioItem, IHasToo
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         if (livingEntity.getCommandSenderWorld().getBiome(livingEntity.blockPosition()).getBiomeCategory() == Biome.Category.DESERT
                 || livingEntity.getCommandSenderWorld().getBiome(livingEntity.blockPosition()).getBiomeCategory() == Biome.Category.MESA) {
-            if (!movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
-                movementSpeed.addTransientModifier(SCARAB_TALISMAN_SPEED_BOOST);
-                livingEntity.maxUpStep = Math.max(livingEntity.maxUpStep,
-                        RelicsConfig.ScarabTalisman.STEP_HEIGHT.get().floatValue());
-            }
-        } else if (movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
-            movementSpeed.removeModifier(SCARAB_TALISMAN_SPEED_BOOST);
+            EntityUtils.applyAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
+                    SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            livingEntity.maxUpStep = 1.1F;
+        } else {
+            EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
+                    config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
             livingEntity.maxUpStep = 0.6F;
         }
     }
@@ -80,15 +81,19 @@ public class ScarabTalismanItem extends RelicItem implements ICurioItem, IHasToo
     @Override
     public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (movementSpeed.hasModifier(SCARAB_TALISMAN_SPEED_BOOST)) {
-            movementSpeed.removeModifier(SCARAB_TALISMAN_SPEED_BOOST);
-            livingEntity.maxUpStep = 0.6F;
-        }
+        EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
+                config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        livingEntity.maxUpStep = 0.6F;
     }
 
     @Override
     public List<ResourceLocation> getLootChests() {
         return RelicUtils.Worldgen.DESERT;
+    }
+
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
     }
 
     @Override
@@ -145,5 +150,9 @@ public class ScarabTalismanItem extends RelicItem implements ICurioItem, IHasToo
                 }
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public float speedModifier = 1.5F;
     }
 }

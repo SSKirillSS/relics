@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -31,7 +32,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class EndersHandItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_UPDATE_TIME = "time";
 
     public EndersHandItem() {
@@ -59,9 +60,9 @@ public class EndersHandItem extends RelicItem implements ICurioItem, IHasTooltip
             if (!player.getCooldowns().isOnCooldown(stack.getItem())) {
                 if (player.isShiftKeyDown()) {
                     Predicate<Entity> predicate = (entity) -> !entity.isSpectator() && entity.isPickable();
-                    EntityRayTraceResult result = EntityUtils.rayTraceEntity(player, predicate, RelicsConfig.EndersHand.MAX_TELEPORT_DISTANCE.get());
+                    EntityRayTraceResult result = EntityUtils.rayTraceEntity(player, predicate, config.maxDistance);
                     if (result != null && result.getEntity() instanceof EndermanEntity) {
-                        if (time >= RelicsConfig.EndersHand.TIME_BEFORE_TELEPORTING.get() * 20) {
+                        if (time >= config.preparationTime * 20) {
                             Vector3d swapVec = player.position();
                             EndermanEntity enderman = (EndermanEntity) result.getEntity();
                             player.teleportTo(enderman.getX(), enderman.getY(), enderman.getZ());
@@ -71,7 +72,7 @@ public class EndersHandItem extends RelicItem implements ICurioItem, IHasTooltip
                             player.getCommandSenderWorld().playSound(null, swapVec.x(), swapVec.y(), swapVec.z(),
                                     SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                             NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-                            player.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.EndersHand.TELEPORT_COOLDOWN.get() * 20);
+                            player.getCooldowns().addCooldown(stack.getItem(), config.cooldown * 20);
                         } else {
                             NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
                         }
@@ -90,6 +91,11 @@ public class EndersHandItem extends RelicItem implements ICurioItem, IHasTooltip
         return RelicUtils.Worldgen.CAVE;
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
     public static class EndersHandClientEvents {
         @SubscribeEvent
@@ -100,5 +106,11 @@ public class EndersHandItem extends RelicItem implements ICurioItem, IHasTooltip
                 if (time > 0) event.setNewfov(event.getNewfov() - time / 32.0F);
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int preparationTime = 1;
+        public int maxDistance = 64;
+        public int cooldown = 10;
     }
 }

@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -38,9 +39,13 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.Collections;
 import java.util.List;
 
-public class SporeSackItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class SporeSackItem extends RelicItem<SporeSackItem.Stats> implements ICurioItem, IHasTooltip {
+    public static SporeSackItem INSTANCE;
+
     public SporeSackItem() {
         super(Rarity.UNCOMMON);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -60,6 +65,7 @@ public class SporeSackItem extends RelicItem implements ICurioItem, IHasTooltip 
     public static class SporeSackEvents {
         @SubscribeEvent
         public static void onProjectileImpact(ProjectileImpactEvent event) {
+            Stats config = INSTANCE.config;
             if (!(event.getEntity() instanceof ProjectileEntity)) return;
             ProjectileEntity projectile = (ProjectileEntity) event.getEntity();
             if (projectile.getOwner() == null || !(projectile.getOwner() instanceof PlayerEntity)) return;
@@ -68,19 +74,16 @@ public class SporeSackItem extends RelicItem implements ICurioItem, IHasTooltip 
             if (world.isClientSide()) return;
             if (!CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SPORE_SACK.get(), player).isPresent()
                     || player.getCooldowns().isOnCooldown(ItemRegistry.SPORE_SACK.get())
-                    || world.getRandom().nextFloat() > RelicsConfig.SporeSack.SPORE_CHANCE.get()) return;
+                    || world.getRandom().nextFloat() > config.chance) return;
             ((ServerWorld) world).sendParticles(new RedstoneParticleData(0, 255, 0, 1),
                     projectile.getX(), projectile.getY(), projectile.getZ(), 100, 1, 1, 1, 0.5);
             world.playSound(null, projectile.blockPosition(), SoundEvents.FIRE_EXTINGUISH,
                     SoundCategory.PLAYERS, 1.0F, 0.5F);
-            player.getCooldowns().addCooldown(ItemRegistry.SPORE_SACK.get(), RelicsConfig.SporeSack.SPORE_COOLDOWN.get() * 20);
-            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox()
-                    .inflate(RelicsConfig.SporeSack.SPORE_RADIUS.get()))) {
+            player.getCooldowns().addCooldown(ItemRegistry.SPORE_SACK.get(), config.cooldown * 20);
+            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(config.radius))) {
                 if (entity == player) continue;
-                entity.addEffect(new EffectInstance(Effects.POISON, RelicsConfig.SporeSack.POISON_DURATION.get() * 20,
-                        RelicsConfig.SporeSack.POISON_AMPLIFIER.get()));
-                entity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, RelicsConfig.SporeSack.SLOWNESS_DURATION.get() * 20,
-                        RelicsConfig.SporeSack.SLOWNESS_AMPLIFIER.get()));
+                entity.addEffect(new EffectInstance(Effects.POISON, config.poisonDuration * 20, config.poisonAmplifier));
+                entity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, config.slownessDuration * 20, config.slownessAmplifier));
             }
         }
     }
@@ -88,6 +91,11 @@ public class SporeSackItem extends RelicItem implements ICurioItem, IHasTooltip 
     @Override
     public List<ResourceLocation> getLootChests() {
         return Collections.singletonList(LootTables.JUNGLE_TEMPLE);
+    }
+
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/spore_sack.png");
@@ -106,5 +114,15 @@ public class SporeSackItem extends RelicItem implements ICurioItem, IHasTooltip 
     @Override
     public boolean canRender(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         return true;
+    }
+
+    public static class Stats extends RelicStats {
+        public float chance = 0.3F;
+        public int radius = 3;
+        public int cooldown = 5;
+        public int poisonAmplifier = 2;
+        public int poisonDuration = 5;
+        public int slownessAmplifier = 0;
+        public int slownessDuration = 5;
     }
 }

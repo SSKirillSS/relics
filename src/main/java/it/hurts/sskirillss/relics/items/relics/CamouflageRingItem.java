@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -27,12 +28,16 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class CamouflageRingItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class CamouflageRingItem extends RelicItem<CamouflageRingItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_TIME = "time";
     public static final String TAG_IS_ACTIVE = "active";
 
+    public static CamouflageRingItem INSTANCE;
+
     public CamouflageRingItem() {
         super(Rarity.UNCOMMON);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -61,7 +66,7 @@ public class CamouflageRingItem extends RelicItem implements ICurioItem, IHasToo
                 livingEntity.setInvisible(false);
             }
         } else {
-            if (livingEntity.tickCount % 20 == 0 && time < RelicsConfig.CamouflageRing.MAX_INVISIBILITY_TIME.get()) {
+            if (livingEntity.tickCount % 20 == 0 && time < config.invisibilityTime) {
                 NBTUtils.setInt(stack, TAG_TIME, time + 1);
             }
             if (livingEntity.isShiftKeyDown() && time > 0
@@ -76,16 +81,22 @@ public class CamouflageRingItem extends RelicItem implements ICurioItem, IHasToo
         return RelicUtils.Worldgen.CAVE;
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class CamouflageRingServerEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
+            Stats config = INSTANCE.config;
             if (event.getSource().getEntity() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CAMOUFLAGE_RING.get(), player).isPresent()) {
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CAMOUFLAGE_RING.get(), player).get().getRight();
                     if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
-                        event.setAmount(event.getAmount() * RelicsConfig.CamouflageRing.STEALTH_DAMAGE_MULTIPLIER.get().floatValue());
+                        event.setAmount(event.getAmount() * config.damageMultiplier);
                     }
                 }
             }
@@ -110,5 +121,10 @@ public class CamouflageRingItem extends RelicItem implements ICurioItem, IHasToo
                     && NBTUtils.getBoolean(CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CAMOUFLAGE_RING.get(), player).get().getRight(), TAG_IS_ACTIVE, false))
                 event.setCanceled(true);
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int invisibilityTime = 60;
+        public float damageMultiplier = 2.0F;
     }
 }

@@ -1,11 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -29,10 +29,13 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.Collections;
 import java.util.List;
 
-public class HunterBeltItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements ICurioItem, IHasTooltip {
+    public static HunterBeltItem INSTANCE;
 
     public HunterBeltItem() {
         super(Rarity.UNCOMMON);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -50,7 +53,7 @@ public class HunterBeltItem extends RelicItem implements ICurioItem, IHasTooltip
 
     @Override
     public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return RelicsConfig.HunterBelt.ADDITIONAL_LOOTING.get();
+        return config.additionalLooting;
     }
 
     @Override
@@ -58,24 +61,36 @@ public class HunterBeltItem extends RelicItem implements ICurioItem, IHasTooltip
         return Collections.singletonList(LootTables.VILLAGE_BUTCHER);
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class HunterBeltEvents {
         @SubscribeEvent
         public static void onLivingDamage(LivingHurtEvent event) {
+            Stats config = INSTANCE.config;
             if (event.getSource().getEntity() instanceof PlayerEntity
                     && event.getEntityLiving() instanceof AnimalEntity) {
                 PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), player).isPresent()) {
-                    event.setAmount(event.getAmount() * RelicsConfig.HunterBelt.PLAYER_DAMAGE_MULTIPLIER.get().floatValue());
+                    event.setAmount(event.getAmount() * config.playerDamageMultiplier);
                 }
             }
             if (event.getSource().getEntity() instanceof TameableEntity) {
                 TameableEntity pet = (TameableEntity) event.getSource().getEntity();
                 if (pet.getOwner() != null && pet.getOwner() instanceof PlayerEntity
                         && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), pet.getOwner()).isPresent()) {
-                    event.setAmount(event.getAmount() * RelicsConfig.HunterBelt.PET_DAMAGE_MULTIPLIER.get().floatValue());
+                    event.setAmount(event.getAmount() * config.petDamageMultiplier);
                 }
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int additionalLooting = 1;
+        public float playerDamageMultiplier = 2.0F;
+        public float petDamageMultiplier = 3.0F;
     }
 }

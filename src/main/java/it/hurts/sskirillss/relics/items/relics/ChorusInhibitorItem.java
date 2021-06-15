@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -32,13 +33,17 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.Collections;
 import java.util.List;
 
-public class ChorusInhibitorItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_POSITION = "pos";
     public static final String TAG_TIME = "time";
     public static final String TAG_WORLD = "world";
 
+    public static ChorusInhibitorItem INSTANCE;
+
     public ChorusInhibitorItem() {
         super(Rarity.RARE);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -85,17 +90,23 @@ public class ChorusInhibitorItem extends RelicItem implements ICurioItem, IHasTo
         return Collections.singletonList(LootTables.END_CITY_TREASURE);
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class ChorusInhibitorEvents {
         @SubscribeEvent
         public static void onItemUse(PlayerInteractEvent.RightClickItem event) {
+            Stats config = INSTANCE.config;
             if (!(event.getEntityLiving() instanceof PlayerEntity)) return;
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             if (player.getMainHandItem().getItem() == Items.CHORUS_FRUIT && !player.isShiftKeyDown()) {
                 CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CHORUS_INHIBITOR.get(), player).ifPresent(triple -> {
                     ItemStack stack = triple.getRight();
                     int time = NBTUtils.getInt(stack, TAG_TIME, 0);
-                    NBTUtils.setInt(stack, TAG_TIME, time + RelicsConfig.ChorusInhibitor.TIME_PER_CHORUS.get());
+                    NBTUtils.setInt(stack, TAG_TIME, time + config.timePerChorus);
                     if (time <= 0) {
                         NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(player.position()));
                         NBTUtils.setString(stack, TAG_WORLD, player.getCommandSenderWorld().dimension().location().toString());
@@ -114,5 +125,9 @@ public class ChorusInhibitorItem extends RelicItem implements ICurioItem, IHasTo
                 && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CHORUS_INHIBITOR.get(), event.getEntityLiving()).isPresent()) {
             event.setAttackDamage(0.0F);
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int timePerChorus = 30;
     }
 }

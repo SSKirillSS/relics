@@ -65,22 +65,24 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
         super.tick();
 
+        SpaceDissectorItem.Stats config = SpaceDissectorItem.INSTANCE.getConfig();
+
         for (int i = 0; i < 3; i++)
             level.addParticle(new SparkTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(100)), 0.2F, 30),
                     this.xo, this.yo, this.zo, MathUtils.randomFloat(random) * 0.01F, 0, MathUtils.randomFloat(random) * 0.01F);
 
         if (!level.isClientSide()) {
             if (this.tickCount % 20 == 0) {
-                if (entityData.get(UPDATE_TIME) > RelicsConfig.SpaceDissector.MAX_THROWN_TIME.get()) {
+                if (entityData.get(UPDATE_TIME) > config.maxThrownTime) {
                     if (owner != null && stack != null && stack != ItemStack.EMPTY) {
-                        owner.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
+                        owner.getCooldowns().addCooldown(stack.getItem(), config.cooldownAfterReturn * 20);
                         NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
                     }
                     this.remove();
                 }
 
                 if (!entityData.get(IS_RETURNING)) {
-                    if (entityData.get(UPDATE_TIME) < RelicsConfig.SpaceDissector.TIME_BEFORE_RETURN.get()) {
+                    if (entityData.get(UPDATE_TIME) < config.timeBeforeReturn) {
                         entityData.set(UPDATE_TIME, entityData.get(UPDATE_TIME) + 1);
                     } else {
                         entityData.set(IS_RETURNING, true);
@@ -93,12 +95,12 @@ public class SpaceDissectorEntity extends ThrowableEntity {
             } else {
                 if (owner != null) {
                     EntityUtils.moveTowardsPosition(this, new Vector3d(owner.getX(),
-                            owner.getY() + 1.0F, owner.getZ()), RelicsConfig.SpaceDissector.MOVEMENT_SPEED.get().floatValue());
+                            owner.getY() + 1.0F, owner.getZ()), config.projectileSpeed);
                     for (PlayerEntity player : level.getEntitiesOfClass(PlayerEntity.class, this.getBoundingBox().inflate(2.0F))) {
                         if (owner.getUUID().equals(player.getUUID()) && stack != null && stack != ItemStack.EMPTY) {
                             this.remove();
                             NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
-                            owner.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
+                            owner.getCooldowns().addCooldown(stack.getItem(), config.cooldownAfterReturn * 20);
                         }
                     }
                 } else {
@@ -116,11 +118,12 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
     @Override
     protected void onHit(@Nonnull RayTraceResult rayTraceResult) {
+        SpaceDissectorItem.Stats config = SpaceDissectorItem.INSTANCE.getConfig();
         switch (rayTraceResult.getType()) {
             case BLOCK: {
                 BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) rayTraceResult;
                 if (level.getBlockState(blockRayTraceResult.getBlockPos()).canOcclude()) {
-                    if (entityData.get(BOUNCES) < RelicsConfig.SpaceDissector.MAX_BOUNCES_AMOUNT.get()) {
+                    if (entityData.get(BOUNCES) < config.maxBounces) {
                         if (!entityData.get(IS_RETURNING)) {
                             Direction dir = blockRayTraceResult.getDirection();
                             Vector3d normalVector = new Vector3d(-2 * dir.getStepX(), -2 * dir.getStepY(), -2 * dir.getStepZ()).normalize();
@@ -142,8 +145,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                             }
                             bounced = true;
                             entityData.set(BOUNCES, entityData.get(BOUNCES) + 1);
-                            entityData.set(UPDATE_TIME, Math.max(entityData.get(UPDATE_TIME)
-                                    - RelicsConfig.SpaceDissector.ADDITIONAL_TIME_PER_BOUNCE.get(), 0));
+                            entityData.set(UPDATE_TIME, Math.max(entityData.get(UPDATE_TIME) - config.additionalTimeAfterBounce, 0));
                         }
                     } else {
                         entityData.set(IS_RETURNING, true);
@@ -158,14 +160,13 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                     if (owner != null && owner.getUUID().equals(entity.getUUID())) {
                         if (stack != null && stack != ItemStack.EMPTY) {
                             NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
-                            owner.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_RETURN.get() * 20);
+                            owner.getCooldowns().addCooldown(stack.getItem(), config.cooldownAfterReturn * 20);
                         }
                         this.remove();
                         break;
                     } else {
                         entity.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC,
-                                RelicsConfig.SpaceDissector.BASE_DAMAGE_AMOUNT.get().floatValue() + (entityData.get(BOUNCES)
-                                        * RelicsConfig.SpaceDissector.DAMAGE_MULTIPLIER_PER_BOUNCE.get().floatValue()));
+                                config.baseDamage + (entityData.get(BOUNCES) * config.damageMultiplierPerBounce));
                     }
                 }
                 break;

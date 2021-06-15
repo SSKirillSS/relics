@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
@@ -26,9 +27,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class ShadowGlaiveItem extends RelicItem implements IHasTooltip {
+public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> implements IHasTooltip {
+    public static ShadowGlaiveItem INSTANCE;
+
     public ShadowGlaiveItem() {
         super(Rarity.EPIC);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -50,27 +55,45 @@ public class ShadowGlaiveItem extends RelicItem implements IHasTooltip {
         return Collections.singletonList(LootTables.END_CITY_TREASURE);
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class ShadowGlaiveServerEvents {
         @SubscribeEvent
         public static void onEntityDamage(LivingDamageEvent event) {
+            Stats config = INSTANCE.config;
             if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
             if (player.getOffhandItem().getItem() != ItemRegistry.SHADOW_GLAIVE.get()
                     || player.getCooldowns().isOnCooldown(ItemRegistry.SHADOW_GLAIVE.get())) return;
             World world = player.getCommandSenderWorld();
-            if (world.getRandom().nextFloat() > RelicsConfig.ShadowGlaive.SUMMON_CHANCE.get()
-                    || event.getAmount() < RelicsConfig.ShadowGlaive.MIN_DAMAGE_FOR_SUMMON.get()) return;
+            if (world.getRandom().nextFloat() > config.summonChance || event.getAmount() < config.minDamageForSummon) return;
             LivingEntity entity = event.getEntityLiving();
-            if (entity == null || !entity.isAlive() || player.position().distanceTo(entity.position())
-                    > RelicsConfig.ShadowGlaive.MAX_DISTANCE_FOR_SUMMON.get()) return;
+            if (entity == null || !entity.isAlive() || player.position().distanceTo(entity.position()) > config.maxDistanceForSummon) return;
             ShadowGlaiveEntity glaive = new ShadowGlaiveEntity(world, player);
-            glaive.setDamage(event.getAmount() * RelicsConfig.ShadowGlaive.INITIAL_DAMAGE_MULTIPLIER.get().floatValue());
+            glaive.setDamage(event.getAmount() * config.initialDamageMultiplier);
             glaive.setOwner(player);
             glaive.setTarget(entity);
             glaive.teleportTo(player.getX(), player.getY() + player.getBbHeight() * 0.5F, player.getZ());
-            player.getCooldowns().addCooldown(ItemRegistry.SHADOW_GLAIVE.get(), RelicsConfig.ShadowGlaive.SUMMON_COOLDOWN.get() * 20);
+            player.getCooldowns().addCooldown(ItemRegistry.SHADOW_GLAIVE.get(), config.summonCooldown * 20);
             world.addFreshEntity(glaive);
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public float summonChance = 0.35F;
+        public float minDamageForSummon = 1.0F;
+        public int maxDistanceForSummon = 5;
+        public float initialDamageMultiplier = 1.25F;
+        public int summonCooldown = 1;
+        public float bounceChanceMultiplier = 0.025F;
+        public int bounceRadius = 7;
+        public float projectileSpeed = 0.45F;
+        public int maxBounces = 10;
+        public float minDamagePerBounce = 1.0F;
+        public float damageMultiplierPerBounce = 0.05F;
     }
 }

@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.*;
@@ -17,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -24,9 +26,9 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 import java.util.UUID;
 
-public class OutRunnerItem extends RelicItem implements ICurioItem, IHasTooltip {
-    private static final AttributeModifier OUT_RUNNER_SPEED_BOOST = new AttributeModifier(UUID.fromString("9bf3eeb5-8587-4fb7-ad81-fd76e01f4acf"),
-            Reference.MODID + ":" + "out_runner_movement_speed", RelicsConfig.OutRunner.SPEED_MULTIPLIER.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
+public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICurioItem, IHasTooltip {
+    private final MutablePair<String, UUID> SPEED_INFO = new MutablePair<>(Reference.MODID
+            + ":" + "out_runner_movement_speed", UUID.fromString("9bf3eeb5-8587-4fb7-ad81-fd76e01f4acf"));
 
     private static final String TAG_RUN_DURATION = "duration";
 
@@ -55,31 +57,40 @@ public class OutRunnerItem extends RelicItem implements ICurioItem, IHasTooltip 
         int duration = NBTUtils.getInt(stack, TAG_RUN_DURATION, 0);
         if (!player.isSprinting() || player.isShiftKeyDown() || player.isInWater()) {
             if (duration > 0) NBTUtils.setInt(stack, TAG_RUN_DURATION, 0);
-            if (!movementSpeed.hasModifier(OUT_RUNNER_SPEED_BOOST)) return;
-            movementSpeed.removeModifier(OUT_RUNNER_SPEED_BOOST);
+            EntityUtils.removeAttributeModifier(player.getAttribute(Attributes.MOVEMENT_SPEED), new AttributeModifier(SPEED_INFO.getRight(),
+                    SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
             player.maxUpStep = 0.6F;
             return;
         }
-        if (duration < RelicsConfig.OutRunner.TIME_BEFORE_ACTIVATION.get()) {
+        if (duration < config.activationTime) {
             if (player.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_RUN_DURATION, duration + 1);
         } else {
             player.getCommandSenderWorld().addParticle(ParticleTypes.CLOUD, player.getX(), player.getY() + 0.15F, player.getZ(), 0, 0.25F, 0);
-            if (movementSpeed.hasModifier(OUT_RUNNER_SPEED_BOOST)) return;
-            movementSpeed.addTransientModifier(OUT_RUNNER_SPEED_BOOST);
-            livingEntity.maxUpStep = Math.max(livingEntity.maxUpStep, RelicsConfig.OutRunner.STEP_HEIGHT.get().floatValue());
+            EntityUtils.applyAttributeModifier(player.getAttribute(Attributes.MOVEMENT_SPEED), new AttributeModifier(SPEED_INFO.getRight(),
+                    SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            livingEntity.maxUpStep = Math.max(livingEntity.maxUpStep, 1.1F);
         }
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        ModifiableAttributeInstance movementSpeed = slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED);
-        if (!movementSpeed.hasModifier(OUT_RUNNER_SPEED_BOOST)) return;
-        movementSpeed.removeModifier(OUT_RUNNER_SPEED_BOOST);
+        EntityUtils.removeAttributeModifier(slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED), new AttributeModifier(SPEED_INFO.getRight(),
+                SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
         slotContext.getWearer().maxUpStep = 0.6F;
     }
 
     @Override
     public List<ResourceLocation> getLootChests() {
         return RelicUtils.Worldgen.CAVE;
+    }
+
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
+    public static class Stats extends RelicStats {
+        public float speedModifier = 1.25F;
+        public int activationTime = 10;
     }
 }

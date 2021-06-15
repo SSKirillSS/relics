@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -9,7 +9,6 @@ import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,13 +32,17 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.awt.*;
 import java.util.List;
 
-public class SoulDevourerItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implements ICurioItem, IHasTooltip {
     private static final String TAG_UPDATE_TIME = "time";
     private static final String TAG_SOUL_AMOUNT = "soul";
     private static final String TAG_EXPLOSION_READINESS = "readiness";
 
+    public static SoulDevourerItem INSTANCE;
+
     public SoulDevourerItem() {
         super(Rarity.EPIC);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -65,19 +68,17 @@ public class SoulDevourerItem extends RelicItem implements ICurioItem, IHasToolt
         int readiness = NBTUtils.getInt(stack, TAG_EXPLOSION_READINESS, 0);
         PlayerEntity player = (PlayerEntity) livingEntity;
         if (player.tickCount % 20 == 0 && soul > 0) {
-            if (time < RelicsConfig.SoulDevourer.TIME_PER_SOUL_DECREASE.get() * (player.isShiftKeyDown() ? 2 : 1))
+            if (time < config.soulLooseCooldown * (player.isShiftKeyDown() ? 2 : 1))
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
             else {
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                 NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, Math.round(Math.max(soul - (soul
-                        * RelicsConfig.SoulDevourer.SOUL_DECREASE_MULTIPLIER_PER_SOUL.get().floatValue()
-                        + RelicsConfig.SoulDevourer.MIN_SOUL_DECREASE_AMOUNT.get()), 0)));
+                        * config.soulLoseMultiplierPerSoul + config.minSoulLooseAmount), 0)));
             }
         }
-        if (soul < RelicsConfig.SoulDevourer.MIN_SOUL_AMOUNT_FOR_EXPLOSION.get()
-                || player.getCooldowns().isOnCooldown(stack.getItem())) return;
+        if (soul < config.soulForExplosion || player.getCooldowns().isOnCooldown(stack.getItem())) return;
         if (player.isShiftKeyDown()) {
-            if (readiness < RelicsConfig.SoulDevourer.EXPLOSION_PREPARING_TIME.get() * 20) {
+            if (readiness < config.explosionPreparation * 20) {
                 NBTUtils.setInt(stack, TAG_EXPLOSION_READINESS, readiness + 1);
                 float radius = (float) Math.sin(readiness * 0.1) + 1.0F + (readiness * 0.002F);
                 for (int i = 0; i < 5; i++) {
@@ -97,23 +98,28 @@ public class SoulDevourerItem extends RelicItem implements ICurioItem, IHasToolt
         return RelicUtils.Worldgen.NETHER;
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     public static void explode(PlayerEntity player, ItemStack stack, int soul) {
+        Stats config = INSTANCE.config;
         for (LivingEntity entity : player.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class,
-                player.getBoundingBox().inflate(RelicsConfig.SoulDevourer.EXPLOSION_RADIUS.get()))) {
+                player.getBoundingBox().inflate(config.explosionRadius))) {
             if (entity == player) continue;
-            double velocity = RelicsConfig.SoulDevourer.EXPLOSION_VELOCITY_MULTIPLIER.get();
+            double velocity = config.explosionKnockback;
             Vector3d motion = entity.position().add(0.0F, 1.0F, 0.0F)
                     .subtract(player.position()).normalize().multiply(velocity, velocity, velocity);
             if (entity instanceof ServerPlayerEntity) NetworkHandler.sendToClient(
                     new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) entity);
             else entity.setDeltaMovement(motion);
-            entity.hurt(DamageSource.playerAttack(player), (float) (RelicsConfig.SoulDevourer.MIN_EXPLOSION_DAMAGE_AMOUNT.get()
-                    + (soul * RelicsConfig.SoulDevourer.EXPLOSION_DAMAGE_PER_SOUL_MULTIPLIER.get())));
+            entity.hurt(DamageSource.playerAttack(player), (config.minExplosionDamage + (soul * config.explosionDamagePerSoul)));
         }
         ParticleUtils.createBall(new CircleTintData(new Color(0.3F, 0.7F, 1.0F),
                         0.5F, 50, 0.95F, false), player.position(),
                 player.getCommandSenderWorld(), 4, 0.2F);
-        player.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SoulDevourer.EXPLOSION_COOLDOWN.get() * 20);
+        player.getCooldowns().addCooldown(stack.getItem(), config.explosionCooldown * 20);
         NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, 0);
         NBTUtils.setInt(stack, TAG_EXPLOSION_READINESS, 0);
     }
@@ -122,28 +128,46 @@ public class SoulDevourerItem extends RelicItem implements ICurioItem, IHasToolt
     public static class SoulDevourerServerEvents {
         @SubscribeEvent
         public static void onEntityDeath(LivingDeathEvent event) {
+            Stats config = INSTANCE.config;
             if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
             LivingEntity target = event.getEntityLiving();
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SOUL_DEVOURER.get(), player).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
                 int soul = NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0);
-                int capacity = RelicsConfig.SoulDevourer.SOUL_CAPACITY.get();
+                int capacity = config.soulCapacity;
                 if (player.getCooldowns().isOnCooldown(stack.getItem()) || soul >= capacity) return;
                 NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, Math.min(soul + Math.round(target.getMaxHealth()
-                        * RelicsConfig.SoulDevourer.SOUL_PER_HEALTH_MULTIPLIER.get().floatValue()), capacity));
+                        * config.soulFromHealthPercentage), capacity));
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
             });
         }
 
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
+            Stats config = INSTANCE.config;
             if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SOUL_DEVOURER.get(), player).ifPresent(triple -> {
                 int soul = NBTUtils.getInt(triple.getRight(), TAG_SOUL_AMOUNT, 0);
-                if (soul > 0) event.setAmount((float) (event.getAmount() + (soul * RelicsConfig.SoulDevourer.ADDITIONAL_DAMAGE_PER_SOUL_MULTIPLIER.get())));
+                if (soul > 0) event.setAmount((float) (event.getAmount() + (soul * config.playerDamageMultiplierPerSoul)));
             });
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int soulLooseCooldown = 10;
+        public int minSoulLooseAmount = 5;
+        public float soulLoseMultiplierPerSoul = 0.1F;
+        public int soulForExplosion = 50;
+        public int explosionPreparation = 12;
+        public int explosionRadius = 10;
+        public float explosionKnockback = 5.0F;
+        public int minExplosionDamage = 2;
+        public float explosionDamagePerSoul = 0.75F;
+        public int explosionCooldown = 60;
+        public int soulCapacity = 100;
+        public float soulFromHealthPercentage = 0.25F;
+        public float playerDamageMultiplierPerSoul = 0.1F;
     }
 }

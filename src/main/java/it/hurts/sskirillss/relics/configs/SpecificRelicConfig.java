@@ -3,11 +3,13 @@ package it.hurts.sskirillss.relics.configs;
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 
-public class RelicStat {
+public class SpecificRelicConfig<T extends RelicStats> {
+    private final T stats;
     private final RelicLoot loot;
     private final RelicLevel level;
 
-    public RelicStat(RelicLoot loot, RelicLevel level) {
+    public SpecificRelicConfig(T stats, RelicLoot loot, RelicLevel level) {
+        this.stats = stats;
         this.loot = loot;
         this.level = level;
     }
@@ -18,5 +20,9 @@ public class RelicStat {
 
     public RelicLevel getLevel() {
         return level;
+    }
+
+    public T getStats() {
+        return stats;
     }
 }

@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -25,13 +26,17 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 import java.util.UUID;
 
-public class RageGloveItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_UPDATE_TIME = "time";
     public static final String TAG_STACKS_AMOUNT = "stacks";
     public static final String TAG_TARGETED_ENTITY = "target";
 
+    public static RageGloveItem INSTANCE;
+
     public RageGloveItem() {
         super(Rarity.RARE);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -54,7 +59,7 @@ public class RageGloveItem extends RelicItem implements ICurioItem, IHasTooltip 
             int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
             if (stacks > 0) {
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
-                if (time >= RelicsConfig.RageGlove.STACK_TIME.get()) {
+                if (time >= config.stackDuration) {
                     NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, stacks - 1);
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                 }
@@ -67,13 +72,19 @@ public class RageGloveItem extends RelicItem implements ICurioItem, IHasTooltip 
         return RelicUtils.Worldgen.NETHER;
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class RageGloveEvents {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
+            Stats config = INSTANCE.config;
             if (event.getSource().getEntity() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
-                if (event.getAmount() > RelicsConfig.RageGlove.MIN_DAMAGE_AMOUNT.get()
+                if (event.getAmount() > config.minDamage
                         && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), player).isPresent()) {
                     LivingEntity entity = event.getEntityLiving();
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), player).get().getRight();
@@ -81,7 +92,7 @@ public class RageGloveItem extends RelicItem implements ICurioItem, IHasTooltip 
                             && UUID.fromString(NBTUtils.getString(stack, TAG_TARGETED_ENTITY, "")).equals(entity.getUUID())) {
                         NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0) + 1);
                         NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-                        event.setAmount(event.getAmount() + (event.getAmount() * RelicsConfig.RageGlove.DEALING_DAMAGE_MULTIPLIER_PER_STACK.get().floatValue() * NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0)));
+                        event.setAmount(event.getAmount() + (event.getAmount() * config.dealtDamageMultiplier * NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0)));
                     } else {
                         NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                         NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, 1);
@@ -97,10 +108,17 @@ public class RageGloveItem extends RelicItem implements ICurioItem, IHasTooltip 
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), player).get().getRight();
                     if (!NBTUtils.getString(stack, TAG_TARGETED_ENTITY, "").equals("")
                             && event.getSource().getEntity() == ((ServerWorld) player.getCommandSenderWorld()).getEntity(UUID.fromString(NBTUtils.getString(stack, TAG_TARGETED_ENTITY, "")))) {
-                        event.setAmount(event.getAmount() + (event.getAmount() * RelicsConfig.RageGlove.INCOMING_DAMAGE_MULTIPLIER_PER_STACK.get().floatValue() * NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0)));
+                        event.setAmount(event.getAmount() + (event.getAmount() * config.incomingDamageMultiplier * NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0)));
                     }
                 }
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int stackDuration = 5;
+        public float minDamage = 3.0F;
+        public float dealtDamageMultiplier = 0.1F;
+        public float incomingDamageMultiplier = 0.05F;
     }
 }

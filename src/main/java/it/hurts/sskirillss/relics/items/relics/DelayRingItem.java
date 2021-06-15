@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -31,14 +32,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class DelayRingItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_UPDATE_TIME = "time";
     public static final String TAG_STORED_AMOUNT = "amount";
     public static final String TAG_IS_ACTIVE = "active";
     public static final String TAG_KILLER_UUID = "killer";
 
+    public static DelayRingItem INSTANCE;
+
     public DelayRingItem() {
         super(Rarity.EPIC);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -66,7 +71,7 @@ public class DelayRingItem extends RelicItem implements ICurioItem, IHasTooltip 
             PlayerEntity player = (PlayerEntity) livingEntity;
             if (!player.getCooldowns().isOnCooldown(ItemRegistry.DELAY_RING.get())
                     && NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
-                if (time < RelicsConfig.DelayRing.DELAY_DURATION.get()) {
+                if (time < config.delayDuration) {
                     if (livingEntity.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
                 } else {
                     if (NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0) > 0) {
@@ -82,7 +87,7 @@ public class DelayRingItem extends RelicItem implements ICurioItem, IHasTooltip 
                         ParticleUtils.createBall(new CircleTintData(new Color(0.4F, 0.05F, 0.7F), 0.5F, 40, 0.94F, true),
                                 player.position(), player.getCommandSenderWorld(), 3, 0.2F);
                     }
-                    player.getCooldowns().addCooldown(ItemRegistry.DELAY_RING.get(), RelicsConfig.DelayRing.USAGE_COOLDOWN.get() * 20);
+                    player.getCooldowns().addCooldown(ItemRegistry.DELAY_RING.get(), config.useCooldown * 20);
                     NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                     NBTUtils.setString(stack, TAG_KILLER_UUID, "");
@@ -118,6 +123,11 @@ public class DelayRingItem extends RelicItem implements ICurioItem, IHasTooltip 
         return Collections.singletonList(LootTables.END_CITY_TREASURE);
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class DelayRingEvents {
         @SubscribeEvent
@@ -138,13 +148,14 @@ public class DelayRingItem extends RelicItem implements ICurioItem, IHasTooltip 
 
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
+            Stats config = INSTANCE.config;
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), player).isPresent()) {
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), player).get().getRight();
-                    if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false) && NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) < RelicsConfig.DelayRing.DELAY_DURATION.get()) {
+                    if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false) && NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) < config.delayDuration) {
                         NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
-                                - Math.round(event.getAmount() * RelicsConfig.DelayRing.DAMAGE_MULTIPLIER.get().floatValue()));
+                                - Math.round(event.getAmount() * config.damageMultiplier));
                         event.setCanceled(true);
                     }
                 }
@@ -153,17 +164,25 @@ public class DelayRingItem extends RelicItem implements ICurioItem, IHasTooltip 
 
         @SubscribeEvent
         public static void onEntityHeal(LivingHealEvent event) {
+            Stats config = INSTANCE.config;
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), player).isPresent()) {
                     ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), player).get().getRight();
                     if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
                         NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
-                                + Math.round(event.getAmount() * RelicsConfig.DelayRing.HEALING_MULTIPLIER.get().floatValue()));
+                                + Math.round(event.getAmount() * config.healMultiplier));
                         event.setCanceled(true);
                     }
                 }
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int useCooldown = 60;
+        public int delayDuration = 10;
+        public float damageMultiplier = 1.0F;
+        public float healMultiplier = 2.0F;
     }
 }

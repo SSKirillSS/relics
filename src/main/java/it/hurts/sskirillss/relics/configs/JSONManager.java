@@ -29,32 +29,59 @@ public class JSONManager {
                 if (!registryObject.isPresent()) continue;
                 Item item = registryObject.get();
                 if (!(item instanceof RelicItem)) continue;
-                RelicItem relic = (RelicItem) item;
-                Path path = dir.resolve(item.getRegistryName().getPath() + "." + "json");
-                RelicLevel defaultLevel = new RelicLevel(relic.getMaxLevel(), relic.getInitialExp(), relic.getExpRatio());
-                RelicLoot defaultLoot = new RelicLoot(relic.getLootChests().stream().map(ResourceLocation::toString)
-                        .collect(Collectors.toList()), relic.getWorldgenChance());
-                RelicStat stat = new RelicStat(defaultLoot, defaultLevel);
-                if (!Files.exists(path)) try (Writer writer = Files.newBufferedWriter(path)) {
-                    SERIALIZER.toJson(stat, writer);
-                    continue;
-                }
-                try (Reader reader = Files.newBufferedReader(path)) {
-                    stat = SERIALIZER.fromJson(reader, RelicStat.class);
-                    RelicLevel level = stat.getLevel();
-                    RelicLoot loot = stat.getLoot();
-                    if (level == null) level = defaultLevel;
-                    if (loot == null) loot = defaultLoot;
-                    try (Writer writer = Files.newBufferedWriter(path)) {
-                        SERIALIZER.toJson(new RelicStat(loot, level), writer);
-                    }
-                    RelicUtils.Level.LEVEL.put(relic, level);
-                    RelicUtils.Worldgen.LOOT.put(relic, loot);
-                }
+                RelicItem<? extends RelicStats> relic = (RelicItem<? extends RelicStats>) item;
+                setupRelic(dir, relic);
             }
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    protected static <T extends RelicStats> void setupRelic(Path dir, RelicItem<T> relic) throws IOException {
+        Path path = dir.resolve(relic.getRegistryName().getPath() + "." + "json");
+        RelicStats defaultStats = null;
+        try {
+            defaultStats = relic.getConfigClass().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        RelicLoot defaultLoot = new RelicLoot(relic.getLootChests()
+                .stream().map(ResourceLocation::toString).collect(Collectors.toList()), relic.getWorldgenChance());
+        RelicLevel defaultLevel = new RelicLevel(relic.getMaxLevel(), relic.getInitialExp(), relic.getExpRatio());
+        SpecificRelicConfig<RelicStats> defaultConfig = new SpecificRelicConfig<>(defaultStats, defaultLoot, defaultLevel);
+        if (!Files.exists(path)) setupDefaultConfig(path, defaultConfig);
+        SpecificRelicConfig<T> relicConfig = getConfig(path, relic);
+        register(relic, relicConfig);
+    }
+
+    protected static <T extends RelicStats> SpecificRelicConfig<T> getConfig(Path path, RelicItem<T> relicItem) {
+        SpecificRelicConfig<T> result = null;
+        try {
+            Reader reader = Files.newBufferedReader(path);
+            RelicConfig config = SERIALIZER.fromJson(reader, RelicConfig.class);
+            reader.close();
+            T stats = SERIALIZER.fromJson(config.getStats(), relicItem.getConfigClass());
+            RelicLoot loot = config.getLoot();
+            RelicLevel level = config.getLevel();
+            result = new SpecificRelicConfig<>(stats, loot, level);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    protected static <T extends RelicStats> void setupDefaultConfig(Path path, SpecificRelicConfig<T> config) throws IOException {
+        RelicStats defaultStats = config.getStats();
+        RelicConfig abstractConfig = new RelicConfig((JsonObject) SERIALIZER.toJsonTree(defaultStats, defaultStats.getClass()), config.getLoot(), config.getLevel());
+        Writer writer = Files.newBufferedWriter(path);
+        SERIALIZER.toJson(abstractConfig, writer);
+        writer.flush();
+        writer.close();
+    }
+
+    protected static <T extends RelicStats> void register(RelicItem<T> relicItem, SpecificRelicConfig<T> config) {
+        relicItem.setConfig(config.getStats());
+        RelicUtils.Worldgen.LOOT.put(relicItem, config.getLoot());
+        RelicUtils.Level.LEVEL.put(relicItem, config.getLevel());
     }
 }

@@ -1,13 +1,13 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.monster.piglin.PiglinEntity;
@@ -32,9 +32,13 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.awt.*;
 import java.util.List;
 
-public class BastionRingItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements ICurioItem, IHasTooltip {
+    public static BastionRingItem INSTANCE;
+
     public BastionRingItem() {
         super(Rarity.RARE);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -55,17 +59,23 @@ public class BastionRingItem extends RelicItem implements ICurioItem, IHasToolti
         return RelicUtils.Worldgen.NETHER;
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class BastionRingEvents {
         @SubscribeEvent
         public static void onEntityKill(LivingDeathEvent event) {
+            Stats config = INSTANCE.config;
             if (!(event.getEntityLiving() instanceof PiglinEntity)) return;
             PiglinEntity entity = (PiglinEntity) event.getEntityLiving();
             if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
             if (entity.getCommandSenderWorld().dimension() == World.NETHER
                     && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BASTION_RING.get(), player).isPresent()
-                    && random.nextFloat() <= RelicsConfig.BastionRing.LOCATE_CHANCE.get()) {
+                    && random.nextFloat() <= config.locateChance) {
                 ServerWorld world = (ServerWorld) entity.getCommandSenderWorld();
                 BlockPos bastionPos = world.getChunkSource().getGenerator().findNearestMapFeature(world, Structure.BASTION_REMNANT, player.blockPosition(), 100, false);
                 if (bastionPos == null) return;
@@ -82,5 +92,9 @@ public class BastionRingItem extends RelicItem implements ICurioItem, IHasToolti
                 }
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public float locateChance = 0.3F;
     }
 }

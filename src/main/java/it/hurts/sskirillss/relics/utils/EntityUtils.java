@@ -2,6 +2,8 @@ package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -77,5 +79,13 @@ public class EntityUtils {
             }
         }
         return entity == null ? null : new EntityRayTraceResult(entity, vector3d);
+    }
+
+    public static void applyAttributeModifier(ModifiableAttributeInstance instance, AttributeModifier modifier) {
+        if (!instance.hasModifier(modifier)) instance.addTransientModifier(modifier);
+    }
+
+    public static void removeAttributeModifier(ModifiableAttributeInstance instance, AttributeModifier modifier) {
+        if (instance.hasModifier(modifier)) instance.removeModifier(modifier);
     }
 }

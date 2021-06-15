@@ -1,12 +1,12 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.entities.StellarCatalystProjectileEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -28,9 +28,13 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.Collections;
 import java.util.List;
 
-public class StellarCatalystItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> implements ICurioItem, IHasTooltip {
+    public static StellarCatalystItem INSTANCE;
+
     public StellarCatalystItem() {
         super(Rarity.EPIC);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -51,26 +55,42 @@ public class StellarCatalystItem extends RelicItem implements ICurioItem, IHasTo
         return Collections.singletonList(LootTables.END_CITY_TREASURE);
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class MoonlightWellServerEvents {
         @SubscribeEvent
         public static void onEntityDamage(LivingHurtEvent event) {
+            Stats config = INSTANCE.config;
             if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
             if (!CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.STELLAR_CATALYST.get(), player).isPresent()) return;
             LivingEntity target = event.getEntityLiving();
-            if (event.getAmount() > RelicsConfig.StellarCatalyst.MIN_DAMAGE_AMOUNT.get()
+            if (event.getAmount() > config.minDamage
                     && (target.getCommandSenderWorld().isNight() || target.getCommandSenderWorld().dimension() == World.END)
                     && target.getCommandSenderWorld().canSeeSky(target.blockPosition())
-                    && random.nextFloat() <= RelicsConfig.StellarCatalyst.FALLING_STAR_SUMMON_CHANCE.get()) {
+                    && random.nextFloat() <= config.chance) {
                 StellarCatalystProjectileEntity projectile = new StellarCatalystProjectileEntity((LivingEntity) event.getSource().getEntity(),
-                        event.getEntityLiving(), event.getAmount() * RelicsConfig.StellarCatalyst.FALLING_STAR_DAMAGE_MULTIPLIER.get().floatValue());
+                        event.getEntityLiving(), event.getAmount() * config.damageMultiplier);
                 projectile.setPos(target.getX(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(),
-                        target.getY() + target.getCommandSenderWorld().getRandom().nextInt(RelicsConfig.StellarCatalyst.ADDITIONAL_FALLING_STAR_SUMMON_HEIGHT.get())
-                                + RelicsConfig.StellarCatalyst.MIN_FALLING_STAR_SUMMON_HEIGHT.get())), target.getZ());
+                        target.getY() + target.getCommandSenderWorld().getRandom().nextInt(config.additionalSummonHeight) + config.minSummonHeight)), target.getZ());
                 projectile.owner = player;
                 projectile.getCommandSenderWorld().addFreshEntity(projectile);
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public float chance = 0.15F;
+        public float damageMultiplier = 0.75F;
+        public int additionalSummonHeight = 20;
+        public int minSummonHeight = 20;
+        public int explosionRadius = 3;
+        public float knockbackPower = 1.0F;
+        public int minDamage = 3;
+        public float projectileSpeed = 0.7F;
     }
 }

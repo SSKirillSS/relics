@@ -4,7 +4,6 @@ import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.ResourceLocation;
@@ -50,7 +49,7 @@ public class RelicUtils {
 
         public static int getLevelFromExperience(ItemStack stack, int experience) {
             if (!(stack.getItem() instanceof RelicItem)) return 0;
-            RelicLevel relicLevel = getRelicLevel(stack.getItem());
+            RelicLevel relicLevel = getRelicLevel((RelicItem) stack.getItem());
             int min = 0;
             int max = relicLevel.getMaxLevel();
             while (min <= max) {
@@ -89,7 +88,7 @@ public class RelicUtils {
 
         public static int getTotalExperienceForLevel(ItemStack stack, int level) {
             if (!(stack.getItem() instanceof RelicItem)) return 0;
-            return getTotalExperienceForLevel(getRelicLevel(stack.getItem()), level);
+            return getTotalExperienceForLevel(getRelicLevel((RelicItem) stack.getItem()), level);
         }
 
         public static int getTotalExperienceForLevel(RelicLevel relicLevel, int level) {
@@ -98,7 +97,7 @@ public class RelicUtils {
 
         public static void setExperience(ItemStack stack, int experience) {
             if (!(stack.getItem() instanceof RelicItem)) return;
-            RelicLevel relicLevel = getRelicLevel(stack.getItem());
+            RelicLevel relicLevel = getRelicLevel((RelicItem) stack.getItem());
             experience = Math.max(0, Math.min(relicLevel.getMaxExperience(), experience));
             NBTUtils.setInt(stack, TAG_LEVEL, Math.max(0, Math.min(relicLevel.getMaxLevel(), getLevelFromExperience(stack, experience))));
             NBTUtils.setInt(stack, TAG_EXPERIENCE, experience);
@@ -114,9 +113,8 @@ public class RelicUtils {
             setExperience(stack, getExperience(stack) - experience);
         }
 
-        protected static RelicLevel getRelicLevel(Item item) {
-            if (!(item instanceof RelicItem)) return null;
-            return LEVEL.get(item);
+        protected static RelicLevel getRelicLevel(RelicItem relic) {
+            return LEVEL.get(relic) == null ? new RelicLevel(relic.getMaxLevel(), relic.getInitialExp(), relic.getExpRatio()) : LEVEL.get(relic);
         }
     }
 

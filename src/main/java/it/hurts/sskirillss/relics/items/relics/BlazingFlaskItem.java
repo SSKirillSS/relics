@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -37,7 +38,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class BlazingFlaskItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_FIRE_AMOUNT = "fire";
 
     public BlazingFlaskItem() {
@@ -83,31 +84,30 @@ public class BlazingFlaskItem extends RelicItem implements ICurioItem, IHasToolt
                                 player.getZ() + MathUtils.randomFloat(world.getRandom()) * 0.5F, 0, -0.25F, 0);
                         for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox()
                                 .inflate(0.5D).expandTowards(0, -getGroundHeight(player) - 1, 0))) {
-                            if (entity != player) entity.setSecondsOnFire(RelicsConfig.BlazingFlask.IGNITE_DURATION.get());
+                            if (entity != player) entity.setSecondsOnFire(config.igniteDuration);
                         }
                     }
                     player.fallDistance = 0.0F;
                     double riseVelocity = 0.0D;
                     player.abilities.flying = fire > 0;
-                    player.setDeltaMovement(player.getDeltaMovement().multiply(RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get(),
-                            RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get(), RelicsConfig.BlazingFlask.LEVITATION_SPEED_MULTIPLIER.get()));
+                    player.setDeltaMovement(player.getDeltaMovement().multiply(config.levitationSpeed, config.levitationSpeed, config.levitationSpeed));
                     if (player.zza > 0) player.setDeltaMovement(player.getDeltaMovement().x() + new Vector3d(player.getLookAngle().x,
                                     0, player.getLookAngle().z).normalize().x() * 0.025F, player.getDeltaMovement().y(),
                             player.getDeltaMovement().z() + new Vector3d(player.getLookAngle().x, 0, player.getLookAngle().z).normalize().z() * 0.025F);
                     if (world.isClientSide && player instanceof ClientPlayerEntity && ((ClientPlayerEntity) player).input.jumping) riseVelocity = 0.04D;
                     if (!player.isShiftKeyDown()) player.setDeltaMovement(player.getDeltaMovement().x(), riseVelocity * ((getGroundHeight(player)
-                            - (player.getY() - RelicsConfig.BlazingFlask.LEVITATION_HEIGHT.get()))), player.getDeltaMovement().z());
-                    if (player.getY() - RelicsConfig.BlazingFlask.LEVITATION_HEIGHT.get() > getGroundHeight(player)) {
+                            - (player.getY() - config.levitationHeight))), player.getDeltaMovement().z());
+                    if (player.getY() - config.levitationHeight > getGroundHeight(player)) {
                         if (player.getDeltaMovement().y() > 0) player.setDeltaMovement(player.getDeltaMovement().x(), 0, player.getDeltaMovement().z());
-                        player.setDeltaMovement(player.getDeltaMovement().x(), -Math.min(player.getY() - RelicsConfig.BlazingFlask.LEVITATION_HEIGHT.get()
+                        player.setDeltaMovement(player.getDeltaMovement().x(), -Math.min(player.getY() - config.levitationHeight
                                 - getGroundHeight(player), 2) / 8, player.getDeltaMovement().z());
                     }
                     if (player.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, fire - 1);
                 }
             }
-            if (!world.isClientSide() && !player.isSpectator() && player.tickCount % RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_COOLDOWN.get() == 0
-                    && fire < RelicsConfig.BlazingFlask.FIRE_CAPACITY.get()) {
-                List<BlockPos> sphere = WorldUtils.getBlockSphere(player.blockPosition(), RelicsConfig.BlazingFlask.FIRE_CONSUMPTION_RADIUS.get());
+            if (!world.isClientSide() && !player.isSpectator() && player.tickCount % config.consumptionCooldown == 0
+                    && fire < config.capacity) {
+                List<BlockPos> sphere = WorldUtils.getBlockSphere(player.blockPosition(), config.consumptionRadius);
                 for (BlockPos pos : sphere) {
                     if (world.getBlockState(pos).getBlock() instanceof AbstractFireBlock) {
                         world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.PLAYERS, 1.0F, 1.0F);
@@ -150,6 +150,11 @@ public class BlazingFlaskItem extends RelicItem implements ICurioItem, IHasToolt
         return RelicUtils.Worldgen.NETHER;
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class BlazingFlaskServerEvents {
         @SubscribeEvent
@@ -171,5 +176,14 @@ public class BlazingFlaskItem extends RelicItem implements ICurioItem, IHasToolt
                 }
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public float levitationHeight = 5.0F;
+        public float levitationSpeed = 0.75F;
+        public int igniteDuration = 5;
+        public int consumptionCooldown = 10;
+        public int consumptionRadius = 10;
+        public int capacity = 100;
     }
 }

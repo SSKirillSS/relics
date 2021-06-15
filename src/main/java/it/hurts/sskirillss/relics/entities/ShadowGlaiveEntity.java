@@ -1,9 +1,9 @@
 package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.init.EntityRegistry;
+import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -69,15 +69,16 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     }
 
     private void locateNearestTarget() {
+        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getConfig();
         int bounces = entityData.get(BOUNCES);
-        if (level.getRandom().nextFloat() < Math.min(1, bounces * RelicsConfig.ShadowGlaive.ADDITIONAL_BOUNCE_CHANCE_MULTIPLIER.get())) {
+        if (level.getRandom().nextFloat() < Math.min(1, bounces * config.bounceChanceMultiplier)) {
             this.remove();
             return;
         }
         String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
         List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
         List<LivingEntity> entitiesAround = level.getEntitiesOfClass(LivingEntity.class,
-                this.getBoundingBox().inflate(RelicsConfig.ShadowGlaive.ADDITIONAL_BOUNCE_RADIUS.get()));
+                this.getBoundingBox().inflate(config.bounceRadius));
         entitiesAround.removeIf(target -> bouncedEntities.contains(target.getUUID().toString()) || target == owner);
         entitiesAround.sort((o1, o2) -> (int) Math.round(o1.position().distanceTo(o2.position())));
         if (entitiesAround.isEmpty()) {
@@ -100,19 +101,21 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     @Override
     public void tick() {
         super.tick();
+        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getConfig();
         level.addParticle(new CircleTintData(new Color(0.5F, 0.05F, 0.7F), 0.1F, 40, 0.95F, false),
                 this.xo, this.yo, this.zo, 0.0D, 0.0D, 0.0D);
         if (level.isClientSide()) return;
         if (this.tickCount > 300) this.remove();
         if (target == null) this.locateNearestTarget();
         if (target.isAlive()) EntityUtils.moveTowardsPosition(this, new Vector3d(target.getX(),
-                target.getY() + target.getBbHeight() * 0.5F, target.getZ()), RelicsConfig.ShadowGlaive.MOVEMENT_SPEED.get().floatValue());
+                target.getY() + target.getBbHeight() * 0.5F, target.getZ()), config.projectileSpeed);
         else this.locateNearestTarget();
     }
 
     @Override
     protected void onHit(@Nonnull RayTraceResult rayTraceResult) {
         if (level.isClientSide()) return;
+        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getConfig();
         switch (rayTraceResult.getType()) {
             case BLOCK: {
                 if (level.getBlockState(((BlockRayTraceResult) rayTraceResult).getBlockPos()).canOcclude()) this.remove();
@@ -124,13 +127,12 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
                 LivingEntity entity = (LivingEntity) entityRayTraceResult.getEntity();
                 if (entity == owner) return;
                 int bounces = entityData.get(BOUNCES);
-                if (bounces > RelicsConfig.ShadowGlaive.MAX_BOUNCES_AMOUNT.get()) this.remove();
+                if (bounces > config.maxBounces) this.remove();
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
                 if (!bouncedEntities.contains(entity.getUUID().toString())) {
-                    entity.hurt(owner != null ? DamageSource.playerAttack(owner)
-                            : DamageSource.GENERIC, Math.max(RelicsConfig.ShadowGlaive.MIN_DAMAGE_PER_BOUNCE.get().floatValue(),
-                            damage - (bounces * (damage * RelicsConfig.ShadowGlaive.DAMAGE_MULTIPLIER_PER_BOUNCE.get().floatValue()))));
+                    entity.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC, Math.max(config.minDamagePerBounce,
+                            damage - (bounces * (damage * config.damageMultiplierPerBounce))));
                     entityData.set(BOUNCED_ENTITIES, bouncedEntitiesString + "," + entity.getUUID());
                 }
                 entityData.set(BOUNCES, bounces + 1);

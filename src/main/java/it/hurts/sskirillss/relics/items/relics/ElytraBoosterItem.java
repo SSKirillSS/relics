@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
@@ -26,7 +27,7 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
-public class ElytraBoosterItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_BREATH_AMOUNT = "breath";
 
     public ElytraBoosterItem() {
@@ -59,9 +60,9 @@ public class ElytraBoosterItem extends RelicItem implements ICurioItem, IHasTool
                 if (player.isShiftKeyDown() && breath > 0) {
                     Vector3d look = player.getLookAngle();
                     Vector3d motion = player.getDeltaMovement();
-                    player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * RelicsConfig.ElytraBooster.MOVEMENT_SPEED_MULTIPLIER.get() - motion.x) * 0.5D,
-                            look.y * 0.1D + (look.y * RelicsConfig.ElytraBooster.MOVEMENT_SPEED_MULTIPLIER.get() - motion.y) * 0.5D,
-                            look.z * 0.1D + (look.z * RelicsConfig.ElytraBooster.MOVEMENT_SPEED_MULTIPLIER.get() - motion.z) * 0.5D));
+                    player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * config.flySpeed - motion.x) * 0.5D,
+                            look.y * 0.1D + (look.y * config.flySpeed - motion.y) * 0.5D,
+                            look.z * 0.1D + (look.z * config.flySpeed - motion.z) * 0.5D));
                     player.getCommandSenderWorld().addParticle(ParticleTypes.DRAGON_BREATH,
                             player.getX() + (MathUtils.randomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
                             player.getY() + (MathUtils.randomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
@@ -70,24 +71,24 @@ public class ElytraBoosterItem extends RelicItem implements ICurioItem, IHasTool
                     if (player.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath - 1);
                     for (LivingEntity entity : player.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(2.0F))) {
                         if (!entity.getUUID().equals(player.getUUID())) {
-                            entity.setDeltaMovement(entity.position().subtract(player.position()).normalize().multiply(RelicsConfig.ElytraBooster.RAM_KNOCKBACK_POWER.get(),
-                                    RelicsConfig.ElytraBooster.RAM_KNOCKBACK_POWER.get(), RelicsConfig.ElytraBooster.RAM_KNOCKBACK_POWER.get()));
-                            entity.hurt(DamageSource.playerAttack(player), RelicsConfig.ElytraBooster.RAM_DAMAGE_AMOUNT.get().floatValue());
+                            entity.setDeltaMovement(entity.position().subtract(player.position()).normalize().multiply(config.ramKnockback,
+                                    config.ramKnockback, config.ramKnockback));
+                            entity.hurt(DamageSource.playerAttack(player), config.ramDamage);
                         }
                     }
                 }
             } else {
-                if (breath < RelicsConfig.ElytraBooster.BREATH_CAPACITY.get()) {
+                if (breath < config.breathCapacity) {
                     if (player.getCommandSenderWorld().dimension() == World.END && player.tickCount %
-                            (RelicsConfig.ElytraBooster.BREATH_REGENERATION_COOLDOWN.get() * 20) == 0)
+                            (config.breathRegenerationCooldown * 20) == 0)
                         NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
                     if (player.isShiftKeyDown()) {
                         for (AreaEffectCloudEntity cloud : player.getCommandSenderWorld().getEntitiesOfClass(AreaEffectCloudEntity.class,
-                                player.getBoundingBox().inflate(RelicsConfig.ElytraBooster.BREATH_CONSUMPTION_RADIUS.get()))) {
+                                player.getBoundingBox().inflate(config.breathConsumptionRadius))) {
                             if (cloud.getParticle() == ParticleTypes.DRAGON_BREATH) {
                                 if (player.tickCount % 5 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
                                 if (cloud.getRadius() <= 0) cloud.remove();
-                                cloud.setRadius(cloud.getRadius() - RelicsConfig.ElytraBooster.BREATH_CONSUMPTION_AMOUNT.get().floatValue());
+                                cloud.setRadius(cloud.getRadius() - config.breathConsumptionSpeed);
                                 Vector3d direction = player.position().add(0, 1, 0).subtract(cloud.position()).normalize();
                                 player.getCommandSenderWorld().addParticle(new CircleTintData(new Color(0.35F, 0.0F, 1.0F),
                                                 (float) player.position().add(0, 1, 0).distanceTo(cloud.position()) * 0.075F,
@@ -105,5 +106,20 @@ public class ElytraBoosterItem extends RelicItem implements ICurioItem, IHasTool
     @Override
     public List<ResourceLocation> getLootChests() {
         return Collections.singletonList(LootTables.END_CITY_TREASURE);
+    }
+
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
+    public static class Stats extends RelicStats {
+        public float flySpeed = 1.5F;
+        public float ramDamage = 5.0F;
+        public float ramKnockback = 3.0F;
+        public int breathConsumptionRadius = 10;
+        public int breathCapacity = 1000;
+        public float breathConsumptionSpeed = 0.02F;
+        public int breathRegenerationCooldown = 2;
     }
 }

@@ -2,12 +2,12 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -31,12 +31,13 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 import java.util.UUID;
 
-public class DrownedBeltItem extends RelicItem implements ICurioItem, IHasTooltip {
-    private static final AttributeModifier DROWNED_BELT_SWIM_SPEED = new AttributeModifier(UUID.fromString("1a0aa526-7a44-42a7-9d6d-a3d2fae599ef"),
-            Reference.MODID + ":" + "drowned_belt_swim_speed", RelicsConfig.DrownedBelt.UNDERWATER_SPEED_MULTIPLIER.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
+public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements ICurioItem, IHasTooltip {
+    public static DrownedBeltItem INSTANCE;
 
     public DrownedBeltItem() {
         super(Rarity.UNCOMMON);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -62,7 +63,8 @@ public class DrownedBeltItem extends RelicItem implements ICurioItem, IHasToolti
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(String identifier, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> result = ICurioItem.super.getAttributeModifiers(identifier, stack);
-        result.put(ForgeMod.SWIM_SPEED.get(), DROWNED_BELT_SWIM_SPEED);
+        result.put(ForgeMod.SWIM_SPEED.get(), new AttributeModifier(UUID.fromString("1a0aa526-7a44-42a7-9d6d-a3d2fae599ef"),
+                Reference.MODID + ":" + "drowned_belt_swim_speed", config.swimSpeedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
         return result;
     }
 
@@ -71,15 +73,21 @@ public class DrownedBeltItem extends RelicItem implements ICurioItem, IHasToolti
         return RelicUtils.Worldgen.AQUATIC;
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class DrownedBeltServerEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
+            Stats config = INSTANCE.config;
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(), player).isPresent()
                         && player.isInWater()) {
-                    event.setAmount(event.getAmount() * RelicsConfig.DrownedBelt.INCOMING_DAMAGE_MULTIPLIER.get().floatValue());
+                    event.setAmount(event.getAmount() * config.incomingDamageMultiplier);
                 }
             }
 
@@ -87,9 +95,15 @@ public class DrownedBeltItem extends RelicItem implements ICurioItem, IHasToolti
                 PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(), player).isPresent()
                         && player.isInWater()) {
-                    event.setAmount(event.getAmount() * RelicsConfig.DrownedBelt.DEALT_DAMAGE_MULTIPLIER.get().floatValue());
+                    event.setAmount(event.getAmount() * config.dealtDamageMultiplier);
                 }
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public float swimSpeedModifier = -0.25F;
+        public float incomingDamageMultiplier = 1.5F;
+        public float dealtDamageMultiplier = 3.0F;
     }
 }

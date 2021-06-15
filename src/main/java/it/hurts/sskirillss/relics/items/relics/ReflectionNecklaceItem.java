@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -48,12 +49,16 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_CHARGE_AMOUNT = "charges";
     public static final String TAG_UPDATE_TIME = "time";
 
+    public static ReflectionNecklaceItem INSTANCE;
+
     public ReflectionNecklaceItem() {
         super(Rarity.EPIC);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -74,9 +79,8 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
         if (livingEntity.tickCount % 20 == 0) {
             int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
             int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
-            if (charges < RelicsConfig.ReflectionNecklace.MAX_CHARGES.get()) {
-                if (time < (charges > 0 ? RelicsConfig.ReflectionNecklace.MIN_TIME_PER_CHARGE.get()
-                        * charges : RelicsConfig.ReflectionNecklace.MIN_TIME_PER_CHARGE.get())) {
+            if (charges < config.maxCharges) {
+                if (time < (charges > 0 ? config.timePerCharge * charges : config.timePerCharge)) {
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
                 } else {
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
@@ -89,6 +93,11 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
     @Override
     public List<ResourceLocation> getLootChests() {
         return RelicUtils.Worldgen.NETHER;
+    }
+
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
     }
 
     public static final ModelResourceLocation RL = new ModelResourceLocation(new ResourceLocation(Reference.MODID, "rn_shield"), "inventory");
@@ -116,6 +125,7 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
     public static class ReflectionNecklaceServerEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
+            Stats config = INSTANCE.config;
             if (event.getEntityLiving() instanceof PlayerEntity
                     && (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), event.getEntityLiving()).isPresent())) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
@@ -124,7 +134,7 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
                         && event.getSource().getEntity() instanceof LivingEntity) {
                     LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
                     if (attacker == null) return;
-                    if (player.position().distanceTo(attacker.position()) < RelicsConfig.ReflectionNecklace.MAX_THROW_DISTANCE.get()) {
+                    if (player.position().distanceTo(attacker.position()) < config.minDistanceForKnockback) {
                         Vector3d motion = attacker.position().subtract(player.position()).normalize().multiply(2F, 1.5F, 2F);
                         if (attacker instanceof PlayerEntity) {
                             NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) attacker);
@@ -136,7 +146,7 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
                         event.setCanceled(true);
                     }
                     if (attacker != player && !CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), attacker).isPresent())
-                        attacker.hurt(DamageSource.playerAttack(player), event.getAmount() * RelicsConfig.ReflectionNecklace.REFLECTION_DAMAGE_MULTIPLIER.get().floatValue());
+                        attacker.hurt(DamageSource.playerAttack(player), event.getAmount() * config.reflectedDamageMultiplier);
                     NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) - 1);
                 }
             }
@@ -248,5 +258,12 @@ public class ReflectionNecklaceItem extends RelicItem implements ICurioItem, IHa
                 }
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int maxCharges = 3;
+        public int timePerCharge = 60;
+        public int minDistanceForKnockback = 10;
+        public float reflectedDamageMultiplier = 2.0F;
     }
 }

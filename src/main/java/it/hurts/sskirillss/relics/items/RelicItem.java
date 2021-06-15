@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -18,7 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class RelicItem extends Item {
+public abstract class RelicItem<T extends RelicStats> extends Item {
+    protected T config;
+
     public RelicItem(Rarity rarity) {
         super(new Item.Properties()
                 .tab(RelicsTab.RELICS_TAB)
@@ -85,5 +88,17 @@ public class RelicItem extends Item {
 
     public List<ResourceLocation> getLootChests() {
         return Lists.newArrayList();
+    }
+
+    public Class<T> getConfigClass() {
+        return (Class<T>) RelicStats.class;
+    }
+
+    public T getConfig() {
+        return this.config;
+    }
+
+    public void setConfig(T config) {
+        this.config = config;
     }
 }

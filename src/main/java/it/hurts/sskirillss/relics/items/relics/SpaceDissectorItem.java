@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.entities.SpaceDissectorEntity;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -21,13 +22,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class SpaceDissectorItem extends RelicItem implements IHasTooltip {
+public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> implements IHasTooltip {
     public static final String TAG_IS_THROWN = "thrown";
     public static final String TAG_UUID = "uuid";
     public static final String TAG_UPDATE_TIME = "time";
 
+    public static SpaceDissectorItem INSTANCE;
+
     public SpaceDissectorItem() {
         super(Rarity.EPIC);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -36,8 +41,7 @@ public class SpaceDissectorItem extends RelicItem implements IHasTooltip {
         if (handIn == Hand.MAIN_HAND && !playerIn.getCooldowns().isOnCooldown(stack.getItem())) {
             if (!NBTUtils.getBoolean(stack, TAG_IS_THROWN, false)) {
                 SpaceDissectorEntity entity = new SpaceDissectorEntity(worldIn, playerIn);
-                entity.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, 1.0F,
-                        RelicsConfig.SpaceDissector.MOVEMENT_SPEED.get().floatValue(), 0.0F);
+                entity.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, 1.0F, config.projectileSpeed, 0.0F);
                 NBTUtils.setBoolean(stack, TAG_IS_THROWN, true);
                 NBTUtils.setString(stack, TAG_UUID, entity.getUUID().toString());
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
@@ -56,18 +60,18 @@ public class SpaceDissectorItem extends RelicItem implements IHasTooltip {
                                         dissector.getEntityData().set(SpaceDissectorEntity.IS_RETURNING, true);
                                     }
                                 } else {
-                                    if (playerIn.position().distanceTo(dissector.position()) > RelicsConfig.SpaceDissector.DISTANCE_FOR_TELEPORT.get()) {
+                                    if (playerIn.position().distanceTo(dissector.position()) > config.distanceForTeleport) {
                                         playerIn.teleportTo(dissector.getX(), dissector.getY(), dissector.getZ());
                                         worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(),
                                                 SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                         dissector.remove();
-                                        playerIn.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
+                                        playerIn.getCooldowns().addCooldown(stack.getItem(), config.cooldownAfterTeleport * 20);
                                         NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
                                     }
                                 }
                             }
                         } else {
-                            playerIn.getCooldowns().addCooldown(stack.getItem(), RelicsConfig.SpaceDissector.COOLDOWN_AFTER_TELEPORT.get() * 20);
+                            playerIn.getCooldowns().addCooldown(stack.getItem(), config.cooldownAfterTeleport * 20);
                             NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
                         }
                     }
@@ -81,7 +85,7 @@ public class SpaceDissectorItem extends RelicItem implements IHasTooltip {
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (entityIn.tickCount % 20 == 0 && NBTUtils.getBoolean(stack, TAG_IS_THROWN, false)) {
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) + 1);
-            if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) > RelicsConfig.SpaceDissector.MAX_THROWN_TIME.get()) {
+            if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) > config.maxThrownTime) {
                 NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
             }
         }
@@ -111,5 +115,23 @@ public class SpaceDissectorItem extends RelicItem implements IHasTooltip {
     @Override
     public List<ResourceLocation> getLootChests() {
         return Collections.singletonList(LootTables.END_CITY_TREASURE);
+    }
+
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
+    public static class Stats extends RelicStats {
+        public float projectileSpeed = 0.75F;
+        public int maxThrownTime = 60;
+        public int timeBeforeReturn = 10;
+        public int distanceForTeleport = 5;
+        public int cooldownAfterTeleport = 30;
+        public int cooldownAfterReturn = 5;
+        public int maxBounces = 10;
+        public int additionalTimeAfterBounce = 4;
+        public int baseDamage = 4;
+        public float damageMultiplierPerBounce = 2.0F;
     }
 }

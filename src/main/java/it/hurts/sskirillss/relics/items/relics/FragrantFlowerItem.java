@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -36,12 +37,16 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
-public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_NECTAR_AMOUNT = "nectar";
     public static final String TAG_UPDATE_TIME = "time";
 
+    public static FragrantFlowerItem INSTANCE;
+
     public FragrantFlowerItem() {
         super(Rarity.UNCOMMON);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -67,17 +72,16 @@ public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasToo
             int nectar = NBTUtils.getInt(stack, TAG_NECTAR_AMOUNT, 0);
             int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
             for (BeeEntity bee : world.getEntitiesOfClass(BeeEntity.class,
-                    player.getBoundingBox().inflate(RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get(),
-                            RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_LURING_RADIUS.get()))) {
+                    player.getBoundingBox().inflate(config.luringRadius, config.luringRadius, config.luringRadius))) {
                 if (bee.getPersistentAngerTarget() != null && bee.getPersistentAngerTarget().equals(player.getUUID())) {
                     bee.setLastHurtByMob(null);
                     bee.setPersistentAngerTarget(null);
                     bee.setTarget(null);
                     bee.setRemainingPersistentAngerTime(0);
                 }
-                if (bee.hasNectar() && nectar < RelicsConfig.FragrantFlower.NECTAR_CAPACITY.get()) {
+                if (bee.hasNectar() && nectar < config.capacity) {
                     bee.getNavigation().moveTo(player.getX(), player.getY(), player.getZ(), 1.0F);
-                    if (player.position().distanceTo(bee.position()) < RelicsConfig.FragrantFlower.NECTAR_CONSUMPTION_RADIUS.get()) {
+                    if (player.position().distanceTo(bee.position()) < config.consumptionRadius) {
                         NBTUtils.setInt(stack, TAG_NECTAR_AMOUNT, nectar + 1);
                         bee.dropOffNectar();
                         world.playSound(null, player.getX(), player.getY(), player.getZ(),
@@ -87,7 +91,7 @@ public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasToo
             }
             if (player.isShiftKeyDown()) {
                 if (!player.getCooldowns().isOnCooldown(stack.getItem()) && nectar > 0) {
-                    float radius = RelicsConfig.FragrantFlower.EFFECT_RADIUS.get();
+                    float radius = config.effectRadius;
                     double extraY = player.getY() + 0.5F;
                     for (int i = 0; i < 5; i++) {
                         float angle = (0.01F * (player.tickCount * 3 + i * 125));
@@ -125,7 +129,7 @@ public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasToo
                                 if (block instanceof IGrowable && !(block instanceof GrassBlock)) {
                                     IGrowable plant = (IGrowable) block;
                                     if (!world.isClientSide()) {
-                                        for (int i = 0; i < RelicsConfig.FragrantFlower.GROW_EFFICIENCY.get(); i++) {
+                                        for (int i = 0; i < config.growIterations; i++) {
                                             if (plant.isValidBonemealTarget(world, pos, state, world.isClientSide)
                                                     && plant.isBonemealSuccess(world, world.random, pos, state)) {
                                                 plant.performBonemeal((ServerWorld) world,
@@ -141,10 +145,9 @@ public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasToo
                             for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class,
                                     player.getBoundingBox().inflate(radius))) {
                                 if (entity.isInvertedHealAndHarm()) {
-                                    entity.hurt(DamageSource.playerAttack(player),
-                                            RelicsConfig.FragrantFlower.HEAL_AMOUNT.get().floatValue());
+                                    entity.hurt(DamageSource.playerAttack(player), config.healAmount);
                                 } else {
-                                    entity.heal(RelicsConfig.FragrantFlower.HEAL_AMOUNT.get().floatValue());
+                                    entity.heal(config.healAmount);
                                 }
                             }
                         }
@@ -161,16 +164,21 @@ public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasToo
         return Collections.singletonList(LootTables.JUNGLE_TEMPLE);
     }
 
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class FragrantFlowerServerEvents {
         @SubscribeEvent
         public static void onEntityDamage(LivingHurtEvent event) {
+            Stats config = INSTANCE.config;
             if (event.getSource().getEntity() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
                 if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.FRAGRANT_FLOWER.get(), player).isPresent()) {
                     for (BeeEntity bee : player.getCommandSenderWorld().getEntitiesOfClass(BeeEntity.class, player.getBoundingBox()
-                            .inflate(RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(),
-                                    RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get()))) {
+                            .inflate(config.aggroRadius, config.aggroRadius, config.aggroRadius))) {
                         if (!(event.getEntityLiving() instanceof BeeEntity)) {
                             bee.setLastHurtByMob(event.getEntityLiving());
                             bee.setPersistentAngerTarget(event.getEntityLiving().getUUID());
@@ -184,13 +192,23 @@ public class FragrantFlowerItem extends RelicItem implements ICurioItem, IHasToo
             if (event.getSource().getEntity() instanceof BeeEntity) {
                 BeeEntity bee = (BeeEntity) event.getSource().getEntity();
                 for (PlayerEntity player : bee.getCommandSenderWorld().getEntitiesOfClass(PlayerEntity.class, bee.getBoundingBox()
-                        .inflate(RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(), RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get(),
-                                RelicsConfig.FragrantFlower.BEE_AGGRO_RADIUS.get()))) {
+                        .inflate(config.aggroRadius, config.aggroRadius, config.aggroRadius))) {
                     if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.FRAGRANT_FLOWER.get(), player).isPresent()) {
-                        event.setAmount(event.getAmount() * RelicsConfig.FragrantFlower.BEE_DAMAGE_MULTIPLIER.get().floatValue());
+                        event.setAmount(event.getAmount() * config.damageMultiplier);
                     }
                 }
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int luringRadius = 16;
+        public int aggroRadius = 32;
+        public float damageMultiplier = 3.0F;
+        public int capacity = 10;
+        public int consumptionRadius = 3;
+        public int effectRadius = 5;
+        public int growIterations = 2;
+        public int healAmount = 10;
     }
 }

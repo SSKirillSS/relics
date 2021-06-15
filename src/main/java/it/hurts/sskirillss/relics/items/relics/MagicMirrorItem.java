@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MagicMirrorItem extends RelicItem implements IHasTooltip {
+public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> implements IHasTooltip {
     public MagicMirrorItem() {
         super(Rarity.RARE);
     }
@@ -51,8 +52,7 @@ public class MagicMirrorItem extends RelicItem implements IHasTooltip {
             serverPlayer.teleportTo(world, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, playerIn.yRot, playerIn.xRot);
             worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(),
                     SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            if (!playerIn.abilities.instabuild) playerIn.getCooldowns().addCooldown(ItemRegistry.MAGIC_MIRROR.get(),
-                    RelicsConfig.MagicMirror.USAGE_COOLDOWN.get() * 20);
+            if (!playerIn.abilities.instabuild) playerIn.getCooldowns().addCooldown(ItemRegistry.MAGIC_MIRROR.get(), config.cooldown * 20);
         } else playerIn.displayClientMessage(new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_location"), true);
         return super.use(worldIn, playerIn, handIn);
     }
@@ -60,5 +60,14 @@ public class MagicMirrorItem extends RelicItem implements IHasTooltip {
     @Override
     public List<ResourceLocation> getLootChests() {
         return RelicUtils.Worldgen.CAVE;
+    }
+
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
+    }
+
+    public static class Stats extends RelicStats {
+        public int cooldown = 60;
     }
 }

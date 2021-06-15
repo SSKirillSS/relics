@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -25,13 +26,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.lang.*;
 
-public class SpatialSignItem extends RelicItem implements IHasTooltip {
+public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> implements IHasTooltip {
     public static final String TAG_POSITION = "pos";
     public static final String TAG_TIME = "time";
     public static final String TAG_WORLD = "world";
 
+    public static SpatialSignItem INSTANCE;
+
     public SpatialSignItem() {
         super(Rarity.RARE);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -59,7 +64,7 @@ public class SpatialSignItem extends RelicItem implements IHasTooltip {
         if (NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
             NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.position()));
             NBTUtils.setString(stack, TAG_WORLD, playerIn.getCommandSenderWorld().dimension().location().toString());
-            NBTUtils.setInt(stack, TAG_TIME, RelicsConfig.SpatialSign.TIME_BEFORE_ACTIVATION.get());
+            NBTUtils.setInt(stack, TAG_TIME, config.timeBeforeActivation);
             worldIn.playSound(playerIn, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
         } else if (playerIn.isShiftKeyDown()) teleportPlayer(playerIn, stack);
         return super.use(worldIn, playerIn, handIn);
@@ -89,6 +94,7 @@ public class SpatialSignItem extends RelicItem implements IHasTooltip {
     }
 
     public static void teleportPlayer(PlayerEntity player, ItemStack stack) {
+        Stats config = INSTANCE.config;
         if (player.getCommandSenderWorld().isClientSide()) return;
         Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
         ServerWorld world = NBTUtils.parseWorld(player.getCommandSenderWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
@@ -97,7 +103,7 @@ public class SpatialSignItem extends RelicItem implements IHasTooltip {
         player.getCommandSenderWorld().playSound(player, pos.x(), pos.y(), pos.z(),
                 SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
         if (!player.abilities.instabuild) player.getCooldowns().addCooldown(stack.getItem(),
-                (RelicsConfig.SpatialSign.TIME_BEFORE_ACTIVATION.get() - NBTUtils.getInt(stack, TAG_TIME, 0)) * 20);
+                (config.timeBeforeActivation - NBTUtils.getInt(stack, TAG_TIME, 0)) * 20);
         NBTUtils.setString(stack, TAG_WORLD, "");
         NBTUtils.setString(stack, TAG_POSITION, "");
         NBTUtils.setInt(stack, TAG_TIME, -1);
@@ -106,6 +112,11 @@ public class SpatialSignItem extends RelicItem implements IHasTooltip {
     @Override
     public List<ResourceLocation> getLootChests() {
         return RelicUtils.Worldgen.CAVE;
+    }
+
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
@@ -123,5 +134,9 @@ public class SpatialSignItem extends RelicItem implements IHasTooltip {
                 event.setCanceled(true);
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int timeBeforeActivation = 30;
     }
 }

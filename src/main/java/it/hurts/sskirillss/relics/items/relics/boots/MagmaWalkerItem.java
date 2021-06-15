@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.blocks.MagmaStoneBlock;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
@@ -31,7 +32,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class MagmaWalkerItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem, IHasTooltip {
     public MagmaWalkerItem() {
         super(Rarity.RARE);
     }
@@ -70,8 +71,10 @@ public class MagmaWalkerItem extends RelicItem implements ICurioItem, IHasToolti
         return RelicUtils.Worldgen.NETHER;
     }
 
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class MagmaWalkerServerEvents {
+
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
             if (event.getSource() == DamageSource.HOT_FLOOR) {
@@ -81,7 +84,6 @@ public class MagmaWalkerItem extends RelicItem implements ICurioItem, IHasToolti
                 }
             }
         }
-
         @SubscribeEvent
         public static void onLivingAttack(LivingAttackEvent event) {
             if (event.getSource() == DamageSource.HOT_FLOOR) {

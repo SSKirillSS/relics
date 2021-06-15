@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.hurts.sskirillss.relics.configs.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -32,12 +33,16 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class JellyfishNecklaceItem extends RelicItem implements ICurioItem, IHasTooltip {
+public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats> implements ICurioItem, IHasTooltip {
     public static final String TAG_TIME = "time";
     public static final String TAG_CHARGES = "charges";
 
+    public static JellyfishNecklaceItem INSTANCE;
+
     public JellyfishNecklaceItem() {
         super(Rarity.UNCOMMON);
+
+        INSTANCE = this;
     }
 
     @Override
@@ -61,7 +66,7 @@ public class JellyfishNecklaceItem extends RelicItem implements ICurioItem, IHas
                 int time = NBTUtils.getInt(stack, TAG_TIME, 0);
                 int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
                 if (livingEntity.isInWater()) {
-                    if (time < RelicsConfig.JellyfishNecklace.TIME_PER_CHARGE.get() && charges < RelicsConfig.JellyfishNecklace.MAX_CHARGES_AMOUNT.get()) {
+                    if (time < config.chargePreparationTime && charges < config.maxCharges) {
                         NBTUtils.setInt(stack, TAG_TIME, time + 1);
                     } else {
                         NBTUtils.setInt(stack, TAG_TIME, 0);
@@ -69,13 +74,13 @@ public class JellyfishNecklaceItem extends RelicItem implements ICurioItem, IHas
                     }
 
                     if (charges > 0) {
-                        List<LivingEntity> entities = livingEntity.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox()
-                                .inflate(RelicsConfig.JellyfishNecklace.ATTACK_RADIUS_MULTIPLIER.get()));
+                        List<LivingEntity> entities = livingEntity.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class,
+                                livingEntity.getBoundingBox().inflate(config.shockRadius));
                         if (!entities.isEmpty()) {
                             for (LivingEntity entity : entities) {
                                 if (entity.isInWater() && entity != livingEntity && !(entity instanceof TameableEntity
                                         && ((TameableEntity) entity).isOwnedBy(livingEntity))) {
-                                    entity.hurt(DamageSource.playerAttack((PlayerEntity) livingEntity), RelicsConfig.JellyfishNecklace.DAMAGE_PER_CHARGE.get().floatValue());
+                                    entity.hurt(DamageSource.playerAttack((PlayerEntity) livingEntity), config.damagePerCharge);
                                     NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
                                 }
                             }
@@ -91,6 +96,11 @@ public class JellyfishNecklaceItem extends RelicItem implements ICurioItem, IHas
     @Override
     public List<ResourceLocation> getLootChests() {
         return RelicUtils.Worldgen.AQUATIC;
+    }
+
+    @Override
+    public Class<Stats> getConfigClass() {
+        return Stats.class;
     }
 
     @Override
@@ -115,10 +125,19 @@ public class JellyfishNecklaceItem extends RelicItem implements ICurioItem, IHas
     public static class JellyfishNecklaceEvents {
         @SubscribeEvent
         public static void onEntityHeal(LivingHealEvent event) {
+            Stats config = INSTANCE.config;
             if (event.getEntityLiving() instanceof PlayerEntity && event.getEntityLiving().isInWater()
                     && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.JELLYFISH_NECKLACE.get(), event.getEntityLiving()).isPresent()) {
-                event.setAmount(event.getAmount() * RelicsConfig.JellyfishNecklace.HEALING_MULTIPLIER.get().floatValue());
+                event.setAmount(event.getAmount() * config.healMultiplier);
             }
         }
+    }
+
+    public static class Stats extends RelicStats {
+        public int chargePreparationTime = 60;
+        public int maxCharges = 10;
+        public int damagePerCharge = 10;
+        public float healMultiplier = 2.0F;
+        public float shockRadius = 1.2F;
     }
 }
