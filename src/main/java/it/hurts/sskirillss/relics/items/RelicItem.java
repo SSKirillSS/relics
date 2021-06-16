@@ -84,7 +84,22 @@ public abstract class RelicItem<T extends RelicStats> extends Item {
     }
 
     public float getWorldgenChance() {
-        return 0.2F;
+        float chance = 0F;
+        switch (new ItemStack(this).getRarity()) {
+            case COMMON:
+                chance = 0.15F;
+                break;
+            case UNCOMMON:
+                chance = 0.125F;
+                break;
+            case RARE:
+                chance = 0.1F;
+                break;
+            case EPIC:
+                chance = 0.075F;
+                break;
+        }
+        return chance;
     }
 
     public List<ResourceLocation> getLootChests() {

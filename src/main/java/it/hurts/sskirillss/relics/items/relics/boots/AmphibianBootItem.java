@@ -75,11 +75,6 @@ public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> implem
     }
 
     @Override
-    public float getWorldgenChance() {
-        return super.getWorldgenChance();
-    }
-
-    @Override
     public Class<Stats> getConfigClass() {
         return Stats.class;
     }
