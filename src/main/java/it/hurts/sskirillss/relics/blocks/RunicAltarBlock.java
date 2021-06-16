@@ -49,7 +49,7 @@ public class RunicAltarBlock extends Block {
         Direction direction = hit.getDirection();
         if (direction == Direction.DOWN) return ActionResultType.FAIL;
         ItemStack handStack = player.getItemInHand(handIn);
-        if (handStack.getItem() != ItemRegistry.BLANK_RUNE.get()) {
+        if (handStack.getItem() != ItemRegistry.RUNIC_HAMMER.get()) {
             if (altar.getCraftingProgress() != 0) return ActionResultType.FAIL;
             ItemStack stack = altar.getStack(direction);
             if (stack == null) return ActionResultType.FAIL;

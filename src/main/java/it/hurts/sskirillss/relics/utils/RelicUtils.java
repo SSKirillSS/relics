@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.utils;
 import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
+import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -175,7 +176,6 @@ public class RelicUtils {
         public static void setDurability(ItemStack stack, int durability) {
             if (!(stack.getItem() instanceof RelicItem)) return;
             NBTUtils.setInt(stack, TAG_DURABILITY, MathUtils.clamp(durability, getMaxDurability(stack.getItem()), 0));
-            if (getDurability(stack) == 0) breakRelic(stack);
         }
 
         public static void addDurability(ItemStack stack, int durability) {
@@ -186,8 +186,23 @@ public class RelicUtils {
             setDurability(stack, getDurability(stack) - durability);
         }
 
-        public static void breakRelic(ItemStack stack) {
-            Rarity rarity = stack.getRarity();
+        public static ItemStack getScrap(ItemStack stack) {
+            Item scrap = ItemStack.EMPTY.getItem();
+            switch (stack.getRarity()) {
+                case COMMON:
+                    scrap = ItemRegistry.COMMON_SCRAP.get();
+                    break;
+                case UNCOMMON:
+                    scrap = ItemRegistry.UNCOMMON_SCRAP.get();
+                    break;
+                case RARE:
+                    scrap = ItemRegistry.RARE_SCRAP.get();
+                    break;
+                case EPIC:
+                    scrap = ItemRegistry.EPIC_SCRAP.get();
+                    break;
+            }
+            return new ItemStack(scrap);
         }
     }
 }

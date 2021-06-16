@@ -10,8 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 
 import java.awt.*;
@@ -95,12 +98,22 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
         Random random = level.getRandom();
         BlockPos pos = this.getBlockPos();
         if (relicStack.isEmpty() || getCraftingProgress() == 0) return;
+        if (RelicUtils.Durability.getDurability(relicStack) == 0) {
+            level.addParticle(ParticleTypes.EXPLOSION, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, 0, 0, 0);
+            level.playSound(null, pos, SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            setStack(RelicUtils.Durability.getScrap(relicStack), Direction.UP);
+            setCraftingProgress(0);
+            for (Direction direction : runeDirections)
+                setStack(ItemStack.EMPTY, direction);
+            return;
+        }
         level.addParticle(new CircleTintData(relicStack.getRarity().color.getColor() != null ? new Color(relicStack.getRarity().color.getColor(),
                         false) : new Color(255, 255, 255), random.nextFloat() * 0.025F + 0.04F, 20, 0.94F, true),
                 pos.getX() + 0.5F + MathUtils.randomFloat(random) * 0.2F, pos.getY() + 0.85F,
                 pos.getZ() + 0.5F + MathUtils.randomFloat(random) * 0.2F, 0, random.nextFloat() * 0.05D, 0);
-        if (ticksExisted % 20 != 0 || getRunes().isEmpty()) return;
+        if (ticksExisted % 20 != 0) return;
         if (!level.isClientSide() && random.nextInt(3) == 0) RelicUtils.Durability.takeDurability(relicStack, 1);
+        if (getRunes().isEmpty()) return;
         for (ItemStack stack : getRunes()) {
             if (!(stack.getItem() instanceof RuneItem)) continue;
             RuneItem rune = (RuneItem) stack.getItem();
