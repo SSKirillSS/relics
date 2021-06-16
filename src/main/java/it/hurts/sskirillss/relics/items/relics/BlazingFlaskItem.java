@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.block.AbstractFireBlock;
@@ -38,7 +37,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implements ICurioItem, IHasTooltip {
+public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implements ICurioItem {
     public static final String TAG_FIRE_AMOUNT = "fire";
 
     public BlazingFlaskItem() {
@@ -59,7 +58,7 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
         if (NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0) > 0) {
             tooltip.add(new TranslationTextComponent("tooltip.relics.blazing_flask.tooltip_1", NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0)));
         }
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
+
     }
 
     @Override

@@ -2,10 +2,11 @@ package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
-import it.hurts.sskirillss.relics.utils.*;
-import net.minecraft.client.util.ITooltipFlag;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -17,16 +18,14 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 import java.util.UUID;
 
-public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICurioItem, IHasTooltip {
+public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICurioItem {
     private final MutablePair<String, UUID> SPEED_INFO = new MutablePair<>(Reference.MODID
             + ":" + "out_runner_movement_speed", UUID.fromString("9bf3eeb5-8587-4fb7-ad81-fd76e01f4acf"));
 
@@ -41,12 +40,6 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.out_runner.shift_1"));
         return tooltip;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override

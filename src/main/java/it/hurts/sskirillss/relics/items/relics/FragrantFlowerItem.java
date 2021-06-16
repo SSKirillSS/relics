@@ -3,10 +3,12 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.GrassBlock;
@@ -37,7 +39,7 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
-public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> implements ICurioItem, IHasTooltip {
+public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> implements ICurioItem {
     public static final String TAG_NECTAR_AMOUNT = "nectar";
     public static final String TAG_UPDATE_TIME = "time";
 
@@ -61,7 +63,6 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> impl
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.add(new TranslationTextComponent("tooltip.relics.fragrant_flower.tooltip_1", NBTUtils.getInt(stack, TAG_NECTAR_AMOUNT, 0)));
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override

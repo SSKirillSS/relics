@@ -3,10 +3,11 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,7 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICurioItem, IHasTooltip {
+public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICurioItem {
     public static final String TAG_UPDATE_TIME = "time";
     public static final String TAG_STORED_AMOUNT = "amount";
     public static final String TAG_IS_ACTIVE = "active";
@@ -61,7 +62,6 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
             tooltip.add(new TranslationTextComponent("tooltip.relics.delay_ring.tooltip_1", NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0)));
             tooltip.add(new TranslationTextComponent("tooltip.relics.delay_ring.tooltip_2", NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)));
         }
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override

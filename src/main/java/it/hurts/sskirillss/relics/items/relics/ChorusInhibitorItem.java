@@ -3,9 +3,9 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,7 +33,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.Collections;
 import java.util.List;
 
-public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> implements ICurioItem, IHasTooltip {
+public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> implements ICurioItem {
     public static final String TAG_POSITION = "pos";
     public static final String TAG_TIME = "time";
     public static final String TAG_WORLD = "world";
@@ -63,7 +63,6 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> im
             tooltip.add(new TranslationTextComponent("tooltip.relics.chorus_inhibitor.tooltip_1", pos.x(), pos.y(), pos.z()));
             tooltip.add(new TranslationTextComponent("tooltip.relics.chorus_inhibitor.tooltip_2", NBTUtils.getInt(stack, TAG_TIME, 0)));
         }
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override

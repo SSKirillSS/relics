@@ -6,6 +6,7 @@ import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -45,6 +46,18 @@ public abstract class RelicItem<T extends RelicStats> extends Item {
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
+        return Lists.newArrayList();
+    }
+
+    public List<ITextComponent> getAltTooltip(ItemStack stack) {
+        return Lists.newArrayList();
+    }
+
+    public List<ITextComponent> getControlTooltip(ItemStack stack) {
+        return Lists.newArrayList();
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (worldIn == null) return;
@@ -63,6 +76,29 @@ public abstract class RelicItem<T extends RelicStats> extends Item {
         tooltip.add(TooltipUtils.drawProgressBar(percentage, RelicsConfig.RelicsGeneral.LEVELING_BAR_STYLE.get(),
                 RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_LOW.get(), RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_MEDIUM.get(),
                 RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_HIGH.get(), RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_NEUTRAL.get(), true));
+        if (!getShiftTooltip(stack).isEmpty() && Screen.hasShiftDown()) {
+            tooltip.add(new StringTextComponent(" "));
+            tooltip.add(new TranslationTextComponent("tooltip.relics.shift.divider_up"));
+            tooltip.addAll(getShiftTooltip(stack));
+            tooltip.add(new TranslationTextComponent("tooltip.relics.shift.divider_down"));
+        }
+        if (!getAltTooltip(stack).isEmpty() && Screen.hasAltDown()) {
+            tooltip.add(new StringTextComponent(" "));
+            tooltip.add(new TranslationTextComponent("tooltip.relics.alt.divider_up"));
+            tooltip.addAll(getAltTooltip(stack));
+            tooltip.add(new TranslationTextComponent("tooltip.relics.alt.divider_sown"));
+        }
+        if (!getControlTooltip(stack).isEmpty() && Screen.hasControlDown()) {
+            tooltip.add(new StringTextComponent(" "));
+            tooltip.add(new TranslationTextComponent("tooltip.relics.control.divider_up"));
+            tooltip.addAll(getControlTooltip(stack));
+            tooltip.add(new TranslationTextComponent("tooltip.relics.control.divider_down"));
+        }
+        if ((!getShiftTooltip(stack).isEmpty() && !Screen.hasShiftDown()) || (!getAltTooltip(stack).isEmpty() && !Screen.hasAltDown())
+                || (!getControlTooltip(stack).isEmpty() && !Screen.hasControlDown())) tooltip.add(new StringTextComponent(" "));
+        if (!Screen.hasShiftDown() && !getShiftTooltip(stack).isEmpty()) tooltip.add(new TranslationTextComponent("tooltip.relics.shift.tooltip"));
+        if (!Screen.hasAltDown() && !getAltTooltip(stack).isEmpty()) tooltip.add(new TranslationTextComponent("tooltip.relics.alt.tooltip"));
+        if (!Screen.hasControlDown() && !getControlTooltip(stack).isEmpty()) tooltip.add(new TranslationTextComponent("tooltip.relics.ctrl.tooltip"));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 

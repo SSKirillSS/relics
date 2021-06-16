@@ -3,17 +3,20 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -32,7 +35,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.awt.*;
 import java.util.List;
 
-public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implements ICurioItem, IHasTooltip {
+public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implements ICurioItem {
     private static final String TAG_UPDATE_TIME = "time";
     private static final String TAG_SOUL_AMOUNT = "soul";
     private static final String TAG_EXPLOSION_READINESS = "readiness";
@@ -57,7 +60,6 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.add(new TranslationTextComponent("tooltip.relics.soul_devourer.tooltip_1", NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0)));
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override

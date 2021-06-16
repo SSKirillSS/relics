@@ -5,12 +5,9 @@ import it.hurts.sskirillss.relics.blocks.MagmaStoneBlock;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.TooltipUtils;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -26,13 +23,12 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem, IHasTooltip {
+public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem {
     public MagmaWalkerItem() {
         super(Rarity.RARE);
     }
@@ -43,12 +39,6 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
         tooltip.add(new TranslationTextComponent("tooltip.relics.magma_walker.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.magma_walker.shift_2"));
         return tooltip;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override

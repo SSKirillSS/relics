@@ -4,11 +4,8 @@ import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.entities.StellarCatalystProjectileEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.TooltipUtils;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,14 +18,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.Collections;
 import java.util.List;
 
-public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> implements ICurioItem, IHasTooltip {
+public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> implements ICurioItem {
     public static StellarCatalystItem INSTANCE;
 
     public StellarCatalystItem() {
@@ -42,12 +38,6 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.stellar_catalyst.shift_1"));
         return tooltip;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override

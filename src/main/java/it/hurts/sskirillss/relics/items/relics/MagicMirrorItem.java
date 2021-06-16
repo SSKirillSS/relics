@@ -3,10 +3,8 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
-import it.hurts.sskirillss.relics.utils.*;
-import net.minecraft.client.util.ITooltipFlag;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -17,11 +15,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> implements IHasTooltip {
+public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     public MagicMirrorItem() {
         super(Rarity.RARE);
     }
@@ -31,12 +28,6 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> implements
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.magic_mirror.shift_1"));
         return tooltip;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override

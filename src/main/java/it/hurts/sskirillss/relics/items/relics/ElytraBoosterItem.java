@@ -2,10 +2,10 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.LivingEntity;
@@ -27,7 +27,7 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
-public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implements ICurioItem, IHasTooltip {
+public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implements ICurioItem {
     public static final String TAG_BREATH_AMOUNT = "breath";
 
     public ElytraBoosterItem() {
@@ -48,7 +48,6 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
         if (NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0) > 0) {
             tooltip.add(new TranslationTextComponent("tooltip.relics.elytra_booster.tooltip_1", NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0)));
         }
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override

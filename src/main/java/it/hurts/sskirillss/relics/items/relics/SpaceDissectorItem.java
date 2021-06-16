@@ -3,26 +3,24 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.entities.SpaceDissectorEntity;
-import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
-import it.hurts.sskirillss.relics.utils.*;
-import net.minecraft.client.util.ITooltipFlag;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> implements IHasTooltip {
+public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
     public static final String TAG_IS_THROWN = "thrown";
     public static final String TAG_UUID = "uuid";
     public static final String TAG_UPDATE_TIME = "time";
@@ -99,12 +97,6 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> impl
         tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_2"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_3"));
         return tooltip;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.addAll(TooltipUtils.applyTooltip(stack));
     }
 
     @Override
