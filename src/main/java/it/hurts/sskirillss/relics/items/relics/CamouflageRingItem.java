@@ -41,7 +41,7 @@ public class CamouflageRingItem extends RelicItem<CamouflageRingItem.Stats> impl
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.camouflage_ring.shift_1"));
         return tooltip;

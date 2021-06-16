@@ -26,8 +26,8 @@ public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> impl
     }
 
     @Override
-    public java.util.List<ITextComponent> getShiftTooltip() {
-        java.util.List<ITextComponent> tooltip = Lists.newArrayList();
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
+        List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.lucky_horseshoe.shift_1"));
         return tooltip;
     }

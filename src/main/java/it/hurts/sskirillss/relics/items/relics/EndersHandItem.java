@@ -40,7 +40,7 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.enders_hand.shift_1"));
         return tooltip;

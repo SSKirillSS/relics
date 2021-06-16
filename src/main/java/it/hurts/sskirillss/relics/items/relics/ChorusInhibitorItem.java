@@ -47,8 +47,8 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> im
     }
 
     @Override
-    public java.util.List<ITextComponent> getShiftTooltip() {
-        java.util.List<ITextComponent> tooltip = Lists.newArrayList();
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
+        List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.chorus_inhibitor.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.chorus_inhibitor.shift_2"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.chorus_inhibitor.shift_3"));

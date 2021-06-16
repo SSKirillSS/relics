@@ -52,7 +52,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.ice_breaker.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.ice_breaker.shift_2"));

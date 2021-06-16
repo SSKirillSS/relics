@@ -34,8 +34,8 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> implements I
     }
 
     @Override
-    public java.util.List<ITextComponent> getShiftTooltip() {
-        java.util.List<ITextComponent> tooltip = Lists.newArrayList();
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
+        List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.holy_locket.shift_1"));
         return tooltip;
     }

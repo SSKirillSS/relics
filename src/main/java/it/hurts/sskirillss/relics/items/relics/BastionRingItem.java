@@ -42,8 +42,8 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements
     }
 
     @Override
-    public java.util.List<ITextComponent> getShiftTooltip() {
-        java.util.List<ITextComponent> tooltip = Lists.newArrayList();
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
+        List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.bastion_ring.shift_1"));
         return tooltip;
     }

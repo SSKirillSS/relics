@@ -40,7 +40,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> implements
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.spatial_sign.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.spatial_sign.shift_2"));

@@ -38,7 +38,7 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.stellar_catalyst.shift_1"));
         return tooltip;

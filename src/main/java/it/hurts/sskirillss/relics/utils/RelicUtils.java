@@ -166,7 +166,7 @@ public class RelicUtils {
 
         public static int getMaxDurability(Item relic) {
             if (!(relic instanceof RelicItem)) return -1;
-            return DURABILITY.get(relic).getDurability();
+            return DURABILITY.get((RelicItem) relic).getDurability();
         }
 
         public static int getDurability(ItemStack stack) {

@@ -50,7 +50,7 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> impl
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.fragrant_flower.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.fragrant_flower.shift_2"));

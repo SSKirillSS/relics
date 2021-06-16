@@ -37,7 +37,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.out_runner.shift_1"));
         return tooltip;

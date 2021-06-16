@@ -38,7 +38,7 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.magma_walker.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.magma_walker.shift_2"));

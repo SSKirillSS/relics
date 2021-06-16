@@ -46,7 +46,7 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.jellyfish_necklace.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.jellyfish_necklace.shift_2"));

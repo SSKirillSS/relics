@@ -35,8 +35,8 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
     }
 
     @Override
-    public java.util.List<ITextComponent> getShiftTooltip() {
-        java.util.List<ITextComponent> tooltip = Lists.newArrayList();
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
+        List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.elytra_booster.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.elytra_booster.shift_2"));
         return tooltip;

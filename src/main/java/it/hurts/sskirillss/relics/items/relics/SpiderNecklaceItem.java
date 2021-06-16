@@ -34,7 +34,7 @@ public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> impl
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.spider_necklace.shift_1"));
         return tooltip;

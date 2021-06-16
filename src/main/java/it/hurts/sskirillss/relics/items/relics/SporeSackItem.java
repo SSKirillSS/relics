@@ -49,8 +49,8 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> implements ICu
     }
 
     @Override
-    public java.util.List<ITextComponent> getShiftTooltip() {
-        java.util.List<ITextComponent> tooltip = Lists.newArrayList();
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
+        List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.spore_sack.shift_1"));
         return tooltip;
     }

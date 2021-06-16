@@ -93,7 +93,7 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> impl
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_2"));

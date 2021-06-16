@@ -42,7 +42,7 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> implements ICurioI
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip() {
+    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
         tooltip.add(new TranslationTextComponent("tooltip.relics.old_boot.shift_1"));
         return tooltip;
