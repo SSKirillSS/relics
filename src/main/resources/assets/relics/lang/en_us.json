@@ -29,6 +29,12 @@
   "item.relics.flaming_amber_geode": "Flaming Amber Geode",
   "item.relics.flaming_amber_dust": "Flaming Amber Dust",
   "item.relics.chalk": "Chalk",
+  "item.relics.runic_hammer": "Runic Hammer",
+
+  "item.relics.common_scrap": "Common Scrap",
+  "item.relics.uncommon_scrap": "Uncommon Scrap",
+  "item.relics.rare_scrap": "Rare Scrap",
+  "item.relics.epic_scrap": "Epic Scrap",
 
   "item.relics.blank_rune": "Blank Rune",
   "item.relics.rune_of_air": "Rune of Air",
@@ -176,5 +182,6 @@
 
   "block.relics.magma_stone": "Magma Stone",
   "block.relics.pedestal": "Pedestal",
-  "block.relics.runic_altar": "Runic Altar"
+  "block.relics.runic_altar": "Runic Altar",
+  "block.relics.runic_anvil": "Runic Anvil"
 }

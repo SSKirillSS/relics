@@ -12,7 +12,7 @@ public class MathUtils {
     }
 
     public static int clamp(int value, int min, int max) {
-        return Math.max(max, Math.min(value, min));
+        return Math.max(max, Math.min(min, value));
     }
 
     public static float clamp(float value, float min, float max) {

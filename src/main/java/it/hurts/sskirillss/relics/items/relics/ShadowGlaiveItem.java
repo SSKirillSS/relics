@@ -1,13 +1,12 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.configs.RelicStats;
+import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;

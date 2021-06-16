@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.hurts.sskirillss.relics.configs.RelicStats;
+import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.IHasTooltip;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.renderer.OldBootModel;

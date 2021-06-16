@@ -17,6 +17,8 @@ public class TileRegistry {
             TileEntityType.Builder.of(PedestalTile::new, BlockRegistry.PEDESTAL_BLOCK.get()).build(null));
     public static final RegistryObject<TileEntityType<RunicAltarTile>> RUNIC_ALTAR_TILE = TILES.register("runic_altar", () ->
             TileEntityType.Builder.of(RunicAltarTile::new, BlockRegistry.RUNIC_ALTAR_BLOCK.get()).build(null));
+    public static final RegistryObject<TileEntityType<RunicAnvilTile>> RUNIC_ANVIL_TILE = TILES.register("runic_anvil", () ->
+            TileEntityType.Builder.of(RunicAnvilTile::new, BlockRegistry.RUNIC_ANVIL_BLOCK.get()).build(null));
 
     public static void registerTiles() {
         TILES.register(FMLJavaModLoadingContext.get().getModEventBus());

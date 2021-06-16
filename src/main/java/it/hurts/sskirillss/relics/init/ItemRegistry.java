@@ -28,6 +28,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> FLAMING_AMBER_GEODE = ITEMS.register("flaming_amber_geode", ItemBase::new);
     public static final RegistryObject<Item> FLAMING_AMBER_DUST = ITEMS.register("flaming_amber_dust", ItemBase::new);
     public static final RegistryObject<Item> CHRYSOLITE = ITEMS.register("chrysolite", ItemBase::new);
+    public static final RegistryObject<Item> RUNIC_HAMMER = ITEMS.register("runic_hammer", ItemBase::new);
 
     public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", ItemBase::new);
     public static final RegistryObject<Item> RUNE_OF_AIR = ITEMS.register("rune_of_air", AirRuneItem::new);
@@ -42,6 +43,11 @@ public class ItemRegistry {
     public static final RegistryObject<Item> RUNE_OF_REDSTONE = ITEMS.register("rune_of_redstone", () -> new RuneItem(new Color(255, 0, 0)));
     public static final RegistryObject<Item> RUNE_OF_LUCK = ITEMS.register("rune_of_luck", () -> new RuneItem(new Color(200, 255, 0)));
     public static final RegistryObject<Item> RUNE_OF_COLD = ITEMS.register("rune_of_cold", () -> new RuneItem(new Color(0, 125, 255)));
+
+    public static final RegistryObject<Item> COMMON_SCRAP = ITEMS.register("common_scrap", () -> new RelicScrapItem(4));
+    public static final RegistryObject<Item> UNCOMMON_SCRAP = ITEMS.register("uncommon_scrap", () -> new RelicScrapItem(8));
+    public static final RegistryObject<Item> RARE_SCRAP = ITEMS.register("rare_scrap", () -> new RelicScrapItem(16));
+    public static final RegistryObject<Item> EPIC_SCRAP = ITEMS.register("epic_scrap", () -> new RelicScrapItem(32));
 
     public static final RegistryObject<Item> SPATIAL_SIGN = ITEMS.register("spatial_sign", SpatialSignItem::new);
     public static final RegistryObject<Item> CHALK = ITEMS.register("chalk", ChalkItem::new);

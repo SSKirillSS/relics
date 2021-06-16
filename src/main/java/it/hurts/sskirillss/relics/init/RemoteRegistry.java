@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.ReflectionNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
 import it.hurts.sskirillss.relics.tiles.renderer.PedestalTileRenderer;
 import it.hurts.sskirillss.relics.tiles.renderer.RunicAltarTileRenderer;
+import it.hurts.sskirillss.relics.tiles.renderer.RunicAnvilTileRenderer;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.renderer.RenderType;
@@ -32,8 +33,10 @@ public class RemoteRegistry {
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.SHADOW_GLAIVE.get(), new ShadowGlaiveRenderer.RenderFactory());
         ClientRegistry.bindTileEntityRenderer(TileRegistry.PEDESTAL_TILE.get(), PedestalTileRenderer::new);
         ClientRegistry.bindTileEntityRenderer(TileRegistry.RUNIC_ALTAR_TILE.get(), RunicAltarTileRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(TileRegistry.RUNIC_ANVIL_TILE.get(), RunicAnvilTileRenderer::new);
         RenderTypeLookup.setRenderLayer(BlockRegistry.CHALK_BLOCK.get(), RenderType.cutout());
         RenderTypeLookup.setRenderLayer(BlockRegistry.RUNIC_ALTAR_BLOCK.get(), RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(BlockRegistry.RUNIC_ANVIL_BLOCK.get(), RenderType.cutout());
 
         ItemModelsProperties.register(
                 ItemRegistry.SPACE_DISSECTOR.get(), new ResourceLocation(Reference.MODID, "mode"),

@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.blocks.MagmaStoneBlock;
-import it.hurts.sskirillss.relics.configs.RelicStats;
+import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.IHasTooltip;

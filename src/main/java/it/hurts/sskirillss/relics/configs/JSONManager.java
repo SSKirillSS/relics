@@ -1,7 +1,9 @@
 package it.hurts.sskirillss.relics.configs;
 
 import com.google.gson.*;
+import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
+import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RelicItem;
@@ -48,7 +50,8 @@ public class JSONManager {
         RelicLoot defaultLoot = new RelicLoot(relic.getLootChests()
                 .stream().map(ResourceLocation::toString).collect(Collectors.toList()), relic.getWorldgenChance());
         RelicLevel defaultLevel = new RelicLevel(relic.getMaxLevel(), relic.getInitialExp(), relic.getExpRatio());
-        SpecificRelicConfig<RelicStats> defaultConfig = new SpecificRelicConfig<>(defaultStats, defaultLoot, defaultLevel);
+        RelicDurability defaultDurability = new RelicDurability(relic.getDurability());
+        SpecificRelicConfig<RelicStats> defaultConfig = new SpecificRelicConfig<>(defaultStats, defaultLoot, defaultLevel, defaultDurability);
         if (!Files.exists(path)) setupDefaultConfig(path, defaultConfig);
         SpecificRelicConfig<T> relicConfig = getConfig(path, relic);
         register(relic, relicConfig);
@@ -63,7 +66,8 @@ public class JSONManager {
             T stats = SERIALIZER.fromJson(config.getStats(), relicItem.getConfigClass());
             RelicLoot loot = config.getLoot();
             RelicLevel level = config.getLevel();
-            result = new SpecificRelicConfig<>(stats, loot, level);
+            RelicDurability durability = config.getDurability();
+            result = new SpecificRelicConfig<>(stats, loot, level, durability);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,7 +76,7 @@ public class JSONManager {
 
     protected static <T extends RelicStats> void setupDefaultConfig(Path path, SpecificRelicConfig<T> config) throws IOException {
         RelicStats defaultStats = config.getStats();
-        RelicConfig abstractConfig = new RelicConfig((JsonObject) SERIALIZER.toJsonTree(defaultStats, defaultStats.getClass()), config.getLoot(), config.getLevel());
+        RelicConfig abstractConfig = new RelicConfig((JsonObject) SERIALIZER.toJsonTree(defaultStats, defaultStats.getClass()), config.getLoot(), config.getLevel(), config.getDurability());
         Writer writer = Files.newBufferedWriter(path);
         SERIALIZER.toJson(abstractConfig, writer);
         writer.flush();
@@ -83,5 +87,6 @@ public class JSONManager {
         relicItem.setConfig(config.getStats());
         RelicUtils.Worldgen.LOOT.put(relicItem, config.getLoot());
         RelicUtils.Level.LEVEL.put(relicItem, config.getLevel());
+        RelicUtils.Durability.DURABILITY.put(relicItem, config.getDurability());
     }
 }

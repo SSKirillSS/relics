@@ -1,10 +1,13 @@
 package it.hurts.sskirillss.relics.utils;
 
+import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -153,5 +156,38 @@ public class RelicUtils {
                 LootTables.STRONGHOLD_LIBRARY,
                 LootTables.ABANDONED_MINESHAFT
         );
+    }
+
+    public static class Durability {
+        public static HashMap<RelicItem, RelicDurability> DURABILITY = new HashMap<RelicItem, RelicDurability>();
+
+        public static final String TAG_DURABILITY = "durability";
+
+        public static int getMaxDurability(Item relic) {
+            if (!(relic instanceof RelicItem)) return -1;
+            return DURABILITY.get(relic).getDurability();
+        }
+
+        public static int getDurability(ItemStack stack) {
+            return NBTUtils.getInt(stack, TAG_DURABILITY, -1);
+        }
+
+        public static void setDurability(ItemStack stack, int durability) {
+            if (!(stack.getItem() instanceof RelicItem)) return;
+            NBTUtils.setInt(stack, TAG_DURABILITY, MathUtils.clamp(durability, getMaxDurability(stack.getItem()), 0));
+            if (getDurability(stack) == 0) breakRelic(stack);
+        }
+
+        public static void addDurability(ItemStack stack, int durability) {
+            setDurability(stack, getDurability(stack) + durability);
+        }
+
+        public static void takeDurability(ItemStack stack, int durability) {
+            setDurability(stack, getDurability(stack) - durability);
+        }
+
+        public static void breakRelic(ItemStack stack) {
+            Rarity rarity = stack.getRarity();
+        }
     }
 }

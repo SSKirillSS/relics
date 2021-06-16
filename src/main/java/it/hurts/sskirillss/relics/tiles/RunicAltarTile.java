@@ -4,6 +4,7 @@ import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -99,6 +100,7 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
                 pos.getX() + 0.5F + MathUtils.randomFloat(random) * 0.2F, pos.getY() + 0.85F,
                 pos.getZ() + 0.5F + MathUtils.randomFloat(random) * 0.2F, 0, random.nextFloat() * 0.05D, 0);
         if (ticksExisted % 20 != 0 || getRunes().isEmpty()) return;
+        if (!level.isClientSide() && random.nextInt(3) == 0) RelicUtils.Durability.takeDurability(relicStack, 1);
         for (ItemStack stack : getRunes()) {
             if (!(stack.getItem() instanceof RuneItem)) continue;
             RuneItem rune = (RuneItem) stack.getItem();

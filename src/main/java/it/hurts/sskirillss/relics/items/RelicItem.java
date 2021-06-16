@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.items;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.configs.RelicStats;
+import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -40,6 +40,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item {
                 entityIn.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC,
                         RelicsConfig.RelicsGeneral.DAMAGE_NON_RELIC_OWNER_AMOUNT.get().floatValue());
         }
+        if (RelicUtils.Durability.getDurability(stack) == -1) RelicUtils.Durability.setDurability(stack, RelicUtils.Durability.getMaxDurability(this));
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
@@ -66,7 +67,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item {
                 .withColor(Color.parseColor(RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_NEUTRAL.get()))));
         component.append(new StringTextComponent(" " + Math.round(percentage * 10.0F) / 10.0F + "%").setStyle(Style.EMPTY.withColor(color)));
         tooltip.add(component);
-
+        tooltip.add(new StringTextComponent("Durability: " + RelicUtils.Durability.getDurability(stack)));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
@@ -88,6 +89,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item {
 
     public List<ResourceLocation> getLootChests() {
         return Lists.newArrayList();
+    }
+
+    public int getDurability() {
+        return 100;
     }
 
     public Class<T> getConfigClass() {

@@ -29,6 +29,12 @@
   "item.relics.flaming_amber_geode": "Жеода пламенного янтаря",
   "item.relics.flaming_amber_dust": "Пыль из пламенного янтаря",
   "item.relics.chalk": "Мел",
+  "item.relics.runic_hammer": "Рунный молото",
+
+  "item.relics.common_scrap": "Обычный скрап",
+  "item.relics.uncommon_scrap": "Необычный скрап",
+  "item.relics.rare_scrap": "Редкий скрап",
+  "item.relics.epic_scrap": "Эпический скрап",
 
   "item.relics.blank_rune": "Пустая руна",
   "item.relics.rune_of_air": "Руна воздуха",
@@ -176,5 +182,6 @@
 
   "block.relics.magma_stone": "Магмовый камень",
   "block.relics.pedestal": "Пьедестал",
-  "block.relics.runic_altar": "Рунический алтарь"
+  "block.relics.runic_altar": "Рунический алтарь",
+  "block.relics.runic_anvil": "Руническая наковальня"
 }

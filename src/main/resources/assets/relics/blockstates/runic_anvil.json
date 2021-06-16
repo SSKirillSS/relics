@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "relics:block/runic_anvil",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "relics:block/runic_anvil",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "relics:block/runic_anvil"
+    },
+    "facing=west": {
+      "model": "relics:block/runic_anvil",
+      "y": 90
+    }
+  }
+}
