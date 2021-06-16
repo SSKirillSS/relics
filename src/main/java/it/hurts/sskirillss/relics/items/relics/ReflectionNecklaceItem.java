@@ -10,7 +10,6 @@ import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -34,7 +33,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
@@ -130,8 +128,8 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
                     && (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), event.getEntityLiving()).isPresent())) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), event.getEntityLiving()).get().getRight();
-                if (NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) > 0
-                        && event.getSource().getEntity() instanceof LivingEntity) {
+                int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
+                if (charges > 0 && event.getSource().getEntity() instanceof LivingEntity) {
                     LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
                     if (attacker == null) return;
                     if (player.position().distanceTo(attacker.position()) < config.minDistanceForKnockback) {
@@ -145,9 +143,10 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
                                 SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                         event.setCanceled(true);
                     }
-                    if (attacker != player && !CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), attacker).isPresent())
+                    if (attacker != player) {
+                        NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, charges - 1);
                         attacker.hurt(DamageSource.playerAttack(player), event.getAmount() * config.reflectedDamageMultiplier);
-                    NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) - 1);
+                    }
                 }
             }
         }
