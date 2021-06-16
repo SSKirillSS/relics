@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics.init;
 import it.hurts.sskirillss.relics.items.*;
 import it.hurts.sskirillss.relics.items.relics.*;
 import it.hurts.sskirillss.relics.items.relics.boots.*;
-import it.hurts.sskirillss.relics.items.runes.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
@@ -31,10 +30,10 @@ public class ItemRegistry {
     public static final RegistryObject<Item> RUNIC_HAMMER = ITEMS.register("runic_hammer", ItemBase::new);
 
     public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", ItemBase::new);
-    public static final RegistryObject<Item> RUNE_OF_AIR = ITEMS.register("rune_of_air", AirRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_EARTH = ITEMS.register("rune_of_earth", EarthRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_WATER = ITEMS.register("rune_of_water", WaterRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_FIRE = ITEMS.register("rune_of_fire", FireRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_AIR = ITEMS.register("rune_of_air", () -> new RuneItem(new Color(255, 255, 255)));
+    public static final RegistryObject<Item> RUNE_OF_EARTH = ITEMS.register("rune_of_earth", () -> new RuneItem(new Color(80, 255, 0)));
+    public static final RegistryObject<Item> RUNE_OF_WATER = ITEMS.register("rune_of_water", () -> new RuneItem(new Color(255, 0, 0)));
+    public static final RegistryObject<Item> RUNE_OF_FIRE = ITEMS.register("rune_of_fire", () -> new RuneItem(new Color(0, 255, 215)));
     public static final RegistryObject<Item> RUNE_OF_LIGHTNING = ITEMS.register("rune_of_lightning", () -> new RuneItem(new Color(255, 245, 0)));
     public static final RegistryObject<Item> RUNE_OF_LOVE = ITEMS.register("rune_of_love", () -> new RuneItem(new Color(255, 0, 240)));
     public static final RegistryObject<Item> RUNE_OF_SUN = ITEMS.register("rune_of_sun", () -> new RuneItem(new Color(255, 212, 0)));
