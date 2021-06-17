@@ -1,14 +1,15 @@
 package it.hurts.sskirillss.relics.utils;
 
+import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.RuneItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -203,6 +204,15 @@ public class RelicUtils {
                     break;
             }
             return new ItemStack(scrap);
+        }
+    }
+
+    public static class Crafting {
+        public static HashMap<RuneItem, List<Item>> INGREDIENTS = new HashMap<RuneItem, List<Item>>();
+
+        public static List<Item> getIngredients(Item item) {
+            if (!(item instanceof RuneItem)) return Lists.newArrayList();
+            return INGREDIENTS.get((RuneItem) item);
         }
     }
 }

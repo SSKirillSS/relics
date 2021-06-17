@@ -59,13 +59,27 @@ public class RunicAltarTileRenderer extends TileEntityRenderer<RunicAltarTile> {
         }
         iteration = 0;
         ItemStack relic = tileEntity.getStack(Direction.UP);
-        if (relic == null || relic.isEmpty()) return;
-        matrixStack.pushPose();
-        matrixStack.translate(0.5F, 0.775F, 0.5F);
-        matrixStack.mulPose(Direction.NORTH.getRotation());
-        matrixStack.scale(0.5F, 0.5F, 0.5F);
-        itemRenderer.render(relic, ItemCameraTransforms.TransformType.FIXED, true, matrixStack, buffer, combinedLight,
-                combinedOverlay, itemRenderer.getModel(relic, tileEntity.getLevel(), null));
-        matrixStack.popPose();
+        if (!relic.isEmpty()) {
+            matrixStack.pushPose();
+            matrixStack.translate(0.5F, 0.775F, 0.5F);
+            matrixStack.mulPose(Direction.NORTH.getRotation());
+            matrixStack.scale(0.5F, 0.5F, 0.5F);
+            itemRenderer.render(relic, ItemCameraTransforms.TransformType.FIXED, true, matrixStack, buffer, combinedLight,
+                    combinedOverlay, itemRenderer.getModel(relic, tileEntity.getLevel(), null));
+            matrixStack.popPose();
+        }
+        ItemStack ingredient = tileEntity.getIngredient();
+        if (!ingredient.isEmpty()) {
+            matrixStack.pushPose();
+            matrixStack.translate(0.5F, 1.75F, 0.5F);
+            matrixStack.scale(0.35F, 0.35F, 0.35F);
+            matrixStack.translate(0.0D, MathHelper.sin(tileEntity.ticksExisted / 10.0F) * 0.25F, 0.0D);
+            matrixStack.mulPose(Vector3f.YP.rotation(tileEntity.ticksExisted / 20.0F));
+            matrixStack.translate(0.0D, MathHelper.sin(tileEntity.ticksExisted / 10.0F) * 0.25F, 0.0D);
+            matrixStack.mulPose(Vector3f.YP.rotation(tileEntity.ticksExisted / 20.0F));
+            itemRenderer.render(ingredient, ItemCameraTransforms.TransformType.FIXED, true, matrixStack, buffer, combinedLight,
+                    combinedOverlay, itemRenderer.getModel(ingredient, tileEntity.getLevel(), null));
+            matrixStack.popPose();
+        }
     }
 }

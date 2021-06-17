@@ -57,6 +57,7 @@ public class RunicAnvilBlock extends FallingBlock {
                         || !(offhandStack.getItem() instanceof RelicScrapItem)
                         || player.getCooldowns().isOnCooldown(heldStack.getItem())) return ActionResultType.FAIL;
                 RelicUtils.Durability.addDurability(relic, ((RelicScrapItem) offhandStack.getItem()).getReplenishedVolume());
+                offhandStack.shrink(1);
                 player.getCooldowns().addCooldown(heldStack.getItem(), 20);
                 world.playSound(null, pos, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundCategory.BLOCKS, 1F, 1F - random.nextFloat() * 0.5F);
                 for (int i = 0; i < random.nextInt(20) + 20; i++)

@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.init;
 import it.hurts.sskirillss.relics.items.*;
 import it.hurts.sskirillss.relics.items.relics.*;
 import it.hurts.sskirillss.relics.items.relics.boots.*;
+import it.hurts.sskirillss.relics.items.runes.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
@@ -30,18 +31,18 @@ public class ItemRegistry {
     public static final RegistryObject<Item> RUNIC_HAMMER = ITEMS.register("runic_hammer", ItemBase::new);
 
     public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", ItemBase::new);
-    public static final RegistryObject<Item> RUNE_OF_AIR = ITEMS.register("rune_of_air", () -> new RuneItem(new Color(255, 255, 255)));
-    public static final RegistryObject<Item> RUNE_OF_EARTH = ITEMS.register("rune_of_earth", () -> new RuneItem(new Color(80, 255, 0)));
-    public static final RegistryObject<Item> RUNE_OF_WATER = ITEMS.register("rune_of_water", () -> new RuneItem(new Color(255, 0, 0)));
-    public static final RegistryObject<Item> RUNE_OF_FIRE = ITEMS.register("rune_of_fire", () -> new RuneItem(new Color(0, 255, 215)));
-    public static final RegistryObject<Item> RUNE_OF_LIGHTNING = ITEMS.register("rune_of_lightning", () -> new RuneItem(new Color(255, 245, 0)));
-    public static final RegistryObject<Item> RUNE_OF_LOVE = ITEMS.register("rune_of_love", () -> new RuneItem(new Color(255, 0, 240)));
-    public static final RegistryObject<Item> RUNE_OF_SUN = ITEMS.register("rune_of_sun", () -> new RuneItem(new Color(255, 212, 0)));
-    public static final RegistryObject<Item> RUNE_OF_MOON = ITEMS.register("rune_of_moon", () -> new RuneItem(new Color(110, 255, 233)));
-    public static final RegistryObject<Item> RUNE_OF_EXPLOSION = ITEMS.register("rune_of_explosion", () -> new RuneItem(new Color(55, 255, 0)));
-    public static final RegistryObject<Item> RUNE_OF_REDSTONE = ITEMS.register("rune_of_redstone", () -> new RuneItem(new Color(255, 0, 0)));
-    public static final RegistryObject<Item> RUNE_OF_LUCK = ITEMS.register("rune_of_luck", () -> new RuneItem(new Color(200, 255, 0)));
-    public static final RegistryObject<Item> RUNE_OF_COLD = ITEMS.register("rune_of_cold", () -> new RuneItem(new Color(0, 125, 255)));
+    public static final RegistryObject<Item> RUNE_OF_AIR = ITEMS.register("rune_of_air", AirRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_EARTH = ITEMS.register("rune_of_earth", EarthRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_WATER = ITEMS.register("rune_of_water", WaterRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_FIRE = ITEMS.register("rune_of_fire", FireRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_LIGHTNING = ITEMS.register("rune_of_lightning", LightningRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_LOVE = ITEMS.register("rune_of_love", LoveRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_SUN = ITEMS.register("rune_of_sun", SunRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_MOON = ITEMS.register("rune_of_moon", MoonRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_EXPLOSION = ITEMS.register("rune_of_explosion", ExplosionRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_REDSTONE = ITEMS.register("rune_of_redstone", RedstoneRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_LUCK = ITEMS.register("rune_of_luck", LuckRuneItem::new);
+    public static final RegistryObject<Item> RUNE_OF_COLD = ITEMS.register("rune_of_cold", ColdRuneItem::new);
 
     public static final RegistryObject<Item> COMMON_SCRAP = ITEMS.register("common_scrap", () -> new RelicScrapItem(4));
     public static final RegistryObject<Item> UNCOMMON_SCRAP = ITEMS.register("uncommon_scrap", () -> new RelicScrapItem(8));
