@@ -1,10 +1,13 @@
 package it.hurts.sskirillss.relics.configs;
 
 import com.google.gson.*;
+import it.hurts.sskirillss.relics.configs.variables.RuneConfig;
+import it.hurts.sskirillss.relics.configs.variables.crafting.RuneIngredients;
 import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
+import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.items.RuneItem;
@@ -56,21 +59,27 @@ public class JSONManager {
                 Item item = registryObject.get();
                 if (!(item instanceof RuneItem)) continue;
                 RuneItem rune = (RuneItem) item;
-                RuneIngredients ingredients = new RuneIngredients(rune.getIngredients().stream().map(runeItem ->
+                RuneIngredients defaultIngredients = new RuneIngredients(rune.getIngredients().stream().map(runeItem ->
                         runeItem.getRegistryName().getNamespace() + ":" + runeItem.getRegistryName().getPath()).collect(Collectors.toList()));
+                RuneLoot defaultLoot = new RuneLoot(rune.getLootChests().stream().map(ResourceLocation::toString)
+                        .collect(Collectors.toList()), rune.getWorldgenChance());
+                RuneConfig defaultConfig = new RuneConfig(defaultIngredients, defaultLoot);
                 Path path = dir.resolve(rune.getRegistryName().getPath() + "." + "json");
                 if (!Files.exists(path)) {
                     Writer writer = Files.newBufferedWriter(path);
-                    SERIALIZER.toJson(ingredients, writer);
+                    SERIALIZER.toJson(defaultConfig, writer);
                     writer.flush();
                     writer.close();
                 }
                 Reader reader = Files.newBufferedReader(path);
-                List<Item> items = SERIALIZER.fromJson(reader, RuneIngredients.class).getIngredients().stream().map(location -> {
+                RuneConfig config = SERIALIZER.fromJson(reader, RuneConfig.class);
+                List<Item> ingredients = config.getIngredients().getIngredients().stream().map(location -> {
                     String[] pair = location.split(":");
                     return ForgeRegistries.ITEMS.getValue(new ResourceLocation(pair[0], pair[1]));
                 }).collect(Collectors.toList());
-                RelicUtils.Crafting.INGREDIENTS.put(rune, items);
+                RuneLoot loot = config.getLoot();
+                RelicUtils.Crafting.INGREDIENTS.put(rune, ingredients);
+                RelicUtils.RunesWorldgen.LOOT.put(rune, loot);
                 reader.close();
             }
         } catch (IOException e) {

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
+import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.items.RuneItem;
@@ -214,5 +215,27 @@ public class RelicUtils {
             if (!(item instanceof RuneItem)) return Lists.newArrayList();
             return INGREDIENTS.get((RuneItem) item);
         }
+    }
+
+    public static class RunesWorldgen {
+        public static HashMap<RuneItem, RuneLoot> LOOT = new HashMap<RuneItem, RuneLoot>();
+
+        public static final List<ResourceLocation> CHESTS = Arrays.asList(
+                LootTables.UNDERWATER_RUIN_BIG,
+                LootTables.UNDERWATER_RUIN_SMALL,
+                LootTables.SHIPWRECK_TREASURE,
+                LootTables.NETHER_BRIDGE,
+                LootTables.BASTION_BRIDGE,
+                LootTables.BASTION_OTHER,
+                LootTables.BASTION_TREASURE,
+                LootTables.BASTION_HOGLIN_STABLE,
+                LootTables.RUINED_PORTAL,
+                LootTables.IGLOO_CHEST,
+                LootTables.DESERT_PYRAMID,
+                LootTables.STRONGHOLD_CORRIDOR,
+                LootTables.STRONGHOLD_CROSSING,
+                LootTables.STRONGHOLD_LIBRARY,
+                LootTables.ABANDONED_MINESHAFT
+        );
     }
 }

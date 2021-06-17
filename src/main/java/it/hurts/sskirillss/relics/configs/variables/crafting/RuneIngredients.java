@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.configs;
+package it.hurts.sskirillss.relics.configs.variables.crafting;
 
 import java.util.List;
 

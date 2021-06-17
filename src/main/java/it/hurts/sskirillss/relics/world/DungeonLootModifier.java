@@ -2,7 +2,9 @@ package it.hurts.sskirillss.relics.world;
 
 import com.google.gson.JsonObject;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
+import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.utils.CompatibilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -28,10 +30,18 @@ public class DungeonLootModifier extends LootModifier {
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
         if (!CompatibilityUtils.isValidForgeVersion()) return generatedLoot;
+        Random random = context.getRandom();
         for (RelicItem relic : RelicUtils.Worldgen.LOOT.keySet()) {
             RelicLoot loot = RelicUtils.Worldgen.LOOT.get(relic);
-            if (loot.getLootChests().contains(context.getQueriedLootTableId())
-                    && context.getRandom().nextFloat() <= loot.getChance()) generatedLoot.add(new ItemStack(relic));
+            if (loot.getLootChests().contains(context.getQueriedLootTableId().toString())
+                    && random.nextFloat() <= loot.getChance()) generatedLoot.add(new ItemStack(relic));
+        }
+        for (RuneItem rune : RelicUtils.RunesWorldgen.LOOT.keySet()) {
+            RuneLoot loot = RelicUtils.RunesWorldgen.LOOT.get(rune);
+            ItemStack stack = new ItemStack(rune);
+            stack.setCount(random.nextInt(5) + 1);
+            if (loot.getLootChests().contains(context.getQueriedLootTableId().toString())
+                    && random.nextFloat() <= loot.getChance()) generatedLoot.add(stack);
         }
         return generatedLoot;
     }

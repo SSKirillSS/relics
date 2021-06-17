@@ -1,9 +1,11 @@
 package it.hurts.sskirillss.relics.items;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -27,6 +29,14 @@ public class RuneItem extends Item {
 
     public List<Item> getIngredients() {
         return Lists.newArrayList();
+    }
+
+    public float getWorldgenChance() {
+        return 0.075F;
+    }
+
+    public List<ResourceLocation> getLootChests() {
+        return RelicUtils.RunesWorldgen.CHESTS;
     }
 
     public void applyAbility(World world, BlockPos pos) {
