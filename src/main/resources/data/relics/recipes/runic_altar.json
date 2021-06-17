@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "relics",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "CEC"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:blackstone_slab"
+    },
+    "B": {
+      "item": "relics:pedestal"
+    },
+    "C": {
+      "item": "minecraft:polished_basalt"
+    },
+    "D": {
+      "item": "minecraft:crafting_table"
+    },
+    "E": {
+      "item": "minecraft:gold_block"
+    }
+  },
+  "result": {
+    "item": "relics:runic_altar",
+    "count": 1
+  }
+}
