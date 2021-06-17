@@ -67,15 +67,15 @@ public abstract class RelicItem<T extends RelicStats> extends Item {
         int durability = RelicUtils.Durability.getDurability(stack);
         tooltip.add(new TranslationTextComponent("tooltip.relics.durability",
                 durability == -1 ? 0 : durability, RelicUtils.Durability.getMaxDurability(stack.getItem())));
-        int level = RelicUtils.Level.getLevel(stack);
-        int prevExp = RelicUtils.Level.getTotalExperienceForLevel(stack, Math.max(level, level - 1));
-        tooltip.add(new TranslationTextComponent("tooltip.relics.level", level, RelicUtils.Level.getExperience(stack) - prevExp,
-                RelicUtils.Level.getTotalExperienceForLevel(stack, level + 1) - prevExp));
-        float percentage = (RelicUtils.Level.getExperience(stack) - prevExp) * 1.0F / (RelicUtils.Level.getTotalExperienceForLevel(stack,
-                RelicUtils.Level.getLevel(stack) + 1) - prevExp) * 100;
-        tooltip.add(TooltipUtils.drawProgressBar(percentage, RelicsConfig.RelicsGeneral.LEVELING_BAR_STYLE.get(),
-                RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_LOW.get(), RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_MEDIUM.get(),
-                RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_HIGH.get(), RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_NEUTRAL.get(), true));
+//        int level = RelicUtils.Level.getLevel(stack);
+//        int prevExp = RelicUtils.Level.getTotalExperienceForLevel(stack, Math.max(level, level - 1));
+//        tooltip.add(new TranslationTextComponent("tooltip.relics.level", level, RelicUtils.Level.getExperience(stack) - prevExp,
+//                RelicUtils.Level.getTotalExperienceForLevel(stack, level + 1) - prevExp));
+//        float percentage = (RelicUtils.Level.getExperience(stack) - prevExp) * 1.0F / (RelicUtils.Level.getTotalExperienceForLevel(stack,
+//                RelicUtils.Level.getLevel(stack) + 1) - prevExp) * 100;
+//        tooltip.add(TooltipUtils.drawProgressBar(percentage, RelicsConfig.RelicsGeneral.LEVELING_BAR_STYLE.get(),
+//                RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_LOW.get(), RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_MEDIUM.get(),
+//                RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_HIGH.get(), RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_NEUTRAL.get(), true));
         if (!getShiftTooltip(stack).isEmpty() && Screen.hasShiftDown()) {
             tooltip.add(new StringTextComponent(" "));
             tooltip.add(new TranslationTextComponent("tooltip.relics.shift.divider_up"));
