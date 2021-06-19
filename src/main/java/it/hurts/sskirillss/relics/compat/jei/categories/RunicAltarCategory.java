@@ -63,12 +63,12 @@ public class RunicAltarCategory implements IRecipeCategory<RunicAltarRecipe> {
         List<List<ItemStack>> inputs = iIngredients.getInputs(VanillaTypes.ITEM);
         List<List<ItemStack>> outputs = iIngredients.getOutputs(VanillaTypes.ITEM);
 
-        stacks.init(0, true, 32, 32);
-        stacks.init(1, true, 0, 32);
-        stacks.init(2, true, 32, 0);
+        stacks.init(0, true, 32, 33);
+        stacks.init(1, true, 2, 33);
+        stacks.init(2, true, 32, 2);
         stacks.init(3, true, 32, 64);
-        stacks.init(4, true, 64, 32);
-        stacks.init(5, false, 120, 32);
+        stacks.init(4, true, 62, 33);
+        stacks.init(5, false, 116, 33);
 
         for (int i = 0; i < inputs.size(); i++) stacks.set(i, inputs.get(i));
         stacks.set(5, outputs.get(0));
