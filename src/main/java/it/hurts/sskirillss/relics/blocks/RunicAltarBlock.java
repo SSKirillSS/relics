@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableList;
 import it.hurts.sskirillss.relics.crafting.RunicAltarContext;
 import it.hurts.sskirillss.relics.crafting.RunicAltarRecipe;
 import it.hurts.sskirillss.relics.crafting.SingletonInventory;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.tiles.RunicAltarTile;
 import net.minecraft.block.Block;
@@ -27,7 +25,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +51,6 @@ public class RunicAltarBlock extends Block {
         if (stack == null) return ActionResultType.FAIL;
         if (stack.isEmpty()) {
             if (handStack.isEmpty()) return ActionResultType.FAIL;
-            if (direction == Direction.UP && !(handStack.getItem() instanceof RelicItem)) return ActionResultType.FAIL;
             if (direction != Direction.UP && !(handStack.getItem() instanceof RuneItem)) return ActionResultType.FAIL;
             altar.setStack(handStack.split(1), direction);
             Optional<RunicAltarRecipe> optional = world.getRecipeManager().getRecipeFor(RunicAltarRecipe.RECIPE, new RunicAltarContext(
