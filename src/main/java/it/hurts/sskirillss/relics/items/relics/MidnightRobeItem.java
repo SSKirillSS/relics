@@ -60,7 +60,7 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
         AttributeModifier attribute = new AttributeModifier(SPEED_INFO.getRight(),
                 SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL);
         if (canHide(livingEntity)) {
-            player.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
+            player.addEffect(new EffectInstance(Effects.INVISIBILITY, 30, 0, false, false));
             EntityUtils.applyAttributeModifier(movementSpeed, attribute);
         } else EntityUtils.removeAttributeModifier(movementSpeed, attribute);
     }

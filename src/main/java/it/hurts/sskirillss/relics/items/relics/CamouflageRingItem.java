@@ -53,7 +53,7 @@ public class CamouflageRingItem extends RelicItem<CamouflageRingItem.Stats> impl
         PlayerEntity player = (PlayerEntity) livingEntity;
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
         if (canHide(player)) {
-            player.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
+            player.addEffect(new EffectInstance(Effects.INVISIBILITY, 30, 0, false, false));
             NBTUtils.setInt(stack, TAG_TIME, time + 1);
         } else {
             if (time <= 0) return;
