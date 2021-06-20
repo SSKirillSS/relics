@@ -5,7 +5,6 @@ import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.entity.LivingEntity;
@@ -15,6 +14,8 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -25,6 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.MutablePair;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
@@ -33,8 +35,6 @@ import java.util.UUID;
 public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implements ICurioItem {
     private final MutablePair<String, UUID> SPEED_INFO = new MutablePair<>(Reference.MODID
             + ":" + "midnight_robe_movement_speed", UUID.fromString("21a949be-67d9-43bb-96b8-496782d60933"));
-
-    public static final String TAG_UPDATE_TIME = "time";
 
     public static MidnightRobeItem INSTANCE;
 
@@ -54,37 +54,21 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
+        if (livingEntity.tickCount % 20 != 0 || !(livingEntity instanceof PlayerEntity) || livingEntity.getCommandSenderWorld().isClientSide()) return;
+        PlayerEntity player = (PlayerEntity) livingEntity;
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         AttributeModifier attribute = new AttributeModifier(SPEED_INFO.getRight(),
                 SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL);
-        int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
-
-        if (livingEntity.tickCount % 20 == 0 && time > 0) {
-            NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
-        }
-
-        if (livingEntity.getHealth() < livingEntity.getMaxHealth() * config.healthPercentage) {
-            if (time <= 0) {
-                if (livingEntity.getCommandSenderWorld().isNight()) {
-                    livingEntity.setInvisible(true);
-                    EntityUtils.applyAttributeModifier(livingEntity.getAttribute(Attributes.MOVEMENT_SPEED), attribute);
-                }
-            } else {
-                livingEntity.setInvisible(false);
-                EntityUtils.removeAttributeModifier(livingEntity.getAttribute(Attributes.MOVEMENT_SPEED), attribute);
-            }
-        } else {
-            livingEntity.setInvisible(false);
-            EntityUtils.removeAttributeModifier(livingEntity.getAttribute(Attributes.MOVEMENT_SPEED), attribute);
-        }
+        if (canHide(livingEntity)) {
+            player.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
+            EntityUtils.applyAttributeModifier(movementSpeed, attribute);
+        } else EntityUtils.removeAttributeModifier(movementSpeed, attribute);
     }
 
     @Override
-    public void onUnequip(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        EntityUtils.removeAttributeModifier(livingEntity.getAttribute(Attributes.MOVEMENT_SPEED), new AttributeModifier(SPEED_INFO.getRight(),
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        EntityUtils.removeAttributeModifier(slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED), new AttributeModifier(SPEED_INFO.getRight(),
                 SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
-        livingEntity.setInvisible(false);
     }
 
     @Override
@@ -97,20 +81,25 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
         return Stats.class;
     }
 
+    private static boolean canHide(LivingEntity entity) {
+        Stats config = INSTANCE.config;
+        if (!(entity instanceof PlayerEntity)) return false;
+        PlayerEntity player = (PlayerEntity) entity;
+        return CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MIDNIGHT_ROBE.get(), player).filter(triple ->
+                player.getHealth() <= player.getMaxHealth() * config.healthPercentage && player.getCommandSenderWorld().isNight()
+                        && !player.getCooldowns().isOnCooldown(triple.getRight().getItem())).isPresent();
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class MidnightRobeServerEvents {
         @SubscribeEvent
         public static void onEntityDamage(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
-            if (event.getSource().getEntity() instanceof PlayerEntity
-                    && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MIDNIGHT_ROBE.get(),
-                    (LivingEntity) event.getSource().getEntity()).isPresent()) {
-                ItemStack stack = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MIDNIGHT_ROBE.get(),
-                        (LivingEntity) event.getSource().getEntity()).get().getRight();
-                if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) <= 0)
-                    event.setAmount(event.getAmount() * config.damageMultiplier);
-                NBTUtils.setInt(stack, TAG_UPDATE_TIME, config.stealthDamageCooldown);
-            }
+            if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
+            PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
+            if (!canHide(player)) return;
+            event.setAmount(event.getAmount() * config.damageMultiplier);
+            player.getCooldowns().addCooldown(ItemRegistry.MIDNIGHT_ROBE.get(), config.stealthDamageCooldown * 20);
         }
     }
 
@@ -121,9 +110,10 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
             Stats config = INSTANCE.config;
             PlayerEntity player = event.getPlayer();
             if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MIDNIGHT_ROBE.get(), player).isPresent()
-                    && player.getHealth() < player.getMaxHealth() * config.healthPercentage
+                    && player.getHealth() <= player.getMaxHealth() * config.healthPercentage
                     && player.getCommandSenderWorld().getTimeOfDay(1.0F) > 0.26F
-                    && player.getCommandSenderWorld().getTimeOfDay(1.0F) < 0.827F) event.setCanceled(true);
+                    && player.getCommandSenderWorld().getTimeOfDay(1.0F) < 0.827F
+                    && !player.getCooldowns().isOnCooldown(ItemRegistry.MIDNIGHT_ROBE.get())) event.setCanceled(true);
         }
     }
 
