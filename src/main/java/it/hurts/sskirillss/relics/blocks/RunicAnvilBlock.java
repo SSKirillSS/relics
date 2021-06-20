@@ -12,6 +12,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
@@ -58,6 +59,7 @@ public class RunicAnvilBlock extends FallingBlock {
                         || player.getCooldowns().isOnCooldown(heldStack.getItem())) return ActionResultType.FAIL;
                 RelicUtils.Durability.addDurability(relic, ((RelicScrapItem) offhandStack.getItem()).getReplenishedVolume());
                 offhandStack.shrink(1);
+                heldStack.hurtAndBreak(1, player, (entity) -> entity.broadcastBreakEvent(EquipmentSlotType.MAINHAND));
                 player.getCooldowns().addCooldown(heldStack.getItem(), 20);
                 world.playSound(null, pos, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundCategory.BLOCKS, 1F, 1F - random.nextFloat() * 0.5F);
                 for (int i = 0; i < random.nextInt(20) + 20; i++)

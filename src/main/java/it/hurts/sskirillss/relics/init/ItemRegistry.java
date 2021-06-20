@@ -28,7 +28,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> FLAMING_AMBER_GEODE = ITEMS.register("flaming_amber_geode", ItemBase::new);
     public static final RegistryObject<Item> FLAMING_AMBER_DUST = ITEMS.register("flaming_amber_dust", ItemBase::new);
     public static final RegistryObject<Item> CHRYSOLITE = ITEMS.register("chrysolite", ItemBase::new);
-    public static final RegistryObject<Item> RUNIC_HAMMER = ITEMS.register("runic_hammer", ItemBase::new);
+    public static final RegistryObject<Item> RUNIC_HAMMER = ITEMS.register("runic_hammer", RunicHammerItem::new);
 
     public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", ItemBase::new);
     public static final RegistryObject<Item> RUNE_OF_AIR = ITEMS.register("rune_of_air", AirRuneItem::new);
