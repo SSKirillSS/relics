@@ -29,22 +29,33 @@
   "item.relics.flaming_amber_geode": "Geodo de Âmbar Flamejante",
   "item.relics.flaming_amber_dust": "Pó de Âmbar Flamejante",
   "item.relics.chalk": "Giz",
+  "item.relics.runic_hammer": "Martelo Rúnico",
+
+  "item.relics.common_scrap": "Extrato Comum",
+  "item.relics.uncommon_scrap": "Extrato Incomum",
+  "item.relics.rare_scrap": "Extrato Raro",
+  "item.relics.epic_scrap": "Extrato Épico",
 
   "item.relics.blank_rune": "Runa em branco",
-  "item.relics.rune_of_air": "Runa ar",
-  "item.relics.rune_of_earth": "Runa terra",
-  "item.relics.rune_of_explosion": "Runa explosão",
-  "item.relics.rune_of_fire": "Runa fogo",
-  "item.relics.rune_of_lightning": "Runa relâmpago",
-  "item.relics.rune_of_love": "Runa amor",
-  "item.relics.rune_of_luck": "Runa sorte",
-  "item.relics.rune_of_moon": "Rune lua",
-  "item.relics.rune_of_redstone": "Runa redstone",
-  "item.relics.rune_of_sun": "Runa sol",
-  "item.relics.rune_of_water": "Runa agua",
+  "item.relics.rune_of_air": "Runa do Ar",
+  "item.relics.rune_of_earth": "Runa da Terra",
+  "item.relics.rune_of_explosion": "Runa de Explosão",
+  "item.relics.rune_of_fire": "Runa de Fogo",
+  "item.relics.rune_of_lightning": "Runa do Relâmpago",
+  "item.relics.rune_of_love": "Runa do Amor",
+  "item.relics.rune_of_luck": "Runa da Sorte",
+  "item.relics.rune_of_moon": "Rune da Lua",
+  "item.relics.rune_of_redstone": "Runa de Redstone",
+  "item.relics.rune_of_sun": "Runa do Sol",
+  "item.relics.rune_of_water": "Runa da Água",
+  "item.relics.rune_of_cold": "Runa do Frio",
   
   "tooltip.relics.owner": "Dono: %1$s",
   "tooltip.relics.owner.unknown": "Desconhecido(a)",
+
+  "tooltip.relics.level": "Nível: %1$s [%2$s/%3$s]",
+
+  "tooltip.relics.durability": "Durabilidade: %1$s/%2$s",
 
   "item.relics.spatial_sign": "Selo Espacial",
   "tooltip.relics.spatial_sign.tooltip_1": "Posição: X:%1$s Y:%2$s Z:%3$s",
@@ -79,7 +90,10 @@
   "tooltip.relics.midnight_robe.shift_1": "Concede invisibilidade e aumento da velocidade de movimento durante a noite, se a saúde do usuário estiver abaixo 20% da saúde máxima.",
   "tooltip.relics.midnight_robe.shift_2": "Ataque furtivo causa o dobro de dano, mas a invisibilidade será desativada temporariamente pelos próximos 5 segundos",
 
-  "item.relics.out_runner": "fugitivo",
+  "item.relics.old_boot": "Bota Velha",
+  "tooltip.relics.old_boot.shift_1": "Essa bota parece velha ... Aliás, ela ainda pode aumentar minha velocidade de movimento",
+
+  "item.relics.out_runner": "Bota de Fuga",
   "tooltip.relics.out_runner.shift_1": "Concede a capacidade de ganhar velocidade de movimento e aumentar a altura do passo depois de correr uma certa distância continuamente",
 
   "item.relics.scarab_talisman": "Talismã de Escaravelho",
@@ -165,7 +179,11 @@
   "tooltip.relics.ice_breaker.shift_1": "Causa uma onda de choque após o jogador cair no chão enquanto segura [Shift]. Concede capacidade de deslizar na parede",
   "tooltip.relics.ice_breaker.shift_2": "Aumenta a resistência ao repulção e concede a capacidade de deslizar na parede",
 
+  "item.relics.amphibian_boot": "Bota Anfíbia",
+  "tooltip.relics.amphibian_boot.shift_1": "Increases movement speed at the bottom of the sea",
+
   "block.relics.magma_stone": "Pedra de Magma",
   "block.relics.pedestal": "Pedestal",
-  "block.relics.runic_altar": "Altar runas"
-}
+  "block.relics.runic_altar": "Altar Rúnico",
+  "block.relics.runic_anvil": "Bigorna Rúnica"
+  }
