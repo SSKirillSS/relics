@@ -32,7 +32,7 @@ public class RuneItem extends Item {
     }
 
     public float getWorldgenChance() {
-        return 0.075F;
+        return 0.01F;
     }
 
     public List<ResourceLocation> getLootChests() {
