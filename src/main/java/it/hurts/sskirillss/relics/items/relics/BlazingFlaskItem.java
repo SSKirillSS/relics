@@ -146,6 +146,7 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         if (!(slotContext.getWearer() instanceof PlayerEntity) || NBTUtils.getInt(newStack, TAG_FIRE_AMOUNT, 0) > 0) return;
         PlayerEntity player = (PlayerEntity) slotContext.getWearer();
+        if (player.isCreative() || player.isSpectator()) return;
         player.abilities.mayfly = false;
         player.abilities.flying = false;
         player.onUpdateAbilities();
