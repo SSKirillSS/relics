@@ -52,13 +52,15 @@ public class RunicAnvilBlock extends FallingBlock {
             anvil.setStack(heldStack.split(1));
         } else {
             ItemStack relic = anvil.getStack();
-            if (heldStack.getItem() == ItemRegistry.RUNIC_HAMMER.get()) {
+            if (relic.getItem() instanceof RelicItem && heldStack.getItem() == ItemRegistry.RUNIC_HAMMER.get()) {
                 ItemStack offhandStack = player.getOffhandItem();
-                if (RelicUtils.Durability.getDurability(relic) >= RelicUtils.Durability.getMaxDurability(relic.getItem())
-                        || !(offhandStack.getItem() instanceof RelicScrapItem)
-                        || player.getCooldowns().isOnCooldown(heldStack.getItem())) return ActionResultType.FAIL;
-                RelicUtils.Durability.addDurability(relic, ((RelicScrapItem) offhandStack.getItem()).getReplenishedVolume());
-                offhandStack.shrink(1);
+                if (player.getCooldowns().isOnCooldown(heldStack.getItem())) return ActionResultType.FAIL;
+                int durability = RelicUtils.Durability.getDurability(relic);
+                if (offhandStack.getItem() instanceof RelicScrapItem) {
+                    if (durability >= RelicUtils.Durability.getMaxDurability(relic.getItem())) return ActionResultType.FAIL;
+                    RelicUtils.Durability.addDurability(relic, ((RelicScrapItem) offhandStack.getItem()).getReplenishedVolume());
+                    offhandStack.shrink(1);
+                } else RelicUtils.Durability.takeDurability(relic, 5);
                 heldStack.hurtAndBreak(1, player, (entity) -> entity.broadcastBreakEvent(EquipmentSlotType.MAINHAND));
                 player.getCooldowns().addCooldown(heldStack.getItem(), 20);
                 world.playSound(null, pos, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundCategory.BLOCKS, 1F, 1F - random.nextFloat() * 0.5F);
