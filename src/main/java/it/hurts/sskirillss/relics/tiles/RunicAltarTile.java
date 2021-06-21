@@ -161,11 +161,14 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
         });
         else if (getCraftingProgress() > 0) {
             if (getIngredient().isEmpty()) {
-                List<ItemStack> runes = getRunes();
-                if (runes.isEmpty()) return;
+                List<RuneItem> runes = getRunes().stream().map(rune -> (RuneItem) rune.getItem()).collect(Collectors.toList());
+                runes.removeIf(rune -> RelicUtils.Crafting.getIngredients(rune).isEmpty());
+                if (runes.isEmpty()) {
+                    if (!world.isClientSide() && ticksExisted % 20 == 0) addCraftingProgress(random.nextInt(10) + 1);
+                    return;
+                }
                 RuneItem rune = (RuneItem) runes.get(random.nextInt(runes.size())).getItem();
                 List<Item> ingredients = RelicUtils.Crafting.getIngredients(rune);
-                if (ingredients.isEmpty()) return;
                 setIngredient(new ItemStack(ingredients.get(random.nextInt(ingredients.size()))));
                 world.playSound(null, pos, SoundEvents.CHICKEN_EGG, SoundCategory.BLOCKS, 1F, 1F);
                 world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
