@@ -36,7 +36,7 @@
   "item.relics.rare_scrap": "Extrato Raro",
   "item.relics.epic_scrap": "Extrato Épico",
 
-  "item.relics.blank_rune": "Runa em branco",
+  "item.relics.blank_rune": "Runa em Branco",
   "item.relics.rune_of_air": "Runa do Ar",
   "item.relics.rune_of_earth": "Runa da Terra",
   "item.relics.rune_of_explosion": "Runa de Explosão",
@@ -121,10 +121,11 @@
   "item.relics.fragrant_flower": "Flor Perfumada",
   "tooltip.relics.fragrant_flower.tooltip_1": "Néctar: %1$s",
   "tooltip.relics.fragrant_flower.shift_1": "Torna as abelhas amigáveis e faz com que as elas a lutem ao lado do portador da relíquia",
-  "tooltip.relics.fragrant_flower.shift_2": "As abelhas próximas coletarão néctar para esta relíquia, Presione [Shift] para liberar o néctar fazendo as plantações ao redor crescerem. O néctar cura entidades ao ser liberado e causa dano em mortos-vivos.",
+  "tooltip.relics.fragrant_flower.shift_2": "Aumenta a regeneração da saúde quando estiver perto de abelhas",
 
   "item.relics.holy_locket": "Medalhão Sagrado",
   "tooltip.relics.holy_locket.shift_1": "Multiplica todo o dano causado aos mortos-vivos em 1,5. Concede 25% de chance de incendiar mortos-vivos",
+  "tooltip.relics.holy_locket.shift_2": "Concede capacidade de se curar em vez de sofrer danos. Aumenta o tempo de invulnerabilidade",
   
   "item.relics.jellyfish_necklace": "Colar de Água-Viva",
   "tooltip.relics.jellyfish_necklace.shift_1": "Acumula cargas lentamente enquanto nada, então causa dano elétrico ao colidir com criaturas",
@@ -137,7 +138,7 @@
   "tooltip.relics.rage_glove.shift_1": "Aumenta o dano causado (10%) a cada ataque consecutivo do mesmo alvo,O mesmo ocorre com o dano recebido (5%)",
 
   "item.relics.ice_skates": "Patins de Gelo",
-  "tooltip.relics.ice_skates.shift_1": "Aumenta a velocidade de movimento no gelo. Concede a habilidade de empurrar criaturas no enquanto patina. /nO dano causado e a força do empurrão dependem do tempo gasto patinando",
+  "tooltip.relics.ice_skates.shift_1": "Aumenta a velocidade de movimento no gelo. Concede a habilidade de empurrar criaturas no enquanto patina. O dano causado e a força do empurrão dependem do tempo gasto patinando",
   "tooltip.relics.ice_skates.shift_2": "Permite congelar a água sob os pés, reduzindo o tempo de patinação.",
 
   "item.relics.camouflage_ring": "Anel de Camuflagem",
