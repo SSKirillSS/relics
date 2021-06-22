@@ -125,6 +125,7 @@
 
   "item.relics.holy_locket": "Holy Locket",
   "tooltip.relics.holy_locket.shift_1": "Increases damage dealt to undead entities and grants ability to set them on fire",
+  "tooltip.relics.holy_locket.shift_2": "Grants ability to heal instead of taking damage. Increases invulnerability time",
 
   "item.relics.jellyfish_necklace": "Jellyfish Necklace",
   "tooltip.relics.jellyfish_necklace.shift_1": "Slowly accumulates charges underwater which then can be used to deal electrical damage on collision with mobs",
