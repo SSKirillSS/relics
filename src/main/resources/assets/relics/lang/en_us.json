@@ -121,7 +121,7 @@
   "item.relics.fragrant_flower": "Fragrant Flower",
   "tooltip.relics.fragrant_flower.tooltip_1": "Nectar: %1$s",
   "tooltip.relics.fragrant_flower.shift_1": "Forces bees around to fight alongside with the relic wearer and makes them friendly to the player",
-  "tooltip.relics.fragrant_flower.shift_2": "Bees around will also collect nectar to the buffer of this relic, which can then be released by holding down the [Shift] key to grow crops and heal entities (or damage undead) around",
+  "tooltip.relics.fragrant_flower.shift_2": "Increases health regeneration around bees",
 
   "item.relics.holy_locket": "Holy Locket",
   "tooltip.relics.holy_locket.shift_1": "Increases damage dealt to undead entities and grants ability to set them on fire",
