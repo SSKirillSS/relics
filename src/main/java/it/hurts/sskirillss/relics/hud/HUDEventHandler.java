@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,6 +41,10 @@ public class HUDEventHandler {
     static int offset = 0;
     static int slots = 5;
 
+    static float animation = 0;
+    static long prevTime = System.currentTimeMillis();
+    static boolean locked = false;
+
     private static final ResourceLocation SLOT = new ResourceLocation(Reference.MODID, "textures/hud/slot.png");
     private static final ResourceLocation ARROW_UP = new ResourceLocation(Reference.MODID, "textures/hud/arrow_up.png");
     private static final ResourceLocation ARROW_DOWN = new ResourceLocation(Reference.MODID, "textures/hud/arrow_down.png");
@@ -50,20 +55,34 @@ public class HUDEventHandler {
                 || !(Minecraft.getInstance().getCameraEntity() instanceof PlayerEntity)) return;
         PlayerEntity player = (PlayerEntity) Minecraft.getInstance().getCameraEntity();
         if (player == null || relics.isEmpty()) return;
-        int x = event.getWindow().getGuiScaledWidth() - 39;
-        int y = 19;
+        float multiplier = (System.currentTimeMillis() - prevTime) / 11F;
+        prevTime = System.currentTimeMillis();
+        if (Screen.hasAltDown()) {
+            if (!locked) animation = Math.min(44, animation + multiplier);
+        } else {
+            if (locked && animation < 500) animation = animation + multiplier;
+            if (animation >= 500) locked = false;
+            if (!locked) animation = Math.max(0, animation - multiplier);
+        }
+        if (animation == 44) locked = true;
+        if (animation == 0) return;
+        int x = (int) (event.getWindow().getGuiScaledWidth() + 5 - Math.min(44, animation));
+        int y = 29;
         TextureManager manager = Minecraft.getInstance().getTextureManager();
         MatrixStack matrix = event.getMatrixStack();
+        RenderSystem.enableBlend();
         if (relics.size() > slots) {
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, Math.min(1.0F, animation * 0.025F));
             manager.bind(ARROW_UP);
             AbstractGui.blit(matrix, x - 3, y, 22, 22, 0F, 0F, 1, 1, 1, 1);
+            RenderSystem.disableBlend();
             y += 29;
         }
         for (int i = offset; i < Math.min(relics.size(), slots) + offset; i++) {
             if (i >= relics.size() || i < 0) break;
             matrix.pushPose();
             RenderSystem.enableBlend();
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, Math.min(1.0F, animation * 0.025F));
             String path = relics.get(i).getItem().getRegistryName().getPath();
             if (path.equals(Items.AIR.getRegistryName().getPath())) continue;
             ResourceLocation RELIC = new ResourceLocation(Reference.MODID, "textures/items/" + path + ".png");
@@ -80,8 +99,11 @@ public class HUDEventHandler {
             y += 29;
         }
         if (relics.size() > slots) {
+            RenderSystem.enableBlend();
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, Math.min(1.0F, animation * 0.025F));
             manager.bind(ARROW_DOWN);
             AbstractGui.blit(matrix, x - 3, y, 22, 22, 0F, 0F, 1, 1, 1, 1);
+            RenderSystem.disableBlend();
         }
         manager.bind(AbstractGui.GUI_ICONS_LOCATION);
     }
@@ -109,12 +131,14 @@ public class HUDEventHandler {
     public static void onKeyPressed(InputEvent.KeyInputEvent event) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null) return;
-        if (relics.size() > slots) {
+        if (relics.size() > slots && animation >= 44) {
             if (HotkeyRegistry.HUD_UP.isDown()) {
+                animation = 500;
                 offset = offset - slots;
                 if (offset < 0) offset = (relics.size() - 1) / slots * slots;
                 player.getCommandSenderWorld().playSound(player, player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
             } else if (HotkeyRegistry.HUD_DOWN.isDown()) {
+                animation = 500;
                 offset = offset + slots;
                 if (offset >= relics.size()) offset = 0;
                 player.getCommandSenderWorld().playSound(player, player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
@@ -123,6 +147,7 @@ public class HUDEventHandler {
         for (int i = 0; i < keyBindings.size(); i++) {
             KeyBinding key = keyBindings.get(i);
             if (!key.isDown()) continue;
+            animation = 500;
             int id = i + offset;
             if (id >= relics.size()) continue;
             ItemStack stack = relics.get(i + offset);
