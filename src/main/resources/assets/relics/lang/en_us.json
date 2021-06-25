@@ -1,6 +1,14 @@
 {
   "itemGroup.relics": "Relics",
 
+  "key.relics.hud_up": "Scroll up",
+  "key.relics.hud_down": "Scroll down",
+  "key.relics.hud_first": "Cast first ability",
+  "key.relics.hud_second": "Cast second ability",
+  "key.relics.hud_third": "Cast third ability",
+  "key.relics.hud_fourth": "Cast fourth ability",
+  "key.relics.hud_fifth": "Cast fifth ability",
+
   "tooltip.relics.shift.tooltip": "§7Hold §8[Shift] §7for more info",
   "tooltip.relics.shift.divider_up": "§8---------------§e[Info]§8---------------",
   "tooltip.relics.shift.divider_down": "§8-----------------------------------",

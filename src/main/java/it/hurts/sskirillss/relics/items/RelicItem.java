@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
+import it.hurts.sskirillss.relics.network.PacketRelicAbility;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -151,5 +152,13 @@ public abstract class RelicItem<T extends RelicStats> extends Item {
 
     public void setConfig(T config) {
         this.config = config;
+    }
+
+    public boolean hasAbility() {
+        return false;
+    }
+
+    public void castAbility(PlayerEntity player, ItemStack stack) {
+
     }
 }

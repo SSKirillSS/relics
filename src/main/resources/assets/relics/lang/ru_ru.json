@@ -1,6 +1,15 @@
 {
   "itemGroup.relics": "Реликвии",
 
+  "key.relics.hud_up": "Предыдущая страница",
+  "key.relics.hud_down": "Следующая страница",
+  "key.relics.hud_first": "Использовать первую способность",
+  "key.relics.hud_second": "Использовать вторую способность",
+  "key.relics.hud_third": "Использовать третью способность",
+  "key.relics.hud_fourth": "Использовать четвертую способность",
+  "key.relics.hud_fifth": "Использовать пятую способность",
+
+
   "tooltip.relics.shift.tooltip": "§7Удерживай §8[Shift] §7для подробной информации",
   "tooltip.relics.shift.divider_up": "§8---------------§e[Инфо]§8---------------",
   "tooltip.relics.shift.divider_down": "§8-----------------------------------",
