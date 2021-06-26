@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RelicItem<T extends RelicStats> extends Item implements ICurioItem {
@@ -48,15 +49,15 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public List<ITextComponent> getShiftTooltip(ItemStack stack) {
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 
     public List<ITextComponent> getAltTooltip(ItemStack stack) {
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 
     public List<ITextComponent> getControlTooltip(ItemStack stack) {
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 
     @Override
