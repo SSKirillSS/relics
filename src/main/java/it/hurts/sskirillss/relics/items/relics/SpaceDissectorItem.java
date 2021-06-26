@@ -15,6 +15,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Collections;
 import java.util.List;
@@ -97,6 +98,11 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
         tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_2"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.space_dissector.shift_3"));
         return tooltip;
+    }
+
+    @Override
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        return false;
     }
 
     @Override

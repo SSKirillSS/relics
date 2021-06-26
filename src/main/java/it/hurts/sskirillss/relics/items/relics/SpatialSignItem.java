@@ -24,6 +24,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.List;
 
@@ -108,6 +109,11 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
         NBTUtils.setString(stack, TAG_WORLD, "");
         NBTUtils.setString(stack, TAG_POSITION, "");
         NBTUtils.setInt(stack, TAG_TIME, -1);
+    }
+
+    @Override
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        return false;
     }
 
     @Override

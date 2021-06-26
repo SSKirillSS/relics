@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,11 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
         tooltip.add(new TranslationTextComponent("tooltip.relics.shadow_glaive.shift_1"));
         tooltip.add(new TranslationTextComponent("tooltip.relics.shadow_glaive.shift_2"));
         return tooltip;
+    }
+
+    @Override
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        return false;
     }
 
     @Override

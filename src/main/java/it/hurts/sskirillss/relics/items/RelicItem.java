@@ -2,11 +2,9 @@ package it.hurts.sskirillss.relics.items;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
-import it.hurts.sskirillss.relics.network.PacketRelicAbility;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
-import it.hurts.sskirillss.relics.utils.TooltipUtils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -19,10 +17,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public abstract class RelicItem<T extends RelicStats> extends Item {
+public abstract class RelicItem<T extends RelicStats> extends Item implements ICurioItem {
     protected T config;
 
     public RelicItem(Rarity rarity) {
@@ -101,6 +101,11 @@ public abstract class RelicItem<T extends RelicStats> extends Item {
         if (!Screen.hasAltDown() && !getAltTooltip(stack).isEmpty()) tooltip.add(new TranslationTextComponent("tooltip.relics.alt.tooltip"));
         if (!Screen.hasControlDown() && !getControlTooltip(stack).isEmpty()) tooltip.add(new TranslationTextComponent("tooltip.relics.ctrl.tooltip"));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    }
+
+    @Override
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        return true;
     }
 
     public int getMaxLevel() {
