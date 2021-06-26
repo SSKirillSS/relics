@@ -131,7 +131,7 @@ public class HUDEventHandler {
     public static void onKeyPressed(InputEvent.KeyInputEvent event) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null) return;
-        if (relics.size() > slots && animation >= 44) {
+        if (relics.size() > slots) {
             if (HotkeyRegistry.HUD_UP.isDown()) {
                 animation = 500;
                 offset = offset - slots;
@@ -151,10 +151,11 @@ public class HUDEventHandler {
             int id = i + offset;
             if (id >= relics.size()) continue;
             ItemStack stack = relics.get(i + offset);
-            if (!(stack.getItem() instanceof RelicItem)) return;
+            if (!(stack.getItem() instanceof RelicItem)) continue;
             RelicItem relic = (RelicItem) stack.getItem();
-            if (!relic.hasAbility()) return;
+            if (!relic.hasAbility()) continue;
             NetworkHandler.sendToServer(new PacketRelicAbility(stack));
+            relic.castAbility(player, stack);
         }
     }
 }
