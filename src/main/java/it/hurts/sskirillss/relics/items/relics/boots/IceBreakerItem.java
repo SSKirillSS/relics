@@ -57,7 +57,6 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity instanceof PlayerEntity) {
-            System.out.println(config.speedModifier);
             PlayerEntity player = (PlayerEntity) livingEntity;
             Vector3d motion = player.getDeltaMovement();
             EntityUtils.applyAttributeModifier(player.getAttribute(Attributes.MOVEMENT_SPEED), new AttributeModifier(SPEED_INFO.getRight(),
