@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:space_dissector"
+    },
+    "title": {
+      "translate": "advancements.relics.space_dissector.title"
+    },
+    "description": {
+      "translate": "advancements.relics.space_dissector.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:space_dissector"
+          }
+        ]
+      }
+    }
+  }
+}

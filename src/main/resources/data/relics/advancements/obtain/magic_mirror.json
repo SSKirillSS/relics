@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:magic_mirror"
+    },
+    "title": {
+      "translate": "advancements.relics.magic_mirror.title"
+    },
+    "description": {
+      "translate": "advancements.relics.magic_mirror.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:magic_mirror"
+          }
+        ]
+      }
+    }
+  }
+}

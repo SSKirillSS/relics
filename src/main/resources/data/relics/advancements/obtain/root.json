@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "relics:scarab_talisman"
+    },
+    "title": {
+      "translate": "advancements.relics.root.title"
+    },
+    "description": {
+      "translate": "advancements.relics.root.description"
+    },
+    "background": "minecraft:textures/block/blackstone_top.png",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "relics:relic"
+          }
+        ]
+      }
+    }
+  }
+}

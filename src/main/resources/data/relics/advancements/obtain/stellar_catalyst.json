@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:stellar_catalyst"
+    },
+    "title": {
+      "translate": "advancements.relics.stellar_catalyst.title"
+    },
+    "description": {
+      "translate": "advancements.relics.stellar_catalyst.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:stellar_catalyst"
+          }
+        ]
+      }
+    }
+  }
+}

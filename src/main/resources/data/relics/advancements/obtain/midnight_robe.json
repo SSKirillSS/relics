@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:midnight_robe"
+    },
+    "title": {
+      "translate": "advancements.relics.midnight_robe.title"
+    },
+    "description": {
+      "translate": "advancements.relics.midnight_robe.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:midnight_robe"
+          }
+        ]
+      }
+    }
+  }
+}

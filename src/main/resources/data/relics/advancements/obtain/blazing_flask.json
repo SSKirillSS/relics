@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:blazing_flask"
+    },
+    "title": {
+      "translate": "advancements.relics.blazing_flask.title"
+    },
+    "description": {
+      "translate": "advancements.relics.blazing_flask.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:blazing_flask"
+          }
+        ]
+      }
+    }
+  }
+}

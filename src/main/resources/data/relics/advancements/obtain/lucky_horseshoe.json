@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:lucky_horseshoe"
+    },
+    "title": {
+      "translate": "advancements.relics.lucky_horseshoe.title"
+    },
+    "description": {
+      "translate": "advancements.relics.lucky_horseshoe.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:lucky_horseshoe"
+          }
+        ]
+      }
+    }
+  }
+}

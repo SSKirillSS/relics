@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:out_runner"
+    },
+    "title": {
+      "translate": "advancements.relics.out_runner.title"
+    },
+    "description": {
+      "translate": "advancements.relics.out_runner.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:out_runner"
+          }
+        ]
+      }
+    }
+  }
+}

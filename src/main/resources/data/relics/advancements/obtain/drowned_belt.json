@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:drowned_belt"
+    },
+    "title": {
+      "translate": "advancements.relics.drowned_belt.title"
+    },
+    "description": {
+      "translate": "advancements.relics.drowned_belt.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:drowned_belt"
+          }
+        ]
+      }
+    }
+  }
+}

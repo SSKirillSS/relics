@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:soul_devourer"
+    },
+    "title": {
+      "translate": "advancements.relics.soul_devourer.title"
+    },
+    "description": {
+      "translate": "advancements.relics.soul_devourer.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:soul_devourer"
+          }
+        ]
+      }
+    }
+  }
+}

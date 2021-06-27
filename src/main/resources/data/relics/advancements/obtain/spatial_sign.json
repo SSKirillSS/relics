@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:spatial_sign"
+    },
+    "title": {
+      "translate": "advancements.relics.spatial_sign.title"
+    },
+    "description": {
+      "translate": "advancements.relics.spatial_sign.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:spatial_sign"
+          }
+        ]
+      }
+    }
+  }
+}

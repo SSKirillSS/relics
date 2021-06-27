@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:jellyfish_necklace"
+    },
+    "title": {
+      "translate": "advancements.relics.jellyfish_necklace.title"
+    },
+    "description": {
+      "translate": "advancements.relics.jellyfish_necklace.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:jellyfish_necklace"
+          }
+        ]
+      }
+    }
+  }
+}

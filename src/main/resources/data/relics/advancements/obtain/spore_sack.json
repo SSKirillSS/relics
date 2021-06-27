@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:spore_sack"
+    },
+    "title": {
+      "translate": "advancements.relics.spore_sack.title"
+    },
+    "description": {
+      "translate": "advancements.relics.spore_sack.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:spore_sack"
+          }
+        ]
+      }
+    }
+  }
+}
