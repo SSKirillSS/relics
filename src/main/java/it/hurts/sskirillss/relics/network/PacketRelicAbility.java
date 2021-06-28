@@ -10,31 +10,31 @@ import top.theillusivec4.curios.api.CuriosApi;
 import java.util.function.Supplier;
 
 public class PacketRelicAbility {
-    // Unsecure. Should be replaced with getting slot ID
-    private final ItemStack relic;
+    private final Integer slot;
 
     public PacketRelicAbility(PacketBuffer buf) {
-        relic = buf.readItem();
+        slot = buf.readInt();
     }
 
-    public PacketRelicAbility(ItemStack relic) {
-        this.relic = relic;
+    public PacketRelicAbility(Integer slot) {
+        this.slot = slot;
     }
 
     public void toBytes(PacketBuffer buf) {
-        buf.writeItem(relic);
+        buf.writeInt(slot);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             PlayerEntity player = ctx.get().getSender();
             if (player == null || !player.isAlive()) return;
-            ItemStack stack = this.relic;
-            if (!CuriosApi.getCuriosHelper().findEquippedCurio(stack.getItem(), player).isPresent()
-                    || !(stack.getItem() instanceof RelicItem)) return;
-            RelicItem relic = (RelicItem) stack.getItem();
-            if (!relic.hasAbility()) return;
-            relic.castAbility(player, stack);
+            CuriosApi.getCuriosHelper().getEquippedCurios(player).ifPresent(handler -> {
+                ItemStack stack = handler.getStackInSlot(this.slot);
+                if (stack.isEmpty() || !(stack.getItem() instanceof RelicItem)) return;
+                RelicItem relic = (RelicItem) stack.getItem();
+                if (!relic.hasAbility()) return;
+                relic.castAbility(player, stack);
+            });
         });
         return true;
     }

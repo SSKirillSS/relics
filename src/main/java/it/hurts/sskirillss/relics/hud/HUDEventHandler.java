@@ -25,6 +25,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class HUDEventHandler {
     private static final List<KeyBinding> keyBindings = Arrays.asList(HotkeyRegistry.HUD_FIRST.getKeyBinding(), HotkeyRegistry.HUD_SECOND.getKeyBinding(),
             HotkeyRegistry.HUD_THIRD.getKeyBinding(), HotkeyRegistry.HUD_FOURTH.getKeyBinding(), HotkeyRegistry.HUD_FIFTH.getKeyBinding());
 
-    static List<ItemStack> relics = new ArrayList<>();
+    static List<ImmutablePair<ItemStack, Integer>> relics = new ArrayList<>();
 
     static int offset = 0;
     static int slots = 5;
@@ -83,7 +84,7 @@ public class HUDEventHandler {
             matrix.pushPose();
             RenderSystem.enableBlend();
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, Math.min(1.0F, animation * 0.025F));
-            String path = relics.get(i).getItem().getRegistryName().getPath();
+            String path = relics.get(i).getLeft().getItem().getRegistryName().getPath();
             if (path.equals(Items.AIR.getRegistryName().getPath())) continue;
             ResourceLocation RELIC = new ResourceLocation(Reference.MODID, "textures/items/" + path + ".png");
             manager.bind(SLOT);
@@ -120,7 +121,7 @@ public class HUDEventHandler {
                 if (!(stack.getItem() instanceof RelicItem)) continue;
                 RelicItem relic = (RelicItem) stack.getItem();
                 if (!relic.hasAbility()) return;
-                relics.add(stack);
+                relics.add(new ImmutablePair<>(stack, i));
             }
             offset = offset / slots * slots;
             if (offset == relics.size()) offset = Math.max(0, offset - 1) / slots * slots;
@@ -150,11 +151,12 @@ public class HUDEventHandler {
             animation = 500;
             int id = i + offset;
             if (id >= relics.size()) continue;
-            ItemStack stack = relics.get(i + offset);
+            ImmutablePair<ItemStack, Integer> pair = relics.get(i + offset);
+            ItemStack stack = pair.getLeft();
             if (!(stack.getItem() instanceof RelicItem)) continue;
             RelicItem relic = (RelicItem) stack.getItem();
             if (!relic.hasAbility()) continue;
-            NetworkHandler.sendToServer(new PacketRelicAbility(stack));
+            NetworkHandler.sendToServer(new PacketRelicAbility(pair.getRight()));
             relic.castAbility(player, stack);
         }
     }
