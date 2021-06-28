@@ -94,7 +94,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
 
     private void handleUse(ItemStack stack, LivingEntity entity) {
         if (!entity.isUsingItem() || NBTUtils.getBoolean(stack, TAG_CHARGED, false)) return;
-        Item item = stack.getItem();
+        Item item = entity.getMainHandItem().getItem();
         String id = item.getRegistryName().toString();
         if ((item instanceof BowItem && !config.blacklistedItems.contains(id)) || config.whitelistedItems.contains(id))
             for (int i = 0; i < config.skippedTicks; i++) entity.updatingUsingItem();
