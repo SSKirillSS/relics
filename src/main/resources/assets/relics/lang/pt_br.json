@@ -174,7 +174,8 @@
   "tooltip.relics.chorus_inhibitor.shift_3": "Remove o dano do teletransporte",
 
   "item.relics.arrow_quiver": "Aljava",
-  "tooltip.relics.arrow_quiver.shift_1": "Aumenta a velocidade de armação do arco",
+  "tooltip.relics.arrow_quiver.shift_1": "Habilidade Passiva: Aumenta a velocidade de armação do arco",
+  "tooltip.relics.arrow_quiver.shift_2": "Habilidade Ativa: O próximo disparo após o uso da habilidade gerará uma flecha explosiva com escala de dano de acordo com à distância do disparo",
 
   "item.relics.lucky_horseshoe": "Ferradura da Sorte",
   "tooltip.relics.lucky_horseshoe.shift_1": "Concede 10% de chance, triplica o Saque e a Fortuna do jogador.",
