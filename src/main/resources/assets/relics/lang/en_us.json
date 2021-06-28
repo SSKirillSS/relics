@@ -174,7 +174,8 @@
   "tooltip.relics.chorus_inhibitor.shift_3": "Fully removes damage from teleportation",
 
   "item.relics.arrow_quiver": "Arrow Quiver",
-  "tooltip.relics.arrow_quiver.shift_1": "Increases bowstring drawing speed",
+  "tooltip.relics.arrow_quiver.shift_1": "Passive ability: Increases bowstring drawing speed",
+  "tooltip.relics.arrow_quiver.shift_2": "Active ability: Next shoot after ability use will spawn explosive arrow with damage scaling from shooting distance",
 
   "item.relics.lucky_horseshoe": "Lucky Horseshoe",
   "tooltip.relics.lucky_horseshoe.shift_1": "With a random chance increases player's looting and fortune",

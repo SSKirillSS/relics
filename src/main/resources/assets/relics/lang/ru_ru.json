@@ -175,7 +175,8 @@
   "tooltip.relics.chorus_inhibitor.shift_3": "Полностью нивелирует урон при телепортации",
 
   "item.relics.arrow_quiver": "Колчан",
-  "tooltip.relics.arrow_quiver.shift_1": "Увеличивает скорость натяжения тетивы лука",
+  "tooltip.relics.arrow_quiver.shift_1": "Пассивная способность: Увеличивает скорость натяжения тетивы лука",
+  "tooltip.relics.arrow_quiver.shift_2": "Активная способность: Следующий после использования выстрел создаст взрывную стрелу, урон которой зависит от дистанции выстрела",
 
   "item.relics.lucky_horseshoe": "Счастливая подкова",
   "tooltip.relics.lucky_horseshoe.shift_1": "Со случайным шансом увеличивает уровень удачи и добычи носителя",
