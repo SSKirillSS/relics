@@ -116,7 +116,7 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
         if (player.zza > 0) player.setDeltaMovement(motion.x() + new Vector3d(player.getLookAngle().x,
                         0, player.getLookAngle().z).normalize().x() * 0.025F, motion.y(),
                 motion.z() + new Vector3d(player.getLookAngle().x, 0, player.getLookAngle().z).normalize().z() * 0.025F);
-        if (player instanceof ClientPlayerEntity && ((ClientPlayerEntity) player).input.jumping) riseVelocity = 0.04D;
+        if (player.getCommandSenderWorld().isClientSide() && player instanceof ClientPlayerEntity && ((ClientPlayerEntity) player).input.jumping) riseVelocity = 0.04D;
         if (!player.isShiftKeyDown()) player.setDeltaMovement(motion.x(), riseVelocity * ((getGroundHeight(player)
                 - (player.getY() - config.levitationHeight))), motion.z());
         if (player.getY() - config.levitationHeight > getGroundHeight(player)) {
