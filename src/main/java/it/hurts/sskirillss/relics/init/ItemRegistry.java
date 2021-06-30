@@ -28,6 +28,11 @@ public class ItemRegistry {
     public static final RegistryObject<Item> FLAMING_AMBER_GEODE = ITEMS.register("flaming_amber_geode", ItemBase::new);
     public static final RegistryObject<Item> FLAMING_AMBER_DUST = ITEMS.register("flaming_amber_dust", ItemBase::new);
     public static final RegistryObject<Item> CHRYSOLITE = ITEMS.register("chrysolite", ItemBase::new);
+
+    public static final RegistryObject<Item> COAL_PARCHMENT = ITEMS.register("coal_parchment", ItemBase::new);
+    public static final RegistryObject<Item> RELIC_CONTRACT = ITEMS.register("relic_contract", RelicContractItem::new);
+    public static final RegistryObject<Item> BLOODY_FEATHER = ITEMS.register("bloody_feather", ItemBase::new);
+
     public static final RegistryObject<Item> RUNIC_HAMMER = ITEMS.register("runic_hammer", RunicHammerItem::new);
 
     public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", ItemBase::new);

@@ -38,6 +38,9 @@
   "item.relics.flaming_amber_dust": "Flaming Amber Dust",
   "item.relics.chalk": "Chalk",
   "item.relics.runic_hammer": "Runic Hammer",
+  "item.relics.coal_parchment": "Coal Parchment",
+  "item.relics.relic_contract": "Relic Contract",
+  "item.relics.bloody_feather": "Bloody Feather",
 
   "item.relics.common_scrap": "Common Scrap",
   "item.relics.uncommon_scrap": "Uncommon Scrap",
@@ -58,12 +61,14 @@
   "item.relics.rune_of_water": "Rune of Water",
   "item.relics.rune_of_cold": "Rune of Cold",
 
-  "tooltip.relics.owner": "Owner: %1$s",
-  "tooltip.relics.owner.unknown": "Unknown",
+  "tooltip.relics.contract": "Contract: %1$s [%2$shrs %3$smin %4$ssec]",
 
   "tooltip.relics.level": "Level: %1$s [%2$s/%3$s]",
 
   "tooltip.relics.durability": "Durability: %1$s/%2$s",
+
+  "tooltip.relics.relic_contract.tooltip_1": "Owner: %1$s",
+  "tooltip.relics.relic_contract.tooltip_2": "Blood: %1$s/5",
 
   "item.relics.spatial_sign": "Spatial Sign",
   "tooltip.relics.spatial_sign.tooltip_1": "Stored destination: X:%1$s Y:%2$s Z:%3$s",
@@ -195,6 +200,7 @@
   "block.relics.pedestal": "Pedestal",
   "block.relics.runic_altar": "Runic Altar",
   "block.relics.runic_anvil": "Runic Anvil",
+  "block.relics.bloody_lectern": "Bloody Lectern",
 
   "advancements.relics.root.title" :  "Relics",
   "advancements.relics.root.description": "Obtain your first relic",

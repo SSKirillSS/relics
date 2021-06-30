@@ -2,20 +2,29 @@ package it.hurts.sskirillss.relics.items;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -37,15 +46,28 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (!(entityIn instanceof PlayerEntity)) return;
         PlayerEntity player = (PlayerEntity) entityIn;
-        if (RelicsConfig.RelicsGeneral.STORE_RELIC_OWNER.get()) {
-            if (RelicUtils.Owner.getOwner(stack, worldIn) == null) RelicUtils.Owner.setOwnerUUID(stack, player.getUUID());
-            PlayerEntity owner = RelicUtils.Owner.getOwner(stack, worldIn);
-            if (RelicsConfig.RelicsGeneral.DAMAGE_NON_RELIC_OWNER_AMOUNT.get() > 0 && player.tickCount % 20 == 0 && owner != player)
-                entityIn.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC,
-                        RelicsConfig.RelicsGeneral.DAMAGE_NON_RELIC_OWNER_AMOUNT.get().floatValue());
-        }
+        handleOwner(player, worldIn, stack);
         if (RelicUtils.Durability.getDurability(stack) == -1) RelicUtils.Durability.setDurability(stack, RelicUtils.Durability.getMaxDurability(stack.getItem()));
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+    }
+
+    private static void handleOwner(PlayerEntity player, World world, ItemStack stack) {
+        PlayerEntity owner = RelicUtils.Owner.getOwner(stack, world);
+        if (owner == null || world.isClientSide()) return;
+        int contract = NBTUtils.getInt(stack, RelicContractItem.TAG_DATE, 0);
+        if (contract == 0) NBTUtils.setInt(stack, RelicContractItem.TAG_DATE, (int) world.getGameTime());
+        else if (world.getGameTime() - contract >= (3600 * 20)) {
+            NBTUtils.setInt(stack, RelicContractItem.TAG_DATE, -1);
+            RelicUtils.Owner.setOwnerUUID(stack, "");
+            return;
+        }
+        if (!owner.getStringUUID().equals(player.getStringUUID()) && !player.isCreative() && !player.isSpectator()) {
+            player.drop(stack.copy(), false, true);
+            stack.shrink(1);
+            player.setDeltaMovement(player.getViewVector(0F).multiply(-1F, -1F, -1F).normalize());
+            world.addParticle(ParticleTypes.EXPLOSION, player.getX(), player.getY() + 1, player.getZ(), 0, 0, 0);
+            world.playSound(player, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
+        }
     }
 
     public List<ITextComponent> getShiftTooltip(ItemStack stack) {
@@ -64,8 +86,13 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (worldIn == null) return;
         PlayerEntity owner = RelicUtils.Owner.getOwner(stack, worldIn);
-        if (RelicsConfig.RelicsGeneral.STORE_RELIC_OWNER.get()) tooltip.add(new TranslationTextComponent("tooltip.relics.owner",
-                owner != null ? owner.getDisplayName() : new TranslationTextComponent("tooltip.relics.owner.unknown")));
+        long time = (NBTUtils.getLong(stack, RelicContractItem.TAG_DATE, 0) + (3600 * 20) - worldIn.getGameTime()) / 20;
+        if (time > 0 && owner != null) {
+            long hours = time / 3600;
+            long minutes = (time % 3600) / 60;
+            long seconds = (time % 3600) % 60;
+            tooltip.add(new TranslationTextComponent("tooltip.relics.contract", owner.getDisplayName(), hours, minutes, seconds));
+        }
         int durability = RelicUtils.Durability.getDurability(stack);
         tooltip.add(new TranslationTextComponent("tooltip.relics.durability",
                 durability == -1 ? 0 : durability, RelicUtils.Durability.getMaxDurability(stack.getItem())));
@@ -166,5 +193,26 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     public void castAbility(PlayerEntity player, ItemStack stack) {
 
+    }
+
+    @Mod.EventBusSubscriber(modid = Reference.MODID)
+    public static class RelicEvents {
+        @SubscribeEvent
+        public static void onItemPickup(EntityItemPickupEvent event) {
+            ItemEntity drop = event.getItem();
+            ItemStack stack = drop.getItem();
+            PlayerEntity player = event.getPlayer();
+            ServerWorld world = (ServerWorld) player.getCommandSenderWorld();
+            if (!(stack.getItem() instanceof RelicItem) || world.getGameTime() - NBTUtils.getLong(stack, RelicContractItem.TAG_DATE, 0) >= (3600 * 20)) return;
+            String uuid = RelicUtils.Owner.getOwnerUUID(stack);
+            if (player.isCreative() || uuid.equals(player.getStringUUID())) return;
+            drop.setPickUpDelay(20);
+            Vector3d motion = player.position().subtract(drop.position()).normalize();
+            NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x(), motion.y(), motion.z()), (ServerPlayerEntity) player);
+            drop.setDeltaMovement(motion.multiply(-1.5F, -1.5F, -1.5F));
+            world.sendParticles(ParticleTypes.EXPLOSION, drop.getX(), drop.getY() + 0.5F, drop.getZ(), 1, 0, 0, 0, 0);
+            world.playSound(null, drop.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
+            event.setCanceled(true);
+        }
     }
 }

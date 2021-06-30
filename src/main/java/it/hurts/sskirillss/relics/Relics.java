@@ -28,6 +28,7 @@ public class Relics {
         BlockRegistry.registerBlocks();
         TileRegistry.registerTiles();
         EntityRegistry.registerEntities();
+        RecipeRegistry.registerRecipes();
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RelicsConfig.RELICS_CONFIG);
     }
 

@@ -39,6 +39,9 @@
   "item.relics.flaming_amber_dust": "Пыль из пламенного янтаря",
   "item.relics.chalk": "Мел",
   "item.relics.runic_hammer": "Рунный молот",
+  "item.relics.coal_parchment": "Угольный пергамент",
+  "item.relics.relic_contract": "Контракт реликвии",
+  "item.relics.bloody_feather": "Кровавое перо",
 
   "item.relics.common_scrap": "Обычный скрап",
   "item.relics.uncommon_scrap": "Необычный скрап",
@@ -59,8 +62,7 @@
   "item.relics.rune_of_water": "Руна воды",
   "item.relics.rune_of_cold": "Руна холода",
 
-  "tooltip.relics.owner": "Владелец: %1$s",
-  "tooltip.relics.owner.unknown": "Неизвестен",
+  "tooltip.relics.contract": "Контракт: %1$s [%2$sчас %3$sмин %4$sсек]",
 
   "tooltip.relics.level": "Уровень: %1$s [%2$s/%3$s]",
 
@@ -196,6 +198,7 @@
   "block.relics.pedestal": "Пьедестал",
   "block.relics.runic_altar": "Рунический алтарь",
   "block.relics.runic_anvil": "Руническая наковальня",
+  "block.relics.bloody_lectern": "Окровавленная кафедра",
 
   "advancements.relics.root.title" :  "Реликвии",
   "advancements.relics.root.description": "Получи свою первую реликвию",

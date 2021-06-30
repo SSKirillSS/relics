@@ -28,8 +28,6 @@ public class RelicsConfig {
     }
 
     public static class RelicsGeneral {
-        public static ForgeConfigSpec.BooleanValue STORE_RELIC_OWNER;
-        public static ForgeConfigSpec.DoubleValue DAMAGE_NON_RELIC_OWNER_AMOUNT;
         public static ForgeConfigSpec.ConfigValue<String> LEVELING_BAR_STYLE;
         public static ForgeConfigSpec.ConfigValue<String> LEVELING_BAR_COLOR_NEUTRAL;
         public static ForgeConfigSpec.ConfigValue<String> LEVELING_BAR_COLOR_LOW;
@@ -39,8 +37,6 @@ public class RelicsConfig {
         private static void setupGeneralConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
 
-            STORE_RELIC_OWNER = builder.define("store_relic_owner", true);
-            DAMAGE_NON_RELIC_OWNER_AMOUNT = builder.defineInRange("damage_non_relic_owner_amount", 3.0, 0.0, Integer.MAX_VALUE);
             LEVELING_BAR_STYLE = builder.define("leveling_bar_style", "||||||||||||||||||||||||||||||");
             LEVELING_BAR_COLOR_NEUTRAL = builder.define("leveling_bar_color_neutral", "#808080");
             LEVELING_BAR_COLOR_LOW = builder.define("leveling_bar_color_low", "#FF5555");

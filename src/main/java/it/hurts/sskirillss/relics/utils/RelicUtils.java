@@ -25,20 +25,18 @@ public class RelicUtils {
     public static class Owner {
         private static final String TAG_OWNER = "owner";
 
-        @Nullable
-        public static UUID getOwnerUUID(ItemStack stack) {
-            String uuid = NBTUtils.getString(stack, TAG_OWNER, "");
-            return uuid.equals("") ? null : UUID.fromString(uuid);
+        public static String getOwnerUUID(ItemStack stack) {
+            return NBTUtils.getString(stack, TAG_OWNER, "");
         }
 
         @Nullable
         public static PlayerEntity getOwner(ItemStack stack, World world) {
-            UUID uuid = getOwnerUUID(stack);
-            return uuid != null ? world.getPlayerByUUID(uuid) : null;
+            String uuid = getOwnerUUID(stack);
+            return !uuid.equals("") ? world.getPlayerByUUID(UUID.fromString(uuid)) : null;
         }
 
-        public static void setOwnerUUID(ItemStack stack, UUID uuid) {
-            NBTUtils.setString(stack, TAG_OWNER, uuid.toString());
+        public static void setOwnerUUID(ItemStack stack, String uuid) {
+            NBTUtils.setString(stack, TAG_OWNER, uuid);
         }
     }
 

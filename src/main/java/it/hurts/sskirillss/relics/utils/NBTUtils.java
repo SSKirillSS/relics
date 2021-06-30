@@ -19,6 +19,10 @@ public class NBTUtils {
         stack.getOrCreateTag().putInt(tag, value);
     }
 
+    public static void setLong(ItemStack stack, String tag, long value) {
+        stack.getOrCreateTag().putLong(tag, value);
+    }
+
     public static void setFloat(ItemStack stack, String tag, float value) {
         stack.getOrCreateTag().putFloat(tag, value);
     }
@@ -37,6 +41,10 @@ public class NBTUtils {
 
     public static int getInt(ItemStack stack, String tag, int defaultValue) {
         return safeCheck(stack, tag) ? stack.getOrCreateTag().getInt(tag) : defaultValue;
+    }
+
+    public static long getLong(ItemStack stack, String tag, long defaultValue) {
+        return safeCheck(stack, tag) ? stack.getOrCreateTag().getLong(tag) : defaultValue;
     }
 
     public static float getFloat(ItemStack stack, String tag, float defaultValue) {
