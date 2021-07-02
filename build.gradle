@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.2.2.2'
+version = '0.2.3'
 group = 'it.hurts.sskirillss'
 archivesBaseName = 'relics'
 
