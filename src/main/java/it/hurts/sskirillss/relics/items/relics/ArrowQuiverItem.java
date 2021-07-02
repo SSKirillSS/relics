@@ -187,7 +187,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
                     if (world.isClientSide()) return;
                     Vector3d motion = entity.position().add(0F, 2.25F, 0F).subtract(projectile.position())
                             .normalize().multiply(1.5F, 1.5F, 1.5F);
-                    if (!world.isClientSide() && entity instanceof ServerPlayerEntity) NetworkHandler.sendToServer(new PacketPlayerMotion(motion.x(), motion.y(), motion.z()));
+                    if (!world.isClientSide() && entity instanceof ServerPlayerEntity) NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x(), motion.y(), motion.z()), (ServerPlayerEntity) entity);
                     else entity.setDeltaMovement(motion);
                     if (!entity.getStringUUID().equals(owner.getStringUUID())) entity.hurt(DamageSource.playerAttack(owner),
                             (float) Math.min(config.maxExplosionDamage, entity.position().distanceTo(owner.position()) * config.explosionDamageMultiplier));
@@ -201,8 +201,8 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
 
     public static class Stats extends RelicStats {
         public int skippedTicks = 1;
-        public int activeCooldown = 15;
-        public int explosionRadius = 4;
+        public int activeCooldown = 10;
+        public int explosionRadius = 5;
         public float explosionDamageMultiplier = 1.5F;
         public int maxExplosionDamage = 75;
         public List<String> whitelistedItems = new ArrayList<>();
