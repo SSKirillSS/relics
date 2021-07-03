@@ -205,11 +205,11 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
             ServerWorld world = (ServerWorld) player.getCommandSenderWorld();
             if (!(stack.getItem() instanceof RelicItem) || world.getGameTime() - NBTUtils.getLong(stack, RelicContractItem.TAG_DATE, 0) >= (3600 * 20)) return;
             String uuid = RelicUtils.Owner.getOwnerUUID(stack);
-            if (player.isCreative() || uuid.equals(player.getStringUUID())) return;
-            drop.setPickUpDelay(20);
+            if (player.isCreative() || uuid.equals("") || uuid.equals(player.getStringUUID())) return;
+            drop.setPickUpDelay(40);
             Vector3d motion = player.position().subtract(drop.position()).normalize();
             NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x(), motion.y(), motion.z()), (ServerPlayerEntity) player);
-            drop.setDeltaMovement(motion.multiply(-1.5F, -1.5F, -1.5F));
+            drop.setDeltaMovement(motion.multiply(-1.25F, -1.25F, -1.25F));
             world.sendParticles(ParticleTypes.EXPLOSION, drop.getX(), drop.getY() + 0.5F, drop.getZ(), 1, 0, 0, 0, 0);
             world.playSound(null, drop.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
             event.setCanceled(true);
