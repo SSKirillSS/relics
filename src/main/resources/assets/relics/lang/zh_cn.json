@@ -1,22 +1,30 @@
 {
   "itemGroup.relics": "遗物",
 
-  "tooltip.relics.shift.tooltip": "§7按住§8[Shift]§7查看更多信息",
+  "key.relics.hud_up": "向上滚动",
+  "key.relics.hud_down": "向下滚动",
+  "key.relics.hud_first": "释放第一种能力",
+  "key.relics.hud_second": "释放第二种能力",
+  "key.relics.hud_third": "释放第三种能力",
+  "key.relics.hud_fourth": "释放第四种能力",
+  "key.relics.hud_fifth": "释放第五种能力",
+
+  "tooltip.relics.shift.tooltip": "§7按住 §8[Shift] §7查看更多信息",
   "tooltip.relics.shift.divider_up": "§8---------------§e[信息]§8---------------",
   "tooltip.relics.shift.divider_down": "§8-----------------------------------",
 
-  "tooltip.relics.alt.tooltip": "§7按住§8[Alt]§7查看更多信息",
+  "tooltip.relics.alt.tooltip": "§7按住 §8[Alt] §7查看更多信息",
   "tooltip.relics.alt.divider_up": "§8---------------§b[信息]§8---------------",
   "tooltip.relics.alt.divider_down": "§8-----------------------------------",
 
-  "tooltip.relics.ctrl.tooltip": "§7按住§8[Ctrl] §7查看更多信息",
+  "tooltip.relics.ctrl.tooltip": "§7按住 §8[Ctrl] §7查看更多信息",
   "tooltip.relics.ctrl.divider_up": "§8---------------§a[信息]§8---------------",
   "tooltip.relics.ctrl.divider_down": "§8-----------------------------------",
 
   "message.relics.version.forge": "§4[RELICS-WARN] §c你使用了旧版本的Forge。本模组无法在旧版Forge下在地牢宝箱内生成遗物。请升级你的Forge版本至1.16.5-36.0.14以及更新的版本以解决该问题。如果出于一些原因你不想升级Forge版本，你可以自己添加生成遗物的方式。该消息可在配置内关闭。",
 
   "curios.identifier.feet": "足饰",
-  "curios.modifiers.feet": "穿在脚上时：",
+  "curios.modifiers.feet": "穿在脚上时:",
 
   "item.relics.chrysolite": "贵橄榄石",
   "item.relics.aquasteel_ingot": "水钢锭",
@@ -29,13 +37,42 @@
   "item.relics.flaming_amber_geode": "燃烧琥珀地球仪",
   "item.relics.flaming_amber_dust": "燃烧琥珀粉",
   "item.relics.chalk": "粉笔",
+  "item.relics.runic_hammer": "符文锤",
+  "item.relics.coal_parchment": "煤炭羊皮纸",
+  "item.relics.relic_contract": "遗物契约",
+  "item.relics.bloody_feather": "染血羽毛",
 
-  "tooltip.relics.owner": "拥有者：%1$s",
-  "tooltip.relics.owner.unknown": "未知",
-  
+  "item.relics.common_scrap": "普通碎片",
+  "item.relics.uncommon_scrap": "稀有碎片",
+  "item.relics.rare_scrap": "罕见碎片",
+  "item.relics.epic_scrap": "史诗碎片",
+
+  "item.relics.blank_rune": "空白符文",
+  "item.relics.rune_of_air": "气符文",
+  "item.relics.rune_of_earth": "地符文",
+  "item.relics.rune_of_explosion": "爆符文",
+  "item.relics.rune_of_fire": "火符文",
+  "item.relics.rune_of_lightning": "电符文",
+  "item.relics.rune_of_love": "爱符文",
+  "item.relics.rune_of_luck": "欧符文",
+  "item.relics.rune_of_moon": "月符文",
+  "item.relics.rune_of_redstone": "红石符文",
+  "item.relics.rune_of_sun": "日符文",
+  "item.relics.rune_of_water": "水符文",
+  "item.relics.rune_of_cold": "寒符文",
+
+  "tooltip.relics.contract": "契约: %1$s [%2$s小时 %3$s分钟 %4$s秒]",
+
+  "tooltip.relics.level": "等级: %1$s [%2$s/%3$s]",
+
+  "tooltip.relics.durability": "耐久: %1$s/%2$s",
+
+  "tooltip.relics.relic_contract.tooltip_1": "拥有者: %1$s",
+  "tooltip.relics.relic_contract.tooltip_2": "血液: %1$s/5",
+
   "item.relics.spatial_sign": "时空符号",
-  "tooltip.relics.spatial_sign.tooltip_1": "存储位置：X:%1$s Y:%2$s Z:%3$s",
-  "tooltip.relics.spatial_sign.tooltip_2": "剩余：%1$s",
+  "tooltip.relics.spatial_sign.tooltip_1": "存储位置: X:%1$s Y:%2$s Z:%3$s",
+  "tooltip.relics.spatial_sign.tooltip_2": "时间剩余: %1$s",
   "tooltip.relics.spatial_sign.shift_1": "在激活后一段时间后传送到存储位置",
   "tooltip.relics.spatial_sign.shift_2": "在背包里有时空符号且受到致命伤害时，你会直接回到存储位置，同时该遗物会被摧毁",
 
@@ -54,7 +91,7 @@
   "tooltip.relics.space_dissector.shift_3": "按下[Shift]键时可传送到飞盘所在位置",
 
   "item.relics.soul_devourer": "灵魂吞噬者",
-  "tooltip.relics.soul_devourer.tooltip_1": "聚魂量：%1$s",
+  "tooltip.relics.soul_devourer.tooltip_1": "储魂量： %1$s",
   "tooltip.relics.soul_devourer.shift_1": "聚集了死者的灵魂，根据聚魂量增伤",
   "tooltip.relics.soul_devourer.shift_2": "按下[Shift]键会释放全部灵魂，对附近的任何生物造成伤害和击退",
 
@@ -65,10 +102,13 @@
   "item.relics.midnight_robe": "午夜长袍",
   "tooltip.relics.midnight_robe.shift_1": "在夜晚穿戴者生命值较低时获得隐身和速度效果",
   "tooltip.relics.midnight_robe.shift_2": "潜行攻击会造成双倍伤害，但此时会暂时失去隐身和速度效果",
-  
+
+  "item.relics.old_boot": "旧靴子",
+  "tooltip.relics.old_boot.shift_1": "这靴子看上去很久...顺带一提，它依然可以提高我的移动速度",
+
   "item.relics.out_runner": "领跑鞋",
-  "tooltip.relics.out_runner.shift_1": "连续奔跑一定距离后，增加移速和越过方块高度。",
-  
+  "tooltip.relics.out_runner.shift_1": "连续奔跑一定距离后，增加移速和越过方块高度",
+
   "item.relics.scarab_talisman": "圣甲虫护符",
   "tooltip.relics.scarab_talisman.shift_1": "增加移速，在沙地上增加跳跃高度",
   "tooltip.relics.scarab_talisman.shift_2": "增加挖沙速度，免疫卡入方块造成的窒息伤害",
@@ -76,36 +116,36 @@
   "item.relics.shadow_glaive": "暗影之刃",
   "tooltip.relics.shadow_glaive.shift_1": "戴在副手时有几率召唤暗影之刃在怪物间弹射造成伤害",
   "tooltip.relics.shadow_glaive.shift_2": "其伤害基于你之前对怪物造成的伤害，每次弹射的伤害递减",
-  
+
   "item.relics.stellar_catalyst": "星辰催化剂",
-  "tooltip.relics.stellar_catalyst.shift_1": "攻击时有几率召唤流星",
+  "tooltip.relics.stellar_catalyst.shift_1": "攻击时有几率召唤流星，对撞击位置上的所有人造成一半的召唤伤害",
 
   "item.relics.drowned_belt": "溺尸腰带",
   "tooltip.relics.drowned_belt.shift_1": "可在水下呼吸，增加水下受到和造成的伤害，降低游泳速度",
 
   "item.relics.elytra_booster": "鞘翅推进器",
-  "tooltip.relics.elytra_booster.tooltip_1": "充能：%1$s",
+  "tooltip.relics.elytra_booster.tooltip_1": "充能: %1$s",
   "tooltip.relics.elytra_booster.shift_1": "按[Shift]时吸收附近的龙息以增加鞘翅飞行速度。在末地会缓慢充能",
   "tooltip.relics.elytra_booster.shift_2": "可在激活推进器时撞击生物造成伤害",
-  
+
   "item.relics.enders_hand": "末影之手",
-  "tooltip.relics.enders_hand.shift_1": "按·[Shift]时可交换玩家和其所视末影人所在位置",
-  
-  "tooltip.relics.jellyfish_necklace.shift_2": "在水下回血速度加倍",
+  "tooltip.relics.enders_hand.shift_1": "按住[Shift]时可交换玩家和其所视末影人所在位置",
 
   "item.relics.fragrant_flower": "芳香花朵",
-  "tooltip.relics.fragrant_flower.tooltip_1": "花蜜：%1$s",
+  "tooltip.relics.fragrant_flower.tooltip_1": "花蜜: %1$s",
   "tooltip.relics.fragrant_flower.shift_1": "强制附近的蜜蜂与穿戴者并肩作战",
-  "tooltip.relics.fragrant_flower.shift_2": "蜜蜂会为该遗物收集花蜜，按[Shift]可促进作物生长和治疗实体（或对亡灵生物造成伤害）",
+  "tooltip.relics.fragrant_flower.shift_2": "在蜜蜂周围快速回复生命",
 
   "item.relics.holy_locket": "神圣吊坠",
   "tooltip.relics.holy_locket.shift_1": "增加对亡灵生物造成的伤害并对使其燃烧",
-  
+  "tooltip.relics.holy_locket.shift_2": "赋予生命回复能力，而不是收到伤害。增加无敌时间",
+
   "item.relics.jellyfish_necklace": "水母项链",
   "tooltip.relics.jellyfish_necklace.shift_1": "缓慢充能的饰品，可对碰撞到的生物造成电属性伤害",
-  
+  "tooltip.relics.jellyfish_necklace.shift_2": "在水下时生命回复速度增加一倍",
+
   "item.relics.hunter_belt": "狩猎腰带",
-  "tooltip.relics.hunter_belt.shift_1": "对动物造成双倍伤害，怪物掉落物加倍",
+  "tooltip.relics.hunter_belt.shift_1": "对动物造成双倍伤害，怪物掉落物加倍。 增加佩戴者宠物的伤害",
 
   "item.relics.rage_glove": "狂怒手套",
   "tooltip.relics.rage_glove.shift_1": "增加对同一生物造成和受到的连续伤害",
@@ -118,8 +158,8 @@
   "tooltip.relics.camouflage_ring.shift_1": "可暂时躲在高草丛里，潜行攻击造成伤害加倍",
 
   "item.relics.delay_ring": "迟缓戒指",
-  "tooltip.relics.delay_ring.tooltip_1": "时间：%1$s",
-  "tooltip.relics.delay_ring.tooltip_2": "生命值：%1$s",
+  "tooltip.relics.delay_ring.tooltip_1": "时间: %1$s",
+  "tooltip.relics.delay_ring.tooltip_2": "生命值: %1$s",
   "tooltip.relics.delay_ring.shift_1": "暂时改变穿戴者的命运，在10秒内降低回血速度和受到的伤害",
   "tooltip.relics.delay_ring.shift_2": "迟缓的治疗效果会在之后加倍",
 
@@ -127,31 +167,105 @@
   "tooltip.relics.bastion_ring.shift_1": "可在杀死猪灵时获得附近堡垒遗迹的位置",
 
   "item.relics.blazing_flask": "燃烧瓶",
-  "tooltip.relics.blazing_flask.tooltip_1": "火焰储量：%1$s",
+  "tooltip.relics.blazing_flask.tooltip_1": "火焰储量: %1$s",
   "tooltip.relics.blazing_flask.shift_1": "消耗火焰微弱浮空，可点燃脚下的怪物",
   "tooltip.relics.blazing_flask.shift_2": "免疫火焰造成的伤害",
 
   "item.relics.chorus_inhibitor": "紫颂抑制器",
-  "tooltip.relics.chorus_inhibitor.tooltip_1": "存储位置：X:%1$s Y:%2$s Z:%3$s",
-  "tooltip.relics.chorus_inhibitor.tooltip_2": "剩余：%1$s",
+  "tooltip.relics.chorus_inhibitor.tooltip_1": "存储位置: X:%1$s Y:%2$s Z:%3$s",
+  "tooltip.relics.chorus_inhibitor.tooltip_2": "时间剩余: %1$s",
   "tooltip.relics.chorus_inhibitor.shift_1": "记住使用紫颂果时的位置，在一段时间后传送回该位置",
   "tooltip.relics.chorus_inhibitor.shift_2": "在未传送前额外使用紫颂果会增加补给量",
   "tooltip.relics.chorus_inhibitor.shift_3": "免疫传送造成的伤害",
 
   "item.relics.arrow_quiver": "箭袋",
-  "tooltip.relics.arrow_quiver.shift_1": "有几率发射多根箭",
+  "tooltip.relics.arrow_quiver.shift_1": "被动能力：增加拉弓的速度",
+  "tooltip.relics.arrow_quiver.shift_2": "主动能力：使用能力后的下一次射击将发射爆炸箭，威力与射击距离成正比",
 
   "item.relics.lucky_horseshoe": "幸运马蹄",
   "tooltip.relics.lucky_horseshoe.shift_1": "有几率增加掠夺和时运效果",
 
   "item.relics.magic_mirror": "魔镜",
   "tooltip.relics.magic_mirror.shift_1": "传送到上一个重生点",
-  "tooltip.relics.magic_mirror.invalid_location": "未知重生点",
+  "tooltip.relics.magic_mirror.invalid_location": "未知传送点",
 
   "item.relics.ice_breaker": "破冰鞋",
-  "tooltip.relics.ice_breaker.shift_1": "当玩家按住[Shift]摔落时会产生冲击波。",
+  "tooltip.relics.ice_breaker.shift_1": "当玩家按住[Shift]摔落时会产生冲击波",
   "tooltip.relics.ice_breaker.shift_2": "增加击退距离，可在墙上滑行",
-  
+
+  "item.relics.amphibian_boot": "两栖靴",
+  "tooltip.relics.amphibian_boot.shift_1": "增加在海底的移动速度",
+
   "block.relics.magma_stone": "岩浆石",
-  "block.relics.pedestal": "底座"
+  "block.relics.pedestal": "底座",
+  "block.relics.runic_altar": "符文祭坛",
+  "block.relics.runic_anvil": "符文铁砧",
+  "block.relics.bloody_lectern": "染血台",
+
+  "advancements.relics.root.title" :  "遗物",
+  "advancements.relics.root.description": "获得你的第一个遗物",
+  "advancements.relics.amphibian_boot.title" :  "比混凝土更好!",
+  "advancements.relics.amphibian_boot.description": "获得两栖靴",
+  "advancements.relics.arrow_quiver.title" :  "莱格拉斯",
+  "advancements.relics.arrow_quiver.description": "获得箭袋",
+  "advancements.relics.bastion_ring.title" :  "我们和小猪一起去哪里...",
+  "advancements.relics.bastion_ring.description": "获得堡垒戒指",
+  "advancements.relics.blazing_flask.title" :  "Kaseki的学生",
+  "advancements.relics.blazing_flask.description": "获得燃烧瓶",
+  "advancements.relics.camouflage_ring.title" :  "隐形男孩",
+  "advancements.relics.camouflage_ring.description": "获得伪装戒指",
+  "advancements.relics.chorus_inhibitor.title" :  "回到未来",
+  "advancements.relics.chorus_inhibitor.description": "获得紫颂抑制器",
+  "advancements.relics.delay_ring.title" :  "英雄不死",
+  "advancements.relics.delay_ring.description": "获得迟缓戒指",
+  "advancements.relics.drowned_belt.title" :  "越是深入，越是痛苦",
+  "advancements.relics.drowned_belt.description": "获得溺尸腰带",
+  "advancements.relics.elytra_booster.title" :  "我相信我能飞",
+  "advancements.relics.elytra_booster.description": "获得鞘翅推进器",
+  "advancements.relics.enders_hand.title" :  "我们间的距离只有巴掌那么点",
+  "advancements.relics.enders_hand.description": "获得末影之手",
+  "advancements.relics.fragrant_flower.title" :  "谁来尊重蜜蜂...",
+  "advancements.relics.fragrant_flower.description": "获得芳香花朵",
+  "advancements.relics.holy_locket.title" :  "你看到了吗？看见没有？！",
+  "advancements.relics.holy_locket.description": "获得神圣戒指",
+  "advancements.relics.hunter_belt.title" :  "比宠物狗还弱的感觉如何?",
+  "advancements.relics.hunter_belt.description": "获得狩猎腰带",
+  "advancements.relics.ice_breaker.title" :  "镜子的边缘",
+  "advancements.relics.ice_breaker.description": "获得破冰鞋",
+  "advancements.relics.ice_skates.title" :  "冰上的尤里",
+  "advancements.relics.ice_skates.description": "获得溜冰鞋",
+  "advancements.relics.jellyfish_necklace.title" :  "皮-卡-丘",
+  "advancements.relics.jellyfish_necklace.description": "获得水母项链",
+  "advancements.relics.lucky_horseshoe.title" :  "不要取笑我...",
+  "advancements.relics.lucky_horseshoe.description": "获得幸运马蹄",
+  "advancements.relics.magic_mirror.title" :  "Deja vu",
+  "advancements.relics.magic_mirror.description": "获得魔镜",
+  "advancements.relics.magma_walker.title" :  "信赖下跌",
+  "advancements.relics.magma_walker.description": "获得熔岩行者",
+  "advancements.relics.midnight_robe.title" :  "狡猾飞天德",
+  "advancements.relics.midnight_robe.description": "获得午夜长袍",
+  "advancements.relics.old_boot.title" :  "不要以貌取人",
+  "advancements.relics.old_boot.description": "获得旧靴子",
+  "advancements.relics.out_runner.title" :  "Little Muck",
+  "advancements.relics.out_runner.description": "获得领跑者",
+  "advancements.relics.rage_glove.title" :  "损失是300元",
+  "advancements.relics.rage_glove.description": "获得狂怒手套",
+  "advancements.relics.reflection_necklace.title" :  "不，你别来",
+  "advancements.relics.reflection_necklace.description": "获得反弹项链",
+  "advancements.relics.scarab_talisman.title" :  "是时候滚皮球了",
+  "advancements.relics.scarab_talisman.description": "获得圣甲虫护符",
+  "advancements.relics.shadow_glaive.title" :  "Yamato v0.5",
+  "advancements.relics.shadow_glaive.description": "获得暗影之刃",
+  "advancements.relics.soul_devourer.title" :  "Gogol会很感激它的",
+  "advancements.relics.soul_devourer.description": "获得灵魂吞噬者",
+  "advancements.relics.space_dissector.title" :  "战士公主",
+  "advancements.relics.space_dissector.description": "获得空间切割器",
+  "advancements.relics.spatial_sign.title" :  "/sethome",
+  "advancements.relics.spatial_sign.description": "获得时空符号",
+  "advancements.relics.spider_necklace.title" :  "超凡蜘蛛侠",
+  "advancements.relics.spider_necklace.description": "获得蜘蛛项链",
+  "advancements.relics.spore_sack.title" :  "Santa的包",
+  "advancements.relics.spore_sack.description": "获得孢子囊",
+  "advancements.relics.stellar_catalyst.title" :  "这是一场流星雨",
+  "advancements.relics.stellar_catalyst.description": "获得星辰催化剂"
 }
