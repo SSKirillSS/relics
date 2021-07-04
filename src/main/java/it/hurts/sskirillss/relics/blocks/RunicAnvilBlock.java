@@ -36,7 +36,7 @@ public class RunicAnvilBlock extends FallingBlock {
     public static final DirectionProperty FACING = HorizontalBlock.FACING;
 
     public RunicAnvilBlock() {
-        super(Block.Properties.of(Material.STONE).strength(4.0F).harvestTool(ToolType.PICKAXE).noOcclusion());
+        super(Block.Properties.of(Material.HEAVY_METAL).sound(SoundType.ANVIL).strength(4.0F).harvestTool(ToolType.PICKAXE).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
@@ -133,5 +133,10 @@ public class RunicAnvilBlock extends FallingBlock {
     @Override
     protected void falling(FallingBlockEntity entity) {
         entity.setHurtsEntities(true);
+    }
+
+    @Override
+    public void onLand(World world, BlockPos pos, BlockState oldState, BlockState newState, FallingBlockEntity entity) {
+        if (!entity.isSilent()) world.levelEvent(1031, pos, 0);
     }
 }
