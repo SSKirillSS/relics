@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.init;
 
 import it.hurts.sskirillss.relics.entities.renderer.*;
 import it.hurts.sskirillss.relics.items.RelicContractItem;
-import it.hurts.sskirillss.relics.items.relics.ReflectionNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
 import it.hurts.sskirillss.relics.tiles.renderer.*;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -13,8 +12,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -45,10 +42,5 @@ public class RemoteRegistry {
                         : (entity instanceof PlayerEntity && ((PlayerEntity) entity).getCooldowns().isOnCooldown(stack.getItem())) ? 1 : 0);
         ItemModelsProperties.register(ItemRegistry.RELIC_CONTRACT.get(), new ResourceLocation(Reference.MODID, "blood"), (stack, world, entity) ->
                 NBTUtils.getInt(stack, RelicContractItem.TAG_BLOOD, 0));
-    }
-
-    @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event) {
-        ModelLoader.addSpecialModel(ReflectionNecklaceItem.RL);
     }
 }
