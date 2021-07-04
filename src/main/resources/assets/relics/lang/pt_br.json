@@ -38,6 +38,9 @@
   "item.relics.flaming_amber_dust": "Pó de Âmbar Flamejante",
   "item.relics.chalk": "Giz",
   "item.relics.runic_hammer": "Martelo Rúnico",
+  "item.relics.coal_parchment": "Pergaminho de Carvão",
+  "item.relics.relic_contract": "Contrato de Relíquia",
+  "item.relics.bloody_feather": "Pena Sangrenta",
 
   "item.relics.common_scrap": "Extrato Comum",
   "item.relics.uncommon_scrap": "Extrato Incomum",
@@ -58,12 +61,14 @@
   "item.relics.rune_of_water": "Runa da Água",
   "item.relics.rune_of_cold": "Runa do Frio",
   
-  "tooltip.relics.owner": "Dono: %1$s",
-  "tooltip.relics.owner.unknown": "Desconhecido(a)",
+  "tooltip.relics.contract": "Contrato: %1$s [%2$shrs %3$smin %4$ssec]",
 
   "tooltip.relics.level": "Nível: %1$s [%2$s/%3$s]",
 
   "tooltip.relics.durability": "Durabilidade: %1$s/%2$s",
+    
+  "tooltip.relics.relic_contract.tooltip_1": "Dono: %1$s",
+  "tooltip.relics.relic_contract.tooltip_2": "Sangue: %1$s/5",
 
   "item.relics.spatial_sign": "Selo Espacial",
   "tooltip.relics.spatial_sign.tooltip_1": "Posição: X:%1$s Y:%2$s Z:%3$s",
@@ -195,6 +200,7 @@
   "block.relics.pedestal": "Pedestal",
   "block.relics.runic_altar": "Altar Rúnico",
   "block.relics.runic_anvil": "Bigorna Rúnica",
+  "block.relics.bloody_lectern": "Atril Sangrento",
 
   "advancements.relics.root.title" :  "Relics",
   "advancements.relics.root.description": "Obtenha sua primeira relíquia",
