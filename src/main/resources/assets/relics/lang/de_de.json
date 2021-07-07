@@ -3,11 +3,11 @@
 
   "key.relics.hud_up": "Nach oben scrollen",
   "key.relics.hud_down": "Nach unten scrollen",
-  "key.relics.hud_first": "Erste Fähigkeit anwenden",
-  "key.relics.hud_second": "Zweite Fähigkeit anwenden",
-  "key.relics.hud_third": "Dritte Fähigkeit anwenden",
-  "key.relics.hud_fourth": "Vierte Fähigkeit anwenden",
-  "key.relics.hud_fifth": "Fünfte Fähigkeit anwenden",
+  "key.relics.hud_first": "Erste Fähigkeit ausführen",
+  "key.relics.hud_second": "Zweite Fähigkeit ausführen",
+  "key.relics.hud_third": "Dritte Fähigkeit ausführen",
+  "key.relics.hud_fourth": "Vierte Fähigkeit ausführen",
+  "key.relics.hud_fifth": "Fünfte Fähigkeit ausführen",
 
   "tooltip.relics.shift.tooltip": "§7Halte §8[Shift] §7für mehr Infos",
   "tooltip.relics.shift.divider_up": "§8---------------§e[Infos]§8---------------",
