@@ -5,16 +5,15 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.renderer.ReflectionNecklaceModel;
 import it.hurts.sskirillss.relics.items.relics.renderer.ReflectionNecklaceShieldModel;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -85,13 +84,14 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
         return Stats.class;
     }
 
-    private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/reflection_necklace_shield.png");
+    private final ResourceLocation SHIELD_TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/reflection_necklace_shield.png");
+    private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/reflection_necklace.png");
 
     @Override
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing,
                        float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
         int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
-        ReflectionNecklaceShieldModel model = new ReflectionNecklaceShieldModel();
+        ReflectionNecklaceShieldModel shieldModel = new ReflectionNecklaceShieldModel();
         if (charges > 0) {
             for (int i = 0; i < charges; i++) {
                 matrixStack.pushPose();
@@ -100,20 +100,18 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
                 matrixStack.mulPose(Vector3f.YP.rotationDegrees((livingEntity.tickCount / 10.0F) * (180F / (float) Math.PI) + (i * (360F / charges))));
                 matrixStack.mulPose(Vector3f.XP.rotationDegrees((MathHelper.sin(livingEntity.tickCount / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
                 matrixStack.translate(0.0F, 1.5F, 1F + charges * 0.3F);
-                model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(TEXTURE)),
+                shieldModel.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(SHIELD_TEXTURE)),
                         light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
                 matrixStack.popPose();
             }
         }
+        ReflectionNecklaceModel model = new ReflectionNecklaceModel();
         matrixStack.pushPose();
-        ICurio.RenderHelper.translateIfSneaking(matrixStack, livingEntity);
-        ICurio.RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
-        matrixStack.scale(0.35F, 0.35F, 0.35F);
-        matrixStack.translate(0.0F, 0.3F, -0.4F);
-        matrixStack.mulPose(Direction.DOWN.getRotation());
-        Minecraft.getInstance().getItemRenderer()
-                .renderStatic(new ItemStack(ItemRegistry.REFLECTION_NECKLACE.get()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY,
-                        matrixStack, renderTypeBuffer);
+        model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
+        ICurio.RenderHelper.followBodyRotations(livingEntity, model);
+        model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(TEXTURE)),
+                light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         matrixStack.popPose();
     }
 
