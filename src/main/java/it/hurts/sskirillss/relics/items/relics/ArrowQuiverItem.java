@@ -128,9 +128,10 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
         ArrowQuiverModel model = new ArrowQuiverModel();
         matrixStack.pushPose();
-        ICurio.RenderHelper.translateIfSneaking(matrixStack, livingEntity);
-        ICurio.RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
-        model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityCutout(TEXTURE)),
+        model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
+        ICurio.RenderHelper.followBodyRotations(livingEntity, model);
+        model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(TEXTURE)),
                 light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         matrixStack.popPose();
     }
