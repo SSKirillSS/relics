@@ -5,12 +5,14 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.renderer.ScarabTalismanModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
@@ -88,17 +90,19 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
         return Stats.class;
     }
 
+    private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/scarab_talisman.png");
+
     @Override
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity,
                        float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
-        ICurio.RenderHelper.translateIfSneaking(matrixStack, livingEntity);
-        ICurio.RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
-        matrixStack.scale(0.12F, 0.12F, 0.12F);
-        matrixStack.translate(1.1F, 2.5F, -1.1F);
-        matrixStack.mulPose(Direction.DOWN.getRotation());
-        Minecraft.getInstance().getItemRenderer()
-                .renderStatic(new ItemStack(ItemRegistry.SCARAB_TALISMAN.get()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY,
-                        matrixStack, renderTypeBuffer);
+        ScarabTalismanModel model = new ScarabTalismanModel();
+        matrixStack.pushPose();
+        model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
+        ICurio.RenderHelper.followBodyRotations(livingEntity, model);
+        model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(TEXTURE)),
+                light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        matrixStack.popPose();
     }
 
     @Override
