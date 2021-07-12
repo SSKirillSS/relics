@@ -24,9 +24,8 @@ public class ChalkBlock extends Block implements IVoidBlock {
 
     @Override
     public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if (!worldIn.getBlockState(pos.below()).canOcclude()) {
+        if (!worldIn.getBlockState(pos.below()).canOcclude())
             worldIn.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-        }
     }
 
     @Override
@@ -41,8 +40,7 @@ public class ChalkBlock extends Block implements IVoidBlock {
 
     @Override
     public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-        if (worldIn.isRainingAt(pos)) {
+        if (worldIn.isRainingAt(pos))
             worldIn.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-        }
     }
 }

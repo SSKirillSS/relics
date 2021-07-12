@@ -35,13 +35,16 @@ public class MagmaStoneBlock extends Block implements IVoidBlock {
                 .strength(0.5F)
                 .harvestTool(ToolType.PICKAXE)
                 .requiresCorrectToolForDrops()
-                .lightLevel((state) -> 3));
+                .lightLevel((state) -> 3)
+        );
+
         this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
     }
 
     @Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
         updateState(world, pos, state);
+
         return true;
     }
 
@@ -53,6 +56,7 @@ public class MagmaStoneBlock extends Block implements IVoidBlock {
     private static void updateState(World worldIn, BlockPos pos, BlockState state) {
         worldIn.addParticle(ParticleTypes.LAVA, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, 1, 1, 1);
         int age = state.getValue(AGE);
+
         if (age < 3) {
             worldIn.setBlock(pos, state.setValue(AGE, state.getValue(AGE) + 1), 2);
         } else {
@@ -64,9 +68,10 @@ public class MagmaStoneBlock extends Block implements IVoidBlock {
     @Override
     public void stepOn(World worldIn, BlockPos pos, Entity entityIn) {
         BlockState state = worldIn.getBlockState(pos);
-        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn) && state.getValue(AGE) > 0) {
+
+        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn) && state.getValue(AGE) > 0)
             entityIn.hurt(DamageSource.HOT_FLOOR, 1.0F);
-        }
+
         super.stepOn(worldIn, pos, entityIn);
     }
 

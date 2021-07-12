@@ -40,32 +40,44 @@ public class RunicAltarBlock extends Block {
 
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (handIn != Hand.MAIN_HAND) return ActionResultType.FAIL;
+        if (handIn != Hand.MAIN_HAND)
+            return ActionResultType.FAIL;
+
         RunicAltarTile altar = (RunicAltarTile) world.getBlockEntity(pos);
-        if (altar == null) return ActionResultType.FAIL;
         Direction direction = hit.getDirection();
-        if (direction == Direction.DOWN) return ActionResultType.FAIL;
+
+        if (altar == null || altar.getCraftingProgress() != 0 || direction == Direction.DOWN)
+            return ActionResultType.FAIL;
+
         ItemStack handStack = player.getItemInHand(handIn);
-        if (altar.getCraftingProgress() != 0) return ActionResultType.FAIL;
         ItemStack stack = altar.getStack(direction);
-        if (stack == null) return ActionResultType.FAIL;
+
+        if (stack == null)
+            return ActionResultType.FAIL;
+
         if (stack.isEmpty()) {
-            if (handStack.isEmpty()) return ActionResultType.FAIL;
-            if (direction != Direction.UP && !(handStack.getItem() instanceof RuneItem)) return ActionResultType.FAIL;
+            if (handStack.isEmpty() || direction != Direction.UP && !(handStack.getItem() instanceof RuneItem))
+                return ActionResultType.FAIL;
+
             altar.setStack(handStack.split(1), direction);
-            Optional<RunicAltarRecipe> optional = world.getRecipeManager().getRecipeFor(RunicAltarRecipe.RECIPE, new RunicAltarContext(
-                    new SingletonInventory(altar.getStack(Direction.UP)), player, altar.getRunes(), altar.getStack(Direction.UP)), world);
-            if (!optional.isPresent()) return ActionResultType.FAIL;
+            RunicAltarContext runicAltarContext = new RunicAltarContext(new SingletonInventory(altar.getStack(Direction.UP)), player, altar.getRunes(), altar.getStack(Direction.UP));
+            Optional<RunicAltarRecipe> optional = world.getRecipeManager().getRecipeFor(RunicAltarRecipe.RECIPE, runicAltarContext, world);
+
+            if (!optional.isPresent())
+                return ActionResultType.FAIL;
+
             altar.addCraftingProgress(1);
         } else {
-            if (player.getMainHandItem().isEmpty()) player.setItemInHand(Hand.MAIN_HAND, stack);
-            else {
+            if (!player.getMainHandItem().isEmpty()) {
                 ItemEntity drop = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), altar.getStack(direction));
                 drop.setPickUpDelay(0);
                 world.addFreshEntity(drop);
+            } else {
+                player.setItemInHand(Hand.MAIN_HAND, stack);
             }
             altar.setStack(ItemStack.EMPTY, direction);
         }
+
         return ActionResultType.SUCCESS;
     }
 
@@ -75,13 +87,18 @@ public class RunicAltarBlock extends Block {
             TileEntity tile = worldIn.getBlockEntity(pos);
             if (tile instanceof RunicAltarTile) {
                 RunicAltarTile altar = (RunicAltarTile) tile;
+
                 for (Direction direction : Direction.values()) {
                     ItemStack stack = altar.getStack(direction);
-                    if (stack == null || stack.isEmpty()) continue;
+
+                    if (stack == null || stack.isEmpty())
+                        continue;
+
                     worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack));
                 }
             }
         }
+
         super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 

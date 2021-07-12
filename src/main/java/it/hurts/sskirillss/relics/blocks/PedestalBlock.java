@@ -29,12 +29,26 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static net.minecraft.util.Direction.*;
+
 public class PedestalBlock extends Block {
-    public static final DirectionProperty DIRECTION = DirectionProperty.create("direction", Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.UP, Direction.DOWN);
+    public static final DirectionProperty DIRECTION = DirectionProperty.create("direction", Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, UP, Direction.DOWN);
+    public static final VoxelShape[] directionShapes;
+
+    static {
+        directionShapes = new VoxelShape[Direction.values().length];
+
+        directionShapes[UP.ordinal()] = Block.box(4, 0, 4, 12, 4, 12);
+        directionShapes[DOWN.ordinal()] = Block.box(4, 16, 4, 12, 12, 12);
+        directionShapes[NORTH.ordinal()] = Block.box(12, 4, 16, 4, 12, 12);
+        directionShapes[SOUTH.ordinal()] = Block.box(12, 4, 4, 4, 12, 0);
+        directionShapes[EAST.ordinal()] = Block.box(0, 4, 4, 4, 12, 12);
+        directionShapes[WEST.ordinal()] = Block.box(12, 4, 4, 16, 12, 12);
+    }
 
     public PedestalBlock() {
         super(Block.Properties.of(Material.STONE).strength(1.5F).harvestTool(ToolType.PICKAXE));
-        this.registerDefaultState(this.stateDefinition.any().setValue(DIRECTION, Direction.UP));
+        this.registerDefaultState(this.stateDefinition.any().setValue(DIRECTION, UP));
     }
 
     @Override
@@ -44,21 +58,28 @@ public class PedestalBlock extends Block {
 
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (handIn != Hand.MAIN_HAND) return ActionResultType.FAIL;
+        if (handIn != Hand.MAIN_HAND)
+            return ActionResultType.FAIL;
+
         PedestalTile pedestal = (PedestalTile) world.getBlockEntity(pos);
+
         if (pedestal.getStack().isEmpty()) {
             ItemStack stack = player.getMainHandItem();
-            if (stack.isEmpty() || (!RelicsConfig.Pedestal.ACCEPT_ANY_ITEM.get()
-                    && !(stack.getItem() instanceof RelicItem))) return ActionResultType.FAIL;
+
+            if (stack.isEmpty() || (!RelicsConfig.Pedestal.ACCEPT_ANY_ITEM.get() && !(stack.getItem() instanceof RelicItem)))
+                return ActionResultType.FAIL;
+
             pedestal.setStack(player.getMainHandItem().split(1));
         } else {
             ItemStack stack = pedestal.getStack();
-            if (player.getMainHandItem().isEmpty()) player.setItemInHand(Hand.MAIN_HAND, stack);
-            else {
+            if (!player.getMainHandItem().isEmpty()) {
                 ItemEntity drop = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), pedestal.getStack());
                 drop.setPickUpDelay(0);
                 world.addFreshEntity(drop);
+            } else {
+                player.setItemInHand(Hand.MAIN_HAND, stack);
             }
+
             pedestal.setStack(ItemStack.EMPTY);
         }
         return ActionResultType.SUCCESS;
@@ -74,19 +95,13 @@ public class PedestalBlock extends Block {
                     worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack));
             }
         }
+
         super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        Direction direction = state.getValue(DIRECTION);
-        if (direction == Direction.UP) return Block.box(4, 0, 4, 12, 4, 12);
-        else if (direction == Direction.DOWN) return Block.box(4, 16, 4, 12, 12, 12);
-        else if (direction == Direction.NORTH) return Block.box(12, 4, 16, 4, 12, 12);
-        else if (direction == Direction.SOUTH) return Block.box(12, 4, 4, 4, 12, 0);
-        else if (direction == Direction.EAST) return Block.box(0, 4, 4, 4, 12, 12);
-        else if (direction == Direction.WEST) return Block.box(12, 4, 4, 16, 12, 12);
-        else return Block.box(0, 0, 0, 16, 16, 16);
+        return directionShapes[state.getValue(DIRECTION).ordinal()];
     }
 
     @Override
@@ -102,11 +117,9 @@ public class PedestalBlock extends Block {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockState state;
-        if (context.getPlayer() == null) state = this.defaultBlockState().setValue(DIRECTION, Direction.UP);
-        else state = this.defaultBlockState().setValue(DIRECTION, context.getPlayer().isShiftKeyDown()
-                ? context.getClickedFace().getOpposite() : context.getClickedFace());
-        return state;
+        Direction direction = context.getPlayer() == null ? UP : (context.getPlayer().isShiftKeyDown() ? context.getClickedFace().getOpposite() : context.getClickedFace());
+
+        return this.defaultBlockState().setValue(DIRECTION, direction);
     }
 
     @Override
