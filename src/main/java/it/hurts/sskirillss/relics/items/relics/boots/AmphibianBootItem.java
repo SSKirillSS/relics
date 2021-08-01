@@ -80,6 +80,7 @@ public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> implem
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
         AmphibianBootModel model = new AmphibianBootModel();
         matrixStack.pushPose();
+        matrixStack.scale(1.025F, 1.025F, 1.025F);
         model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
         ICurio.RenderHelper.followBodyRotations(livingEntity, model);

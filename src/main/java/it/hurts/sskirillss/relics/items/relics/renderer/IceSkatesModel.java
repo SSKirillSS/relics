@@ -13,7 +13,7 @@ public class IceSkatesModel extends BipedModel<LivingEntity> {
         leftLeg = new ModelRenderer(this);
         rightLeg = new ModelRenderer(this);
         ModelRenderer model = new ModelRenderer(this);
-        model.setPos(-2.0F, 12.0F, 0.0F);
+        model.setPos(-2.0F, 11.6F, 0.0F);
         leftLeg.addChild(model);
         rightLeg.addChild(model);
         model.texOffs(0, 8).addBox(-0.5F, -5.999F, -2.5F, 5.0F, 6.0F, 5.0F, 0.0F, false);

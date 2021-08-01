@@ -103,6 +103,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
         IceBreakerModel model = new IceBreakerModel();
         matrixStack.pushPose();
+        matrixStack.scale(1.025F, 1.025F, 1.025F);
         model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
         ICurio.RenderHelper.followBodyRotations(livingEntity, model);

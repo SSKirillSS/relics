@@ -94,6 +94,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
         OutRunnerModel model = new OutRunnerModel();
         matrixStack.pushPose();
+        matrixStack.scale(1.025F, 1.025F, 1.025F);
         model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
         ICurio.RenderHelper.followBodyRotations(livingEntity, model);
