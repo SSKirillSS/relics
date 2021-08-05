@@ -188,7 +188,7 @@
   
 	"item.relics.magic_mirror": "魔镜",
 	"tooltip.relics.magic_mirror.shift_1": "传送到上一个重生点",
-	"tooltip.relics.magic_mirror.invalid_location": "未知传送点",
+	"tooltip.relics.magic_mirror.invalid_location": "未知重生点",
   
 	"item.relics.ice_breaker": "破冰鞋",
 	"tooltip.relics.ice_breaker.shift_1": "当玩家按住[Shift]摔落时会产生冲击波",
