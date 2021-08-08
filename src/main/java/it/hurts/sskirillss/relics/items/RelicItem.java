@@ -42,6 +42,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
                 .rarity(rarity));
     }
 
+    public RelicItem(Properties properties) {
+        super(properties);
+    }
+
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (!(entityIn instanceof PlayerEntity)) return;

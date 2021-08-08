@@ -196,6 +196,9 @@
   "item.relics.amphibian_boot": "Amphibian Boot",
   "tooltip.relics.amphibian_boot.shift_1": "Increases movement speed at the bottom of the sea",
 
+  "item.relics.infinity_ham": "Infinity Ham",
+  "tooltip.relics.infinity_ham.shift_1": "Infinity food with slowly regenerating pieces",
+
   "block.relics.magma_stone": "Magma Stone",
   "block.relics.pedestal": "Pedestal",
   "block.relics.runic_altar": "Runic Altar",
@@ -234,6 +237,8 @@
   "advancements.relics.ice_breaker.description": "Obtain the Ice Breaker",
   "advancements.relics.ice_skates.title" :  "Yuri on ice",
   "advancements.relics.ice_skates.description": "Obtain the Ice Skates",
+  "advancements.relics.infinity_ham.title" :  "Autophagy",
+  "advancements.relics.infinity_ham.description": "Obtain the Infinity Ham",
   "advancements.relics.jellyfish_necklace.title" :  "PI-KA-CHU",
   "advancements.relics.jellyfish_necklace.description": "Obtain the Jellyfish Necklace",
   "advancements.relics.lucky_horseshoe.title" :  "Don't amuse my...",

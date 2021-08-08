@@ -194,6 +194,9 @@
   "item.relics.amphibian_boot": "Ботинок амфибии",
   "tooltip.relics.amphibian_boot.shift_1": "Увеличивает скорость передвижения по морскому дну",
 
+  "item.relics.infinity_ham": "Бесконечный окорок",
+  "tooltip.relics.infinity_ham.shift_1": "Бесконечная еда с медленно восстанавливающимися кусочками",
+
   "block.relics.magma_stone": "Магмовый камень",
   "block.relics.pedestal": "Пьедестал",
   "block.relics.runic_altar": "Рунический алтарь",
@@ -232,6 +235,8 @@
   "advancements.relics.ice_breaker.description": "Получи ледоколы",
   "advancements.relics.ice_skates.title" :  "Юри на льду",
   "advancements.relics.ice_skates.description": "Получи коньки",
+  "advancements.relics.infinity_ham.title" :  "Аутофагия",
+  "advancements.relics.infinity_ham.description": "Получи бесконечный окорок",
   "advancements.relics.jellyfish_necklace.title" :  "ПИ-КА-ЧУ",
   "advancements.relics.jellyfish_necklace.description": "Получи амулет медузы",
   "advancements.relics.lucky_horseshoe.title" :  "Не смешите мои...",
