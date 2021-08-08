@@ -12,6 +12,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -71,7 +72,7 @@ public class RelicRendererHandler {
         LazyOptional<ICuriosItemHandler> helper = CuriosApi.getCuriosHelper().getCuriosHandler(player);
         return helper.map(curios -> curios.getStacksHandler("feet").map(handler -> {
             for (int i = 0; i < handler.getSlots(); i++)
-                if (!handler.getStacks().getStackInSlot(i).isEmpty()) return true;
+                if (!handler.getStacks().getStackInSlot(i).isEmpty() && handler.getRenders().get(i)) return true;
             return false;
         }).orElse(false)).orElse(false);
     }
