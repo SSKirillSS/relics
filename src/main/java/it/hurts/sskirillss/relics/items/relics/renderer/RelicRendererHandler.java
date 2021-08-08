@@ -69,6 +69,7 @@ public class RelicRendererHandler {
     }
 
     private static boolean haveBoot(PlayerEntity player) {
+        if (ModList.get().isLoaded("cosmeticarmorreworked")) return false;
         LazyOptional<ICuriosItemHandler> helper = CuriosApi.getCuriosHelper().getCuriosHandler(player);
         return helper.map(curios -> curios.getStacksHandler("feet").map(handler -> {
             for (int i = 0; i < handler.getSlots(); i++)
