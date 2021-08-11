@@ -63,7 +63,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
         int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
         if (pieces > 0) {
             NBTUtils.setInt(stack, TAG_PIECES, pieces - 1);
-            player.getFoodData().setFoodLevel(config.feedAmount);
+            player.getFoodData().setFoodLevel(Math.min(20, player.getFoodData().getFoodLevel() + config.feedAmount));
         }
         return stack;
     }
