@@ -164,7 +164,8 @@
   "tooltip.relics.delay_ring.shift_2": "Any healing that is delayed by the ring would be doubled",
 
   "item.relics.bastion_ring": "Bastion Ring",
-  "tooltip.relics.bastion_ring.shift_1": "Grants ability to locate nearest bastion when killing piglins",
+  "tooltip.relics.bastion_ring.shift_1": "Makes piglins neutral to the player like with equipped gold armor",
+  "tooltip.relics.bastion_ring.shift_2": "Points towards nearest Bastion from closest piglin",
 
   "item.relics.blazing_flask": "Blazing Flask",
   "tooltip.relics.blazing_flask.tooltip_1": "Fire amount: %1$s",

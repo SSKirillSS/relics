@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "it.hurts.sskirillss.relics.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "relics.refmap.json",
+  "mixins": [
+    "MixinPiglinMobsSensor"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

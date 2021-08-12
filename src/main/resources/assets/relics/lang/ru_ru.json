@@ -162,7 +162,8 @@
   "tooltip.relics.delay_ring.shift_2": "Любое полученное во время действия способности кольца исцеление будет удвоено",
 
   "item.relics.bastion_ring": "Кольцо бастиона",
-  "tooltip.relics.bastion_ring.shift_1": "Позволяет обнаружить ближайший бастион при убийстве пиглинов",
+  "tooltip.relics.bastion_ring.shift_1": "Делает пиглинов нейтральными к игроку подобно золотой броне",
+  "tooltip.relics.bastion_ring.shift_2": "Указывает на расположение ближайшего бастиона при приближении к пиглину",
 
   "item.relics.blazing_flask": "Пылающий флакон",
   "tooltip.relics.blazing_flask.tooltip_1": "Накоплено огня: %1$s",
