@@ -129,7 +129,9 @@
   "tooltip.relics.elytra_booster.shift_2": "Grants ability to ram mobs while flying on elytra with activated boost",
 
   "item.relics.enders_hand": "Ender's Hand",
-  "tooltip.relics.enders_hand.shift_1": "While holding down the [Shift] key, swaps positions of the player and enderman he is looking at",
+  "tooltip.relics.enders_hand.shift_1": "Makes endermans neutral to the player like with equipped pumpkin",
+  "tooltip.relics.enders_hand.shift_2": "While holding down the [Shift] key, swaps positions of the player and enderman he is looking at",
+  "tooltip.relics.enders_hand.shift_3": "Active ability: Opens inventory of the portable Ender Chest",
 
   "item.relics.fragrant_flower": "Fragrant Flower",
   "tooltip.relics.fragrant_flower.tooltip_1": "Nectar: %1$s",

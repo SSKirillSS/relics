@@ -127,7 +127,9 @@
   "tooltip.relics.elytra_booster.shift_2": "Наделяет способностью таранить мобов в полёта на элитрах с активированным ускорителем",
 
   "item.relics.enders_hand": "Рука Эндера",
-  "tooltip.relics.enders_hand.shift_1": "При зажатой клавише [Shift] меняет местами обладателя реликвии и эндермена, на которого тот смотрит",
+  "tooltip.relics.enders_hand.shift_1": "Делает эндерменов нейтральными к игроку подобно экипированной тыкве",
+  "tooltip.relics.enders_hand.shift_2": "При зажатой клавише [Shift] меняет местами обладателя реликвии и эндермена, на которого тот смотрит",
+  "tooltip.relics.enders_hand.shift_3": "Активная способность: Открывает инвентарь портативного сундука Края",
 
   "item.relics.fragrant_flower": "Ароматный цветок",
   "tooltip.relics.fragrant_flower.tooltip_1": "Пыльца: %1$s",

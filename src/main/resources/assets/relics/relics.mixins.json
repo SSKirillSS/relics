@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "relics.refmap.json",
   "mixins": [
+    "MixinEndermanEntity",
     "MixinPiglinMobsSensor"
   ],
   "client": [],
