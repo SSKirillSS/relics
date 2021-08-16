@@ -13,7 +13,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
 
-version = '0.2.5'
+version = '0.2.6'
 group = 'it.hurts.sskirillss'
 archivesBaseName = 'relics'
 
