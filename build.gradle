@@ -2,8 +2,6 @@ buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        jcenter()
-        mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
@@ -21,30 +19,35 @@ archivesBaseName = 'relics'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+mixin {
+    add sourceSets.main, "relics.refmap.json"
+}
+
 minecraft {
     mappings channel: 'official', version: '1.16.5'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
             arg "-mixin.config=relics.mixins.json"
-            arg "-Dmixin.debug.export=true"
+            mods {
+                relics {
+                    source sourceSets.main
+                }
+            }
         }
 
         server {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
             arg "-mixin.config=relics.mixins.json"
-            arg "-Dmixin.debug.export=true"
+            mods {
+                relics {
+                    source sourceSets.main
+                }
+            }
         }
     }
-}
-
-mixin {
-    add sourceSets.main, "relics.refmap.json"
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -66,7 +69,6 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:20.1.0'
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.13'
-    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.0")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.0:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75")
@@ -76,31 +78,16 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title": "relics",
-                "Specification-Vendor": "relicssareus",
-                "MixinConnector": "${project.group}.MixinConnector",
-                "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true",
-                "Specification-Version": "1",
-                "Implementation-Title": project.name,
-                "Implementation-Version": "${version}",
-                "Implementation-Vendor" :"relicssareus",
+                "MixinConfigs"            : "relics.mixins.json",
+                "Specification-Title"     : "relics",
+                "Specification-Vendor"    : "SSKirillSS",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "SSKirillSS",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
-jar.finalizedBy('reobfJar') 
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
+jar.finalizedBy('reobfJar')

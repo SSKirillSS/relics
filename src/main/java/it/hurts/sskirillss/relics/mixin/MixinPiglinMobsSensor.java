@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Mixin(PiglinMobsSensor.class)
 public class MixinPiglinMobsSensor {
-    @Inject(at = @At("RETURN"), method = "doTick", remap = false)
+    @Inject(at = @At("RETURN"), method = "doTick")
     protected void calmPiglins(ServerWorld worldIn, LivingEntity entityIn, CallbackInfo info) {
         Brain<?> brain = entityIn.getBrain();
         PlayerEntity player = brain.getMemory(MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD).orElse(null);
