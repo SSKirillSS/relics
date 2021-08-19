@@ -187,8 +187,14 @@
   "tooltip.relics.lucky_horseshoe.shift_1": "Со случайным шансом увеличивает уровень удачи и добычи носителя",
 
   "item.relics.magic_mirror": "Магическое зеркало",
-  "tooltip.relics.magic_mirror.shift_1": "Телепортирует к последней установленной точке возрождения",
+  "tooltip.relics.magic_mirror.shift_1": "Телепортирует к последней установленной точке возрождения в основном мире",
+  "tooltip.relics.magic_mirror.invalid_dimension": "Ты должен быть в основном мире для использования зеркала",
   "tooltip.relics.magic_mirror.invalid_location": "Точка возрождения не определена",
+
+  "item.relics.evil_mirror": "Злое зеркало",
+  "tooltip.relics.evil_mirror.shift_1": "Телепортирует к последней установленной точке возрождения в аду",
+  "tooltip.relics.evil_mirror.invalid_dimension": "Ты должен быть в аду для использования зеркала",
+  "tooltip.relics.evil_mirror.invalid_location": "Точка возрождения не определена",
 
   "item.relics.ice_breaker": "Ледоколы",
   "tooltip.relics.ice_breaker.shift_1": "Вызывают ударную волну при падении на землю с зажатой клавишей [Shift]",
@@ -228,6 +234,8 @@
   "advancements.relics.elytra_booster.description": "Получи ускоритель элитр",
   "advancements.relics.enders_hand.title" :  "Шлепок на расстоянии",
   "advancements.relics.enders_hand.description": "Получи руку Эндера",
+  "advancements.relics.evil_mirror.title" :  "Deja vu...?",
+  "advancements.relics.evil_mirror.description": "Получи злое зеркало",
   "advancements.relics.fragrant_flower.title" :  "Кто пчёлок уважает...",
   "advancements.relics.fragrant_flower.description": "Получи ароматный цветок",
   "advancements.relics.holy_locket.title" :  "Ну ты видел? Видел?!",

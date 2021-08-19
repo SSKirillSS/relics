@@ -189,8 +189,14 @@
   "tooltip.relics.lucky_horseshoe.shift_1": "With a random chance increases player's looting and fortune",
 
   "item.relics.magic_mirror": "Magic Mirror",
-  "tooltip.relics.magic_mirror.shift_1": "Teleports to the latest known respawn position",
+  "tooltip.relics.magic_mirror.shift_1": "Teleports to the latest known Overworld respawn position",
+  "tooltip.relics.magic_mirror.invalid_dimension": "You should be in the Overworld to use mirror",
   "tooltip.relics.magic_mirror.invalid_location": "Unknown respawn position",
+
+  "item.relics.evil_mirror": "Evil Mirror",
+  "tooltip.relics.evil_mirror.shift_1": "Teleports to the latest known Nether respawn position",
+  "tooltip.relics.evil_mirror.invalid_dimension": "You should be in the Nether to use mirror",
+  "tooltip.relics.evil_mirror.invalid_location": "Unknown respawn position",
 
   "item.relics.ice_breaker": "Ice Breaker",
   "tooltip.relics.ice_breaker.shift_1": "Causes shockwave after player falls on the ground while holding [Shift]",
@@ -230,6 +236,8 @@
   "advancements.relics.elytra_booster.description": "Obtain the Elytra Booster",
   "advancements.relics.enders_hand.title" :  "Distance slap",
   "advancements.relics.enders_hand.description": "Obtain the Ender's Hand",
+  "advancements.relics.evil_mirror.title" :  "Deja vu...?",
+  "advancements.relics.evil_mirror.description": "Obtain the Evil Mirror",
   "advancements.relics.fragrant_flower.title" :  "Who respects the bees...",
   "advancements.relics.fragrant_flower.description": "Obtain the Fragrant Flower",
   "advancements.relics.holy_locket.title" :  "Did you see that? Saw that?!",

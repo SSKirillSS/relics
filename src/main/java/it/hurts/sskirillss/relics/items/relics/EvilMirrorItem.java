@@ -19,36 +19,36 @@ import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.List;
 
-public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
-    public MagicMirrorItem() {
+public class EvilMirrorItem extends RelicItem<EvilMirrorItem.Stats> {
+    public EvilMirrorItem() {
         super(Rarity.RARE);
     }
 
     @Override
     public List<ITextComponent> getShiftTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = Lists.newArrayList();
-        tooltip.add(new TranslationTextComponent("tooltip.relics.magic_mirror.shift_1"));
+        tooltip.add(new TranslationTextComponent("tooltip.relics.evil_mirror.shift_1"));
         return tooltip;
     }
 
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
-        if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get())
+        if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.EVIL_MIRROR.get())
                 || worldIn.isClientSide()) return ActionResult.fail(stack);
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;
         BlockPos pos = serverPlayer.getRespawnPosition();
         ServerWorld world = serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
         if (pos != null && world != null) {
-            if (world.dimension() != World.OVERWORLD || worldIn.dimension() != World.OVERWORLD) {
-                playerIn.displayClientMessage(new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_dimension"), true);
+            if (world.dimension() != World.NETHER || worldIn.dimension() != World.NETHER) {
+                playerIn.displayClientMessage(new TranslationTextComponent("tooltip.relics.evil_mirror.invalid_dimension"), true);
                 return ActionResult.fail(stack);
             }
             if (playerIn.getVehicle() != null) playerIn.stopRiding();
             serverPlayer.teleportTo(world, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, playerIn.yRot, playerIn.xRot);
             worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
             if (!playerIn.abilities.instabuild) playerIn.getCooldowns().addCooldown(ItemRegistry.MAGIC_MIRROR.get(), config.cooldown * 20);
-        } else playerIn.displayClientMessage(new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_location"), true);
+        } else playerIn.displayClientMessage(new TranslationTextComponent("tooltip.relics.evil_mirror.invalid_location"), true);
         return super.use(worldIn, playerIn, handIn);
     }
 
@@ -59,7 +59,7 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
 
     @Override
     public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.CAVE;
+        return RelicUtils.Worldgen.NETHER;
     }
 
     @Override

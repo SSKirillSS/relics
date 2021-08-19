@@ -1,0 +1,15 @@
+{
+  "type": "relics:runic_altar",
+  "input": {
+    "item": "relics:magic_mirror"
+  },
+  "ingredients": [
+    { "item": "relics:rune_of_fire" },
+    { "item": "relics:rune_of_fire" },
+    { "item": "relics:rune_of_fire" },
+    { "item": "relics:rune_of_fire" }
+  ],
+  "result": {
+    "item": "relics:evil_mirror"
+  }
+}
