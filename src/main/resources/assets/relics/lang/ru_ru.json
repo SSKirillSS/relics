@@ -201,7 +201,8 @@
   "tooltip.relics.ice_breaker.shift_2": "Увеличивает сопротивление отдаче и позволяет скользить по стенам",
 
   "item.relics.amphibian_boot": "Ботинок амфибии",
-  "tooltip.relics.amphibian_boot.shift_1": "Увеличивает скорость передвижения по морскому дну",
+  "tooltip.relics.amphibian_boot.shift_1": "Увеличивает скорость передвижения под водой",
+  "tooltip.relics.amphibian_boot.shift_2": "Увеличивает запас воздуха носителя",
 
   "item.relics.infinity_ham": "Бесконечный окорок",
   "tooltip.relics.infinity_ham.shift_1": "Бесконечная еда с медленно восстанавливающимися кусочками",

@@ -203,7 +203,8 @@
   "tooltip.relics.ice_breaker.shift_2": "Increases knockback resistance and grants wall slipping ability",
 
   "item.relics.amphibian_boot": "Amphibian Boot",
-  "tooltip.relics.amphibian_boot.shift_1": "Increases movement speed at the bottom of the sea",
+  "tooltip.relics.amphibian_boot.shift_1": "Increases underwater movement speed",
+  "tooltip.relics.amphibian_boot.shift_2": "Increases wearer's air supply",
 
   "item.relics.infinity_ham": "Infinity Ham",
   "tooltip.relics.infinity_ham.shift_1": "Infinity food with slowly regenerating pieces",
