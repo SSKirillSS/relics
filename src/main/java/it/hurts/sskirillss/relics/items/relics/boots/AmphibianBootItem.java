@@ -43,7 +43,7 @@ public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> implem
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> result = super.getAttributeModifiers(slotContext, uuid, stack);
-        result.put(ForgeMod.SWIM_SPEED.get(), new AttributeModifier(Reference.MODID + ":" + "amphibian_boot_swim_speed",
+        result.put(ForgeMod.SWIM_SPEED.get(), new AttributeModifier(uuid, Reference.MODID + ":" + "amphibian_boot_swim_speed",
                 config.swimSpeedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
         return result;
     }
