@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.blocks;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -24,15 +25,13 @@ import net.minecraftforge.common.ToolType;
 
 import java.util.Random;
 
-import net.minecraft.block.AbstractBlock;
-
 public class MagmaStoneBlock extends Block implements IVoidBlock {
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
 
     public MagmaStoneBlock() {
         super(AbstractBlock.Properties.of(Material.STONE, MaterialColor.NETHER)
                 .randomTicks()
-                .strength(0.5F)
+                .strength(1.0F)
                 .harvestTool(ToolType.PICKAXE)
                 .requiresCorrectToolForDrops()
                 .lightLevel((state) -> 3));
@@ -51,11 +50,10 @@ public class MagmaStoneBlock extends Block implements IVoidBlock {
     }
 
     private static void updateState(World worldIn, BlockPos pos, BlockState state) {
-        worldIn.addParticle(ParticleTypes.LAVA, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, 1, 1, 1);
         int age = state.getValue(AGE);
-        if (age < 3) {
-            worldIn.setBlock(pos, state.setValue(AGE, state.getValue(AGE) + 1), 2);
-        } else {
+        worldIn.addParticle(ParticleTypes.LAVA, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, 1, 1, 1);
+        if (age < 3) worldIn.setBlock(pos, state.setValue(AGE, state.getValue(AGE) + 1), 2);
+        else {
             worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
             worldIn.setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
         }
@@ -63,10 +61,9 @@ public class MagmaStoneBlock extends Block implements IVoidBlock {
 
     @Override
     public void stepOn(World worldIn, BlockPos pos, Entity entityIn) {
-        BlockState state = worldIn.getBlockState(pos);
-        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn) && state.getValue(AGE) > 0) {
-            entityIn.hurt(DamageSource.HOT_FLOOR, 1.0F);
-        }
+        int age = worldIn.getBlockState(pos).getValue(AGE);
+        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn)
+                && age > 0) entityIn.hurt(DamageSource.HOT_FLOOR, age);
         super.stepOn(worldIn, pos, entityIn);
     }
 

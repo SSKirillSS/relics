@@ -1,19 +1,18 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.entities.StellarCatalystProjectileEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,10 +33,13 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
-        List<ITextComponent> tooltip = Lists.newArrayList();
-        tooltip.add(new TranslationTextComponent("tooltip.relics.stellar_catalyst.shift_1"));
-        return tooltip;
+    public RelicTooltip getShiftTooltip(ItemStack stack) {
+        return new RelicTooltip.Builder(stack)
+                .ability(new AbilityTooltip.Builder()
+                        .varArg((int) (config.chance * 100) + "%")
+                        .varArg((int) (config.damageMultiplier * 100) + "%")
+                        .build())
+                .build();
     }
 
     @Override
@@ -55,20 +57,30 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
         @SubscribeEvent
         public static void onEntityDamage(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
-            if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
+
+            if (!(event.getSource().getEntity() instanceof PlayerEntity))
+                return;
+
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
-            if (!CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.STELLAR_CATALYST.get(), player).isPresent()) return;
+
+            if (!CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.STELLAR_CATALYST.get(), player).isPresent())
+                return;
+
             LivingEntity target = event.getEntityLiving();
+            World world = target.getCommandSenderWorld();
+
             if (event.getAmount() > config.minDamage
-                    && (target.getCommandSenderWorld().isNight() || target.getCommandSenderWorld().dimension() == World.END)
-                    && target.getCommandSenderWorld().canSeeSky(target.blockPosition())
+                    && (world.isNight() || world.dimension() == World.END)
+                    && world.canSeeSky(target.blockPosition())
                     && random.nextFloat() <= config.chance) {
                 StellarCatalystProjectileEntity projectile = new StellarCatalystProjectileEntity((LivingEntity) event.getSource().getEntity(),
                         event.getEntityLiving(), event.getAmount() * config.damageMultiplier);
+
                 projectile.setPos(target.getX(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(),
                         target.getY() + target.getCommandSenderWorld().getRandom().nextInt(config.additionalSummonHeight) + config.minSummonHeight)), target.getZ());
                 projectile.owner = player;
-                projectile.getCommandSenderWorld().addFreshEntity(projectile);
+
+                world.addFreshEntity(projectile);
             }
         }
     }

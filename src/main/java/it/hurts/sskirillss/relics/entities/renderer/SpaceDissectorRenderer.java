@@ -35,6 +35,7 @@ public class SpaceDissectorRenderer extends EntityRenderer<SpaceDissectorEntity>
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(90F));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(time * 40F));
         matrixStackIn.scale(0.75F, 0.75F, 0.75F);
+
         Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(ItemRegistry.SPACE_DISSECTOR.get()),
                 ItemCameraTransforms.TransformType.FIXED, packedLightIn, OverlayTexture.NO_OVERLAY, matrixStackIn, bufferIn);
 

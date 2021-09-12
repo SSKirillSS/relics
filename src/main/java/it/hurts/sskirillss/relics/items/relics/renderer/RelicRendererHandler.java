@@ -33,14 +33,16 @@ public class RelicRendererHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void handlePostRenderPlayerLow(RenderPlayerEvent.Post event) {
         PlayerEntity player = event.getPlayer();
-        if (!haveBoot(player)) return;
+        if (!haveBoot(player))
+            return;
         restoreItems(cache.getUnchecked(player));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void handlePreRenderPlayerHigh(RenderPlayerEvent.Pre event) {
         PlayerEntity player = event.getPlayer();
-        if (!haveBoot(player)) return;
+        if (!haveBoot(player))
+            return;
         Deque<Runnable> queue = cache.getUnchecked(player);
         restoreItems(queue);
         NonNullList<ItemStack> armor = player.inventory.armor;
@@ -51,9 +53,11 @@ public class RelicRendererHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void handlePreRenderPlayerLowest(RenderPlayerEvent.Pre event) {
-        if (!event.isCanceled()) return;
+        if (!event.isCanceled())
+            return;
         PlayerEntity player = event.getPlayer();
-        if (!haveBoot(player)) return;
+        if (!haveBoot(player))
+            return;
         restoreItems(cache.getUnchecked(player));
     }
 
@@ -69,11 +73,13 @@ public class RelicRendererHandler {
     }
 
     private static boolean haveBoot(PlayerEntity player) {
-        if (ModList.get().isLoaded("cosmeticarmorreworked")) return false;
+        if (ModList.get().isLoaded("cosmeticarmorreworked"))
+            return false;
         LazyOptional<ICuriosItemHandler> helper = CuriosApi.getCuriosHelper().getCuriosHandler(player);
         return helper.map(curios -> curios.getStacksHandler("feet").map(handler -> {
             for (int i = 0; i < handler.getSlots(); i++)
-                if (!handler.getStacks().getStackInSlot(i).isEmpty() && handler.getRenders().get(i)) return true;
+                if (!handler.getStacks().getStackInSlot(i).isEmpty() && handler.getRenders().get(i))
+                    return true;
             return false;
         }).orElse(false)).orElse(false);
     }

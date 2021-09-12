@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.blocks;
 
 import com.google.common.collect.ImmutableList;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.tiles.PedestalTile;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.block.Block;
@@ -25,8 +25,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class PedestalBlock extends Block {

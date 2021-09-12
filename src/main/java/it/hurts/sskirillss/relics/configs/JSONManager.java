@@ -9,7 +9,7 @@ import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.item.Item;

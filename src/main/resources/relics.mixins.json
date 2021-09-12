@@ -5,8 +5,10 @@
   "refmap": "relics.refmap.json",
   "mixins": [
     "MixinEndermanEntity",
+    "MixinEntity",
     "MixinLivingEntity",
-    "MixinPiglinMobsSensor"
+    "MixinPiglinMobsSensor",
+    "MixinWebBlock"
   ],
   "minVersion": "0.8"
 }

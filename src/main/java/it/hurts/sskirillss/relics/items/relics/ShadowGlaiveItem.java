@@ -1,29 +1,31 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
-import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.entity.LivingEntity;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Collections;
 import java.util.List;
 
 public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
+    public static final String TAG_CHARGES = "charges";
+    private static final String TAG_TIME = "time";
+
     public static ShadowGlaiveItem INSTANCE;
 
     public ShadowGlaiveItem() {
@@ -33,11 +35,56 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
-        List<ITextComponent> tooltip = Lists.newArrayList();
-        tooltip.add(new TranslationTextComponent("tooltip.relics.shadow_glaive.shift_1"));
-        tooltip.add(new TranslationTextComponent("tooltip.relics.shadow_glaive.shift_2"));
-        return tooltip;
+    public RelicTooltip getShiftTooltip(ItemStack stack) {
+        return new RelicTooltip.Builder(stack)
+                .ability(new AbilityTooltip.Builder()
+                        .varArg(config.maxBounces)
+                        .varArg(config.damage)
+                        .varArg(config.chargeRegenerationTime)
+                        .active()
+                        .build())
+                .build();
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
+
+        if (entityIn.tickCount % 20 != 0 || charges >= config.maxCharges)
+            return;
+
+        int time = NBTUtils.getInt(stack, TAG_TIME, 0);
+
+        if (time >= config.chargeRegenerationTime) {
+            NBTUtils.setInt(stack, TAG_CHARGES, charges + 1);
+            NBTUtils.setInt(stack, TAG_TIME, 0);
+        } else
+            NBTUtils.setInt(stack, TAG_TIME, time + 1);
+    }
+
+    @Override
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack stack = playerIn.getItemInHand(handIn);
+        int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
+
+        if (charges <= 0 || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
+            return ActionResult.fail(stack);
+
+        ShadowGlaiveEntity glaive = new ShadowGlaiveEntity(worldIn, playerIn);
+
+        glaive.setOwner(playerIn);
+        glaive.teleportTo(playerIn.getX(), playerIn.getY() + playerIn.getBbHeight() * 0.5F, playerIn.getZ());
+        glaive.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, config.projectileSpeed, 1, 0.0F);
+
+        worldIn.addFreshEntity(glaive);
+
+        worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW,
+                SoundCategory.MASTER, 0.5F, 0.75F + (random.nextFloat() * 0.5F));
+
+        NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
+        playerIn.getCooldowns().addCooldown(stack.getItem(), config.throwCooldown);
+
+        return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
@@ -55,40 +102,14 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
         return Stats.class;
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
-    public static class ShadowGlaiveServerEvents {
-        @SubscribeEvent
-        public static void onEntityDamage(LivingDamageEvent event) {
-            Stats config = INSTANCE.config;
-            if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
-            PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
-            if (player.getOffhandItem().getItem() != ItemRegistry.SHADOW_GLAIVE.get()
-                    || player.getCooldowns().isOnCooldown(ItemRegistry.SHADOW_GLAIVE.get())) return;
-            World world = player.getCommandSenderWorld();
-            if (world.getRandom().nextFloat() > config.summonChance || event.getAmount() < config.minDamageForSummon) return;
-            LivingEntity entity = event.getEntityLiving();
-            if (entity == null || !entity.isAlive() || player.position().distanceTo(entity.position()) > config.maxDistanceForSummon) return;
-            ShadowGlaiveEntity glaive = new ShadowGlaiveEntity(world, player);
-            glaive.setDamage(event.getAmount() * config.initialDamageMultiplier);
-            glaive.setOwner(player);
-            glaive.setTarget(entity);
-            glaive.teleportTo(player.getX(), player.getY() + player.getBbHeight() * 0.5F, player.getZ());
-            player.getCooldowns().addCooldown(ItemRegistry.SHADOW_GLAIVE.get(), config.summonCooldown * 20);
-            world.addFreshEntity(glaive);
-        }
-    }
-
     public static class Stats extends RelicStats {
-        public float summonChance = 0.35F;
-        public float minDamageForSummon = 1.0F;
-        public int maxDistanceForSummon = 5;
-        public float initialDamageMultiplier = 1.25F;
-        public int summonCooldown = 1;
-        public float bounceChanceMultiplier = 0.025F;
+        public int maxCharges = 8;
+        public int chargeRegenerationTime = 10;
+        public int damage = 5;
+        public int throwCooldown = 10;
+        public float bounceChanceMultiplier = 0.015F;
         public int bounceRadius = 7;
         public float projectileSpeed = 0.45F;
         public int maxBounces = 10;
-        public float minDamagePerBounce = 1.0F;
-        public float damageMultiplierPerBounce = 0.05F;
     }
 }

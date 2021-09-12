@@ -24,6 +24,7 @@ public class StellarCatalystProjectileRenderer extends EntityRenderer<StellarCat
     @Override
     public void render(StellarCatalystProjectileEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         float time = entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks);
+
         RenderUtils.renderBeams(matrixStackIn, bufferIn, time, 20, time * 0.035F, new Color(255, 0, 255));
     }
 

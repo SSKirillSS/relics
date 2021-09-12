@@ -1,7 +1,17 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/shadow_glaive"
-    }
+        "layer0": "relics:items/shadow_glaive_8"
+    },
+    "overrides": [
+        { "predicate": { "relics:charges": 0 }, "model": "relics:item/shadow_glaive_0" },
+        { "predicate": { "relics:charges": 1 }, "model": "relics:item/shadow_glaive_1" },
+        { "predicate": { "relics:charges": 2 }, "model": "relics:item/shadow_glaive_2" },
+        { "predicate": { "relics:charges": 3 }, "model": "relics:item/shadow_glaive_3" },
+        { "predicate": { "relics:charges": 4 }, "model": "relics:item/shadow_glaive_4" },
+        { "predicate": { "relics:charges": 5 }, "model": "relics:item/shadow_glaive_5" },
+        { "predicate": { "relics:charges": 6 }, "model": "relics:item/shadow_glaive_6" },
+        { "predicate": { "relics:charges": 7 }, "model": "relics:item/shadow_glaive_7" },
+        { "predicate": { "relics:charges": 8 }, "model": "relics:item/shadow_glaive_8" }
+    ]
 }
-

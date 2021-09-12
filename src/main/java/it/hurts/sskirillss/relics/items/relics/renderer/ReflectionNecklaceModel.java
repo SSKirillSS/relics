@@ -12,7 +12,7 @@ public class ReflectionNecklaceModel extends BipedModel<LivingEntity> {
         setAllVisible(false);
 
         body = new ModelRenderer(this);
-        
+
         ModelRenderer model = new ModelRenderer(this);
         model.setPos(0.0F, 23.0F, 0.0F);
         body.addChild(model);

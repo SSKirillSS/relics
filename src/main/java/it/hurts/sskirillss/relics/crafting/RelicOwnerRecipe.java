@@ -3,7 +3,7 @@ package it.hurts.sskirillss.relics.crafting;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.RecipeRegistry;
 import it.hurts.sskirillss.relics.items.RelicContractItem;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.inventory.CraftingInventory;

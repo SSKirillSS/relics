@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.init;
 import it.hurts.sskirillss.relics.entities.renderer.*;
 import it.hurts.sskirillss.relics.items.RelicContractItem;
 import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
+import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
 import it.hurts.sskirillss.relics.tiles.renderer.*;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -31,6 +32,7 @@ public class RemoteRegistry {
         ClientRegistry.bindTileEntityRenderer(TileRegistry.RUNIC_ALTAR_TILE.get(), RunicAltarTileRenderer::new);
         ClientRegistry.bindTileEntityRenderer(TileRegistry.RUNIC_ANVIL_TILE.get(), RunicAnvilTileRenderer::new);
         ClientRegistry.bindTileEntityRenderer(TileRegistry.BLOODY_LECTERN_TILE.get(), BloodyLecternTileRenderer::new);
+
         RenderTypeLookup.setRenderLayer(BlockRegistry.CHALK_BLOCK.get(), RenderType.cutout());
         RenderTypeLookup.setRenderLayer(BlockRegistry.RUNIC_ALTAR_BLOCK.get(), RenderType.cutout());
         RenderTypeLookup.setRenderLayer(BlockRegistry.RUNIC_ANVIL_BLOCK.get(), RenderType.cutout());
@@ -43,6 +45,8 @@ public class RemoteRegistry {
                         : (entity instanceof PlayerEntity && ((PlayerEntity) entity).getCooldowns().isOnCooldown(stack.getItem())) ? 1 : 0);
         ItemModelsProperties.register(ItemRegistry.INFINITY_HAM.get(), new ResourceLocation(Reference.MODID, "pieces"),
                 (stack, world, entity) -> Math.min(3, NBTUtils.getInt(stack, InfinityHamItem.TAG_PIECES, 0)));
+        ItemModelsProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
+                (stack, world, entity) -> Math.min(8, NBTUtils.getInt(stack, ShadowGlaiveItem.TAG_CHARGES, 0)));
         ItemModelsProperties.register(ItemRegistry.RELIC_CONTRACT.get(), new ResourceLocation(Reference.MODID, "blood"), (stack, world, entity) ->
                 NBTUtils.getInt(stack, RelicContractItem.TAG_BLOOD, 0));
     }

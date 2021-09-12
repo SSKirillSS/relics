@@ -1,23 +1,25 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
+import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     public MagicMirrorItem() {
@@ -25,30 +27,51 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
-        List<ITextComponent> tooltip = Lists.newArrayList();
-        tooltip.add(new TranslationTextComponent("tooltip.relics.magic_mirror.shift_1"));
-        return tooltip;
+    public RelicTooltip getShiftTooltip(ItemStack stack) {
+        return new RelicTooltip.Builder(stack)
+                .ability(new AbilityTooltip.Builder()
+                        .active()
+                        .build())
+                .build();
     }
 
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
+
         if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get())
-                || worldIn.isClientSide()) return ActionResult.fail(stack);
+                || worldIn.isClientSide())
+            return ActionResult.fail(stack);
+
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;
+        ServerWorld serverWorld = (ServerWorld) worldIn;
         BlockPos pos = serverPlayer.getRespawnPosition();
+        boolean isForced = serverPlayer.isRespawnForced();
+        float angle = serverPlayer.getRespawnAngle();
         ServerWorld world = serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
-        if (pos != null && world != null) {
-            if (world.dimension() != World.OVERWORLD || worldIn.dimension() != World.OVERWORLD) {
-                playerIn.displayClientMessage(new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_dimension"), true);
-                return ActionResult.fail(stack);
-            }
-            if (playerIn.getVehicle() != null) playerIn.stopRiding();
+        TranslationTextComponent message = new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_location");
+
+        if (pos == null || world == null) {
+            playerIn.displayClientMessage(message, true);
+            return ActionResult.fail(stack);
+        }
+
+        Optional<Vector3d> optional = PlayerEntity.findRespawnPositionAndUseSpawnBlock(serverWorld, pos, angle, isForced, false);
+
+        if (optional.isPresent()) {
+            pos = new BlockPos(optional.get());
+
+            if (playerIn.getVehicle() != null)
+                playerIn.stopRiding();
+
             serverPlayer.teleportTo(world, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, playerIn.yRot, playerIn.xRot);
             worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            if (!playerIn.abilities.instabuild) playerIn.getCooldowns().addCooldown(ItemRegistry.MAGIC_MIRROR.get(), config.cooldown * 20);
-        } else playerIn.displayClientMessage(new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_location"), true);
+
+            if (!playerIn.abilities.instabuild)
+                playerIn.getCooldowns().addCooldown(ItemRegistry.MAGIC_MIRROR.get(), config.cooldown * 20);
+        } else
+            playerIn.displayClientMessage(message, true);
+
         return super.use(worldIn, playerIn, handIn);
     }
 

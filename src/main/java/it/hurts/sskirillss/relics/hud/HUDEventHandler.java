@@ -3,7 +3,7 @@ package it.hurts.sskirillss.relics.hud;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketRelicAbility;
 import it.hurts.sskirillss.relics.utils.Reference;

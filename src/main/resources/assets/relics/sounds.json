@@ -2,5 +2,9 @@
     "ricochet": {
         "category": "master",
         "sounds": [ { "name": "relics:ricochet" } ]
+    },
+    "throw": {
+        "category": "master",
+        "sounds": [ { "name": "relics:throw" } ]
     }
 }

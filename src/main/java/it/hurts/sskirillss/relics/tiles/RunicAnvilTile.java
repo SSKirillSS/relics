@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.tiles;
 
 import it.hurts.sskirillss.relics.init.TileRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;

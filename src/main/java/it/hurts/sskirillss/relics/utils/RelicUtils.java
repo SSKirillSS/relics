@@ -6,7 +6,7 @@ import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;

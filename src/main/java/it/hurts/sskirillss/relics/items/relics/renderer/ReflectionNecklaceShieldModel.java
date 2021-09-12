@@ -142,7 +142,7 @@ public class ReflectionNecklaceShieldModel extends Model {
     }
 
     @Override
-    public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+    public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         bone.render(matrixStack, buffer, packedLight, packedOverlay);
         bone2.render(matrixStack, buffer, packedLight, packedOverlay);
         bone3.render(matrixStack, buffer, packedLight, packedOverlay);

@@ -1,8 +1,8 @@
 package it.hurts.sskirillss.relics.blocks;
 
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
 import it.hurts.sskirillss.relics.items.RelicScrapItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.tiles.RunicAnvilTile;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -27,8 +27,8 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Random;
 

@@ -1,20 +1,19 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -34,10 +33,15 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
-        List<ITextComponent> tooltip = Lists.newArrayList();
-        tooltip.add(new TranslationTextComponent("tooltip.relics.hunter_belt.shift_1"));
-        return tooltip;
+    public RelicTooltip getShiftTooltip(ItemStack stack) {
+        return new RelicTooltip.Builder(stack)
+                .ability(new AbilityTooltip.Builder()
+                        .varArg(config.additionalLooting)
+                        .build())
+                .ability(new AbilityTooltip.Builder()
+                        .varArg("+" + (int) (config.petDamageMultiplier * 100 - 100) + "%")
+                        .build())
+                .build();
     }
 
     @Override
@@ -60,26 +64,21 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
         @SubscribeEvent
         public static void onLivingDamage(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
-            if (event.getSource().getEntity() instanceof PlayerEntity
-                    && event.getEntityLiving() instanceof AnimalEntity) {
-                PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
-                if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), player).isPresent()) {
-                    event.setAmount(event.getAmount() * config.playerDamageMultiplier);
-                }
-            }
-            if (event.getSource().getEntity() instanceof TameableEntity) {
-                TameableEntity pet = (TameableEntity) event.getSource().getEntity();
-                if (pet.getOwner() != null && pet.getOwner() instanceof PlayerEntity
-                        && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), pet.getOwner()).isPresent()) {
-                    event.setAmount(event.getAmount() * config.petDamageMultiplier);
-                }
-            }
+            Entity entity = event.getSource().getEntity();
+
+            if (!(entity instanceof TameableEntity))
+                return;
+
+            TameableEntity pet = (TameableEntity) entity;
+
+            if (pet.getOwner() instanceof PlayerEntity && CuriosApi.getCuriosHelper()
+                    .findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), pet.getOwner()).isPresent())
+                event.setAmount(event.getAmount() * config.petDamageMultiplier);
         }
     }
 
     public static class Stats extends RelicStats {
         public int additionalLooting = 1;
-        public float playerDamageMultiplier = 2.0F;
         public float petDamageMultiplier = 3.0F;
     }
 }

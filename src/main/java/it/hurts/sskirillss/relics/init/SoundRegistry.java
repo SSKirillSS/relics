@@ -10,14 +10,17 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SoundRegistry {
     public static SoundEvent RICOCHET = register("ricochet");
+    public static SoundEvent THROW = register("throw");
 
     @SubscribeEvent
     public static void resisterSound(RegistryEvent.Register<SoundEvent> event) {
         event.getRegistry().register(RICOCHET);
+        event.getRegistry().register(THROW);
     }
 
     private static SoundEvent register(String name) {
         ResourceLocation rl = new ResourceLocation(Reference.MODID, name);
+
         return new SoundEvent(rl).setRegistryName(rl);
     }
 }

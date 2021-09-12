@@ -12,6 +12,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
+apply plugin: 'java'
+
+compileJava.options.encoding = 'UTF-8'
 
 version = '0.2.6'
 group = 'it.hurts.sskirillss'

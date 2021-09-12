@@ -2,16 +2,8 @@
   "itemGroup.relics": "Relics",
 
   "tooltip.relics.shift.tooltip": "§7Hold §8[Shift] §7獲得更多信息",
-  "tooltip.relics.shift.divider_up": "§8---------------§e[Info]§8---------------",
-  "tooltip.relics.shift.divider_down": "§8-----------------------------------",
-
   "tooltip.relics.alt.tooltip": "§7Hold §8[Alt] §7獲得更多信息",
-  "tooltip.relics.alt.divider_up": "§8---------------§b[Info]§8---------------",
-  "tooltip.relics.alt.divider_down": "§8-----------------------------------",
-
   "tooltip.relics.ctrl.tooltip": "§7Hold §8[Ctrl] §7獲得更多信息",
-  "tooltip.relics.ctrl.divider_up": "§8---------------§a[Info]§8---------------",
-  "tooltip.relics.ctrl.divider_down": "§8-----------------------------------",
 
   "message.relics.version.forge": "§4[RELICS-WARN] §c就像你用過時版本一樣.意思是如果地牢戰利品中沒有出現遺物.要解決此問題,請更新版本至1.16.5-36.0.14或更高版本.如果你不願更新,你可以添加自己的方式來獲得遺物.可以在配置中禁用此消息",
 
@@ -33,101 +25,62 @@
   "item.relics.spatial_sign": "時空符號",
   "tooltip.relics.spatial_sign.tooltip_1": "Stored destination: X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.spatial_sign.tooltip_2": "Time left: %1$s",
-  "tooltip.relics.spatial_sign.shift_1": "使用後,紀錄當前玩家位置,並在一定時間後自動傳送到紀錄位置",
-  "tooltip.relics.spatial_sign.shift_2": "受到致命傷害時庫存中的時空標示符拯救你並傳送紀錄位置,但會破壞遺物",
 
   "item.relics.reflection_necklace": "反射項鍊",
-  "tooltip.relics.reflection_necklace.shift_1": "緩慢累積攻擊以完全反射投射物和投射物傷害",
 
   "item.relics.space_dissector": "破空符號",
-  "tooltip.relics.space_dissector.shift_1": "丟CD使其在草徑上彈跳並傷害沿路上每個人",
-  "tooltip.relics.space_dissector.shift_2": "CD返回持有者前造成的傷害量和時間取決於彈跳總次數",
-  "tooltip.relics.space_dissector.shift_3": "激活CD使其回歸持有者.按住[Shift]鍵的同時激活CD將把持有者轉移到當前CD位置",
 
   "item.relics.soul_devourer": "噬魂晶石",
   "tooltip.relics.soul_devourer.tooltip_1": "靈魂數量: %1$s",
-  "tooltip.relics.soul_devourer.shift_1": "蒐集手下敗將的靈魂,成比例增加傷害",
-  "tooltip.relics.soul_devourer.shift_2": "按住[Shift]鍵將釋放所有累積的靈魂,造成傷害並擊倒所有人",
 
   "item.relics.magma_walker": "岩漿行靴",
-  "tooltip.relics.magma_walker.shift_1": "凝結腳下的岩漿,暫時將其轉變為岩漿石",
-  "tooltip.relics.magma_walker.shift_2": "完全消除熱源的傷害",
 
   "item.relics.midnight_robe": "暗夜長袍",
-  "tooltip.relics.midnight_robe.shift_1": "如果持有者的生命減少,可以在夜間獲得暫時的隱形並提高跑速",
-  "tooltip.relics.midnight_robe.shift_2": "隱形時攻擊會造成雙倍傷害,但會暫時消除隱形和跑速提升效果",
 
   "item.relics.scarab_talisman": "聖甲蟲符",
-  "tooltip.relics.scarab_talisman.shift_1": "增加跑速,在沙上增加跳躍高度",
-  "tooltip.relics.scarab_talisman.shift_2": "增加挖沙速度,免疫窒息傷害",
 
   "item.relics.stellar_catalyst": "星辰媒介",
-  "tooltip.relics.stellar_catalyst.shift_1": "攻擊時有機率召喚流星",
 
   "item.relics.drowned_belt": "滅頂腰帶",
-  "tooltip.relics.drowned_belt.shift_1": "可在水下呼吸,增加水下受到和造成的傷害,降低泳速",
 
   "item.relics.elytra_booster": "鞘翅手把",
   "tooltip.relics.elytra_booster.tooltip_1": "Charge: %1$s",
-  "tooltip.relics.elytra_booster.shift_1": "按住[Shift]鍵的同時從龍息中累積能量,並同時使用它來提高鞘翅飛行速度",
-  "tooltip.relics.elytra_booster.shift_2": "激活鞘翅的同時在鞘翅飛行時獲得俯擊實物的能力",
 
   "item.relics.enders_hand": "終界手套",
-  "tooltip.relics.enders_hand.shift_1": "按住[Shift]鍵的同時，交換正在查看的玩家和終界使者的位置",
 
   "item.relics.fragrant_flower": "純潔花香",
   "tooltip.relics.fragrant_flower.tooltip_1": "花蜜: %1$s",
-  "tooltip.relics.fragrant_flower.shift_1": "使蜜蜂與遺物持有者並肩作戰,並對玩家友善",
-  "tooltip.relics.fragrant_flower.shift_2": "周圍的蜜蜂還將花蜜收集到該遺物,然後按住[Shift]鍵可以在周圍種植農作物並治愈實體(或不死生物)",
 
   "item.relics.holy_locket": "神聖金匣",
-  "tooltip.relics.holy_locket.shift_1": "增加對不死生物的傷害並使其著火",
 
   "item.relics.jellyfish_necklace": "水母項鍊",
-  "tooltip.relics.jellyfish_necklace.shift_1": "在水下緩慢積累電荷,然後可用於在與生物碰撞時造成電擊",
-  "tooltip.relics.jellyfish_necklace.shift_2": "水下恢復生命速度翻倍",
 
   "item.relics.hunter_belt": "獵人腰帶",
-  "tooltip.relics.hunter_belt.shift_1": "對動物傷害翻倍以及接收戰利品,增加持有者寵物的傷害",
 
   "item.relics.rage_glove": "戰意手套",
-  "tooltip.relics.rage_glove.shift_1": "對同一目標連續攻擊會增加傷害和承傷能力",
 
   "item.relics.ice_skates": "冰上刀刃",
-  "tooltip.relics.ice_skates.shift_1": "提高跑速並能在冰上擊退生物,高速移動凍結腳下的水",
-  "tooltip.relics.ice_skates.shift_2": "造成的傷害和擊退力取決於在冰上行走的時間",
 
   "item.relics.camouflage_ring": "迷彩戒指",
-  "tooltip.relics.camouflage_ring.shift_1": "隱身在兩格高草叢中,隱身時攻擊造成雙倍傷害",
 
   "item.relics.delay_ring": "延遲戒指",
   "tooltip.relics.delay_ring.tooltip_1": "Time: %1$s",
   "tooltip.relics.delay_ring.tooltip_2": "Health: %1$s",
-  "tooltip.relics.delay_ring.shift_1": "暫時改變持有者的命運,在接下來的10秒鐘內延遲任何治療和傷害",
-  "tooltip.relics.delay_ring.shift_2": "戒指延遲的任何治療都會加倍",
 
   "item.relics.bastion_ring": "堡壘戒指",
-  "tooltip.relics.bastion_ring.shift_1": "殺死豬布林時可以定位最近的堡壘",
 
   "item.relics.chorus_inhibitor": "歌萊抑符",
   "tooltip.relics.chorus_inhibitor.tooltip_1": "Stored destination: X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.chorus_inhibitor.tooltip_2": "Time left: %1$s",
-  "tooltip.relics.chorus_inhibitor.shift_1": "記住使用歌萊果的位置,並在一定時間後返回",
-  "tooltip.relics.chorus_inhibitor.shift_2": "在時間用盡之前使用合唱水果會增加額外時間",
-  "tooltip.relics.chorus_inhibitor.shift_3": "完全消除遠距攻擊的傷害",
 
   "item.relics.arrow_quiver": "多重箭袋",
-  "tooltip.relics.arrow_quiver.shift_1": "增加射擊多個箭頭的機會",
 
   "item.relics.lucky_horseshoe": "幸運蹄鐵",
-  "tooltip.relics.lucky_horseshoe.shift_1": "隨機增加玩家的掠奪和幸運",
 
   "item.relics.magic_mirror": "魔法之鏡",
-  "tooltip.relics.magic_mirror.shift_1": "傳送到最新已知的重生位置",
   "tooltip.relics.magic_mirror.invalid_location": "重生位置未知",
 
   "item.relics.ice_breaker": "破冰行靴",
-  "tooltip.relics.ice_breaker.shift_1": "按住[Shift]並墜落地面上後造成衝擊波",
 
   "block.relics.magma_stone": "岩漿石"
 }

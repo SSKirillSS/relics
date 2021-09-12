@@ -1,11 +1,13 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
-import it.hurts.sskirillss.relics.items.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.LivingEntity;
@@ -14,18 +16,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implements ICurioItem {
     public static final String TAG_BREATH_AMOUNT = "breath";
@@ -35,70 +37,92 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
     }
 
     @Override
-    public List<ITextComponent> getShiftTooltip(ItemStack stack) {
-        List<ITextComponent> tooltip = Lists.newArrayList();
-        tooltip.add(new TranslationTextComponent("tooltip.relics.elytra_booster.shift_1"));
-        tooltip.add(new TranslationTextComponent("tooltip.relics.elytra_booster.shift_2"));
-        return tooltip;
+    public RelicTooltip getShiftTooltip(ItemStack stack) {
+        return new RelicTooltip.Builder(stack)
+                .ability(new AbilityTooltip.Builder()
+                        .active(Minecraft.getInstance().options.keyShift)
+                        .build())
+                .build();
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        if (NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0) > 0) {
-            tooltip.add(new TranslationTextComponent("tooltip.relics.elytra_booster.tooltip_1", NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0)));
-        }
+
+        int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
+
+        if (breath > 0)
+            tooltip.add(new TranslationTextComponent("tooltip.relics.elytra_booster.tooltip_1", breath));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) livingEntity;
-            int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
-            if (player.isFallFlying()) {
-                if (player.isShiftKeyDown() && breath > 0) {
-                    Vector3d look = player.getLookAngle();
-                    Vector3d motion = player.getDeltaMovement();
-                    player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * config.flySpeed - motion.x) * 0.5D,
-                            look.y * 0.1D + (look.y * config.flySpeed - motion.y) * 0.5D,
-                            look.z * 0.1D + (look.z * config.flySpeed - motion.z) * 0.5D));
-                    player.getCommandSenderWorld().addParticle(ParticleTypes.DRAGON_BREATH,
-                            player.getX() + (MathUtils.randomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
-                            player.getY() + (MathUtils.randomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
-                            player.getZ() + (MathUtils.randomFloat(player.getCommandSenderWorld().getRandom()) * 0.5F),
-                            0, 0, 0);
-                    if (player.tickCount % 20 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath - 1);
-                    for (LivingEntity entity : player.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(2.0F))) {
-                        if (!entity.getUUID().equals(player.getUUID())) {
-                            entity.setDeltaMovement(entity.position().subtract(player.position()).normalize().multiply(config.ramKnockback,
-                                    config.ramKnockback, config.ramKnockback));
-                            entity.hurt(DamageSource.playerAttack(player), config.ramDamage);
-                        }
-                    }
-                }
-            } else {
-                if (breath < config.breathCapacity) {
-                    if (player.getCommandSenderWorld().dimension() == World.END && player.tickCount %
-                            (config.breathRegenerationCooldown * 20) == 0)
-                        NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
-                    if (player.isShiftKeyDown()) {
-                        for (AreaEffectCloudEntity cloud : player.getCommandSenderWorld().getEntitiesOfClass(AreaEffectCloudEntity.class,
-                                player.getBoundingBox().inflate(config.breathConsumptionRadius))) {
-                            if (cloud.getParticle() == ParticleTypes.DRAGON_BREATH) {
-                                if (player.tickCount % 5 == 0) NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
-                                if (cloud.getRadius() <= 0) cloud.remove();
-                                cloud.setRadius(cloud.getRadius() - config.breathConsumptionSpeed);
-                                Vector3d direction = player.position().add(0, 1, 0).subtract(cloud.position()).normalize();
-                                player.getCommandSenderWorld().addParticle(new CircleTintData(new Color(0.35F, 0.0F, 1.0F),
-                                                (float) player.position().add(0, 1, 0).distanceTo(cloud.position()) * 0.075F,
-                                                (int) player.position().add(0, 1, 0).distanceTo(cloud.position()) * 5,
-                                                0.95F, false), cloud.getX(), cloud.getY(), cloud.getZ(),
-                                        direction.x * 0.2F, direction.y * 0.2F, direction.z * 0.2F);
-                            }
-                        }
-                    }
-                }
-            }
+        if (!(livingEntity instanceof PlayerEntity))
+            return;
+
+        PlayerEntity player = (PlayerEntity) livingEntity;
+
+        if (player.isFallFlying())
+            accelerate(player, stack);
+        else
+            collectBreath(player, stack);
+    }
+
+    private void accelerate(PlayerEntity player, ItemStack stack) {
+        int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
+
+        if (!player.isShiftKeyDown() || breath <= 0)
+            return;
+
+        Vector3d look = player.getLookAngle();
+        Vector3d motion = player.getDeltaMovement();
+        World world = player.getCommandSenderWorld();
+        Random random = world.getRandom();
+
+        player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * config.flySpeed - motion.x) * 0.5D,
+                look.y * 0.1D + (look.y * config.flySpeed - motion.y) * 0.5D,
+                look.z * 0.1D + (look.z * config.flySpeed - motion.z) * 0.5D));
+
+        world.addParticle(ParticleTypes.DRAGON_BREATH,
+                player.getX() + (MathUtils.randomFloat(random) * 0.5F),
+                player.getY() + (MathUtils.randomFloat(random) * 0.5F),
+                player.getZ() + (MathUtils.randomFloat(random) * 0.5F),
+                0, 0, 0);
+
+        if (player.tickCount % 10 == 0)
+            NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath - 1);
+    }
+
+    private void collectBreath(PlayerEntity player, ItemStack stack) {
+        World world = player.getCommandSenderWorld();
+        int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
+
+        if (breath >= config.breathCapacity)
+            return;
+
+        if (world.dimension() == World.END && player.tickCount %
+                (config.breathRegenerationCooldown * 20) == 0)
+            NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
+
+        for (AreaEffectCloudEntity cloud : world.getEntitiesOfClass(AreaEffectCloudEntity.class,
+                player.getBoundingBox().inflate(config.breathConsumptionRadius))) {
+            if (cloud.getParticle() != ParticleTypes.DRAGON_BREATH)
+                continue;
+
+            if (player.tickCount % 5 == 0)
+                NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
+
+            if (cloud.getRadius() <= 0)
+                cloud.remove();
+
+            cloud.setRadius(cloud.getRadius() - config.breathConsumptionSpeed);
+
+            Vector3d direction = player.position().add(0, 1, 0).subtract(cloud.position()).normalize();
+            double distance = player.position().add(0, 1, 0).distanceTo(cloud.position());
+
+            world.addParticle(new CircleTintData(new Color(160, 0, 255),
+                            (float) (distance * 0.075F), (int) distance * 5, 0.95F, false),
+                    cloud.getX(), cloud.getY(), cloud.getZ(), direction.x * 0.2F, direction.y * 0.2F, direction.z * 0.2F);
         }
     }
 
@@ -114,8 +138,6 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
 
     public static class Stats extends RelicStats {
         public float flySpeed = 1.5F;
-        public float ramDamage = 5.0F;
-        public float ramKnockback = 3.0F;
         public int breathConsumptionRadius = 10;
         public int breathCapacity = 1000;
         public float breathConsumptionSpeed = 0.02F;
