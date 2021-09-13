@@ -71,13 +71,10 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
-
-        if (player.getCommandSenderWorld().isClientSide())
-            return;
-
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1);
 
-        if (player.getCooldowns().isOnCooldown(stack.getItem()))
+        if (player.getCommandSenderWorld().isClientSide()
+                || player.getCooldowns().isOnCooldown(stack.getItem()))
             return;
 
         if (time > 0) {
@@ -108,20 +105,21 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
                     source = DamageSource.playerAttack(killer);
             }
 
-            player.getCooldowns().addCooldown(stack.getItem(), config.useCooldown * 20);
-
-            NBTUtils.setInt(stack, TAG_UPDATE_TIME, -1);
-            NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
-            NBTUtils.setString(stack, TAG_KILLER_UUID, "");
-
             player.hurt(source, Integer.MAX_VALUE);
         }
+
+        NBTUtils.setInt(stack, TAG_UPDATE_TIME, -1);
+        NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
+        NBTUtils.setString(stack, TAG_KILLER_UUID, "");
+
+        player.getCooldowns().addCooldown(stack.getItem(), config.useCooldown * 20);
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (NBTUtils.getInt(newStack, TAG_UPDATE_TIME, 0) > 0)
-            delay(slotContext.getWearer(), newStack);
+        if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) > -1
+                && newStack.getItem() != stack.getItem())
+            delay(slotContext.getWearer(), stack);
     }
 
     @Override
