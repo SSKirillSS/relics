@@ -6,6 +6,7 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,7 +31,7 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     public RelicTooltip getShiftTooltip(ItemStack stack) {
         return new RelicTooltip.Builder(stack)
                 .ability(new AbilityTooltip.Builder()
-                        .active()
+                        .active(Minecraft.getInstance().options.keyUse)
                         .build())
                 .build();
     }

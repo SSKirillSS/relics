@@ -49,7 +49,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
                 .ability(new AbilityTooltip.Builder()
                         .varArg(config.timeBeforeActivation)
                         .varArg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
-                        .active()
+                        .active(Minecraft.getInstance().options.keyUse)
                         .build())
                 .ability(new AbilityTooltip.Builder()
                         .build())
