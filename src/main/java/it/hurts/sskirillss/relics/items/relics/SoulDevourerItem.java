@@ -64,8 +64,8 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
         int soul = NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (player.tickCount % 20 != 0) {
-            if (time < config.soulLooseCooldown * (player.isShiftKeyDown() ? 2 : 1))
+        if (player.tickCount % 20 == 0) {
+            if (time < config.soulLooseCooldown)
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
             else {
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
@@ -105,7 +105,7 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
                 if (player.getCooldowns().isOnCooldown(stack.getItem()) || soul >= capacity)
                     return;
 
-                NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, Math.min(soul + Math.round(target.getMaxHealth()
+                NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, Math.min(soul + (int) (target.getMaxHealth()
                         * config.soulFromHealthMultiplier), capacity));
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
             });
@@ -134,7 +134,7 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
         public int minSoulLooseAmount = 5;
         public float soulLoseMultiplierPerSoul = 0.1F;
         public int soulCapacity = 100;
-        public float soulFromHealthMultiplier = 0.05F;
+        public float soulFromHealthMultiplier = 0.25F;
         public float damageMultiplierPerSoul = 0.1F;
     }
 }
