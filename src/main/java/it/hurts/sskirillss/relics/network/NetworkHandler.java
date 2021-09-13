@@ -36,6 +36,11 @@ public class NetworkHandler {
                 .decoder(PacketRelicAbility::new)
                 .consumer(PacketRelicAbility::handle)
                 .add();
+        INSTANCE.messageBuilder(PacketItemActivation.class, nextID())
+                .encoder(PacketItemActivation::toBytes)
+                .decoder(PacketItemActivation::new)
+                .consumer(PacketItemActivation::handle)
+                .add();
     }
 
     public static void sendToClient(Object packet, ServerPlayerEntity player) {

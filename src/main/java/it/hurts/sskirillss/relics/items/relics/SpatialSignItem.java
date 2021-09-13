@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.network.PacketItemActivation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -120,13 +122,15 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
 
         Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
         ServerWorld world = NBTUtils.parseWorld(player.getCommandSenderWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
+        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
 
         if (pos == null || world == null)
             return;
 
-        ((ServerPlayerEntity) player).teleportTo(world, pos.x(), pos.y(), pos.z(), player.yRot, player.xRot);
+        serverPlayer.teleportTo(world, pos.x(), pos.y(), pos.z(), player.yRot, player.xRot);
         player.getCommandSenderWorld().playSound(player, pos.x(), pos.y(), pos.z(),
                 SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        NetworkHandler.sendToClient(new PacketItemActivation(stack), serverPlayer);
 
         if (!player.abilities.instabuild)
             player.getCooldowns().addCooldown(stack.getItem(),
