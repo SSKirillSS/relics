@@ -73,7 +73,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
             level.addParticle(new SparkTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(100)), 0.2F, 30),
                     this.xo, this.yo, this.zo, MathUtils.randomFloat(random) * 0.01F, 0, MathUtils.randomFloat(random) * 0.01F);
 
-        if (this.tickCount % 20 == 0) {
+        if (!level.isClientSide() && this.tickCount % 20 == 0) {
             if (entityData.get(UPDATE_TIME) > config.maxThrownTime) {
                 if (owner != null && stack != null && !stack.isEmpty())
                     NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
@@ -92,7 +92,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
         if (!entityData.get(IS_RETURNING)) {
             if (!bounced)
                 setDeltaMovement(defaultMotion);
-        } else {
+        } else if (!level.isClientSide()){
             if (owner != null) {
                 EntityUtils.moveTowardsPosition(this, new Vector3d(owner.getX(),
                         owner.getY() + 1.0F, owner.getZ()), config.projectileSpeed);
