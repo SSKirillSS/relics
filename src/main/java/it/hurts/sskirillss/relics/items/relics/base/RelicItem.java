@@ -189,14 +189,19 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
             if (!passive.isEmpty()) {
                 tooltip.add((new StringTextComponent("▶ ").withStyle(TextFormatting.DARK_GREEN))
-                        .append(new TranslationTextComponent("tooltip.relics.shift.abilities.passive.tooltip")).withStyle(TextFormatting.GREEN));
+                        .append(new TranslationTextComponent("tooltip.relics.shift.abilities.passive.tooltip")
+                        .withStyle(TextFormatting.GREEN)));
+
                 tooltip.addAll(passive);
+
                 tooltip.add(new StringTextComponent(" "));
             }
 
             if (!active.isEmpty()) {
                 tooltip.add((new StringTextComponent("▶ ").withStyle(TextFormatting.DARK_GREEN))
-                        .append(new TranslationTextComponent("tooltip.relics.shift.abilities.active.tooltip")).withStyle(TextFormatting.GREEN));
+                        .append(new TranslationTextComponent("tooltip.relics.shift.abilities.active.tooltip")
+                        .withStyle(TextFormatting.GREEN)));
+
                 tooltip.addAll(active);
             }
 
