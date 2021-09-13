@@ -13,12 +13,8 @@
   "tooltip.relics.alt.tooltip": "§7Hold §8[Alt] §7for more info",
   "tooltip.relics.ctrl.tooltip": "§7Hold §8[Ctrl] §7for more info",
 
-  "tooltip.relics.shift.abilities.active.tooltip": "§2▶ §aActive abilities:",
-  "tooltip.relics.shift.abilities.active.point.positive": "   §a◆ ",
-  "tooltip.relics.shift.abilities.active.point.negative": "   §c◆ ",
-  "tooltip.relics.shift.abilities.passive.tooltip": "§2▶ §aPassive abilities:",
-  "tooltip.relics.shift.abilities.passive.point.positive": "   §a◆ ",
-  "tooltip.relics.shift.abilities.passive.point.negative": "   §c◆ ",
+  "tooltip.relics.shift.abilities.active.tooltip": "Active abilities:",
+  "tooltip.relics.shift.abilities.passive.tooltip": "Passive abilities:",
 
   "message.relics.version.forge": "§4[RELICS-WARN] §cSEEMS LIKE YOU ARE USING AN OUTDATED VERSION OF FORGE. IT'S MEAN THAT RELICS DOESN'T APPEAR IN THE DUNGEONS LOOT CHESTS. TO FIX THIS ISSUE PLEASE UPDATE YOUR FORGE VERSION TO 1.16.5-36.0.14 OR HIGHER. IF YOU FOR SOME REASONS DON'T WANT UPDATE YOUR FORGE VERSION - YOU CAN ADD OWN WAYS TO GETTING RELICS. THIS MESSAGE CAN BE DISABLED IN CONFIG",
 
@@ -153,7 +149,7 @@
   "tooltip.relics.enders_hand.ability.1.name": "Contract of the End",
   "tooltip.relics.enders_hand.ability.1.description": "Endermans will be neutral to the wearer",
   "tooltip.relics.enders_hand.ability.2.name": "Equivalent exchange",
-    "tooltip.relics.enders_hand.ability.2.description": "Swaps the wearer and the enderman along the line of sight",
+  "tooltip.relics.enders_hand.ability.2.description": "Swaps the wearer and the enderman along the line of sight",
   "tooltip.relics.enders_hand.ability.3.name": "Ender chest",
   "tooltip.relics.enders_hand.ability.3.description": "Summons portable enderchest",
 
@@ -238,7 +234,7 @@
   "item.relics.lucky_horseshoe": "Lucky Horseshoe",
   "tooltip.relics.lucky_horseshoe.ability.1.name": "Looting",
   "tooltip.relics.lucky_horseshoe.ability.1.description": "With a %1$s chance increases wearer's looting",
-  "tooltip.relics.lucky_horseshoe.ability.2.name": "Удача",
+  "tooltip.relics.lucky_horseshoe.ability.2.name": "Luck",
   "tooltip.relics.lucky_horseshoe.ability.2.description": "With a %1$s chance increases wearer's luck",
 
   "item.relics.magic_mirror": "Magic Mirror",
