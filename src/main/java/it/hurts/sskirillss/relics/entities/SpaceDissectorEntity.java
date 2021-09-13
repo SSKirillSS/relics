@@ -73,9 +73,6 @@ public class SpaceDissectorEntity extends ThrowableEntity {
             level.addParticle(new SparkTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(100)), 0.2F, 30),
                     this.xo, this.yo, this.zo, MathUtils.randomFloat(random) * 0.01F, 0, MathUtils.randomFloat(random) * 0.01F);
 
-        if (level.isClientSide())
-            return;
-
         if (this.tickCount % 20 == 0) {
             if (entityData.get(UPDATE_TIME) > config.maxThrownTime) {
                 if (owner != null && stack != null && !stack.isEmpty())
