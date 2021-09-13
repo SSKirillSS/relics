@@ -156,7 +156,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
 
         switch (rayTraceResult.getType()) {
             case BLOCK: {
-                if (level.getBlockState(((BlockRayTraceResult) rayTraceResult).getBlockPos()).canOcclude())
+                if (level.getBlockState(((BlockRayTraceResult) rayTraceResult).getBlockPos()).getMaterial().blocksMotion())
                     this.remove();
 
                 break;

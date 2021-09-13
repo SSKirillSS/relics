@@ -129,7 +129,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
             case BLOCK: {
                 BlockRayTraceResult result = (BlockRayTraceResult) rayTraceResult;
 
-                if (!level.getBlockState(result.getBlockPos()).canOcclude())
+                if (!level.getBlockState(result.getBlockPos()).getMaterial().blocksMotion())
                     return;
 
                 if (entityData.get(BOUNCES) < config.maxBounces) {
