@@ -53,7 +53,7 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
                         .varArg("+" + (int) (config.healMultiplier * 100 - 100) + "%")
                         .build())
                 .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.magicResistance * 100 - 100) + "%")
+                        .varArg("+" + (int) (config.magicResistance * 100) + "%")
                         .build())
                 .ability(new AbilityTooltip.Builder()
                         .varArg("-" + (int) (Math.abs(config.healMultiplier) * 100 - 100) + "%")
