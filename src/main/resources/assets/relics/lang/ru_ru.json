@@ -72,16 +72,16 @@
   "tooltip.relics.spatial_sign.ability.2.description": "В случае, если владелец активной печати получит фатальный урон, он будет телепортирован на последнюю сохранённую точку печати, а реликвия будет разрушена",
 
   "item.relics.spider_necklace": "Паучье ожерелье",
-  "tooltip.relics.spider_necklace.ability.1.name": "Цепкие лапы",
+  "tooltip.relics.spider_necklace.ability.1.name": "Цепкие когти",
   "tooltip.relics.spider_necklace.ability.1.description": "Позволяет карабкаться по стенам",
-  "tooltip.relics.spider_necklace.ability.2.name": "Имаго",
+  "tooltip.relics.spider_necklace.ability.2.name": "Арахнид",
   "tooltip.relics.spider_necklace.ability.2.description": "Позволяет свободно передвигаться в паутине",
 
   "item.relics.spore_sack": "Мешок со спорами",
   "tooltip.relics.spore_sack.ability.1.name": "Распыление",
-  "tooltip.relics.spore_sack.ability.1.description": "С %1$s шансом распыляет споры в точке попадания снаряда, отравляющие всех мобов в радиусе %2$s блоков от эпицентра",
+  "tooltip.relics.spore_sack.ability.1.description": "С %1$s шансом распыляет в точке попадания снаряда споры, отравляющие всех мобов в радиусе %2$s блоков от эпицентра",
 
-  "item.relics.reflection_necklace": "Отражающий амулет",
+  "item.relics.reflection_necklace": "Отражающее ожерелье",
   "tooltip.relics.reflection_necklace.ability.1.name": "Отражение",
   "tooltip.relics.reflection_necklace.ability.1.description": "Накапливает до %1$s зарядов щита, поглощая весь входящий урон и отражая %2$s от него атакующему за каждый такой заряд",
 
@@ -111,7 +111,7 @@
   "tooltip.relics.old_boot.ability.1.description": "%1$s к скорости передвижения",
 
   "item.relics.out_runner": "Скороходы",
-  "tooltip.relics.out_runner.ability.1.name": "Инерция",
+  "tooltip.relics.out_runner.ability.1.name": "Ускорение",
   "tooltip.relics.out_runner.ability.1.description": "%1$s к скорости передвижения за каждую секунду бега",
 
   "item.relics.scarab_talisman": "Талисман скарабея",
@@ -128,7 +128,7 @@
 
   "item.relics.stellar_catalyst": "Звёздный катализатор",
   "tooltip.relics.stellar_catalyst.ability.1.name": "Благословение Луны",
-  "tooltip.relics.stellar_catalyst.ability.1.description": "Каждая атака с %1$s шансом может призвать падающую звезду, наносящую %2$s от исходного урона",
+  "tooltip.relics.stellar_catalyst.ability.1.description": "Каждая атака с %1$s шансом может призвать падающую звезду, наносящую %2$s от исходного урона. Работает только ночью",
 
   "item.relics.drowned_belt": "Пояс утопленника",
   "tooltip.relics.drowned_belt.ability.1.name": "Поток",
@@ -155,7 +155,7 @@
   "tooltip.relics.fragrant_flower.tooltip_1": "Пыльца: %1$s",
   "tooltip.relics.fragrant_flower.ability.1.name": "Рой",
   "tooltip.relics.fragrant_flower.ability.1.description": "Пчёлы в радиусе %1$s блоков будут сражаться на стороне носителя",
-  "tooltip.relics.fragrant_flower.ability.2.name": "Регенерация",
+  "tooltip.relics.fragrant_flower.ability.2.name": "Апитерапия",
   "tooltip.relics.fragrant_flower.ability.2.description": "Восстановление здоровья носителя повышается на %1$s за каждую пчелу в радиусе %2$s блоков",
 
   "item.relics.holy_locket": "Священный медальон",
@@ -173,8 +173,8 @@
   "tooltip.relics.jellyfish_necklace.ability.2.description": "%1$s к сопротивлению магическому урону",
   "tooltip.relics.jellyfish_necklace.ability.3.name": "Ослабление",
   "tooltip.relics.jellyfish_necklace.ability.3.description": "%1$s от скорости передвижения под водой",
-  "tooltip.relics.jellyfish_necklace.ability.4.name": "Рывок",
-  "tooltip.relics.jellyfish_necklace.ability.4.description": "Стремительно толкает в направлении взгляда, когда носитель под водой",
+  "tooltip.relics.jellyfish_necklace.ability.4.name": "Реактивный рывок",
+  "tooltip.relics.jellyfish_necklace.ability.4.description": "Стремительно толкает носителя в направлении взгляда, если тот находится под водой",
 
   "item.relics.hunter_belt": "Пояс охотника",
   "tooltip.relics.hunter_belt.ability.1.name": "Мародёрство",
@@ -217,14 +217,14 @@
   "tooltip.relics.blazing_flask.ability.2.name": "Огнестойкость",
   "tooltip.relics.blazing_flask.ability.2.description": "Сопротивление урону от огня",
   "tooltip.relics.blazing_flask.ability.3.name": "Огненная поступь",
-  "tooltip.relics.blazing_flask.ability.3.description": "Поглощает энергию огня поблизости, преобразовывая её в слабый эффект левитации. Поджигает мобов под ногами во время её использования",
+  "tooltip.relics.blazing_flask.ability.3.description": "Поглощает энергию огня поблизости, накапливая её во внутреннем буфере. Накопленная энергия может быть преобразована в слабый эффект левитации, поджигая мобов под ногами при его использовании",
 
   "item.relics.chorus_inhibitor": "Хорусовый ингибитор",
   "tooltip.relics.chorus_inhibitor.ability.1.name": "Телепортация",
   "tooltip.relics.chorus_inhibitor.ability.1.description": "При употреблении плода хоруса телепортирует на блок по линии взгляда в пределах %1$s блоков",
 
   "item.relics.arrow_quiver": "Колчан",
-  "tooltip.relics.arrow_quiver.ability.1.name": "Быстрая тетива",
+  "tooltip.relics.arrow_quiver.ability.1.name": "Пластичная тетива",
   "tooltip.relics.arrow_quiver.ability.1.description": "x%1$s скорость натяжения тетивы лука",
   "tooltip.relics.arrow_quiver.ability.2.name": "Взрывная стрела",
   "tooltip.relics.arrow_quiver.ability.2.description": "Следующий выстрел нанесёт урон по области, пропорциональный дистанции до цели",
