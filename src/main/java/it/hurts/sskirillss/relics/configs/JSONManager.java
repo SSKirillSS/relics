@@ -11,8 +11,10 @@ import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.RuneItem;
+import it.hurts.sskirillss.relics.items.relics.base.handlers.DurabilityHandler;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -98,7 +100,7 @@ public class JSONManager {
         RelicLoot defaultLoot = new RelicLoot(relic.getLootChests()
                 .stream().map(ResourceLocation::toString).collect(Collectors.toList()), relic.getWorldgenChance());
         RelicLevel defaultLevel = new RelicLevel(relic.getMaxLevel(), relic.getInitialExp(), relic.getExpRatio());
-        RelicDurability defaultDurability = new RelicDurability(relic.getDurability());
+        RelicDurability defaultDurability = new RelicDurability(new ItemStack(relic).getMaxDamage());
         SpecificRelicConfig<RelicStats> defaultConfig = new SpecificRelicConfig<>(defaultStats, defaultLoot, defaultLevel, defaultDurability);
         if (!Files.exists(path)) setupDefaultConfig(path, defaultConfig);
         SpecificRelicConfig<T> relicConfig = getConfig(path, relic);
@@ -135,6 +137,6 @@ public class JSONManager {
         relicItem.setConfig(config.getStats());
         RelicUtils.Worldgen.LOOT.put(relicItem, config.getLoot());
         RelicUtils.Level.LEVEL.put(relicItem, config.getLevel());
-        RelicUtils.Durability.DURABILITY.put(relicItem, config.getDurability());
+        DurabilityHandler.DURABILITY.put(relicItem, config.getDurability());
     }
 }

@@ -1,13 +1,11 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.RuneItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -157,53 +155,6 @@ public class RelicUtils {
                 LootTables.STRONGHOLD_LIBRARY,
                 LootTables.ABANDONED_MINESHAFT
         );
-    }
-
-    public static class Durability {
-        public static HashMap<RelicItem, RelicDurability> DURABILITY = new HashMap<RelicItem, RelicDurability>();
-
-        public static final String TAG_DURABILITY = "durability";
-
-        public static int getMaxDurability(Item relic) {
-            if (!(relic instanceof RelicItem)) return -1;
-            return DURABILITY.get((RelicItem) relic).getDurability();
-        }
-
-        public static int getDurability(ItemStack stack) {
-            return NBTUtils.getInt(stack, TAG_DURABILITY, -1);
-        }
-
-        public static void setDurability(ItemStack stack, int durability) {
-            if (!(stack.getItem() instanceof RelicItem)) return;
-            NBTUtils.setInt(stack, TAG_DURABILITY, MathUtils.clamp(durability, getMaxDurability(stack.getItem()), 0));
-        }
-
-        public static void addDurability(ItemStack stack, int durability) {
-            setDurability(stack, getDurability(stack) + durability);
-        }
-
-        public static void takeDurability(ItemStack stack, int durability) {
-            setDurability(stack, getDurability(stack) - durability);
-        }
-
-        public static ItemStack getScrap(ItemStack stack) {
-            Item scrap = ItemStack.EMPTY.getItem();
-            switch (stack.getRarity()) {
-                case COMMON:
-                    scrap = ItemRegistry.COMMON_SCRAP.get();
-                    break;
-                case UNCOMMON:
-                    scrap = ItemRegistry.UNCOMMON_SCRAP.get();
-                    break;
-                case RARE:
-                    scrap = ItemRegistry.RARE_SCRAP.get();
-                    break;
-                case EPIC:
-                    scrap = ItemRegistry.EPIC_SCRAP.get();
-                    break;
-            }
-            return new ItemStack(scrap);
-        }
     }
 
     public static class Crafting {

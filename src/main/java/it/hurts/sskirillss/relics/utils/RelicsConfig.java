@@ -28,6 +28,7 @@ public class RelicsConfig {
     }
 
     public static class RelicsGeneral {
+        public static ForgeConfigSpec.BooleanValue ENABLE_RELIC_DURABILITY;
         public static ForgeConfigSpec.ConfigValue<String> LEVELING_BAR_STYLE;
         public static ForgeConfigSpec.ConfigValue<String> LEVELING_BAR_COLOR_NEUTRAL;
         public static ForgeConfigSpec.ConfigValue<String> LEVELING_BAR_COLOR_LOW;
@@ -37,6 +38,7 @@ public class RelicsConfig {
         private static void setupGeneralConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
 
+            ENABLE_RELIC_DURABILITY = builder.define("enable_relic_durability", false);
             LEVELING_BAR_STYLE = builder.define("leveling_bar_style", "||||||||||||||||||||||||||||||");
             LEVELING_BAR_COLOR_NEUTRAL = builder.define("leveling_bar_color_neutral", "#808080");
             LEVELING_BAR_COLOR_LOW = builder.define("leveling_bar_color_low", "#FF5555");

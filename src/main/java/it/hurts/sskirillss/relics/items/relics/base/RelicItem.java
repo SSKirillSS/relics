@@ -1,8 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.RelicContractItem;
+import it.hurts.sskirillss.relics.items.relics.base.handlers.DurabilityHandler;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
@@ -59,9 +61,6 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
         handleOwner(player, worldIn, stack);
 
-        if (RelicUtils.Durability.getDurability(stack) == -1)
-            RelicUtils.Durability.setDurability(stack, RelicUtils.Durability.getMaxDurability(stack.getItem()));
-
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
@@ -112,7 +111,6 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
             return;
 
         this.drawContract(stack, worldIn, tooltip);
-        this.drawDurability(stack, tooltip);
         this.drawDescription(stack, tooltip);
 
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
@@ -129,13 +127,6 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
             tooltip.add(new TranslationTextComponent("tooltip.relics.contract", owner.getDisplayName(), hours, minutes, seconds));
         }
-    }
-
-    private void drawDurability(ItemStack stack, List<ITextComponent> tooltip) {
-        int durability = RelicUtils.Durability.getDurability(stack);
-
-        tooltip.add(new TranslationTextComponent("tooltip.relics.durability",
-                durability == -1 ? 0 : durability, RelicUtils.Durability.getMaxDurability(stack.getItem())));
     }
 
     public static StringTextComponent drawProgressBar(float percentage, String style, String startHEX, String middleHEX, String endHEX, String neutralHEX, boolean withPercents) {
@@ -190,7 +181,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
             if (!passive.isEmpty()) {
                 tooltip.add((new StringTextComponent("▶ ").withStyle(TextFormatting.DARK_GREEN))
                         .append(new TranslationTextComponent("tooltip.relics.shift.abilities.passive.tooltip")
-                        .withStyle(TextFormatting.GREEN)));
+                                .withStyle(TextFormatting.GREEN)));
 
                 tooltip.addAll(passive);
 
@@ -200,11 +191,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
             if (!active.isEmpty()) {
                 tooltip.add((new StringTextComponent("▶ ").withStyle(TextFormatting.DARK_GREEN))
                         .append(new TranslationTextComponent("tooltip.relics.shift.abilities.active.tooltip")
-                        .withStyle(TextFormatting.GREEN)));
+                                .withStyle(TextFormatting.GREEN)));
 
                 tooltip.addAll(active);
             }
-
         }
 
         if (!getAltTooltip(stack).isEmpty() && Screen.hasAltDown()) {
@@ -269,12 +259,27 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         return chance;
     }
 
-    public List<ResourceLocation> getLootChests() {
-        return Lists.newArrayList();
-    }
-
     public int getDurability() {
         return 100;
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        RelicDurability durability = DurabilityHandler.DURABILITY.get(this);
+        int value = getDurability();
+
+        if (durability != null) value = durability.getDurability();
+
+        return value;
+    }
+
+    @Override
+    public boolean isDamageable(ItemStack stack) {
+        return getMaxDamage(stack) > 0;
+    }
+
+    public List<ResourceLocation> getLootChests() {
+        return Lists.newArrayList();
     }
 
     public Class<T> getConfigClass() {
