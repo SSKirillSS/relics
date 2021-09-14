@@ -15,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.FoodStats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -86,7 +87,10 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
         if (pieces > 0) {
             NBTUtils.setInt(stack, TAG_PIECES, pieces - 1);
 
-            player.getFoodData().setFoodLevel(Math.min(20, player.getFoodData().getFoodLevel() + config.feedAmount));
+            FoodStats data = player.getFoodData();
+
+            data.setFoodLevel(Math.min(20, data.getFoodLevel() + config.feedAmount));
+            data.setSaturation(Math.min(20, data.getSaturationLevel() + config.saturationAmount));
         }
 
         return stack;
@@ -114,8 +118,9 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
 
     public static class Stats extends RelicStats {
         public int rechargeTime = 60;
-        public int useDuration = 80;
+        public int useDuration = 32;
         public int maxPieces = 3;
         public int feedAmount = 10;
+        public int saturationAmount = 5;
     }
 }
