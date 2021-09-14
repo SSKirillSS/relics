@@ -13,8 +13,8 @@ import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
@@ -55,7 +55,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
         int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (livingEntity.tickCount % 20 != 0 || stacks > 0)
+        if (livingEntity.tickCount % 20 != 0 || stacks <= 0)
             return;
 
         if (time > 0)
@@ -103,32 +103,35 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
+            Entity source = event.getSource().getEntity();
 
-            if (event.getSource().getEntity() instanceof PlayerEntity) {
-                CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), (LivingEntity) event.getSource().getEntity()).ifPresent(triple -> {
-                    ItemStack stack = triple.getRight();
-                    int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
+            if (!(source instanceof LivingEntity))
+                return;
 
-                    NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, ++stacks);
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), (LivingEntity) source).ifPresent(triple -> {
+                ItemStack stack = triple.getRight();
+                int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
 
-                    event.setAmount(event.getAmount() + (event.getAmount() * (stacks * config.dealtDamageMultiplier)));
-                });
-            } else if (event.getSource().getEntity() instanceof LivingEntity && event.getEntityLiving() instanceof PlayerEntity) {
-                CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), event.getEntityLiving()).ifPresent(triple -> {
-                    ItemStack stack = triple.getRight();
-                    int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
+                NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, ++stacks);
+                NBTUtils.setInt(stack, TAG_UPDATE_TIME, config.stackDuration);
 
-                    if (stacks <= 0)
-                        return;
+                event.setAmount(event.getAmount() + (event.getAmount() * (stacks * config.dealtDamageMultiplier)));
+            });
 
-                    event.setAmount(event.getAmount() + (event.getAmount() * (stacks * config.incomingDamageMultiplier)));
-                });
-            }
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), event.getEntityLiving()).ifPresent(triple -> {
+                ItemStack stack = triple.getRight();
+                int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
+
+                if (stacks <= 0)
+                    return;
+
+                event.setAmount(event.getAmount() + (event.getAmount() * (stacks * config.incomingDamageMultiplier)));
+            });
         }
     }
 
     public static class Stats extends RelicStats {
-        public int stackDuration = 5;
+        public int stackDuration = 3;
         public float dealtDamageMultiplier = 0.1F;
         public float incomingDamageMultiplier = 0.025F;
     }
