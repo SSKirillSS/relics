@@ -66,7 +66,7 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
 
             entity.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, 1.0F, config.projectileSpeed, 0.0F);
-            entity.stack = playerIn.getMainHandItem();
+            entity.stack = playerIn.getItemInHand(handIn);
             entity.setOwner(playerIn);
 
             worldIn.addFreshEntity(entity);
