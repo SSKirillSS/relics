@@ -81,7 +81,7 @@
 
   "item.relics.spore_sack": "Spore Sack",
   "tooltip.relics.spore_sack.ability.1.name": "Spraying",
-  "tooltip.relics.spore_sack.ability.1.description": "Has a 1% chance of spraying venomous spores at the point of projectile's impact, poisoning all mobs in a %2$s-blocks radius from the epicenter",
+  "tooltip.relics.spore_sack.ability.1.description": "Has a %1$s chance of spraying venomous spores at the point of projectile's impact, poisoning all mobs in a %2$s blocks radius from the epicenter",
 
   "item.relics.reflection_necklace": "Reflection Necklace",
   "tooltip.relics.reflection_necklace.ability.1.name": "Reflection",
