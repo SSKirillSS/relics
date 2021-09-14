@@ -68,8 +68,6 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> im
 
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-            event.setCanceled(true);
-
             if (!CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CHORUS_INHIBITOR.get(), player).isPresent())
                 return;
 
@@ -91,6 +89,8 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> im
 
                     continue;
                 }
+
+                event.setCanceled(true);
 
                 player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
                 world.playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
