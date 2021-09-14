@@ -16,12 +16,15 @@ import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -88,12 +91,17 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
         if (!(entity instanceof PlayerEntity))
             return;
 
+        NBTUtils.setInt(stack, TAG_UPDATE_TIME, -1);
+
         PlayerEntity player = (PlayerEntity) entity;
         World world = player.getCommandSenderWorld();
         int points = NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0);
 
+        world.playSound(null, player.blockPosition(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundCategory.MASTER, 1.0F, 1.0F);
+        player.getCooldowns().addCooldown(stack.getItem(), config.useCooldown * 20);
+
         if (points > 0)
-            player.setHealth(Math.min(points, player.getMaxHealth()));
+            player.heal(points);
         else {
             String uuidString = NBTUtils.getString(stack, TAG_KILLER_UUID, "");
             DamageSource source = DamageSource.GENERIC;
@@ -108,11 +116,8 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
             player.hurt(source, Integer.MAX_VALUE);
         }
 
-        NBTUtils.setInt(stack, TAG_UPDATE_TIME, -1);
         NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
         NBTUtils.setString(stack, TAG_KILLER_UUID, "");
-
-        player.getCooldowns().addCooldown(stack.getItem(), config.useCooldown * 20);
     }
 
     @Override
@@ -134,7 +139,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class DelayRingEvents {
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void onEntityDeath(LivingDeathEvent event) {
             Stats config = INSTANCE.config;
 
