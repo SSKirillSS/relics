@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:slime_heart"
+    },
+    "title": {
+      "translate": "advancements.relics.slime_heart.title"
+    },
+    "description": {
+      "translate": "advancements.relics.slime_heart.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:slime_heart"
+          }
+        ]
+      }
+    }
+  }
+}

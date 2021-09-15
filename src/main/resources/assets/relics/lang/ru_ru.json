@@ -258,6 +258,13 @@
   "tooltip.relics.infinity_ham.ability.1.name": "Восстановление",
   "tooltip.relics.infinity_ham.ability.1.description": "Бесконечная еда, восполняющая %1$s единиц сытости за каждое использование. Имеет %2$s заряда, восстанавливающихся каждые %3$s сек.",
 
+  "item.relics.slime_heart": "Слизневое сердце",
+  "tooltip.relics.slime_heart.tooltip_1": "Слизневая энергия: %1$s/%2$s",
+  "tooltip.relics.slime_heart.ability.1.name": "Хищник",
+  "tooltip.relics.slime_heart.ability.1.description": "Поглощает жизненную энергию слизня, на котором используется реликвия",
+  "tooltip.relics.slime_heart.ability.2.name": "Упругость",
+  "tooltip.relics.slime_heart.ability.2.description": "Расходует накопленную слизневую энергию на подавление урона от падения. Зажатие клавиши %1$s предотвратит срабатывание этой способности",
+
   "block.relics.magma_stone": "Магмовый камень",
   "block.relics.pedestal": "Пьедестал",
   "block.relics.runic_altar": "Рунический алтарь",
@@ -322,6 +329,8 @@
   "advancements.relics.scarab_talisman.description": "Получи талисман скарабея",
   "advancements.relics.shadow_glaive.title" :  "Ямато v0.5",
   "advancements.relics.shadow_glaive.description": "Получи теневую глефу",
+  "advancements.relics.slime_heart.title" :  "О моём перерождении в слизь",
+  "advancements.relics.slime_heart.description": "Получи слизневое сердце",
   "advancements.relics.soul_devourer.title" :  "Гоголь бы оценил",
   "advancements.relics.soul_devourer.description": "Получи пожиратель душ",
   "advancements.relics.space_dissector.title" :  "Принцесса воинов",

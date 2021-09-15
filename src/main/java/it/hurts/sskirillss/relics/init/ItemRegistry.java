@@ -86,6 +86,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> AMPHIBIAN_BOOT = ITEMS.register("amphibian_boot", AmphibianBootItem::new);
     public static final RegistryObject<Item> INFINITY_HAM = ITEMS.register("infinity_ham", InfinityHamItem::new);
     public static final RegistryObject<Item> OLD_BOOT = ITEMS.register("old_boot", OldBootItem::new);
+    public static final RegistryObject<Item> SLIME_HEART = ITEMS.register("slime_heart", SlimeHeartItem::new);
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
