@@ -42,16 +42,17 @@ public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> impl
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         World world = livingEntity.getCommandSenderWorld();
 
-        if (livingEntity.isSpectator())
+        if (livingEntity.isSpectator() || !(world.getBlockState(livingEntity.blockPosition()).getBlock() instanceof WebBlock
+                || world.getBlockState(livingEntity.blockPosition().above()).getBlock() instanceof WebBlock))
             return;
 
-        if (((world.getBlockState(livingEntity.blockPosition()).getBlock() instanceof WebBlock
-                || world.getBlockState(livingEntity.blockPosition().above()).getBlock() instanceof WebBlock)
-                && livingEntity instanceof ClientPlayerEntity && ((ClientPlayerEntity) livingEntity).input.jumping)
+        livingEntity.fallDistance = 0F;
+
+        if ((world.isClientSide() && livingEntity instanceof ClientPlayerEntity
+                && ((ClientPlayerEntity) livingEntity).input.jumping)
                 || (livingEntity.horizontalCollision && livingEntity.zza > 0)) {
             livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().x(),
                     config.climbSpeed, livingEntity.getDeltaMovement().z());
-            livingEntity.fallDistance = 0F;
         }
     }
 
