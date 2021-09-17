@@ -8,8 +8,6 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import net.minecraft.block.WebBlock;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -17,7 +15,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -40,19 +37,13 @@ public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> impl
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        World world = livingEntity.getCommandSenderWorld();
-
-        if (livingEntity.isSpectator() || !(world.getBlockState(livingEntity.blockPosition()).getBlock() instanceof WebBlock
-                || world.getBlockState(livingEntity.blockPosition().above()).getBlock() instanceof WebBlock))
+        if (livingEntity.isSpectator())
             return;
 
-        livingEntity.fallDistance = 0F;
-
-        if ((world.isClientSide() && livingEntity instanceof ClientPlayerEntity
-                && ((ClientPlayerEntity) livingEntity).input.jumping)
-                || (livingEntity.horizontalCollision && livingEntity.zza > 0)) {
+        if (livingEntity.horizontalCollision && livingEntity.zza > 0) {
             livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().x(),
                     config.climbSpeed, livingEntity.getDeltaMovement().z());
+            livingEntity.fallDistance = 0F;
         }
     }
 
