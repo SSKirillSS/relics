@@ -89,8 +89,13 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
 
             FoodStats data = player.getFoodData();
 
-            data.setFoodLevel(Math.min(20, data.getFoodLevel() + config.feedAmount));
-            data.setSaturation(Math.min(20, data.getSaturationLevel() + config.saturationAmount));
+            /*  FoodStats.eat uses a saturationModifier rather than a flat saturationAmount
+             *  The modifier is used in this manner:
+             *     this.saturationLevel = Math.min(this.saturationLevel + (float)feedAmount * saturationModifier * 2.0F, (float)this.foodLevel);
+             *
+             *  Since we're using a flat saturation amount we need to calculate the modifier based off of the config's saturation amount
+             */
+            data.eat(config.feedAmount, (float) config.saturationAmount / (float) config.feedAmount / 2F);
         }
 
         return stack;
