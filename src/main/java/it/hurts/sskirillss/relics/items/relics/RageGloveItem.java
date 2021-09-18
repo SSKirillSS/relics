@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.RageGloveModel;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -25,8 +27,6 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
-
 public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICurioItem {
     public static final String TAG_STACKS_AMOUNT = "stacks";
     public static final String TAG_UPDATE_TIME = "time";
@@ -34,7 +34,14 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
     public static RageGloveItem INSTANCE;
 
     public RageGloveItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.NETHER)
+                        .chance(0.15F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -64,16 +71,6 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
             NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, stacks - 1);
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, config.stackDuration);
         }
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.NETHER;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/rage_glove.png");

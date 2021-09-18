@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.BlazingFlaskModel;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
@@ -51,7 +53,14 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
     public static final String TAG_FIRE_AMOUNT = "fire";
 
     public BlazingFlaskItem() {
-        super(Rarity.EPIC);
+        super(RelicData.builder()
+                .rarity(Rarity.EPIC)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.NETHER)
+                        .chance(0.1F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -220,16 +229,6 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
         player.abilities.flying = false;
 
         player.onUpdateAbilities();
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.NETHER;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/blazing_flask.png");

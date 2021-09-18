@@ -2,10 +2,10 @@ package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
-import it.hurts.sskirillss.relics.configs.variables.worldgen.RelicLoot;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -116,44 +116,44 @@ public class RelicUtils {
         }
 
         protected static RelicLevel getRelicLevel(RelicItem relic) {
-            return LEVEL.get(relic) == null ? new RelicLevel(relic.getMaxLevel(), relic.getInitialExp(), relic.getExpRatio()) : LEVEL.get(relic);
+            return LEVEL.get(relic) == null ? new RelicLevel(relic.getData().getMaxLevel(), relic.getData().getInitialExp(), relic.getData().getExpRatio()) : LEVEL.get(relic);
         }
     }
 
     public static class Worldgen {
-        public static HashMap<RelicItem, RelicLoot> LOOT = new HashMap<RelicItem, RelicLoot>();
+        public static HashMap<RelicItem, List<RelicLoot>> LOOT = new HashMap<>();
 
-        public static final List<ResourceLocation> AQUATIC = Arrays.asList(
-                LootTables.UNDERWATER_RUIN_BIG,
-                LootTables.UNDERWATER_RUIN_SMALL,
-                LootTables.SHIPWRECK_TREASURE
+        public static final List<String> AQUATIC = Arrays.asList(
+                LootTables.UNDERWATER_RUIN_BIG.toString(),
+                LootTables.UNDERWATER_RUIN_SMALL.toString(),
+                LootTables.SHIPWRECK_TREASURE.toString()
         );
 
-        public static final List<ResourceLocation> NETHER = Arrays.asList(
-                LootTables.NETHER_BRIDGE,
-                LootTables.BASTION_BRIDGE,
-                LootTables.BASTION_OTHER,
-                LootTables.BASTION_TREASURE,
-                LootTables.BASTION_HOGLIN_STABLE,
-                LootTables.RUINED_PORTAL
+        public static final List<String> NETHER = Arrays.asList(
+                LootTables.NETHER_BRIDGE.toString(),
+                LootTables.BASTION_BRIDGE.toString(),
+                LootTables.BASTION_OTHER.toString(),
+                LootTables.BASTION_TREASURE.toString(),
+                LootTables.BASTION_HOGLIN_STABLE.toString(),
+                LootTables.RUINED_PORTAL.toString()
         );
 
-        public static final List<ResourceLocation> COLD = Arrays.asList(
-                LootTables.IGLOO_CHEST,
-                LootTables.VILLAGE_SNOWY_HOUSE,
-                LootTables.VILLAGE_TAIGA_HOUSE
+        public static final List<String> COLD = Arrays.asList(
+                LootTables.IGLOO_CHEST.toString(),
+                LootTables.VILLAGE_SNOWY_HOUSE.toString(),
+                LootTables.VILLAGE_TAIGA_HOUSE.toString()
         );
 
-        public static final List<ResourceLocation> DESERT = Arrays.asList(
-                LootTables.DESERT_PYRAMID,
-                LootTables.VILLAGE_DESERT_HOUSE
+        public static final List<String> DESERT = Arrays.asList(
+                LootTables.DESERT_PYRAMID.toString(),
+                LootTables.VILLAGE_DESERT_HOUSE.toString()
         );
 
-        public static final List<ResourceLocation> CAVE = Arrays.asList(
-                LootTables.STRONGHOLD_CORRIDOR,
-                LootTables.STRONGHOLD_CROSSING,
-                LootTables.STRONGHOLD_LIBRARY,
-                LootTables.ABANDONED_MINESHAFT
+        public static final List<String> CAVE = Arrays.asList(
+                LootTables.STRONGHOLD_CORRIDOR.toString(),
+                LootTables.STRONGHOLD_CROSSING.toString(),
+                LootTables.STRONGHOLD_LIBRARY.toString(),
+                LootTables.ABANDONED_MINESHAFT.toString()
         );
     }
 

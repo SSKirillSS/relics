@@ -4,6 +4,8 @@ import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.OldBootModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
@@ -23,13 +25,18 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 public class OldBootItem extends RelicItem<OldBootItem.Stats> implements ICurioItem {
     public OldBootItem() {
-        super(Rarity.COMMON);
+        super(RelicData.builder()
+                .rarity(Rarity.COMMON)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.FISHING.toString())
+                        .chance(0.1F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -54,16 +61,6 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> implements ICurioI
     @Override
     public boolean showAttributesTooltip(String identifier, ItemStack stack) {
         return false;
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return Collections.singletonList(LootTables.FISHING);
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/old_boot.png");

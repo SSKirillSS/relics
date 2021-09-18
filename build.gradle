@@ -1,5 +1,7 @@
 buildscript {
     repositories {
+        mavenCentral()
+
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     }
@@ -76,6 +78,10 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.0:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75")
     compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 
 jar {

@@ -1,22 +1,36 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
-import net.minecraft.util.ResourceLocation;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
-
-import java.util.Collections;
-import java.util.List;
 
 public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> implements ICurioItem {
     public LuckyHorseshoeItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.VILLAGE_BUTCHER.toString())
+                        .chance(0.2F)
+                        .build())
+                .loot(RelicLoot.builder()
+                        .table(EntityType.HORSE.getDefaultLootTable().toString())
+                        .chance(0.01F)
+                        .build())
+                .loot(RelicLoot.builder()
+                        .table(EntityType.ZOMBIE_HORSE.getDefaultLootTable().toString())
+                        .chance(0.01F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -39,16 +53,6 @@ public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> impl
     @Override
     public int getFortuneBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
         return livingEntity.getRandom().nextFloat() <= config.fortuneChance ? config.additionalFortune : 0;
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return Collections.singletonList(LootTables.VILLAGE_BUTCHER);
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     public static class Stats extends RelicStats {

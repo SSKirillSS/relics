@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.DrownedBeltModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -12,6 +14,7 @@ import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -24,13 +27,22 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
-
 public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements ICurioItem {
     public static DrownedBeltItem INSTANCE;
 
     public DrownedBeltItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.AQUATIC)
+                        .chance(0.1F)
+                        .build())
+                .loot(RelicLoot.builder()
+                        .table(EntityType.DROWNED.getDefaultLootTable().toString())
+                        .chance(0.01F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -48,16 +60,6 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
                         .negative()
                         .build())
                 .build();
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.AQUATIC;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/drowned_belt.png");

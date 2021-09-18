@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.IceSkatesModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -38,7 +40,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
 import java.util.UUID;
 
 public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICurioItem {
@@ -48,7 +49,14 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
     public static IceSkatesItem INSTANCE;
 
     public IceSkatesItem() {
-        super(Rarity.UNCOMMON);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.COLD)
+                        .chance(0.2F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -104,16 +112,6 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         EntityUtils.removeAttributeModifier(slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED),
                 new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.COLD;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/ice_skates.png");

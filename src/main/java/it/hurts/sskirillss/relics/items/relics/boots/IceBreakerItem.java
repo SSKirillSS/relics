@@ -5,6 +5,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.IceBreakerModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -35,7 +37,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
 import java.util.UUID;
 
 public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements ICurioItem {
@@ -43,7 +44,15 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
     public static IceBreakerItem INSTANCE;
 
     public IceBreakerItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.COLD)
+                        .chance(0.2F)
+                        .build())
+                .build());
+
         INSTANCE = this;
     }
 
@@ -93,16 +102,6 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
             return;
 
         player.setDeltaMovement(motion.x(), motion.y() * config.fallMotionMultiplier, motion.z());
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.COLD;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/ice_breaker.png");

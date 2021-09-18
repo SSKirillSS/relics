@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
@@ -15,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
@@ -32,7 +33,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,7 +44,14 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
     public static DelayRingItem INSTANCE;
 
     public DelayRingItem() {
-        super(Rarity.EPIC);
+        super(RelicData.builder()
+                .rarity(Rarity.EPIC)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -125,16 +132,6 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
         if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) > -1
                 && newStack.getItem() != stack.getItem())
             delay(slotContext.getWearer(), stack);
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return Collections.singletonList(LootTables.END_CITY_TREASURE);
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

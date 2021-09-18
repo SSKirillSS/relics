@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -11,7 +13,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -25,14 +26,18 @@ import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.Collections;
-import java.util.List;
-
 public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> implements ICurioItem {
     public static ChorusInhibitorItem INSTANCE;
 
     public ChorusInhibitorItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -45,16 +50,6 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> im
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())
                 .build();
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return Collections.singletonList(LootTables.END_CITY_TREASURE);
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

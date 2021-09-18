@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
@@ -14,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,11 +23,15 @@ import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
-
 public class CamouflageRingItem extends RelicItem<RelicStats> implements ICurioItem {
     public CamouflageRingItem() {
-        super(Rarity.UNCOMMON);
+        super(RelicData.builder()
+                .rarity(Rarity.UNCOMMON)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.15F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -42,11 +47,6 @@ public class CamouflageRingItem extends RelicItem<RelicStats> implements ICurioI
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity.tickCount % 20 == 0 && canHide(livingEntity))
             livingEntity.addEffect(new EffectInstance(Effects.INVISIBILITY, 30, 0, false, false));
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.CAVE;
     }
 
     private static boolean canHide(LivingEntity entity) {

@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.SporeSackModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
@@ -32,14 +34,18 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.Collections;
-import java.util.List;
-
 public class SporeSackItem extends RelicItem<SporeSackItem.Stats> implements ICurioItem {
     public static SporeSackItem INSTANCE;
 
     public SporeSackItem() {
-        super(Rarity.UNCOMMON);
+        super(RelicData.builder()
+                .rarity(Rarity.UNCOMMON)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.JUNGLE_TEMPLE.toString())
+                        .chance(0.2F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -93,16 +99,6 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> implements ICu
                 entity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, config.slownessDuration * 20, config.slownessAmplifier));
             }
         }
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return Collections.singletonList(LootTables.JUNGLE_TEMPLE);
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/spore_sack.png");

@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics.boots;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.OutRunnerModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -28,7 +30,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
 import java.util.UUID;
 
 public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICurioItem {
@@ -38,7 +39,14 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
     private static final String TAG_RUN_DURATION = "duration";
 
     public OutRunnerItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.1F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -97,16 +105,6 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
                 SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         entity.maxUpStep = 0.6F;
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.CAVE;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/out_runner.png");

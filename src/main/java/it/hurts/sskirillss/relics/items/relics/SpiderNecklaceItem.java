@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.SpiderNecklaceModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -11,6 +13,7 @@ import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -18,11 +21,24 @@ import net.minecraft.util.ResourceLocation;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
-
 public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> implements ICurioItem {
     public SpiderNecklaceItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.15F)
+                        .build())
+                .loot(RelicLoot.builder()
+                        .table(EntityType.SPIDER.getDefaultLootTable().toString())
+                        .chance(0.01F)
+                        .build())
+                .loot(RelicLoot.builder()
+                        .table(EntityType.CAVE_SPIDER.getDefaultLootTable().toString())
+                        .chance(0.01F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -45,16 +61,6 @@ public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> impl
                     config.climbSpeed, livingEntity.getDeltaMovement().z());
             livingEntity.fallDistance = 0F;
         }
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.CAVE;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/spider_necklace.png");

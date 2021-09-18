@@ -6,6 +6,8 @@ import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.MagmaWalkerModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -32,11 +34,15 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
-
 public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem {
     public MagmaWalkerItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.NETHER)
+                        .chance(0.15F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -62,11 +68,6 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
 
         if (state.getBlock() == BlockRegistry.MAGMA_STONE_BLOCK.get() && state.getValue(MagmaStoneBlock.AGE) > 0)
             world.setBlock(pos.below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState(), 2);
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.NETHER;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/magma_walker.png");

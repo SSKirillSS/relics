@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.ArrowQuiverModel;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
@@ -17,6 +19,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -41,7 +44,6 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +54,18 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
     private static final String TAG_ARROW = "arrow";
 
     public ArrowQuiverItem() {
-        super(Rarity.COMMON);
+        super(RelicData.builder()
+                .rarity(Rarity.UNCOMMON)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.VILLAGE_FLETCHER.toString())
+                        .chance(0.25F)
+                        .build())
+                .loot(RelicLoot.builder()
+                        .table(EntityType.SKELETON.getDefaultLootTable().toString())
+                        .chance(0.05F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -129,16 +142,6 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
     @Override
     public boolean hasAbility() {
         return true;
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return Collections.singletonList(LootTables.VILLAGE_FLETCHER);
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/arrow_quiver.png");

@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
@@ -12,14 +14,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
-
-import java.util.List;
 
 public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
     private static final String TAG_IS_ACTIVE = "active";
@@ -27,7 +26,14 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
     public static HolyLocketItem INSTANCE;
 
     public HolyLocketItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.DESERT)
+                        .chance(0.1F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -58,16 +64,6 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
 
             NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, false);
         }
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.DESERT;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     @Mod.EventBusSubscriber

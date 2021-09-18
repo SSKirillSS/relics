@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketItemActivation;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -13,7 +15,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -21,12 +26,18 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.util.List;
 import java.util.Optional;
 
 public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     public MagicMirrorItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.15F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -82,16 +93,6 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
         return false;
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.CAVE;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     public static class Stats extends RelicStats {

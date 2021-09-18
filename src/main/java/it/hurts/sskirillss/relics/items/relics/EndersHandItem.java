@@ -4,11 +4,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.EndersHandModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,6 +25,7 @@ import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.loot.LootTables;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -37,14 +40,24 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements ICurioItem {
     public static final String TAG_UPDATE_TIME = "time";
 
     public EndersHandItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
+                        .build())
+                .loot(RelicLoot.builder()
+                        .table(EntityType.ENDERMAN.getDefaultLootTable().toString())
+                        .chance(0.01F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -113,16 +126,6 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
     @Override
     public boolean hasAbility() {
         return true;
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.CAVE;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/enders_hand.png");

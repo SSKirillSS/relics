@@ -3,9 +3,10 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.util.ITooltipFlag;
@@ -13,7 +14,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.loot.LootTables;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -34,7 +35,14 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
     public static SoulDevourerItem INSTANCE;
 
     public SoulDevourerItem() {
-        super(Rarity.EPIC);
+        super(RelicData.builder()
+                .rarity(Rarity.EPIC)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.15F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -73,16 +81,6 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
                         * config.soulLoseMultiplierPerSoul + config.minSoulLooseAmount), 0)));
             }
         }
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.NETHER;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

@@ -2,6 +2,8 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -17,22 +19,26 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
-
-import java.util.List;
 
 public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements ICurioItem {
     public static final String TAG_PIECES = "pieces";
     private static final String TAG_CHARGE = "charge";
 
     public InfinityHamItem() {
-        super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
-                .stacksTo(1)
-                .rarity(Rarity.RARE)
-                .food(new Food.Builder().build()));
+        super(RelicData.builder()
+                .properties(new Item.Properties()
+                        .tab(RelicsTab.RELICS_TAB)
+                        .stacksTo(1)
+                        .rarity(Rarity.RARE)
+                        .food(new Food.Builder().build()))
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.1F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -104,16 +110,6 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     @Override
     public int getUseDuration(ItemStack stack) {
         return config.useDuration;
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.CAVE;
-    }
-
-    @Override
-    public Class<InfinityHamItem.Stats> getConfigClass() {
-        return InfinityHamItem.Stats.class;
     }
 
     public static class Stats extends RelicStats {

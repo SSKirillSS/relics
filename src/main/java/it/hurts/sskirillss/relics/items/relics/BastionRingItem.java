@@ -2,16 +2,18 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.entity.EntityPredicate;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.piglin.PiglinEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -21,11 +23,25 @@ import net.minecraft.world.server.ServerWorld;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.awt.*;
-import java.util.List;
 
 public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements ICurioItem {
     public BastionRingItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.NETHER)
+                        .chance(0.1F)
+                        .build())
+                .loot(RelicLoot.builder()
+                        .table(EntityType.PIGLIN.getDefaultLootTable().toString())
+                        .chance(0.01F)
+                        .build())
+                .loot(RelicLoot.builder()
+                        .table(EntityType.PIGLIN_BRUTE.getDefaultLootTable().toString())
+                        .chance(0.01F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -81,16 +97,6 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements
             serverWorld.sendParticles(new CircleTintData(new Color(255, 240, 150), 0.2F, 30, 0.95F, false),
                     extraX, piglin.getY() + (piglin.getBbHeight() / 1.75F), extraZ, 1, 0F, 0F, 0F, 0);
         }
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.NETHER;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     public static class Stats extends RelicStats {

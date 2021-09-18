@@ -2,6 +2,8 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -13,13 +15,11 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutablePair;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
 import java.util.UUID;
 
 public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implements ICurioItem {
@@ -27,7 +27,14 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
             + ":" + "midnight_robe_movement_speed", UUID.fromString("21a949be-67d9-43bb-96b8-496782d60933"));
 
     public MidnightRobeItem() {
-        super(Rarity.UNCOMMON);
+        super(RelicData.builder()
+                .rarity(Rarity.UNCOMMON)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.2F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -62,16 +69,6 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
         EntityUtils.removeAttributeModifier(slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED),
                 new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
                         config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.CAVE;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     public static class Stats extends RelicStats {

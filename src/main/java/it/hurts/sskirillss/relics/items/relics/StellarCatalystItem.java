@@ -4,6 +4,8 @@ import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.entities.StellarCatalystProjectileEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -12,7 +14,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,14 +21,18 @@ import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.Collections;
-import java.util.List;
-
 public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> implements ICurioItem {
     public static StellarCatalystItem INSTANCE;
 
     public StellarCatalystItem() {
-        super(Rarity.EPIC);
+        super(RelicData.builder()
+                .rarity(Rarity.EPIC)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -40,16 +45,6 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
                         .varArg((int) (config.damageMultiplier * 100) + "%")
                         .build())
                 .build();
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return Collections.singletonList(LootTables.END_CITY_TREASURE);
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

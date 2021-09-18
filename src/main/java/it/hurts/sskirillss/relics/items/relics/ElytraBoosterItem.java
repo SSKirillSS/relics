@@ -2,6 +2,8 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -16,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -25,7 +26,6 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -33,7 +33,14 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
     public static final String TAG_BREATH_AMOUNT = "breath";
 
     public ElytraBoosterItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
+                        .build())
+                .build());
     }
 
     @Override
@@ -124,16 +131,6 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
                             (float) (distance * 0.075F), (int) distance * 5, 0.95F, false),
                     cloud.getX(), cloud.getY(), cloud.getZ(), direction.x * 0.2F, direction.y * 0.2F, direction.z * 0.2F);
         }
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return Collections.singletonList(LootTables.END_CITY_TREASURE);
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     public static class Stats extends RelicStats {

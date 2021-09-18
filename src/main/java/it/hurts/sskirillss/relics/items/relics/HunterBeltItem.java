@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -13,21 +15,24 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.Collections;
-import java.util.List;
-
 public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements ICurioItem {
     public static HunterBeltItem INSTANCE;
 
     public HunterBeltItem() {
-        super(Rarity.UNCOMMON);
+        super(RelicData.builder()
+                .rarity(Rarity.UNCOMMON)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(LootTables.VILLAGE_BUTCHER.toString())
+                        .chance(0.2F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -47,16 +52,6 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
     @Override
     public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
         return config.additionalLooting;
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return Collections.singletonList(LootTables.VILLAGE_BUTCHER);
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

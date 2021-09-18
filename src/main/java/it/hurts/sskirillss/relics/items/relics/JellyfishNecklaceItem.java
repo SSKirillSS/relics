@@ -5,6 +5,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.renderer.JellyfishNecklaceModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -34,14 +36,20 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
 import java.util.UUID;
 
 public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats> implements ICurioItem {
     public static JellyfishNecklaceItem INSTANCE;
 
     public JellyfishNecklaceItem() {
-        super(Rarity.RARE);
+        super(RelicData.builder()
+                .rarity(Rarity.RARE)
+                .config(Stats.class)
+                .loot(RelicLoot.builder()
+                        .table(RelicUtils.Worldgen.AQUATIC)
+                        .chance(0.15F)
+                        .build())
+                .build());
 
         INSTANCE = this;
     }
@@ -107,16 +115,6 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     @Override
     public boolean hasAbility() {
         return true;
-    }
-
-    @Override
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.Worldgen.AQUATIC;
-    }
-
-    @Override
-    public Class<Stats> getConfigClass() {
-        return Stats.class;
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/jellyfish_necklace.png");
