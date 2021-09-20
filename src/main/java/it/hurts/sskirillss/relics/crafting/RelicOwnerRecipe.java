@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics.crafting;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.RecipeRegistry;
 import it.hurts.sskirillss.relics.items.RelicContractItem;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.inventory.CraftingInventory;
@@ -23,33 +22,52 @@ public class RelicOwnerRecipe extends SpecialRecipe {
     @Override
     public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world) {
         boolean foundContract = false;
-        boolean foundRelic = false;
+        boolean foundItem = false;
+
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack stack = inv.getItem(i);
-            if (stack.isEmpty()) continue;
-            if (stack.getItem() instanceof RelicItem && !foundRelic) foundRelic = true;
-            else if (stack.getItem() == ItemRegistry.RELIC_CONTRACT.get() && NBTUtils.getInt(stack, RelicContractItem.TAG_BLOOD, 0) >= 4
-                    && !RelicUtils.Owner.getOwnerUUID(stack).toString().equals("") && !foundContract) foundContract = true;
-            else return false;
+
+            if (stack.isEmpty())
+                continue;
+
+            if (stack.getItem() == ItemRegistry.RELIC_CONTRACT.get() && NBTUtils.getInt(stack, RelicContractItem.TAG_BLOOD, 0) >= 4
+                    && !RelicUtils.Owner.getOwnerUUID(stack).equals("") && !foundContract)
+                foundContract = true;
+            else if (!foundItem)
+                foundItem = true;
+            else
+                return false;
         }
-        return foundRelic && foundContract;
+
+        return foundItem && foundContract;
     }
 
     @Nonnull
     @Override
     public ItemStack assemble(@Nonnull CraftingInventory inv) {
-        ItemStack relic = ItemStack.EMPTY;
+        ItemStack item = ItemStack.EMPTY;
         ItemStack contract = ItemStack.EMPTY;
+
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack stack = inv.getItem(i);
-            if (stack.isEmpty()) continue;
-            if (stack.getItem() instanceof RelicItem && relic.isEmpty()) relic = stack;
-            else if (contract.isEmpty()) contract = stack;
+
+            if (stack.isEmpty())
+                continue;
+
+            if (contract.isEmpty() && stack.getItem() == ItemRegistry.RELIC_CONTRACT.get())
+                contract = stack;
+            else if (item.isEmpty())
+                item = stack;
         }
-        if (relic.isEmpty() || contract.isEmpty()) return ItemStack.EMPTY;
-        ItemStack result = relic.copy();
+
+        if (item.isEmpty() || contract.isEmpty())
+            return ItemStack.EMPTY;
+
+        ItemStack result = item.copy();
+
         RelicUtils.Owner.setOwnerUUID(result, RelicUtils.Owner.getOwnerUUID(contract));
         NBTUtils.setLong(result, RelicContractItem.TAG_DATE, 0);
+
         return result;
     }
 

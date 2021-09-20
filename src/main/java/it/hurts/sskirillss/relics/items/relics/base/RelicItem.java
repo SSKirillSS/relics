@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics.items.relics.base;
 import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
 import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.handlers.ContractHandler;
 import it.hurts.sskirillss.relics.items.relics.base.handlers.DurabilityHandler;
 import it.hurts.sskirillss.relics.items.relics.base.handlers.TooltipHandler;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -44,8 +43,6 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (!(entityIn instanceof PlayerEntity))
             return;
-
-        ContractHandler.handleOwner((PlayerEntity) entityIn, worldIn, stack);
 
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }

@@ -41,50 +41,65 @@ public class BloodyLecternBlock extends Block {
 
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (handIn != Hand.MAIN_HAND) return ActionResultType.FAIL;
+        if (handIn != Hand.MAIN_HAND)
+            return ActionResultType.FAIL;
+
         BloodyLecternTile lectern = (BloodyLecternTile) world.getBlockEntity(pos);
         ItemStack heldStack = player.getItemInHand(handIn);
         Random random = world.getRandom();
+
         if (lectern.getStack().isEmpty()) {
             if (heldStack.getItem() == ItemRegistry.COAL_PARCHMENT.get()
-                    || heldStack.getItem() == ItemRegistry.RELIC_CONTRACT.get()) lectern.setStack(heldStack.split(1));
+                    || heldStack.getItem() == ItemRegistry.RELIC_CONTRACT.get())
+                lectern.setStack(heldStack.split(1));
         } else {
             ItemStack contract = lectern.getStack();
             if ((contract.getItem() == ItemRegistry.COAL_PARCHMENT.get() || contract.getItem() == ItemRegistry.RELIC_CONTRACT.get())
                     && heldStack.getItem() == ItemRegistry.BLOODY_FEATHER.get()) {
-                if (world.isClientSide()) return ActionResultType.FAIL;
+                if (world.isClientSide())
+                    return ActionResultType.FAIL;
+
                 int blood = NBTUtils.getInt(contract, RelicContractItem.TAG_BLOOD, -1);
                 String owner = RelicUtils.Owner.getOwnerUUID(contract);
-                if (player.getCooldowns().isOnCooldown(heldStack.getItem()) || blood >= 4) return ActionResultType.FAIL;
+
+                if (player.getCooldowns().isOnCooldown(heldStack.getItem()) || blood >= 4)
+                    return ActionResultType.FAIL;
+
                 if (contract.getItem() == ItemRegistry.COAL_PARCHMENT.get()) {
-                    if (world.random.nextInt(3) == 0) {
-                        ItemStack parchment = new ItemStack(ItemRegistry.RELIC_CONTRACT.get());
-                        RelicUtils.Owner.setOwnerUUID(parchment, player.getStringUUID());
-                        lectern.setStack(parchment);
-                    }
+                    ItemStack parchment = new ItemStack(ItemRegistry.RELIC_CONTRACT.get());
+
+                    RelicUtils.Owner.setOwnerUUID(parchment, player.getStringUUID());
+                    lectern.setStack(parchment);
                 } else if (owner.equals("") || player.getStringUUID().equals(owner)) {
-                    if (world.random.nextInt(3) == 0) {
-                        blood++;
-                        NBTUtils.setInt(contract, RelicContractItem.TAG_BLOOD, blood);
-                        RelicUtils.Owner.setOwnerUUID(contract, player.getStringUUID());
-                        if (blood == 4) ((ServerWorld) world).sendParticles(ParticleTypes.EXPLOSION, pos.getX() + 0.5F,
+                    blood++;
+
+                    NBTUtils.setInt(contract, RelicContractItem.TAG_BLOOD, blood);
+                    RelicUtils.Owner.setOwnerUUID(contract, player.getStringUUID());
+
+                    if (blood == 4)
+                        ((ServerWorld) world).sendParticles(ParticleTypes.EXPLOSION, pos.getX() + 0.5F,
                                 pos.getY() + 0.75F, pos.getZ() + 0.5F, 1, 0, 0, 0, 0);
-                    }
-                } else return ActionResultType.FAIL;
+                } else
+                    return ActionResultType.FAIL;
+
                 player.hurt(DamageSource.GENERIC, player.getMaxHealth() * 0.1F);
-                player.getCooldowns().addCooldown(heldStack.getItem(), 20);
+                player.getCooldowns().addCooldown(heldStack.getItem(), 10);
                 world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 1F - random.nextFloat() * 0.5F);
                 world.sendBlockUpdated(pos, state, state, 2);
             } else {
-                if (heldStack.isEmpty()) player.setItemInHand(Hand.MAIN_HAND, contract);
+                if (heldStack.isEmpty())
+                    player.setItemInHand(Hand.MAIN_HAND, contract);
                 else {
                     ItemEntity drop = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), lectern.getStack());
+
                     drop.setPickUpDelay(0);
                     world.addFreshEntity(drop);
                 }
+
                 lectern.setStack(ItemStack.EMPTY);
             }
         }
+
         return ActionResultType.SUCCESS;
     }
 
@@ -104,11 +119,16 @@ public class BloodyLecternBlock extends Block {
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         Direction direction = state.getValue(FACING);
-        if (direction == Direction.NORTH) return LecternBlock.SHAPE_NORTH;
-        else if (direction == Direction.SOUTH) return LecternBlock.SHAPE_SOUTH;
-        else if (direction == Direction.EAST) return LecternBlock.SHAPE_EAST;
-        else if (direction == Direction.WEST) return LecternBlock.SHAPE_WEST;
-        else return LecternBlock.SHAPE_COMMON;
+        if (direction == Direction.NORTH)
+            return LecternBlock.SHAPE_NORTH;
+        else if (direction == Direction.SOUTH)
+            return LecternBlock.SHAPE_SOUTH;
+        else if (direction == Direction.EAST)
+            return LecternBlock.SHAPE_EAST;
+        else if (direction == Direction.WEST)
+            return LecternBlock.SHAPE_WEST;
+        else
+            return LecternBlock.SHAPE_COMMON;
     }
 
     @Override

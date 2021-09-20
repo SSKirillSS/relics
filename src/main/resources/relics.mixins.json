@@ -6,6 +6,7 @@
   "mixins": [
     "MixinEndermanEntity",
     "MixinEntity",
+    "MixinItem",
     "MixinLivingEntity",
     "MixinPiglinMobsSensor",
     "MixinWebBlock"

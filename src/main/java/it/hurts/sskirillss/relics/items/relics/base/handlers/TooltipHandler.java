@@ -1,14 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics.base.handlers;
 
-import it.hurts.sskirillss.relics.items.RelicContractItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.TooltipUtils;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
@@ -20,21 +17,7 @@ import java.util.List;
 
 public class TooltipHandler {
     public static void setupTooltip(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip) {
-        drawContract(stack, worldIn, tooltip);
         drawDescription(stack, tooltip);
-    }
-
-    private static void drawContract(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip) {
-        PlayerEntity owner = RelicUtils.Owner.getOwner(stack, worldIn);
-        long time = (NBTUtils.getLong(stack, RelicContractItem.TAG_DATE, 0) + (3600 * 20) - worldIn.getGameTime()) / 20;
-
-        if (time > 0 && owner != null) {
-            long hours = time / 3600;
-            long minutes = (time % 3600) / 60;
-            long seconds = (time % 3600) % 60;
-
-            tooltip.add(new TranslationTextComponent("tooltip.relics.contract", owner.getDisplayName(), hours, minutes, seconds));
-        }
     }
 
     private static StringTextComponent drawProgressBar(float percentage, String style, String startHEX, String middleHEX, String endHEX, String neutralHEX, boolean withPercents) {
