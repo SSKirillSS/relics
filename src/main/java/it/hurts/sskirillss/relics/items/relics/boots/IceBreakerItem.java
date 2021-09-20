@@ -98,7 +98,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
         PlayerEntity player = (PlayerEntity) livingEntity;
         Vector3d motion = player.getDeltaMovement();
 
-        if (player.isOnGround() || player.isInWater())
+        if (player.isOnGround() || player.isInWater() || motion.y() > 0)
             return;
 
         player.setDeltaMovement(motion.x(), motion.y() * config.fallMotionMultiplier, motion.z());
