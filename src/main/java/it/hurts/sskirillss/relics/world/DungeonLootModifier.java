@@ -2,12 +2,14 @@ package it.hurts.sskirillss.relics.world;
 
 import com.google.gson.JsonObject;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
+import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.CompatibilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.conditions.ILootCondition;
@@ -16,6 +18,7 @@ import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nonnull;
@@ -37,8 +40,13 @@ public class DungeonLootModifier extends LootModifier {
 
         Random random = context.getRandom();
 
-        for (RelicItem relic : RelicUtils.Worldgen.LOOT.keySet()) {
-            for (RelicLoot loot : RelicUtils.Worldgen.LOOT.get(relic)) {
+        for (RegistryObject<Item> object : ItemRegistry.ITEMS.getEntries()) {
+            if (!object.isPresent() || !(object.get() instanceof RelicItem))
+                continue;
+
+            RelicItem relic = (RelicItem) object.get();
+
+            for (RelicLoot loot :  relic.getData().getLoot()) {
                 if (loot.getTable().contains(context.getQueriedLootTableId().toString())
                         && random.nextFloat() <= loot.getChance()) {
                     ItemStack stack = new ItemStack(relic);

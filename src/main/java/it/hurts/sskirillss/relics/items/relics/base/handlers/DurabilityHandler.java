@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.base.handlers;
 
-import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicDurability;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;

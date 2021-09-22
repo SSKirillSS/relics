@@ -1,11 +1,10 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicLevel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,8 +38,6 @@ public class RelicUtils {
     }
 
     public static class Level {
-        public static HashMap<RelicItem, RelicLevel> LEVEL = new HashMap<RelicItem, RelicLevel>();
-
         private static final String TAG_LEVEL = "level";
         private static final String TAG_EXPERIENCE = "experience";
 
@@ -116,13 +113,11 @@ public class RelicUtils {
         }
 
         protected static RelicLevel getRelicLevel(RelicItem relic) {
-            return LEVEL.get(relic) == null ? new RelicLevel(relic.getData().getMaxLevel(), relic.getData().getInitialExp(), relic.getData().getExpRatio()) : LEVEL.get(relic);
+            return relic.getData().getLevel();
         }
     }
 
     public static class Worldgen {
-        public static HashMap<RelicItem, List<RelicLoot>> LOOT = new HashMap<>();
-
         public static final List<String> AQUATIC = Arrays.asList(
                 LootTables.UNDERWATER_RUIN_BIG.toString(),
                 LootTables.UNDERWATER_RUIN_SMALL.toString(),

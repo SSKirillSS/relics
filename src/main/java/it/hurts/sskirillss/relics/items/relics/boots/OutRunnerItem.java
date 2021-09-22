@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;

@@ -2,21 +2,13 @@ package it.hurts.sskirillss.relics.configs;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import it.hurts.sskirillss.relics.configs.variables.RuneConfig;
 import it.hurts.sskirillss.relics.configs.variables.crafting.RuneIngredients;
-import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
-import it.hurts.sskirillss.relics.configs.variables.level.RelicLevel;
-import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
-import it.hurts.sskirillss.relics.items.relics.base.handlers.DurabilityHandler;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -33,45 +25,20 @@ import java.util.stream.Collectors;
 public class JSONManager {
     private static final Gson SERIALIZER = new GsonBuilder().setPrettyPrinting().serializeNulls().disableHtmlEscaping().create();
 
-    public static void setupJSONConfig() {
-        setupRelicsConfig();
-        setupRunesConfig();
-    }
-
-    protected static void setupRelicsConfig() {
-        Path dir = FMLPaths.CONFIGDIR.get().resolve("relics").resolve("items").resolve("relics");
-
-        try {
-            Files.createDirectories(dir);
-
-            for (RegistryObject<Item> registryObject : ItemRegistry.ITEMS.getEntries()) {
-                if (!registryObject.isPresent()) continue;
-
-                Item item = registryObject.get();
-
-                if (!(item instanceof RelicItem)) continue;
-
-                RelicItem<? extends RelicStats> relic = (RelicItem<? extends RelicStats>) item;
-
-                setupRelic(dir, relic);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    protected static void setupRunesConfig() {
+    public static void setupRunesConfig() {
         Path dir = FMLPaths.CONFIGDIR.get().resolve("relics").resolve("items").resolve("runes");
 
         try {
             Files.createDirectories(dir);
 
             for (RegistryObject<Item> registryObject : ItemRegistry.ITEMS.getEntries()) {
-                if (!registryObject.isPresent()) continue;
+                if (!registryObject.isPresent())
+                    continue;
 
                 Item item = registryObject.get();
 
-                if (!(item instanceof RuneItem)) continue;
+                if (!(item instanceof RuneItem))
+                    continue;
 
                 RuneItem rune = (RuneItem) item;
                 RuneIngredients defaultIngredients = new RuneIngredients(rune.getIngredients().stream().map(runeItem ->
@@ -106,67 +73,5 @@ public class JSONManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    protected static <T extends RelicStats> void setupRelic(Path dir, RelicItem<T> relic) throws IOException {
-        Path path = dir.resolve(relic.getRegistryName().getPath() + ".json");
-        RelicStats defaultStats = null;
-
-        try {
-            defaultStats = relic.getData().getConfig().newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        List<RelicLoot> defaultLoot = relic.getData().getLoot();
-        RelicLevel defaultLevel = new RelicLevel(relic.getData().getMaxLevel(), relic.getData().getInitialExp(), relic.getData().getExpRatio());
-        RelicDurability defaultDurability = new RelicDurability(new ItemStack(relic).getMaxDamage());
-        SpecificRelicConfig<RelicStats> defaultConfig = new SpecificRelicConfig<>(defaultStats, defaultLoot, defaultLevel, defaultDurability);
-
-        if (!Files.exists(path)) setupDefaultConfig(path, defaultConfig);
-
-        SpecificRelicConfig<T> relicConfig = getConfig(path, relic);
-
-        register(relic, relicConfig);
-    }
-
-    protected static <T extends RelicStats> SpecificRelicConfig<T> getConfig(Path path, RelicItem<T> relicItem) {
-        SpecificRelicConfig<T> result = null;
-
-        try {
-            Reader reader = Files.newBufferedReader(path);
-            RelicConfig config = SERIALIZER.fromJson(reader, RelicConfig.class);
-            reader.close();
-
-            T stats = SERIALIZER.fromJson(config.getStats(), (Class<T>) relicItem.getData().getConfig());
-            List<RelicLoot> loot = config.getLoot();
-            RelicLevel level = config.getLevel();
-            RelicDurability durability = config.getDurability();
-
-            result = new SpecificRelicConfig<>(stats, loot, level, durability);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
-    protected static <T extends RelicStats> void setupDefaultConfig(Path path, SpecificRelicConfig<T> config) throws IOException {
-        RelicStats defaultStats = config.getStats();
-        RelicConfig abstractConfig = new RelicConfig((JsonObject) SERIALIZER.toJsonTree(defaultStats, defaultStats.getClass()), config.getLoot(), config.getLevel(), config.getDurability());
-        Writer writer = Files.newBufferedWriter(path);
-
-        SERIALIZER.toJson(abstractConfig, writer);
-
-        writer.flush();
-        writer.close();
-    }
-
-    protected static <T extends RelicStats> void register(RelicItem<T> relicItem, SpecificRelicConfig<T> config) {
-        relicItem.setConfig(config.getStats());
-
-        RelicUtils.Worldgen.LOOT.put(relicItem, config.getLoot());
-        RelicUtils.Level.LEVEL.put(relicItem, config.getLevel());
-        DurabilityHandler.DURABILITY.put(relicItem, config.getDurability());
     }
 }

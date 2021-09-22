@@ -1,8 +1,8 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
-import it.hurts.sskirillss.relics.configs.variables.durability.RelicDurability;
-import it.hurts.sskirillss.relics.configs.variables.stats.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicDurability;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.handlers.DurabilityHandler;
 import it.hurts.sskirillss.relics.items.relics.base.handlers.TooltipHandler;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -25,6 +25,7 @@ import java.util.List;
 
 public abstract class RelicItem<T extends RelicStats> extends Item implements ICurioItem {
     @Getter
+    @Setter
     protected RelicData data;
     @Getter
     @Setter
@@ -35,8 +36,8 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         super(data.getRarity() == null ? data.getProperties()
                 : data.getProperties().rarity(data.getRarity()));
 
-        this.data = data;
-        config = (T) data.getConfig().newInstance();
+        setData(data);
+        setConfig((T) data.getConfig().newInstance());
     }
 
     @Override
@@ -77,10 +78,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     @Override
     public int getMaxDamage(ItemStack stack) {
         RelicDurability durability = DurabilityHandler.DURABILITY.get(this);
-        int value = data.getDurability();
+        int value = data.getDurability().getMaxDurability();
 
         if (durability != null)
-            value = durability.getDurability();
+            value = durability.getMaxDurability();
 
         return value;
     }
