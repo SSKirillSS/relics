@@ -14,11 +14,9 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -52,27 +50,6 @@ public class ContractHandler {
         event.setCanceled(true);
     }
 
-    @SubscribeEvent
-    public static void onTooltipRender(ItemTooltipEvent event) {
-        ItemStack stack = event.getItemStack();
-        long time = NBTUtils.getLong(stack, RelicContractItem.TAG_DATE, -1);
-
-        if (event.getPlayer() == null || stack.isEmpty() || time <= -1)
-            return;
-
-        World world = event.getPlayer().getCommandSenderWorld();
-        PlayerEntity owner = RelicUtils.Owner.getOwner(stack, world);
-        time = (time + (3600 * 20) - world.getGameTime()) / 20;
-
-        if (time > 0 && owner != null) {
-            long hours = time / 3600;
-            long minutes = (time % 3600) / 60;
-            long seconds = (time % 3600) % 60;
-
-            event.getToolTip().add(new TranslationTextComponent("tooltip.relics.contract", owner.getDisplayName(), hours, minutes, seconds));
-        }
-    }
-
     public static void handleOwner(PlayerEntity player, ItemStack stack) {
         World world = player.getCommandSenderWorld();
         PlayerEntity owner = RelicUtils.Owner.getOwner(stack, world);
@@ -82,9 +59,9 @@ public class ContractHandler {
             return;
 
         if (time == 0)
-            NBTUtils.setInt(stack, RelicContractItem.TAG_DATE, (int) world.getGameTime());
+            NBTUtils.setLong(stack, RelicContractItem.TAG_DATE, world.getGameTime());
         else if (world.getGameTime() - time >= (3600 * 20)) {
-            NBTUtils.setInt(stack, RelicContractItem.TAG_DATE, -1);
+            NBTUtils.setLong(stack, RelicContractItem.TAG_DATE, -1);
 
             RelicUtils.Owner.setOwnerUUID(stack, "");
 

@@ -1,20 +1,28 @@
 package it.hurts.sskirillss.relics.items.relics.base.handlers;
 
+import it.hurts.sskirillss.relics.items.RelicContractItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.TooltipUtils;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class TooltipHandler {
     public static void setupTooltip(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip) {
         drawDescription(stack, tooltip);
@@ -110,5 +118,26 @@ public class TooltipHandler {
 
         if (!Screen.hasControlDown() && !((RelicItem) stack.getItem()).getControlTooltip(stack).isEmpty())
             tooltip.add(new TranslationTextComponent("tooltip.relics.ctrl.tooltip"));
+    }
+
+    @SubscribeEvent
+    public static void onTooltipRender(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        long time = NBTUtils.getLong(stack, RelicContractItem.TAG_DATE, -1);
+
+        if (event.getPlayer() == null || stack.isEmpty() || time <= -1)
+            return;
+
+        World world = event.getPlayer().getCommandSenderWorld();
+        PlayerEntity owner = RelicUtils.Owner.getOwner(stack, world);
+        time = (time + (3600 * 20) - world.getGameTime()) / 20;
+
+        if (time > 0 && owner != null) {
+            long hours = time / 3600;
+            long minutes = (time % 3600) / 60;
+            long seconds = (time % 3600) % 60;
+
+            event.getToolTip().add(new TranslationTextComponent("tooltip.relics.contract", owner.getDisplayName(), hours, minutes, seconds));
+        }
     }
 }
