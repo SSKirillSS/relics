@@ -135,9 +135,14 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
 
         @SubscribeEvent
         public static void onEntityAttack(LivingAttackEvent event) {
+            LivingEntity entity = event.getEntityLiving();
+
             if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(),
-                    event.getEntityLiving()).isPresent() && event.getSource() == DamageSource.IN_WALL)
+                    entity).isPresent() && event.getSource() == DamageSource.IN_WALL) {
+                entity.heal(event.getAmount());
+
                 event.setCanceled(true);
+            }
         }
 
         @SubscribeEvent
