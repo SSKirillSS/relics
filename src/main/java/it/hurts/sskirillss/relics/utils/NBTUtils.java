@@ -60,7 +60,7 @@ public class NBTUtils {
     }
 
     public static boolean safeCheck(ItemStack stack, String tag) {
-        return !stack.isEmpty() && stack.getOrCreateTag().contains(tag);
+        return !stack.isEmpty() && stack.getTag() != null && stack.getTag().contains(tag);
     }
 
     public static String writePosition(Vector3d vec) {
