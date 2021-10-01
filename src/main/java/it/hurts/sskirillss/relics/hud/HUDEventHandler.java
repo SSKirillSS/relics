@@ -111,11 +111,7 @@ public class HUDEventHandler {
         manager.bind(SLOT);
         AbstractGui.blit(matrix, x - 4, y - 4, 24, 32, 0F, 0F, 1, 1, 1, 1);
 
-        manager.bind(RELIC);
-        AbstractGui.blit(matrix, x, y, 16, 16, 0F, 0F, 1, 1, 1, 1);
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableTexture();
-        RenderSystem.defaultBlendFunc();
+        Minecraft.getInstance().getItemRenderer().renderAndDecorateFakeItem(new ItemStack(item), x, y);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder builder = tessellator.getBuilder();
         float yOff = y + MathHelper.floor(16.0F * (1.0F - player.getCooldowns().getCooldownPercent(item, Minecraft.getInstance().getFrameTime())));
@@ -125,9 +121,7 @@ public class HUDEventHandler {
         builder.vertex(x, yOff + offset, 0.0D).color(255, 255, 255, 127).endVertex();
         builder.vertex(x + 16, yOff + offset, 0.0D).color(255, 255, 255, 127).endVertex();
         builder.vertex(x + 16, yOff + 0, 0.0D).color(255, 255, 255, 127).endVertex();
-        Tessellator.getInstance().end();
-        RenderSystem.enableTexture();
-        RenderSystem.enableDepthTest();
+        tessellator.end();
 
         matrix.scale(0.5F, 0.5F, 0.5F);
         Minecraft.getInstance().font.draw(matrix, key.getKeyModifier().getCombinedName(key.getKey(),
