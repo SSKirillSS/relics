@@ -2,11 +2,11 @@ package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.IceBreakerModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -23,6 +23,7 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -102,6 +103,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
             return;
 
         player.setDeltaMovement(motion.x(), motion.y() * config.fallMotionMultiplier, motion.z());
+        player.getCommandSenderWorld().addParticle(ParticleTypes.SMOKE, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/ice_breaker.png");
@@ -152,6 +154,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
 
                 world.playSound(null, player.blockPosition(), SoundEvents.WITHER_BREAK_BLOCK,
                         SoundCategory.PLAYERS, 0.75F, 1.0F);
+                world.addParticle(ParticleTypes.EXPLOSION_EMITTER, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
                 player.getCooldowns().addCooldown(ItemRegistry.ICE_BREAKER.get(), Math.round(distance * config.stompCooldownMultiplier * 20));
 
                 for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class,
