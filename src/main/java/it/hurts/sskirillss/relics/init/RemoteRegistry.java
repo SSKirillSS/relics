@@ -16,7 +16,6 @@ import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,8 +46,7 @@ public class RemoteRegistry {
         HotkeyRegistry.register();
 
         ItemModelsProperties.register(ItemRegistry.SPACE_DISSECTOR.get(), new ResourceLocation(Reference.MODID, "mode"),
-                (stack, world, entity) -> NBTUtils.getBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false) ? 2
-                        : (entity instanceof PlayerEntity && ((PlayerEntity) entity).getCooldowns().isOnCooldown(stack.getItem())) ? 1 : 0);
+                (stack, world, entity) -> NBTUtils.getBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false) ? 1 : 0);
         ItemModelsProperties.register(ItemRegistry.INFINITY_HAM.get(), new ResourceLocation(Reference.MODID, "pieces"),
                 (stack, world, entity) -> Math.min(3, NBTUtils.getInt(stack, InfinityHamItem.TAG_PIECES, 0)));
         ItemModelsProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),

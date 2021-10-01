@@ -5,7 +5,6 @@
     },
     "overrides": [
         { "predicate": { "relics:mode": 0 }, "model": "relics:item/space_dissector" },
-        { "predicate": { "relics:mode": 1 }, "model": "relics:item/space_dissector_deactivated" },
-        { "predicate": { "relics:mode": 2 }, "model": "relics:item/space_dissector_thrown" }
+        { "predicate": { "relics:mode": 1 }, "model": "relics:item/space_dissector_thrown" }
     ]
 }
