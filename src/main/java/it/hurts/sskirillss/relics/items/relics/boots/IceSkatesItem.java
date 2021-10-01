@@ -1,11 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.IceSkatesModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -29,6 +29,8 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -94,16 +96,20 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
                             livingEntity.getY() + 0.1F, livingEntity.getZ(), 0, 0.2F, 0);
 
                 for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox().inflate(config.ramRadius))) {
-                    if (entity == livingEntity)
+                    if (entity == livingEntity || entity.invulnerableTime > 0)
                         continue;
 
                     entity.setDeltaMovement(entity.position().subtract(livingEntity.position()).normalize().multiply(0.25F, 0.1F, 0.25F));
+                    world.playSound(null, entity.blockPosition(), SoundEvents.AXE_STRIP,
+                            SoundCategory.PLAYERS, 1.0F, 1.0F);
                     entity.hurt(DamageSource.FLY_INTO_WALL, config.ramDamage);
                 }
             }
-        } else if (world.getBlockState(livingEntity.blockPosition().below()) == Fluids.WATER.getSource().defaultFluidState().createLegacyBlock())
+        } else if (world.getBlockState(livingEntity.blockPosition().below()) == Fluids.WATER.getSource().defaultFluidState().createLegacyBlock()) {
             world.setBlockAndUpdate(livingEntity.blockPosition().below(), Blocks.FROSTED_ICE.defaultBlockState());
-        else
+            world.playSound(null, livingEntity.blockPosition(), SoundEvents.SNOW_HIT,
+                    SoundCategory.PLAYERS, 0.75F, 1.0F);
+        } else
             EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
                     config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
