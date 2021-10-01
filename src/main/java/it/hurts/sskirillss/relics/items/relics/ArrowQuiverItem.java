@@ -135,6 +135,9 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
         if (player.getCooldowns().isOnCooldown(stack.getItem()))
             return;
 
+        player.getCommandSenderWorld().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP,
+                SoundCategory.PLAYERS, 1.0F, 1.0F);
+
         NBTUtils.setBoolean(stack, TAG_CHARGED, !NBTUtils.getBoolean(stack, TAG_CHARGED, false));
         NBTUtils.setString(stack, TAG_ARROW, "");
     }
