@@ -52,6 +52,8 @@ public class MagmaStoneBlock extends Block implements IVoidBlock {
     private static void updateState(World worldIn, BlockPos pos, BlockState state) {
         int age = state.getValue(AGE);
         worldIn.addParticle(ParticleTypes.LAVA, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, 1, 1, 1);
+        worldIn.playSound(null, pos, SoundEvents.FUNGUS_BREAK,
+                SoundCategory.BLOCKS, 1.0F, 1.0F);
         if (age < 3) worldIn.setBlock(pos, state.setValue(AGE, state.getValue(AGE) + 1), 2);
         else {
             worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
