@@ -1,9 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -12,13 +13,10 @@ import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
+import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.FoodStats;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -48,6 +46,17 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
                         .varArgs(config.feedAmount, config.maxPieces, config.rechargeTime)
                         .build())
                 .build();
+    }
+
+    @Override
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        ItemStack stack = new ItemStack(ItemRegistry.INFINITY_HAM.get());
+
+        NBTUtils.setInt(stack, TAG_PIECES, config.maxPieces);
+
+        items.add(stack);
+
+        super.fillItemCategory(group, items);
     }
 
     @Override
@@ -93,15 +102,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
         if (pieces > 0) {
             NBTUtils.setInt(stack, TAG_PIECES, pieces - 1);
 
-            FoodStats data = player.getFoodData();
-
-            /*  FoodStats.eat uses a saturationModifier rather than a flat saturationAmount
-             *  The modifier is used in this manner:
-             *     this.saturationLevel = Math.min(this.saturationLevel + (float)feedAmount * saturationModifier * 2.0F, (float)this.foodLevel);
-             *
-             *  Since we're using a flat saturation amount we need to calculate the modifier based off of the config's saturation amount
-             */
-            data.eat(config.feedAmount, (float) config.saturationAmount / (float) config.feedAmount / 2F);
+            player.getFoodData().eat(config.feedAmount, (float) config.saturationAmount / (float) config.feedAmount / 2F);
         }
 
         return stack;

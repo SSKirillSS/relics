@@ -1,22 +1,25 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
+import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import top.theillusivec4.curios.api.SlotContext;
@@ -50,6 +53,17 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())
                 .build();
+    }
+
+    @Override
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        ItemStack stack = new ItemStack(ItemRegistry.SHADOW_GLAIVE.get());
+
+        NBTUtils.setInt(stack, TAG_CHARGES, config.maxCharges);
+
+        items.add(stack);
+
+        super.fillItemCategory(group, items);
     }
 
     @Override
