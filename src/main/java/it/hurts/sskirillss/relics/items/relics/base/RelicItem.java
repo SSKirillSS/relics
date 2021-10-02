@@ -5,21 +5,26 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicDurability;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.handlers.DurabilityHandler;
 import it.hurts.sskirillss.relics.items.relics.base.handlers.TooltipHandler;
+import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +43,19 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
         setData(data);
         setConfig((T) data.getConfig().newInstance());
+    }
+
+    @Override
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        Vector3d pos = entity.position();
+
+        entity.getCommandSenderWorld().addParticle(new CircleTintData(stack.getRarity().color.getColor() != null
+                        ? new Color(stack.getRarity().color.getColor(), false) : new Color(255, 255, 255),
+                        random.nextFloat() * 0.025F + 0.04F, 25, 0.95F, true),
+                pos.x() + MathUtils.randomFloat(random) * 0.25F, pos.y() + 0.1F,
+                pos.z() + MathUtils.randomFloat(random) * 0.25F, 0, random.nextFloat() * 0.05D, 0);
+
+        return super.onEntityItemUpdate(stack, entity);
     }
 
     @Override
