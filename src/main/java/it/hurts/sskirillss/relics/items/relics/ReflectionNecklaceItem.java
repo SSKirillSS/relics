@@ -86,6 +86,9 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
         else {
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
             NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, charges + 1);
+
+            livingEntity.getCommandSenderWorld().playSound(null, livingEntity.blockPosition(),
+                    SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundCategory.PLAYERS, 0.5F, 0.75F);
         }
     }
 
@@ -161,7 +164,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
                         attacker.setDeltaMovement(motion);
 
                     player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                            SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 0.5F, 1.0F);
                 }
                 NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, charges - 1);
 
@@ -209,7 +212,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
                 NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) - 1);
 
                 player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 0.5F, 1.0F);
             });
         }
     }
