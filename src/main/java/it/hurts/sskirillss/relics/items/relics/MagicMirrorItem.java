@@ -79,7 +79,7 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
                 playerIn.stopRiding();
 
             serverPlayer.teleportTo(world, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, playerIn.yRot, playerIn.xRot);
-            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 1.0F, 1.0F);
             NetworkHandler.sendToClient(new PacketItemActivation(stack), serverPlayer);
 
             if (!playerIn.abilities.instabuild)
