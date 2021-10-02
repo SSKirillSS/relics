@@ -140,8 +140,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
             return;
 
         serverPlayer.teleportTo(world, pos.x(), pos.y(), pos.z(), player.yRot, player.xRot);
-        player.getCommandSenderWorld().playSound(player, pos.x(), pos.y(), pos.z(),
-                SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        world.playSound(null, player.blockPosition(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
         NetworkHandler.sendToClient(new PacketItemActivation(stack), serverPlayer);
 
         if (!player.abilities.instabuild)
