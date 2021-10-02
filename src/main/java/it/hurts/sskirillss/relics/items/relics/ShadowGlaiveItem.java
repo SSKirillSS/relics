@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.RelicsTab;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
@@ -57,6 +58,9 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
 
     @Override
     public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        if (group != RelicsTab.RELICS_TAB)
+            return;
+
         ItemStack stack = new ItemStack(ItemRegistry.SHADOW_GLAIVE.get());
 
         NBTUtils.setInt(stack, TAG_CHARGES, config.maxCharges);

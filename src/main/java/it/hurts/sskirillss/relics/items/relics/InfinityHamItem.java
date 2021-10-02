@@ -50,6 +50,9 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
 
     @Override
     public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        if (group != RelicsTab.RELICS_TAB)
+            return;
+
         ItemStack stack = new ItemStack(ItemRegistry.INFINITY_HAM.get());
 
         NBTUtils.setInt(stack, TAG_PIECES, config.maxPieces);
