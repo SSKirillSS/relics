@@ -1,10 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
@@ -16,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -81,15 +83,28 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
+        World world = player.getCommandSenderWorld();
+        int points = NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1);
 
-        if (player.getCommandSenderWorld().isClientSide()
+        if (player.tickCount % 4 == 0 && time > 0)
+            world.addParticle(points > 0 ? ParticleTypes.HEART : ParticleTypes.ANGRY_VILLAGER,
+                    player.getX() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
+                    player.getEyeY() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
+                    player.getZ() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
+                    0, -0.25F, 0);
+
+        if (world.isClientSide()
                 || player.getCooldowns().isOnCooldown(stack.getItem()))
             return;
 
         if (time > 0) {
-            if (player.tickCount % 20 == 0)
-                NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
+            if (player.tickCount % 20 == 0) {
+                NBTUtils.setInt(stack, TAG_UPDATE_TIME, --time);
+
+                world.playSound(null, player.blockPosition(), SoundEvents.UI_BUTTON_CLICK,
+                        SoundCategory.MASTER, 0.75F, 1.0F + time * 0.1F);
+            }
         } else if (time == 0)
             delay(player, stack);
     }
