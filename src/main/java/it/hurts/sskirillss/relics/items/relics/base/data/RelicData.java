@@ -39,6 +39,11 @@ public class RelicData {
     @Getter
     @Setter
     @Builder.Default
+    private boolean hasScrap = false;
+
+    @Getter
+    @Setter
+    @Builder.Default
     private Class<? extends RelicStats> config = RelicStats.class;
 
     @Getter
