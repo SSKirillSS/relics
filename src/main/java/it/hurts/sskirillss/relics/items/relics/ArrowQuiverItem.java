@@ -142,11 +142,6 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
         NBTUtils.setString(stack, TAG_ARROW, "");
     }
 
-    @Override
-    public boolean hasAbility() {
-        return true;
-    }
-
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/arrow_quiver.png");
 
     @Override

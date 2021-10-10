@@ -112,11 +112,6 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
         return false;
     }
 
-    @Override
-    public boolean hasAbility() {
-        return true;
-    }
-
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/jellyfish_necklace.png");
 
     @Override

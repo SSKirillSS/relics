@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.items.relics.SlimeHeartItem;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.tiles.renderer.BloodyLecternTileRenderer;
 import it.hurts.sskirillss.relics.tiles.renderer.PedestalTileRenderer;
 import it.hurts.sskirillss.relics.tiles.renderer.RunicAltarTileRenderer;
@@ -20,6 +21,7 @@ import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -55,5 +57,12 @@ public class RemoteRegistry {
                 NBTUtils.getInt(stack, RelicContractItem.TAG_BLOOD, 0));
         ItemModelsProperties.register(ItemRegistry.SLIME_HEART.get(), new ResourceLocation(Reference.MODID, "mode"), (stack, world, entity) ->
                 NBTUtils.getInt(stack, SlimeHeartItem.TAG_SLIME_AMOUNT, 0) > 0 ? 1 : 0);
+
+        ItemRegistry.ITEMS.getEntries().stream()
+                .filter(RegistryObject::isPresent)
+                .map(RegistryObject::get)
+                .filter(item -> item instanceof RelicItem)
+                .forEach(item -> ItemModelsProperties.register(item, new ResourceLocation(Reference.MODID, "broken"),
+                        (stack, world, entity) -> RelicItem.isBroken(stack) ? 1 : 0));
     }
 }

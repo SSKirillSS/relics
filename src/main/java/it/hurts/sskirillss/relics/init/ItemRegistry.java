@@ -2,13 +2,10 @@ package it.hurts.sskirillss.relics.init;
 
 import it.hurts.sskirillss.relics.items.*;
 import it.hurts.sskirillss.relics.items.relics.*;
-import it.hurts.sskirillss.relics.items.relics.base.BrokenRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.boots.*;
 import it.hurts.sskirillss.relics.items.runes.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -18,7 +15,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = Reference.MODID)
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MODID);
-    public static final DeferredRegister<Item> BROKEN_RELICS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MODID);
 
     public static final RegistryObject<Item> AQUASTEEL_INGOT = ITEMS.register("aquasteel_ingot", ItemBase::new);
     public static final RegistryObject<Item> FIRESTEEL_INGOT = ITEMS.register("firesteel_ingot", ItemBase::new);
@@ -94,23 +90,5 @@ public class ItemRegistry {
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
-
-        registerBrokenRelics();
-    }
-
-    private static void registerBrokenRelics() {
-        for (RegistryObject<Item> object : ITEMS.getEntries()) {
-            if (!object.isPresent())
-                continue;
-
-            Item item = object.get();
-
-            if (!(item instanceof RelicItem) || !((RelicItem<?>)item).getData().isHasScrap())
-                continue;
-
-            BROKEN_RELICS.register("broken_" + item.getRegistryName().getPath(), () -> new BrokenRelicItem(new ItemStack(item)));
-        }
-
-        BROKEN_RELICS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

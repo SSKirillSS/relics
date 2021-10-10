@@ -32,7 +32,7 @@ public class PacketRelicAbility {
                 ItemStack stack = handler.getStackInSlot(this.slot);
                 if (stack.isEmpty() || !(stack.getItem() instanceof RelicItem)) return;
                 RelicItem relic = (RelicItem) stack.getItem();
-                if (!relic.hasAbility()) return;
+                if (!relic.getData().hasAbility()) return;
                 relic.castAbility(player, stack);
             });
         });

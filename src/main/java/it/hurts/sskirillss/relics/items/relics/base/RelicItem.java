@@ -1,9 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicDurability;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.items.relics.base.handlers.DurabilityHandler;
 import it.hurts.sskirillss.relics.items.relics.base.handlers.TooltipHandler;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -15,6 +13,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
@@ -47,23 +46,53 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        Vector3d pos = entity.position();
+        if (!isBroken(stack)) {
+            Vector3d pos = entity.position();
 
-        entity.getCommandSenderWorld().addParticle(new CircleTintData(stack.getRarity().color.getColor() != null
-                        ? new Color(stack.getRarity().color.getColor(), false) : new Color(255, 255, 255),
-                        random.nextFloat() * 0.025F + 0.04F, 25, 0.95F, true),
-                pos.x() + MathUtils.randomFloat(random) * 0.25F, pos.y() + 0.1F,
-                pos.z() + MathUtils.randomFloat(random) * 0.25F, 0, random.nextFloat() * 0.05D, 0);
+            entity.getCommandSenderWorld().addParticle(new CircleTintData(stack.getRarity().color.getColor() != null
+                            ? new Color(stack.getRarity().color.getColor(), false) : new Color(255, 255, 255),
+                            random.nextFloat() * 0.025F + 0.04F, 25, 0.95F, true),
+                    pos.x() + MathUtils.randomFloat(random) * 0.25F, pos.y() + 0.1F,
+                    pos.z() + MathUtils.randomFloat(random) * 0.25F, 0, random.nextFloat() * 0.05D, 0);
+        }
 
         return super.onEntityItemUpdate(stack, entity);
     }
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (!(entityIn instanceof PlayerEntity))
+        if (entityIn instanceof PlayerEntity && !isBroken(stack))
+            super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        if (worldIn == null)
             return;
 
-        super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+        TooltipHandler.setupTooltip(stack, worldIn, tooltip);
+
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    }
+
+    @Override
+    public boolean canEquip(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
+        return !isBroken(stack);
+    }
+
+    @Override
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        return !isBroken(stack);
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return data.getDurability().getMaxDurability();
+    }
+
+    @Override
+    public boolean isDamageable(ItemStack stack) {
+        return getMaxDamage(stack) > 0;
     }
 
     public RelicTooltip getShiftTooltip(ItemStack stack) {
@@ -78,39 +107,8 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         return new ArrayList<>();
     }
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        if (worldIn == null)
-            return;
-
-        TooltipHandler.setupTooltip(stack, worldIn, tooltip);
-
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-    }
-
-    @Override
-    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
-        return true;
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        RelicDurability durability = DurabilityHandler.DURABILITY.get(this);
-        int value = data.getDurability().getMaxDurability();
-
-        if (durability != null)
-            value = durability.getMaxDurability();
-
-        return value;
-    }
-
-    @Override
-    public boolean isDamageable(ItemStack stack) {
-        return getMaxDamage(stack) > 0;
-    }
-
-    public boolean hasAbility() {
-        return false;
+    public static boolean isBroken(ItemStack stack) {
+        return stack.getMaxDamage() - stack.getDamageValue() <= 0;
     }
 
     public void castAbility(PlayerEntity player, ItemStack stack) {

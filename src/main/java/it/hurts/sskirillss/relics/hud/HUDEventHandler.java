@@ -142,7 +142,7 @@ public class HUDEventHandler {
                 ItemStack stack = handler.getStackInSlot(i);
                 if (!(stack.getItem() instanceof RelicItem)) continue;
                 RelicItem relic = (RelicItem) stack.getItem();
-                if (!relic.hasAbility()) continue;
+                if (!relic.getData().hasAbility()) continue;
                 relics.add(new ImmutablePair<>(stack, i));
             }
             offset = offset / slots * slots;
@@ -177,7 +177,7 @@ public class HUDEventHandler {
             ItemStack stack = pair.getLeft();
             if (!(stack.getItem() instanceof RelicItem)) continue;
             RelicItem relic = (RelicItem) stack.getItem();
-            if (!relic.hasAbility()) continue;
+            if (!relic.getData().hasAbility()) continue;
             NetworkHandler.sendToServer(new PacketRelicAbility(pair.getRight()));
             relic.castAbility(player, stack);
         }

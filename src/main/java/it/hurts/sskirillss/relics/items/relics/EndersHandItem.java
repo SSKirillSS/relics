@@ -123,11 +123,6 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
         player.playSound(SoundEvents.ENDER_CHEST_OPEN, 1F, 1F);
     }
 
-    @Override
-    public boolean hasAbility() {
-        return true;
-    }
-
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/enders_hand.png");
 
     @Override

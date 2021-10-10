@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics.base.data;
 
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import lombok.*;
+import lombok.experimental.Accessors;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 
@@ -34,12 +35,8 @@ public class RelicData {
     @Getter
     @Setter
     @Builder.Default
+    @Accessors(fluent = true)
     private boolean hasAbility = false;
-
-    @Getter
-    @Setter
-    @Builder.Default
-    private boolean hasScrap = false;
 
     @Getter
     @Setter
@@ -52,7 +49,7 @@ public class RelicData {
     private List<RelicLoot> loot;
 
     @SneakyThrows
-    public RelicConfigData toConfigData() {
-        return new RelicConfigData(config.newInstance(), level, durability, loot);
+    public RelicConfigData<?> toConfigData() {
+        return new RelicConfigData<>(config.newInstance(), level, durability, loot);
     }
 }
