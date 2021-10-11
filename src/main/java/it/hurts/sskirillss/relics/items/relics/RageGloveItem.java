@@ -1,11 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.RageGloveModel;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -67,10 +67,8 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
 
         if (time > 0)
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
-        else {
-            NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, stacks - 1);
-            NBTUtils.setInt(stack, TAG_UPDATE_TIME, config.stackDuration);
-        }
+        else
+            NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, 0);
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/rage_glove.png");
@@ -129,7 +127,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
 
     public static class Stats extends RelicStats {
         public int stackDuration = 3;
-        public float dealtDamageMultiplier = 0.1F;
+        public float dealtDamageMultiplier = 0.075F;
         public float incomingDamageMultiplier = 0.025F;
     }
 }
