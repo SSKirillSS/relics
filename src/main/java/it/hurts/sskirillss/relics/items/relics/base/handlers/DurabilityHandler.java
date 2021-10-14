@@ -2,6 +2,8 @@ package it.hurts.sskirillss.relics.items.relics.base.handlers;
 
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -12,7 +14,6 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Mod.EventBusSubscriber
 public class DurabilityHandler {
@@ -40,10 +41,10 @@ public class DurabilityHandler {
             return;
 
         relics.forEach(relic -> {
-            Random random = entity.getRandom();
+            int durability = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, relic) + 1;
 
-            if (relic.getDamageValue() - relic.getMaxDamage() < 0
-                    && event.getAmount() >= 1F && random.nextFloat() <= 0.2F)
+            if (relic.getDamageValue() - relic.getMaxDamage() < 0 && event.getAmount() >= 1F
+                    && entity.getRandom().nextFloat() <= 0.75F / durability)
                 relic.hurt(1, entity.getRandom(), entity instanceof ServerPlayerEntity
                         ? (ServerPlayerEntity) entity : null);
         });
