@@ -47,7 +47,7 @@ public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> impl
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity.isSpectator())
+        if (isBroken(stack) || livingEntity.isSpectator())
             return;
 
         if (livingEntity.horizontalCollision && livingEntity.zza > 0) {

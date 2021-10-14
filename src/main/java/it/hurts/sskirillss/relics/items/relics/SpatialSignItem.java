@@ -1,10 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketItemActivation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -86,6 +86,9 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
+        if (isBroken(stack))
+            return ActionResult.fail(stack);
+
         if (NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
             NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.position()));
             NBTUtils.setString(stack, TAG_WORLD, playerIn.getCommandSenderWorld().dimension().location().toString());
@@ -100,7 +103,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (worldIn.isClientSide() || !(entityIn instanceof PlayerEntity))
+        if (worldIn.isClientSide() || isBroken(stack) || !(entityIn instanceof PlayerEntity))
             return;
 
         PlayerEntity player = (PlayerEntity) entityIn;
@@ -171,7 +174,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
 
             ItemStack stack = player.inventory.getItem(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
 
-            if (!NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
+            if (!isBroken(stack) && !NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
                 teleportPlayer(player, stack);
                 player.setHealth(1.0F);
 

@@ -1,10 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
@@ -56,9 +56,11 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
+        if (isBroken(stack))
+            return;
+
         if (livingEntity.invulnerableTime <= 10)
             NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, true);
-
         else if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
             livingEntity.invulnerableTime += config.invulnerabilityTime;
 
@@ -81,12 +83,15 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
             if (!entity.isInvertedHealAndHarm())
                 return;
 
-            if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HOLY_LOCKET.get(), (PlayerEntity) source).isPresent()) {
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HOLY_LOCKET.get(), (PlayerEntity) source).ifPresent(triple -> {
+                if (isBroken(triple.getRight()))
+                    return;
+
                 if (random.nextFloat() <= config.igniteChance)
                     entity.setSecondsOnFire(4);
 
                 event.setAmount(event.getAmount() * config.damageMultiplier);
-            }
+            });
         }
 
         @SubscribeEvent
@@ -94,8 +99,12 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
             Stats config = INSTANCE.config;
             LivingEntity entity = event.getEntityLiving();
 
-            if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HOLY_LOCKET.get(), entity).isPresent())
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.HOLY_LOCKET.get(), entity).ifPresent(triple -> {
+                if (isBroken(triple.getRight()))
+                    return;
+
                 event.setAmount(event.getAmount() * config.healMultiplier);
+            });
         }
     }
 

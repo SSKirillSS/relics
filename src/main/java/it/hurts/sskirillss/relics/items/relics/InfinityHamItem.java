@@ -64,7 +64,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (entityIn.tickCount % 20 != 0)
+        if (isBroken(stack) || entityIn.tickCount % 20 != 0)
             return;
 
         int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
@@ -87,7 +87,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
+        if (!isBroken(stack) && NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
                 && player.getFoodData().needsFood())
             return super.use(world, player, hand);
 

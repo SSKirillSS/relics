@@ -62,19 +62,24 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
         public static void onEntityHurt(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
             PlayerEntity player = null;
-            float multiplier = 1.0F;
+            float value = 1.0F;
 
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 player = (PlayerEntity) event.getEntityLiving();
-                multiplier = config.incomingDamageMultiplier;
+                value = config.incomingDamageMultiplier;
             } else if (event.getSource().getEntity() instanceof PlayerEntity) {
                 player = (PlayerEntity) event.getSource().getEntity();
-                multiplier = config.dealtDamageMultiplier;
+                value = config.dealtDamageMultiplier;
             }
 
-            if (player != null && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(), player).isPresent()
-                    && player.isInWater())
-                event.setAmount(event.getAmount() * multiplier);
+            if (player != null && player.isInWater()) {
+                float multiplier = value;
+
+                CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(), player).ifPresent(triple -> {
+                    if (!isBroken(triple.getRight()))
+                        event.setAmount(event.getAmount() * multiplier);
+                });
+            }
         }
     }
 

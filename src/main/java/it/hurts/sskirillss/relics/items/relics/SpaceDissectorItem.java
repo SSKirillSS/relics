@@ -65,7 +65,7 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
-        if (playerIn.getCooldowns().isOnCooldown(stack.getItem()))
+        if (isBroken(stack) || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
             return ActionResult.fail(stack);
 
         if (!NBTUtils.getBoolean(stack, TAG_IS_THROWN, false)) {
@@ -124,7 +124,7 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (!NBTUtils.getBoolean(stack, TAG_IS_THROWN, false) || entityIn.tickCount % 20 != 0)
+        if (isBroken(stack) || !NBTUtils.getBoolean(stack, TAG_IS_THROWN, false) || entityIn.tickCount % 20 != 0)
             return;
 
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);

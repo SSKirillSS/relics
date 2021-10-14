@@ -1,10 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -66,9 +66,14 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
 
             TameableEntity pet = (TameableEntity) entity;
 
-            if (pet.getOwner() instanceof PlayerEntity && CuriosApi.getCuriosHelper()
-                    .findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), pet.getOwner()).isPresent())
-                event.setAmount(event.getAmount() * config.petDamageMultiplier);
+            if (pet.getOwner() instanceof PlayerEntity)
+                CuriosApi.getCuriosHelper()
+                        .findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), pet.getOwner()).ifPresent(triple -> {
+                    if (isBroken(triple.getRight()))
+                        return;
+
+                    event.setAmount(event.getAmount() * config.petDamageMultiplier);
+                });
         }
     }
 

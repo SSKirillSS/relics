@@ -85,7 +85,7 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity))
+        if (!(livingEntity instanceof PlayerEntity) || isBroken(stack))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
@@ -232,22 +232,24 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
         public static void onEntityHurt(LivingHurtEvent event) {
             DamageSource source = event.getSource();
 
-            if (source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE
-                    && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BLAZING_FLASK.get(),
-                    event.getEntityLiving()).isPresent())
-
-                event.setCanceled(true);
+            if (source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE)
+                CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BLAZING_FLASK.get(),
+                        event.getEntityLiving()).ifPresent(triple -> {
+                    if (!isBroken(triple.getRight()))
+                        event.setCanceled(true);
+                });
         }
 
         @SubscribeEvent
         public static void onEntityAttack(LivingAttackEvent event) {
             DamageSource source = event.getSource();
 
-            if (source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE
-                    && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BLAZING_FLASK.get(),
-                    event.getEntityLiving()).isPresent())
-
-                event.setCanceled(true);
+            if (source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE)
+                CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BLAZING_FLASK.get(),
+                        event.getEntityLiving()).ifPresent(triple -> {
+                    if (!isBroken(triple.getRight()))
+                        event.setCanceled(true);
+                });
         }
     }
 

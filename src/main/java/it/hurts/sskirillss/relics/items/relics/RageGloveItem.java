@@ -57,7 +57,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
         int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (livingEntity.tickCount % 20 != 0 || stacks <= 0)
+        if (isBroken(stack) || livingEntity.tickCount % 20 != 0 || stacks <= 0)
             return;
 
         if (time > 0)
@@ -78,6 +78,10 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
 
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), (LivingEntity) source).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
+
+                if (isBroken(stack))
+                    return;
+
                 int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
 
                 NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, ++stacks);
@@ -88,6 +92,10 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
 
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), event.getEntityLiving()).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
+
+                if (isBroken(stack))
+                    return;
+
                 int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
 
                 if (stacks <= 0)

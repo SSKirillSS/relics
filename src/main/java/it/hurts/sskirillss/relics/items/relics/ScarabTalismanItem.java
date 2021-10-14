@@ -74,6 +74,9 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         World world = livingEntity.getCommandSenderWorld();
 
+        if (isBroken(stack))
+            return;
+
         if (config.allowedBiomes.stream().map(Biome.Category::byName).collect(Collectors.toList())
                 .contains(world.getBiome(livingEntity.blockPosition()).getBiomeCategory()))
             EntityUtils.applyAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
@@ -97,33 +100,46 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
         public static void onEntityHurt(LivingHurtEvent event) {
             LivingEntity entity = event.getEntityLiving();
 
-            if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(),
-                    entity).isPresent() && event.getSource() == DamageSource.IN_WALL) {
+            if (event.getSource() != DamageSource.IN_WALL)
+                return;
+
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), entity).ifPresent(triple -> {
+                if (isBroken(triple.getRight()))
+                    return;
+
                 entity.heal(event.getAmount());
 
                 event.setCanceled(true);
-            }
+            });
         }
 
         @SubscribeEvent
         public static void onEntityAttack(LivingAttackEvent event) {
             LivingEntity entity = event.getEntityLiving();
 
-            if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(),
-                    entity).isPresent() && event.getSource() == DamageSource.IN_WALL) {
+            if (event.getSource() != DamageSource.IN_WALL)
+                return;
+
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), entity).ifPresent(triple -> {
+                if (isBroken(triple.getRight()))
+                    return;
+
                 entity.heal(event.getAmount());
 
                 event.setCanceled(true);
-            }
+            });
         }
 
         @SubscribeEvent
         public static void onBlockBreakCalculate(PlayerEvent.BreakSpeed event) {
             Stats config = INSTANCE.config;
 
-            if (CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(),
-                    event.getEntityLiving()).isPresent())
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), event.getEntityLiving()).ifPresent(triple -> {
+                if (isBroken(triple.getRight()))
+                    return;
+
                 event.setNewSpeed(event.getNewSpeed() * config.digModifier);
+            });
         }
     }
 

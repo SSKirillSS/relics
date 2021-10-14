@@ -79,7 +79,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity))
+        if (!(livingEntity instanceof PlayerEntity) || isBroken(stack))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
@@ -110,7 +110,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
     }
 
     private void delay(LivingEntity entity, ItemStack stack) {
-        if (!(entity instanceof PlayerEntity))
+        if (!(entity instanceof PlayerEntity) || isBroken(stack))
             return;
 
         NBTUtils.setInt(stack, TAG_UPDATE_TIME, -1);
@@ -163,7 +163,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), player).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
 
-                if (player.getCooldowns().isOnCooldown(stack.getItem()))
+                if (isBroken(stack) || player.getCooldowns().isOnCooldown(stack.getItem()))
                     return;
 
                 Entity source = event.getSource().getEntity();
@@ -187,7 +187,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), event.getEntityLiving()).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
 
-                if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
+                if (isBroken(stack) || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
                     return;
 
                 NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
@@ -204,7 +204,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), event.getEntityLiving()).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
 
-                if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
+                if (isBroken(stack) || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
                     return;
 
                 NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)

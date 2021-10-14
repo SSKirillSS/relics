@@ -47,12 +47,12 @@ public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> impl
 
     @Override
     public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return livingEntity.getRandom().nextFloat() <= config.lootingChance ? config.additionalLooting : 0;
+        return !isBroken(curio) && livingEntity.getRandom().nextFloat() <= config.lootingChance ? config.additionalLooting : 0;
     }
 
     @Override
     public int getFortuneBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return livingEntity.getRandom().nextFloat() <= config.fortuneChance ? config.additionalFortune : 0;
+        return !isBroken(curio) && livingEntity.getRandom().nextFloat() <= config.fortuneChance ? config.additionalFortune : 0;
     }
 
     public static class Stats extends RelicStats {

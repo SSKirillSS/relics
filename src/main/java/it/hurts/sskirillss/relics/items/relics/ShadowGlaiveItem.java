@@ -74,7 +74,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
-        if (entityIn.tickCount % 20 != 0 || charges >= config.maxCharges)
+        if (isBroken(stack) || entityIn.tickCount % 20 != 0 || charges >= config.maxCharges)
             return;
 
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
@@ -91,7 +91,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
         ItemStack stack = playerIn.getItemInHand(handIn);
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
-        if (charges <= 0 || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
+        if (isBroken(stack) || charges <= 0 || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
             return ActionResult.fail(stack);
 
         ShadowGlaiveEntity glaive = new ShadowGlaiveEntity(worldIn, playerIn);

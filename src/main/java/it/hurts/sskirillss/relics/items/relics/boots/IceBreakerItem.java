@@ -21,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
@@ -74,17 +73,19 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> result = super.getAttributeModifiers(slotContext, uuid, stack);
 
-        result.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, Reference.MODID + ":" + "ice_breaker_movement_speed",
-                config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
-        result.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, Reference.MODID + ":" + "ice_breaker_knockback_resistance",
-                config.knockbackResistanceModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        if (!RelicItem.isBroken(stack)) {
+            result.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, Reference.MODID + ":" + "ice_breaker_movement_speed",
+                    config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            result.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, Reference.MODID + ":" + "ice_breaker_knockback_resistance",
+                    config.knockbackResistanceModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        }
 
         return result;
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity))
+        if (!(livingEntity instanceof PlayerEntity) || isBroken(stack))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
@@ -96,8 +97,6 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
         player.setDeltaMovement(motion.x(), motion.y() * config.fallMotionMultiplier, motion.z());
         player.getCommandSenderWorld().addParticle(ParticleTypes.SMOKE, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
     }
-
-    private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/ice_breaker.png");
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class IceBreakerServerEvents {
@@ -113,7 +112,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ICE_BREAKER.get(), player).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
 
-                if (player.getCooldowns().isOnCooldown(stack.getItem()))
+                if (player.getCooldowns().isOnCooldown(stack.getItem()) || isBroken(stack))
                     return;
 
                 float distance = event.getDistance();

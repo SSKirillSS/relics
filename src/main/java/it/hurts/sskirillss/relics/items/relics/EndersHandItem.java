@@ -77,35 +77,36 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
         PlayerEntity player = (PlayerEntity) livingEntity;
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (!player.getCooldowns().isOnCooldown(stack.getItem())) {
-            if (player.isShiftKeyDown()) {
-                Predicate<Entity> predicate = (entity) -> !entity.isSpectator() && entity.isPickable();
-                EntityRayTraceResult result = EntityUtils.rayTraceEntity(player, predicate, config.maxDistance);
+        if (player.getCooldowns().isOnCooldown(stack.getItem()) || isBroken(stack))
+            return;
 
-                if (result != null && result.getEntity() instanceof EndermanEntity) {
-                    if (time >= config.preparationTime * 20) {
-                        Vector3d swapVec = player.position();
-                        EndermanEntity enderman = (EndermanEntity) result.getEntity();
-                        World world = player.getCommandSenderWorld();
+        if (player.isShiftKeyDown()) {
+            Predicate<Entity> predicate = (entity) -> !entity.isSpectator() && entity.isPickable();
+            EntityRayTraceResult result = EntityUtils.rayTraceEntity(player, predicate, config.maxDistance);
 
-                        player.teleportTo(enderman.getX(), enderman.getY(), enderman.getZ());
-                        world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                                SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            if (result != null && result.getEntity() instanceof EndermanEntity) {
+                if (time >= config.preparationTime * 20) {
+                    Vector3d swapVec = player.position();
+                    EndermanEntity enderman = (EndermanEntity) result.getEntity();
+                    World world = player.getCommandSenderWorld();
 
-                        enderman.teleportTo(swapVec.x(), swapVec.y(), swapVec.z());
-                        world.playSound(null, swapVec.x(), swapVec.y(), swapVec.z(),
-                                SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    player.teleportTo(enderman.getX(), enderman.getY(), enderman.getZ());
+                    world.playSound(null, player.getX(), player.getY(), player.getZ(),
+                            SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
-                        NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
+                    enderman.teleportTo(swapVec.x(), swapVec.y(), swapVec.z());
+                    world.playSound(null, swapVec.x(), swapVec.y(), swapVec.z(),
+                            SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
-                        player.getCooldowns().addCooldown(stack.getItem(), config.cooldown * 20);
-                    } else
-                        NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
-                } else if (time > 0)
-                    NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
+                    NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
+
+                    player.getCooldowns().addCooldown(stack.getItem(), config.cooldown * 20);
+                } else
+                    NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
             } else if (time > 0)
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
-        }
+        } else if (time > 0)
+            NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
     }
 
     @Override
@@ -122,14 +123,12 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
     public static class EndersHandClientEvents {
         @SubscribeEvent
         public static void onFOVUpdate(FOVUpdateEvent event) {
-            if (!CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ENDERS_HAND.get(), event.getEntity()).isPresent())
-                return;
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ENDERS_HAND.get(), event.getEntity()).ifPresent(triple -> {
+                int time = NBTUtils.getInt(triple.getRight(), TAG_UPDATE_TIME, 0);
 
-            int time = NBTUtils.getInt(CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ENDERS_HAND.get(),
-                    event.getEntity()).get().getRight(), TAG_UPDATE_TIME, 0);
-
-            if (time > 0)
-                event.setNewfov(event.getNewfov() - time / 32.0F);
+                if (time > 0 && !isBroken(triple.getRight()))
+                    event.setNewfov(event.getNewfov() - time / 32.0F);
+            });
         }
     }
 

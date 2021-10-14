@@ -50,9 +50,8 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         World world = livingEntity.getCommandSenderWorld();
 
-        if (world.isClientSide() || livingEntity.tickCount % 20 != 0) {
+        if (world.isClientSide() || isBroken(stack) || livingEntity.tickCount % 20 != 0)
             return;
-        }
 
         ModifiableAttributeInstance attribSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         AttributeModifier speedModifier = new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),

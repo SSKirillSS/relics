@@ -1,10 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -63,35 +63,38 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> im
 
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-            if (!CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CHORUS_INHIBITOR.get(), player).isPresent())
-                return;
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CHORUS_INHIBITOR.get(), player).ifPresent(triple -> {
 
-            World world = player.getCommandSenderWorld();
-            Vector3d view = player.getViewVector(0);
-            Vector3d eyeVec = player.getEyePosition(0);
-            BlockRayTraceResult ray = world.clip(new RayTraceContext(eyeVec, eyeVec.add(view.x * config.maxDistance, view.y * config.maxDistance,
-                    view.z * config.maxDistance), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
-            BlockPos pos = ray.getBlockPos();
+                if (isBroken(triple.getRight()))
+                    return;
 
-            if (!world.getBlockState(pos).getMaterial().isSolid())
-                return;
+                World world = player.getCommandSenderWorld();
+                Vector3d view = player.getViewVector(0);
+                Vector3d eyeVec = player.getEyePosition(0);
+                BlockRayTraceResult ray = world.clip(new RayTraceContext(eyeVec, eyeVec.add(view.x * config.maxDistance, view.y * config.maxDistance,
+                        view.z * config.maxDistance), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
+                BlockPos pos = ray.getBlockPos();
 
-            pos = pos.above();
+                if (!world.getBlockState(pos).getMaterial().isSolid())
+                    return;
 
-            for (int i = 0; i < config.safeChecks; i++) {
-                if (world.getBlockState(pos).getMaterial().blocksMotion() || world.getBlockState(pos.above()).getMaterial().blocksMotion()) {
-                    pos = pos.above();
+                pos = pos.above();
 
-                    continue;
+                for (int i = 0; i < config.safeChecks; i++) {
+                    if (world.getBlockState(pos).getMaterial().blocksMotion() || world.getBlockState(pos.above()).getMaterial().blocksMotion()) {
+                        pos = pos.above();
+
+                        continue;
+                    }
+
+                    event.setCanceled(true);
+
+                    player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
+                    world.playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+                    break;
                 }
-
-                event.setCanceled(true);
-
-                player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
-                world.playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-                break;
-            }
+            });
         }
     }
 

@@ -96,8 +96,9 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> result = super.getAttributeModifiers(slotContext, uuid, stack);
 
-        result.put(ForgeMod.SWIM_SPEED.get(), new AttributeModifier(uuid, Reference.MODID + ":" + "ice_breaker_movement_speed",
-                config.swimSpeedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        if (!isBroken(stack))
+            result.put(ForgeMod.SWIM_SPEED.get(), new AttributeModifier(uuid, Reference.MODID + ":" + "ice_breaker_movement_speed",
+                    config.swimSpeedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         return result;
     }
@@ -114,17 +115,29 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
             Stats config = INSTANCE.config;
             LivingEntity entity = event.getEntityLiving();
 
-            if (entity.isInWater() && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.JELLYFISH_NECKLACE.get(), entity).isPresent())
+            if (!entity.isInWater())
+                return;
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.JELLYFISH_NECKLACE.get(), entity).ifPresent(triple -> {
+                if (isBroken(triple.getRight()))
+                    return;
+
                 event.setAmount(event.getAmount() * config.healMultiplier);
+            });
         }
 
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
 
-            if (event.getSource() == DamageSource.MAGIC && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.JELLYFISH_NECKLACE.get(),
-                    event.getEntityLiving()).isPresent())
+            if (event.getSource() != DamageSource.MAGIC)
+                return;
+
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.JELLYFISH_NECKLACE.get(), event.getEntityLiving()).ifPresent(triple -> {
+                if (isBroken(triple.getRight()))
+                    return;
+
                 event.setAmount(event.getAmount() * config.magicResistance);
+            });
         }
     }
 

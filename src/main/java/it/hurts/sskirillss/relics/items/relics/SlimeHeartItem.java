@@ -90,7 +90,7 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
     public ActionResultType interactLivingEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) {
         World world = player.getCommandSenderWorld();
 
-        if (!(entity instanceof SlimeEntity) || !player.isShiftKeyDown())
+        if (isBroken(stack) || !(entity instanceof SlimeEntity) || !player.isShiftKeyDown())
             return ActionResultType.FAIL;
 
         SlimeEntity slime = (SlimeEntity) entity;
@@ -125,7 +125,7 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
                 ItemStack stack = triple.getRight();
                 int amount = NBTUtils.getInt(stack, TAG_SLIME_AMOUNT, 0);
 
-                if (event.getDistance() < 2 || entity.isShiftKeyDown() || amount <= 0)
+                if (isBroken(stack) || event.getDistance() < 2 || entity.isShiftKeyDown() || amount <= 0)
                     return;
 
                 entity.fallDistance = 0.0F;

@@ -58,6 +58,9 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
         BlockPos pos = livingEntity.blockPosition();
         BlockState state = world.getBlockState(pos.below());
 
+        if (isBroken(stack))
+            return;
+
         if (state == Fluids.LAVA.getSource().defaultFluidState().createLegacyBlock()) {
             world.setBlockAndUpdate(pos.below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState());
             world.addParticle(ParticleTypes.LAVA, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, 1, 1, 1);
@@ -74,16 +77,26 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
 
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
-            if (event.getSource() == DamageSource.HOT_FLOOR && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MAGMA_WALKER.get(),
-                    event.getEntityLiving()).isPresent())
-                event.setCanceled(true);
+            if (event.getSource() != DamageSource.HOT_FLOOR)
+                return;
+
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MAGMA_WALKER.get(),
+                    event.getEntityLiving()).ifPresent(triple -> {
+                if (!isBroken(triple.getRight()))
+                    event.setCanceled(true);
+            });
         }
 
         @SubscribeEvent
         public static void onLivingAttack(LivingAttackEvent event) {
-            if (event.getSource() == DamageSource.HOT_FLOOR && CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MAGMA_WALKER.get(),
-                    event.getEntityLiving()).isPresent())
-                event.setCanceled(true);
+            if (event.getSource() != DamageSource.HOT_FLOOR)
+                return;
+
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MAGMA_WALKER.get(),
+                    event.getEntityLiving()).ifPresent(triple -> {
+                if (!isBroken(triple.getRight()))
+                    event.setCanceled(true);
+            });
         }
     }
 }

@@ -78,7 +78,7 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
         World world = livingEntity.getCommandSenderWorld();
         BlockPos pos = WorldUtils.getSolidBlockUnderFeet(world, livingEntity.blockPosition());
 
-        if (pos == null)
+        if (pos == null || isBroken(stack))
             return;
 
         if (world.getBlockState(pos).is(BlockTags.ICE)) {
@@ -127,7 +127,8 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), player).ifPresent(triple -> {
-                if (event.getSource() == DamageSource.FALL && player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).is(BlockTags.ICE))
+                if (!isBroken(triple.getRight()) && event.getSource() == DamageSource.FALL
+                        && player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).is(BlockTags.ICE))
                     event.setAmount(event.getAmount() * config.fallingDamageMultiplier);
             });
         }

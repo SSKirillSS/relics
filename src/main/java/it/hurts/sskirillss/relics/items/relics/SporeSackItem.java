@@ -75,24 +75,28 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> implements ICu
             if (world.isClientSide())
                 return;
 
-            if (!CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SPORE_SACK.get(), player).isPresent()
-                    || player.getCooldowns().isOnCooldown(ItemRegistry.SPORE_SACK.get())
+            if (player.getCooldowns().isOnCooldown(ItemRegistry.SPORE_SACK.get())
                     || world.getRandom().nextFloat() > config.chance)
                 return;
 
-            ((ServerWorld) world).sendParticles(new RedstoneParticleData(0, 255, 0, 1),
-                    projectile.getX(), projectile.getY(), projectile.getZ(), 100, 1, 1, 1, 0.5);
-            world.playSound(null, projectile.blockPosition(), SoundEvents.FIRE_EXTINGUISH,
-                    SoundCategory.PLAYERS, 1.0F, 0.5F);
-            player.getCooldowns().addCooldown(ItemRegistry.SPORE_SACK.get(), config.cooldown * 20);
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SPORE_SACK.get(), player).ifPresent(triple -> {
+                if (isBroken(triple.getRight()))
+                    return;
 
-            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(config.radius))) {
-                if (entity == player)
-                    continue;
+                ((ServerWorld) world).sendParticles(new RedstoneParticleData(0, 255, 0, 1),
+                        projectile.getX(), projectile.getY(), projectile.getZ(), 100, 1, 1, 1, 0.5);
+                world.playSound(null, projectile.blockPosition(), SoundEvents.FIRE_EXTINGUISH,
+                        SoundCategory.PLAYERS, 1.0F, 0.5F);
+                player.getCooldowns().addCooldown(ItemRegistry.SPORE_SACK.get(), config.cooldown * 20);
 
-                entity.addEffect(new EffectInstance(Effects.POISON, config.poisonDuration * 20, config.poisonAmplifier));
-                entity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, config.slownessDuration * 20, config.slownessAmplifier));
-            }
+                for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(config.radius))) {
+                    if (entity == player)
+                        continue;
+
+                    entity.addEffect(new EffectInstance(Effects.POISON, config.poisonDuration * 20, config.poisonAmplifier));
+                    entity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, config.slownessDuration * 20, config.slownessAmplifier));
+                }
+            });
         }
     }
 

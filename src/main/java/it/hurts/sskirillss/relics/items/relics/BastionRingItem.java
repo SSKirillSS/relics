@@ -58,7 +58,7 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         World world = livingEntity.getCommandSenderWorld();
 
-        if (world.isClientSide() || world.dimension() != World.NETHER)
+        if (world.isClientSide() || world.dimension() != World.NETHER || isBroken(stack))
             return;
 
         PiglinEntity piglin = world.getNearestLoadedEntity(PiglinEntity.class, EntityPredicate.DEFAULT, livingEntity,

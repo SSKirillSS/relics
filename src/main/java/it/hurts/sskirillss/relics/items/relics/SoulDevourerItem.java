@@ -60,12 +60,13 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
     @Override
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
+
         tooltip.add(new TranslationTextComponent("tooltip.relics.soul_devourer.tooltip_1", NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0)));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity))
+        if (isBroken(stack) || !(livingEntity instanceof PlayerEntity))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
@@ -100,7 +101,7 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
                 int soul = NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0);
                 int capacity = config.soulCapacity;
 
-                if (player.getCooldowns().isOnCooldown(stack.getItem()) || soul >= capacity)
+                if (isBroken(stack) || player.getCooldowns().isOnCooldown(stack.getItem()) || soul >= capacity)
                     return;
 
                 NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, Math.min(soul + (int) (target.getMaxHealth()
@@ -121,7 +122,7 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SOUL_DEVOURER.get(), player).ifPresent(triple -> {
                 int soul = NBTUtils.getInt(triple.getRight(), TAG_SOUL_AMOUNT, 0);
 
-                if (soul > 0)
+                if (isBroken(triple.getRight()) || soul > 0)
                     event.setAmount(event.getAmount() + (event.getAmount() * (soul * config.damageMultiplierPerSoul)));
             });
         }

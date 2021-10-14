@@ -46,8 +46,9 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> implements ICurioI
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> result = super.getAttributeModifiers(slotContext, uuid, stack);
 
-        result.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, Reference.MODID + ":" + "old_boot_movement_speed",
-                config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        if (!isBroken(stack))
+            result.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, Reference.MODID + ":" + "old_boot_movement_speed",
+                    config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         return result;
     }

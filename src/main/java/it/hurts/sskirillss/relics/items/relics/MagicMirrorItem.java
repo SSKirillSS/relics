@@ -1,10 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketItemActivation;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -54,7 +54,7 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
         if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get())
-                || worldIn.isClientSide())
+                || isBroken(stack) || worldIn.isClientSide())
             return ActionResult.fail(stack);
 
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;

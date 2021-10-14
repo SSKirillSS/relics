@@ -55,7 +55,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity))
+        if (!(livingEntity instanceof PlayerEntity) || isBroken(stack))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;

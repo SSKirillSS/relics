@@ -72,7 +72,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity.tickCount % 20 != 0)
+        if (isBroken(stack) || livingEntity.tickCount % 20 != 0)
             return;
 
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
@@ -126,8 +126,12 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
                 return;
 
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), event.getEntityLiving()).ifPresent(triple -> {
-                PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 ItemStack stack = triple.getRight();
+
+                if (isBroken(stack))
+                    return;
+
+                PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
 
                 if (charges <= 0 || !(event.getSource().getEntity() instanceof LivingEntity))
@@ -149,6 +153,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
                     player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
                             SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 0.5F, 1.0F);
                 }
+
                 NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, charges - 1);
 
                 attacker.hurt(DamageSource.playerAttack(player), event.getAmount() * config.reflectedDamageMultiplier);
@@ -173,7 +178,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), player).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
 
-                if (NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) <= 0)
+                if (isBroken(stack) || NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) <= 0)
                     return;
 
                 undefinedProjectile.setDeltaMovement(undefinedProjectile.getDeltaMovement().reverse());
