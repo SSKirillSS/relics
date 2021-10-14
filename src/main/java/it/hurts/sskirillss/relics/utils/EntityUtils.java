@@ -16,9 +16,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class EntityUtils {
-    public static void moveTowardsPosition(Entity entity, Vector3d targetPos, float speed) {
-        Vector3d motion = targetPos.subtract(entity.position());
-        motion = motion.normalize().scale(speed);
+    public static void moveTowardsPosition(Entity entity, Vector3d targetPos, double speed) {
+        Vector3d motion = targetPos.subtract(entity.position()).normalize().scale(speed);
+
         entity.setDeltaMovement(motion.x, motion.y, motion.z);
     }
 

@@ -120,10 +120,10 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
         public int maxCharges = 8;
         public int chargeRegenerationTime = 10;
         public int damage = 5;
-        public int throwCooldown = 10;
+        public int throwCooldown = 5;
         public float bounceChanceMultiplier = 0.015F;
         public int bounceRadius = 7;
-        public float projectileSpeed = 0.45F;
+        public float projectileSpeed = 0.75F;
         public int maxBounces = 10;
     }
 }

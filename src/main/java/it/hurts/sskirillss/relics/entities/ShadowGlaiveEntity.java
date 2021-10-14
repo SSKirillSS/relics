@@ -15,10 +15,9 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -31,13 +30,11 @@ import java.util.stream.Collectors;
 
 public class ShadowGlaiveEntity extends ThrowableEntity {
     private static final DataParameter<Integer> BOUNCES = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.INT);
-    private static final DataParameter<Float> DAMAGE = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.FLOAT);
     private static final DataParameter<String> OWNER = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> TARGET = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.STRING);
     private static final DataParameter<String> BOUNCED_ENTITIES = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.STRING);
 
     private static final String TAG_BOUNCES_AMOUNT = "bounces";
-    private static final String TAG_DAMAGE_AMOUNT = "damage";
     private static final String TAG_OWNER_UUID = "owner";
     private static final String TAG_TARGET_UUID = "target";
     private static final String TAG_BOUNCED_ENTITIES = "entities";
@@ -84,6 +81,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
 
         entitiesAround = entitiesAround.stream()
                 .filter(entity -> !bouncedEntities.contains(entity.getUUID().toString()))
+                .filter(EntityPredicates.NO_CREATIVE_OR_SPECTATOR)
                 .filter(entity -> entity != owner)
                 .sorted(Comparator.comparing(entity -> entity.position().distanceTo(this.position())))
                 .collect(Collectors.toList());
@@ -140,35 +138,12 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
             return;
         }
 
-        if (target.isAlive())
-            EntityUtils.moveTowardsPosition(this, new Vector3d(target.getX() + target.getBbWidth() * 0.5F,
-                    target.getY() + target.getBbHeight() * 0.5F, target.getZ() + target.getBbWidth() * 0.5F), config.projectileSpeed);
-        else
-            this.locateNearestTarget();
-    }
+        if (target.isAlive()) {
+            EntityUtils.moveTowardsPosition(this, target.position()
+                    .add(0D, target.getBbHeight() * 0.5D, 0D), config.projectileSpeed);
 
-    @Override
-    protected void onHit(@Nonnull RayTraceResult rayTraceResult) {
-        if (level.isClientSide())
-            return;
-
-        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getConfig();
-
-        switch (rayTraceResult.getType()) {
-            case BLOCK: {
-                if (level.getBlockState(((BlockRayTraceResult) rayTraceResult).getBlockPos()).getMaterial().blocksMotion())
-                    this.remove();
-
-                break;
-            }
-            case ENTITY: {
-                EntityRayTraceResult entityRayTraceResult = (EntityRayTraceResult) rayTraceResult;
-
-                if (!(entityRayTraceResult.getEntity() instanceof LivingEntity))
-                    return;
-
-                LivingEntity entity = (LivingEntity) entityRayTraceResult.getEntity();
-
+            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class,
+                    this.getBoundingBox().inflate(0.25D, 3D, 0.25D))) {
                 if (entity == owner)
                     return;
 
@@ -180,20 +155,31 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
 
+                entity.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC, config.damage);
+
                 if (!bouncedEntities.contains(entity.getUUID().toString())) {
-                    entity.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC, config.damage);
-
                     entityData.set(BOUNCED_ENTITIES, bouncedEntitiesString + "," + entity.getUUID());
-                }
 
-                entityData.set(BOUNCES, bounces + 1);
-                isBounced = true;
+                    entityData.set(BOUNCES, bounces + 1);
+                    isBounced = true;
+                }
 
                 this.locateNearestTarget();
 
                 break;
             }
-        }
+        } else
+            this.locateNearestTarget();
+    }
+
+    @Override
+    protected void onHit(@Nonnull RayTraceResult rayTraceResult) {
+        if (level.isClientSide())
+            return;
+
+        if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK
+                && level.getBlockState(((BlockRayTraceResult) rayTraceResult).getBlockPos()).getMaterial().blocksMotion())
+            this.remove();
     }
 
     @Override
