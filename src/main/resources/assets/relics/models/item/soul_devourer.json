@@ -2,6 +2,9 @@
   "parent": "item/generated",
     "textures": {
         "layer0": "relics:items/soul_devourer"
-    }
+    },
+    "overrides": [
+        { "predicate": { "relics:broken": 1 }, "model": "relics:item/soul_devourer_broken" }
+    ]
 }
 

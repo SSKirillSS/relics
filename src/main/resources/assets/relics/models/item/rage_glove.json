@@ -2,6 +2,9 @@
   "parent": "item/generated",
     "textures": {
         "layer0": "relics:items/rage_glove"
-    }
+    },
+    "overrides": [
+        { "predicate": { "relics:broken": 1 }, "model": "relics:item/rage_glove_broken" }
+    ]
 }
 

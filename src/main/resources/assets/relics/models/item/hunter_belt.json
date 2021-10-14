@@ -2,6 +2,9 @@
   "parent": "item/generated",
     "textures": {
         "layer0": "relics:items/hunter_belt"
-    }
+    },
+    "overrides": [
+        { "predicate": { "relics:broken": 1 }, "model": "relics:item/hunter_belt_broken" }
+    ]
 }
 

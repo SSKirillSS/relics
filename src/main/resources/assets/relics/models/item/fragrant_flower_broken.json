@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+    "textures": {
+        "layer0": "relics:items/fragrant_flower_broken"
+    }
+}
+

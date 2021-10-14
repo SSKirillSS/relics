@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:animations/rn_shield"
+        "layer0": "relics:items/amphibian_boot_broken"
     }
 }
 

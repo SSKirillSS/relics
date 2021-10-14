@@ -2,6 +2,9 @@
   "parent": "item/generated",
     "textures": {
         "layer0": "relics:items/lucky_horseshoe"
-    }
+    },
+    "overrides": [
+        { "predicate": { "relics:broken": 1 }, "model": "relics:item/lucky_horseshoe_broken" }
+    ]
 }
 

@@ -2,6 +2,9 @@
   "parent": "item/generated",
     "textures": {
         "layer0": "relics:items/spider_necklace"
-    }
+    },
+    "overrides": [
+        { "predicate": { "relics:broken": 1 }, "model": "relics:item/spider_necklace_broken" }
+    ]
 }
 
