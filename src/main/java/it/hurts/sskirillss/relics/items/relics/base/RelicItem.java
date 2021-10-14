@@ -10,10 +10,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
@@ -60,12 +59,6 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (entityIn instanceof PlayerEntity && !isBroken(stack))
-            super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (worldIn == null)
             return;
@@ -76,7 +69,12 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     @Override
-    public boolean canEquip(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
+    public boolean canEquip(String identifier, LivingEntity livingEntity, ItemStack stack) {
+        return !isBroken(stack);
+    }
+
+    @Override
+    public boolean canRender(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         return !isBroken(stack);
     }
 
