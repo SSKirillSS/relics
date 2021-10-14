@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.boots;
 
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -13,9 +12,6 @@ import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -35,7 +31,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.UUID;
@@ -48,6 +43,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
+                .model(new IceBreakerModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.COLD)
                         .chance(0.2F)
@@ -87,11 +83,6 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
     }
 
     @Override
-    public boolean showAttributesTooltip(String identifier, ItemStack stack) {
-        return false;
-    }
-
-    @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (!(livingEntity instanceof PlayerEntity))
             return;
@@ -107,27 +98,6 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
     }
 
     private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/ice_breaker.png");
-
-    @Override
-    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
-        IceBreakerModel model = new IceBreakerModel();
-
-        matrixStack.pushPose();
-
-        matrixStack.scale(1.025F, 1.025F, 1.025F);
-        model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
-        ICurio.RenderHelper.followBodyRotations(livingEntity, model);
-        model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(TEXTURE)),
-                light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-        matrixStack.popPose();
-    }
-
-    @Override
-    public boolean canRender(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        return true;
-    }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class IceBreakerServerEvents {

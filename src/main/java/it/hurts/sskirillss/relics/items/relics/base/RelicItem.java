@@ -1,24 +1,32 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.handlers.TooltipHandler;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import javax.annotation.Nullable;
@@ -56,6 +64,30 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         }
 
         return super.onEntityItemUpdate(stack, entity);
+    }
+
+    @Override
+    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
+        BipedModel<LivingEntity> model = getData().getModel();
+
+        if (model == null)
+            return;
+
+        matrixStack.pushPose();
+
+        model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
+        ICurio.RenderHelper.followBodyRotations(livingEntity, model);
+        model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(new ResourceLocation(
+                Reference.MODID, "textures/items/models/" + this.getRegistryName().getPath() + ".png"))),
+                light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        matrixStack.popPose();
+    }
+
+    @Override
+    public boolean showAttributesTooltip(String identifier, ItemStack stack) {
+        return false;
     }
 
     @Override

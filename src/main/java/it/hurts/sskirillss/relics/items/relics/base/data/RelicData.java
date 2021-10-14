@@ -3,6 +3,8 @@ package it.hurts.sskirillss.relics.items.relics.base.data;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import lombok.*;
 import lombok.experimental.Accessors;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 
@@ -31,6 +33,11 @@ public class RelicData {
     @Setter
     @Builder.Default
     private RelicDurability durability = new RelicDurability(100);
+
+    @Getter
+    @Setter
+    @Builder.Default
+    private BipedModel<LivingEntity> model = null;
 
     @Getter
     @Setter

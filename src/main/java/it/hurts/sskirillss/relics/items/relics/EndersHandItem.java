@@ -1,11 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.EndersHandModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -13,9 +12,6 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -26,7 +22,6 @@ import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -37,7 +32,6 @@ import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.function.Predicate;
@@ -49,6 +43,7 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
+                .model(new EndersHandModel())
                 .loot(RelicLoot.builder()
                         .table(LootTables.END_CITY_TREASURE.toString())
                         .chance(0.1F)
@@ -121,28 +116,6 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
         player.openMenu(new SimpleNamedContainerProvider((windowId, playerInv, playerEntity) ->
                 ChestContainer.threeRows(windowId, playerInv, playerEntity.getEnderChestInventory()), stack.getDisplayName()));
         player.playSound(SoundEvents.ENDER_CHEST_OPEN, 1F, 1F);
-    }
-
-    private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/enders_hand.png");
-
-    @Override
-    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
-        EndersHandModel model = new EndersHandModel();
-
-        matrixStack.pushPose();
-
-        model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
-        ICurio.RenderHelper.followBodyRotations(livingEntity, model);
-        model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(TEXTURE)),
-                light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-        matrixStack.popPose();
-    }
-
-    @Override
-    public boolean canRender(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        return true;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)

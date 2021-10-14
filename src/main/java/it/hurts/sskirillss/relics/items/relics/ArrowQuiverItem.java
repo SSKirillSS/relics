@@ -57,6 +57,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
                 .config(Stats.class)
+                .model(new ArrowQuiverModel())
                 .loot(RelicLoot.builder()
                         .table(LootTables.VILLAGE_FLETCHER.toString())
                         .chance(0.25F)
@@ -140,28 +141,6 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
 
         NBTUtils.setBoolean(stack, TAG_CHARGED, !NBTUtils.getBoolean(stack, TAG_CHARGED, false));
         NBTUtils.setString(stack, TAG_ARROW, "");
-    }
-
-    private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/arrow_quiver.png");
-
-    @Override
-    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
-        ArrowQuiverModel model = new ArrowQuiverModel();
-
-        matrixStack.pushPose();
-
-        model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
-        ICurio.RenderHelper.followBodyRotations(livingEntity, model);
-        model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(TEXTURE)),
-                light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-        matrixStack.popPose();
-    }
-
-    @Override
-    public boolean canRender(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        return true;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

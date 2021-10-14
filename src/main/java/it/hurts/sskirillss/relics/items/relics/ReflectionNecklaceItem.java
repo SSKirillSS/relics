@@ -1,11 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.ReflectionNecklaceModel;
 import it.hurts.sskirillss.relics.items.relics.renderer.ReflectionNecklaceShieldModel;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
@@ -38,7 +38,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Stats> implements ICurioItem {
@@ -51,6 +50,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
         super(RelicData.builder()
                 .rarity(Rarity.EPIC)
                 .config(Stats.class)
+                .model(new ReflectionNecklaceModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.NETHER)
                         .chance(0.1F)
@@ -93,7 +93,6 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
     }
 
     private final ResourceLocation SHIELD_TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/reflection_necklace_shield.png");
-    private final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/reflection_necklace.png");
 
     @Override
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing,
@@ -115,22 +114,6 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
                 matrixStack.popPose();
             }
-        ReflectionNecklaceModel model = new ReflectionNecklaceModel();
-
-        matrixStack.pushPose();
-
-        model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
-        ICurio.RenderHelper.followBodyRotations(livingEntity, model);
-        model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(TEXTURE)),
-                light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-        matrixStack.popPose();
-    }
-
-    @Override
-    public boolean canRender(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        return true;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
