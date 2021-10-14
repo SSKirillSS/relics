@@ -4,7 +4,7 @@
         "layer0": "relics:items/slime_heart_0"
     },
     "overrides": [
-        { "predicate": { "relics:broken": 1 }, "model": "relics:item/slime_heart_broken" }
+        { "predicate": { "relics:broken": 1 }, "model": "relics:item/slime_heart_broken" },
         { "predicate": { "relics:mode": 0 }, "model": "relics:item/slime_heart_0" },
         { "predicate": { "relics:mode": 1 }, "model": "relics:item/slime_heart_1" }
     ]
