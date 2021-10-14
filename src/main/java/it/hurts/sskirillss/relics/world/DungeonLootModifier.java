@@ -9,7 +9,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.CompatibilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.conditions.ILootCondition;
@@ -24,6 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 ;
 
@@ -40,23 +40,28 @@ public class DungeonLootModifier extends LootModifier {
 
         Random random = context.getRandom();
 
-        for (RegistryObject<Item> object : ItemRegistry.ITEMS.getEntries()) {
-            if (!object.isPresent() || !(object.get() instanceof RelicItem))
-                continue;
+        List<RelicItem<?>> relics = ItemRegistry.ITEMS.getEntries().stream()
+                .filter(RegistryObject::isPresent)
+                .map(RegistryObject::get)
+                .filter(item -> item instanceof RelicItem)
+                .map(item -> (RelicItem<?>) item)
+                .collect(Collectors.toList());
 
-            RelicItem relic = (RelicItem) object.get();
+        for (int i = 0; i < relics.size(); i++) {
+            RelicItem<?> relic = relics.get(random.nextInt(relics.size()));
+            int generated = 0;
 
-            for (RelicLoot loot :  relic.getData().getLoot()) {
+            for (RelicLoot loot : relic.getData().getLoot()) {
                 if (loot.getTable().contains(context.getQueriedLootTableId().toString())
                         && random.nextFloat() <= loot.getChance()) {
-                    ItemStack stack = new ItemStack(relic);
+                    generatedLoot.add(new ItemStack(relic));
 
-                    if (loot.getAdditionalCount() > 0)
-                        stack.setCount(random.nextInt(loot.getAdditionalCount()) + 1);
-
-                    generatedLoot.add(stack);
+                    generated++;
                 }
             }
+
+            if (generated >= 1)
+                break;
         }
 
         for (RuneItem rune : RelicUtils.RunesWorldgen.LOOT.keySet()) {

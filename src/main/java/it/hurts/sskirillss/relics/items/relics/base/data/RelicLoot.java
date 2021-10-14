@@ -15,10 +15,4 @@ public class RelicLoot {
     @Getter
     @Builder.Default
     private float chance = 0.1F;
-
-    @Getter
-    @Builder.Default
-    private int baseCount = 1;
-    @Getter
-    private int additionalCount;
 }
