@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Mixin(WebBlock.class)
 public class MixinWebBlock {
-    @Inject(at = @At("HEAD"), method = "entityInside", cancellable = true)
+    @Inject(at = @At(value = "HEAD"), method = "entityInside", cancellable = true)
     protected void ignoreWeb(BlockState state, World world, BlockPos pos, Entity entity, CallbackInfo info) {
         if (!(entity instanceof LivingEntity))
             return;

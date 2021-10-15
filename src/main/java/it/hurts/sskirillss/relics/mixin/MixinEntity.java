@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Mixin(Entity.class)
 public class MixinEntity {
-    @Inject(at = @At("RETURN"), method = "isInWaterOrRain", cancellable = true)
+    @Inject(at = @At(value = "RETURN"), method = "isInWaterOrRain", cancellable = true)
     protected void setWet(CallbackInfoReturnable<Boolean> info) {
         Entity entity = (Entity) (Object) this;
 

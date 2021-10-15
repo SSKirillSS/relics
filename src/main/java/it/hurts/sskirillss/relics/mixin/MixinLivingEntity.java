@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity {
-    @Inject(at = @At("RETURN"), method = "decreaseAirSupply", cancellable = true)
+    @Inject(at = @At(value = "RETURN"), method = "decreaseAirSupply", cancellable = true)
     protected void calculateAir(int air, CallbackInfoReturnable<Integer> info) {
         AmphibianBootItem.Stats config = AmphibianBootItem.INSTANCE.getConfig();
         LivingEntity entity = (LivingEntity) (Object) this;

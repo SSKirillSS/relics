@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Mixin(EndermanEntity.class)
 public class MixinEndermanEntity {
-    @Inject(at = @At("HEAD"), method = "isLookingAtMe", cancellable = true)
+    @Inject(at = @At(value = "HEAD"), method = "isLookingAtMe", cancellable = true)
     protected void calmEndermans(PlayerEntity player, CallbackInfoReturnable<Boolean> info) {
         Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ENDERS_HAND.get(), player);
 
