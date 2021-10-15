@@ -9,10 +9,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
@@ -34,13 +33,8 @@ public class RelicConfig {
         processConfigs();
     }
 
-    @SneakyThrows
     private static void processConfigs() {
-        for (RegistryObject<Item> object : ItemRegistry.ITEMS.getEntries()) {
-            if (!object.isPresent() || !(object.get() instanceof RelicItem))
-                continue;
-
-            RelicItem relic = (RelicItem) object.get();
+        ItemRegistry.getRegisteredRelics().forEach(relic -> {
             RelicConfigData data = readConfig(relic);
 
             if (data == null || data.getConfig() == null || data.getDurability() == null
@@ -53,9 +47,13 @@ public class RelicConfig {
                             .resolve(new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss").format(getLaunchDate()))
                             .resolve(ConfigHelper.getRootPath().relativize(sourcePath)).getParent();
 
-                    Files.createDirectories(backupPath);
+                    try {
+                        Files.createDirectories(backupPath);
 
-                    Files.move(sourcePath, backupPath.resolve(relic.getRegistryName().getPath() + ".json"));
+                        Files.move(sourcePath, backupPath.resolve(relic.getRegistryName().getPath() + ".json"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 writeDefaultConfig(relic);
@@ -64,7 +62,7 @@ public class RelicConfig {
             }
 
             syncRelicData(relic, data);
-        }
+        });
     }
 
     @SneakyThrows
@@ -93,7 +91,7 @@ public class RelicConfig {
         if (!(data instanceof RelicConfigData))
             return null;
 
-        return (RelicConfigData) data;
+        return (RelicConfigData<?>) data;
     }
 
     private static void syncRelicData(RelicItem relic, RelicConfigData data) {

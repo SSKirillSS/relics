@@ -17,13 +17,11 @@ import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 ;
 
@@ -40,12 +38,7 @@ public class DungeonLootModifier extends LootModifier {
 
         Random random = context.getRandom();
 
-        List<RelicItem<?>> relics = ItemRegistry.ITEMS.getEntries().stream()
-                .filter(RegistryObject::isPresent)
-                .map(RegistryObject::get)
-                .filter(item -> item instanceof RelicItem)
-                .map(item -> (RelicItem<?>) item)
-                .collect(Collectors.toList());
+        List<RelicItem<?>> relics = ItemRegistry.getRegisteredRelics();
 
         for (int i = 0; i < relics.size(); i++) {
             RelicItem<?> relic = relics.get(random.nextInt(relics.size()));

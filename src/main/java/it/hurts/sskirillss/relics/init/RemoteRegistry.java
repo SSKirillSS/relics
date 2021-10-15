@@ -21,7 +21,6 @@ import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -58,11 +57,8 @@ public class RemoteRegistry {
         ItemModelsProperties.register(ItemRegistry.SLIME_HEART.get(), new ResourceLocation(Reference.MODID, "mode"), (stack, world, entity) ->
                 NBTUtils.getInt(stack, SlimeHeartItem.TAG_SLIME_AMOUNT, 0) > 0 ? 1 : 0);
 
-        ItemRegistry.ITEMS.getEntries().stream()
-                .filter(RegistryObject::isPresent)
-                .map(RegistryObject::get)
-                .filter(item -> item instanceof RelicItem)
-                .forEach(item -> ItemModelsProperties.register(item, new ResourceLocation(Reference.MODID, "broken"),
-                        (stack, world, entity) -> RelicItem.isBroken(stack) ? 1 : 0));
+        ItemRegistry.getRegisteredRelics().forEach(item -> ItemModelsProperties.register(item,
+                new ResourceLocation(Reference.MODID, "broken"),
+                (stack, world, entity) -> RelicItem.isBroken(stack) ? 1 : 0));
     }
 }

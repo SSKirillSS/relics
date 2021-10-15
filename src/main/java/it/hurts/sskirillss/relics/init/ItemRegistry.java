@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.init;
 
 import it.hurts.sskirillss.relics.items.*;
 import it.hurts.sskirillss.relics.items.relics.*;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.boots.*;
 import it.hurts.sskirillss.relics.items.runes.*;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -11,6 +12,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID)
 public class ItemRegistry {
@@ -90,5 +94,14 @@ public class ItemRegistry {
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+    }
+
+    public static List<RelicItem<?>> getRegisteredRelics() {
+        return ITEMS.getEntries().stream()
+                .filter(RegistryObject::isPresent)
+                .map(RegistryObject::get)
+                .filter(item -> item instanceof RelicItem)
+                .map(item -> (RelicItem<?>) item)
+                .collect(Collectors.toList());
     }
 }
