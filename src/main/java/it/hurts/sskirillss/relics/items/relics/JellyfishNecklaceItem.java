@@ -42,6 +42,7 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
+                .hasAbility(true)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.AQUATIC)
                         .chance(0.15F)
@@ -72,7 +73,7 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
 
     @Override
     public void castAbility(PlayerEntity player, ItemStack stack) {
-        if (!player.isUnderWater() || player.getCooldowns().isOnCooldown(stack.getItem()))
+        if (!player.isInWaterOrRain() || player.getCooldowns().isOnCooldown(stack.getItem()))
             return;
 
         float rot = ((float) Math.PI / 180F);
@@ -149,6 +150,6 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
         public float magicResistance = 0.25F;
         public float healMultiplier = 3.0F;
         public int riptideCooldown = 5;
-        public float riptidePower = 3.0F;
+        public float riptidePower = 2.0F;
     }
 }
