@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.ScarabTalismanModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
@@ -16,9 +17,18 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,6 +58,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
+                .hasAbility(true)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.DESERT)
                         .chance(0.15F)
@@ -67,6 +78,9 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
                         .varArg("+" + (int) (config.digModifier * 100 - 100) + "%")
                         .build())
                 .ability(new AbilityTooltip.Builder()
+                        .build())
+                .ability(new AbilityTooltip.Builder()
+                        .active()
                         .build())
                 .build();
     }
@@ -94,6 +108,52 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
 
         EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
                 config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+    }
+
+    @Override
+    public void castAbility(PlayerEntity player, ItemStack stack) {
+        if (player.getCooldowns().isOnCooldown(stack.getItem()))
+            return;
+
+        World world = player.getCommandSenderWorld();
+        BlockPos position = player.blockPosition();
+        Vector3d vec = player.position();
+
+        BlockPos target = position;
+        Vector3d ground = vec;
+        boolean canTeleport = false;
+
+
+        if (isEmptySpot(world, position) && isEmptySpot(world, position.above())) {
+            vec = vec.add(0F, -2F, 0F);
+            target = target.below(2);
+
+            if (!isEmptySpot(world, target) && !isEmptySpot(world, target.above()))
+                canTeleport = true;
+        } else if (!isEmptySpot(world, position) && !isEmptySpot(world, position.above())) {
+            vec = vec.add(0F, 2F, 0F);
+            ground = ground.add(0F, 2F, 0F);
+            target = target.above(2);
+
+            if (isEmptySpot(world, target) && isEmptySpot(world, target.above()))
+                canTeleport = true;
+        }
+
+        if (canTeleport) {
+            player.getCooldowns().addCooldown(stack.getItem(), config.burrowCooldown * 20);
+
+            player.teleportTo(vec.x(), vec.y(), vec.z());
+
+            for (int i = 0; i < 100; i++)
+                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, world.getBlockState(position.below())),
+                        ground.x() + MathUtils.randomFloat(random) * 0.5F, ground.y() + 0.2F,
+                        ground.z() + MathUtils.randomFloat(random) * 0.5F, 0, random.nextFloat(), 0);
+            world.playSound(null, player.blockPosition(), SoundEvents.BASALT_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        }
+    }
+
+    private boolean isEmptySpot(World world, BlockPos position) {
+        return !world.getBlockState(position).getMaterial().blocksMotion();
     }
 
     @Override
@@ -132,7 +192,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
                 if (isBroken(triple.getRight()))
                     return;
 
-                entity.heal(event.getAmount());
+                entity.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
 
                 event.setCanceled(true);
             });
@@ -152,8 +212,9 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
     }
 
     public static class Stats extends RelicStats {
-        public float speedModifier = 1.5F;
-        public float digModifier = 1.15F;
+        public int burrowCooldown = 3;
+        public float speedModifier = 1.15F;
+        public float digModifier = 1.1F;
         public List<String> allowedBiomes = Arrays.asList("mesa", "desert");
     }
 }

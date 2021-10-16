@@ -122,7 +122,9 @@
   "tooltip.relics.scarab_talisman.ability.2.name": "Хитиновые лапы",
   "tooltip.relics.scarab_talisman.ability.2.description": "%1$s к скорости добычи блоков",
   "tooltip.relics.scarab_talisman.ability.3.name": "Клаустрофилия",
-  "tooltip.relics.scarab_talisman.ability.3.description": "Заменяет урон от удушья в блоках на исцеление",
+  "tooltip.relics.scarab_talisman.ability.3.description": "Блокирует урон от удушья, наделяя носителя невидимостью",
+  "tooltip.relics.scarab_talisman.ability.4.name": "Нора",
+  "tooltip.relics.scarab_talisman.ability.4.description": "Закапывает и выкапывает носителя в блоки под ним",
 
   "item.relics.shadow_glaive": "Теневая глефа",
   "tooltip.relics.shadow_glaive.ability.1.name": "Теневой заряд",

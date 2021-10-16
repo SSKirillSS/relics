@@ -124,7 +124,9 @@
   "tooltip.relics.scarab_talisman.ability.2.name": "Chitinous claws",
   "tooltip.relics.scarab_talisman.ability.2.description": "%1$s block breaking speed",
   "tooltip.relics.scarab_talisman.ability.3.name": "Claustrophilia",
-  "tooltip.relics.scarab_talisman.ability.3.description": "Replaces damage from suffocation with healing",
+  "tooltip.relics.scarab_talisman.ability.3.description": "Blocks suffocation damage and grants wearer invisibility while inside blocks",
+  "tooltip.relics.scarab_talisman.ability.4.name": "Burrow",
+  "tooltip.relics.scarab_talisman.ability.4.description": "Buries and digs wearer into the blocks underneath",
 
   "item.relics.shadow_glaive": "Shadow Glaive",
   "tooltip.relics.shadow_glaive.ability.1.name": "Shadow charge",
