@@ -5,7 +5,6 @@ import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -43,10 +42,9 @@ public class DurabilityHandler {
         relics.forEach(relic -> {
             int durability = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, relic) + 1;
 
-            if (relic.getDamageValue() - relic.getMaxDamage() < 0 && event.getAmount() >= 1F
-                    && entity.getRandom().nextFloat() <= 0.75F / durability)
-                relic.hurt(1, entity.getRandom(), entity instanceof ServerPlayerEntity
-                        ? (ServerPlayerEntity) entity : null);
+            if (entity.getRandom().nextFloat() <= 0.75F / durability
+                    && event.getAmount() >= 1F)
+                relic.setDamageValue(Math.min(relic.getMaxDamage(), relic.getDamageValue() + 1));
         });
     }
 }
