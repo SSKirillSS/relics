@@ -69,7 +69,7 @@
   "tooltip.relics.spatial_sign.tooltip_1": "Stored destination: X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.spatial_sign.tooltip_2": "Time left: %1$s",
   "tooltip.relics.spatial_sign.ability.1.name": "Seal",
-  "tooltip.relics.spatial_sign.ability.1.description": "Remembers the point of sign's usage and returns an owner to it after %1$s sec. The second usage of relic with pressed %2$s button forcibly teleports to the last saved point",
+  "tooltip.relics.spatial_sign.ability.1.description": "Remembers the point of sign's usage and returns an owner to it after %1$s sec, consuming %2$s experience point each second of active state. The second usage of relic with pressed %3$s button forcibly teleports to the last saved point",
   "tooltip.relics.spatial_sign.ability.2.name": "Second life",
   "tooltip.relics.spatial_sign.ability.2.description": "In case of taking a fatal damage with activated seal, the owner will be teleported to the last saved sign's point, but relic will be destroyed",
 

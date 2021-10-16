@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicDurability;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
@@ -15,6 +16,7 @@ import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -48,6 +50,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
+                .durability(new RelicDurability(1))
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.CAVE)
                         .chance(0.15F)
@@ -62,6 +65,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
         return new RelicTooltip.Builder(stack)
                 .ability(new AbilityTooltip.Builder()
                         .varArg(config.timeBeforeActivation)
+                        .varArg(config.experiencePerSecond)
                         .varArg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())
@@ -90,11 +94,13 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
             return ActionResult.fail(stack);
 
         if (NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
-            NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.position()));
-            NBTUtils.setString(stack, TAG_WORLD, playerIn.getCommandSenderWorld().dimension().location().toString());
-            NBTUtils.setInt(stack, TAG_TIME, config.timeBeforeActivation);
+            if (playerIn.totalExperience > 0) {
+                NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.position()));
+                NBTUtils.setString(stack, TAG_WORLD, playerIn.getCommandSenderWorld().dimension().location().toString());
+                NBTUtils.setInt(stack, TAG_TIME, config.timeBeforeActivation);
 
-            worldIn.playSound(playerIn, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                worldIn.playSound(playerIn, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            }
         } else if (playerIn.isShiftKeyDown())
             teleportPlayer(playerIn, stack);
 
@@ -111,17 +117,28 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
         int time = NBTUtils.getInt(stack, TAG_TIME, -1);
 
         if (player.tickCount % 20 == 0 && time >= 0) {
-            if (time > 0)
+            if (time > 0) {
                 NBTUtils.setInt(stack, TAG_TIME, time - 1);
-            else
+
+                if (player.totalExperience > 0)
+                    player.giveExperiencePoints(-config.experiencePerSecond);
+                else
+                    teleportPlayer(player, stack);
+            } else
                 teleportPlayer(player, stack);
         }
+
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return false;
     }
 
     @Override
@@ -178,7 +195,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
                 teleportPlayer(player, stack);
                 player.setHealth(1.0F);
 
-                stack.shrink(1);
+                stack.setDamageValue(stack.getMaxDamage());
 
                 event.setCanceled(true);
             }
@@ -187,5 +204,6 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
 
     public static class Stats extends RelicStats {
         public int timeBeforeActivation = 30;
+        public int experiencePerSecond = 1;
     }
 }
