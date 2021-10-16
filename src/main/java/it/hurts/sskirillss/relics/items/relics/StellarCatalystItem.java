@@ -14,6 +14,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -53,7 +55,10 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
         public static void onEntityDamage(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
 
-            if (!(event.getSource().getEntity() instanceof PlayerEntity))
+            DamageSource source = event.getSource();
+
+            if (!(source.getEntity() instanceof PlayerEntity) || (source instanceof IndirectEntityDamageSource
+                    && source.getDirectEntity() instanceof StellarCatalystProjectileEntity))
                 return;
 
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
@@ -65,9 +70,7 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
                 LivingEntity target = event.getEntityLiving();
                 World world = target.getCommandSenderWorld();
 
-                if (event.getAmount() > config.minDamage
-                        && (world.isNight() || world.dimension() == World.END)
-                        && world.canSeeSky(target.blockPosition())
+                if (world.isNight() && world.canSeeSky(target.blockPosition())
                         && random.nextFloat() <= config.chance) {
                     StellarCatalystProjectileEntity projectile = new StellarCatalystProjectileEntity((LivingEntity) event.getSource().getEntity(),
                             event.getEntityLiving(), event.getAmount() * config.damageMultiplier);
@@ -84,12 +87,11 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
 
     public static class Stats extends RelicStats {
         public float chance = 0.15F;
-        public float damageMultiplier = 0.75F;
+        public float damageMultiplier = 2.0F;
         public int additionalSummonHeight = 20;
         public int minSummonHeight = 20;
         public int explosionRadius = 3;
         public float knockbackPower = 1.0F;
-        public int minDamage = 3;
-        public float projectileSpeed = 0.7F;
+        public float projectileSpeed = 0.9F;
     }
 }

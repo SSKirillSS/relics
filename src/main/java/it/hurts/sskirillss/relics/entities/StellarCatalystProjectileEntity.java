@@ -14,11 +14,12 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
-import net.minecraft.util.DamageSource;
+import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -59,11 +60,11 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
         if (this.tickCount > 100)
             this.remove();
 
-        this.setDeltaMovement(0.0F, -config.projectileSpeed, 0.0F);
+        this.setDeltaMovement(0.0F, -config.projectileSpeed - this.tickCount * 0.01F, 0.0F);
     }
 
     @Override
-    protected void onHit(RayTraceResult result) {
+    protected void onHit(@NotNull RayTraceResult result) {
         StellarCatalystItem.Stats config = StellarCatalystItem.INSTANCE.getConfig();
 
         Random random = this.getCommandSenderWorld().getRandom();
@@ -86,11 +87,8 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
             else
                 entity.setDeltaMovement(motion);
 
-            if (owner != null) {
-                if (entity != owner)
-                    entity.hurt(DamageSource.playerAttack(owner), damage);
-            } else
-                entity.hurt(DamageSource.GENERIC, (float) (config.minDamage * config.damageMultiplier));
+            if (owner != null && entity != owner)
+                entity.hurt(new IndirectEntityDamageSource("falling_star", this, owner).setProjectile(), damage);
         }
 
         this.removeAfterChangingDimensions();
@@ -112,7 +110,7 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public @NotNull IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }
