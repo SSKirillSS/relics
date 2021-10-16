@@ -107,6 +107,8 @@
   "item.relics.midnight_robe": "Midnight Robe",
   "tooltip.relics.midnight_robe.ability.1.name": "Call of shadows",
   "tooltip.relics.midnight_robe.ability.1.description": "%1$s movement speed in the night time",
+  "tooltip.relics.midnight_robe.ability.2.name": "Vanishing",
+  "tooltip.relics.midnight_robe.ability.2.description": "Hides the relic wearer while in places with lighting level lower than %1$s",
 
   "item.relics.old_boot": "Old Boot",
   "tooltip.relics.old_boot.ability.1.name": "Quick step",
