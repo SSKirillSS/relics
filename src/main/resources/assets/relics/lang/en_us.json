@@ -191,10 +191,8 @@
   "item.relics.ice_skates": "Ice Skates",
   "tooltip.relics.ice_skates.ability.1.name": "Slip",
   "tooltip.relics.ice_skates.ability.1.description": "%1$s movement speed on the ice",
-  "tooltip.relics.ice_skates.ability.2.name": "Ice walker",
-  "tooltip.relics.ice_skates.ability.2.description": "Freezes water underfoot",
-  "tooltip.relics.ice_skates.ability.3.name": "Ram",
-  "tooltip.relics.ice_skates.ability.3.description": "Pushes mobs and deals %1$s damage while colliding if running on the ice",
+  "tooltip.relics.ice_skates.ability.2.name": "Ram",
+  "tooltip.relics.ice_skates.ability.2.description": "Pushes mobs and deals %1$s damage while colliding if running on the ice",
 
   "item.relics.camouflage_ring": "Camouflage Ring",
   "tooltip.relics.camouflage_ring.ability.1.name": "Camouflage",

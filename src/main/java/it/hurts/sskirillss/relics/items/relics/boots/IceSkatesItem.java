@@ -12,14 +12,12 @@ import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.WorldUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
@@ -67,8 +65,6 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
                         .varArg("+" + (int) (config.speedModifier * 100 - 100) + "%")
                         .build())
                 .ability(new AbilityTooltip.Builder()
-                        .build())
-                .ability(new AbilityTooltip.Builder()
                         .varArg((int) config.ramDamage)
                         .build())
                 .build();
@@ -102,10 +98,6 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
                     entity.hurt(DamageSource.FLY_INTO_WALL, config.ramDamage);
                 }
             }
-        } else if (world.getBlockState(livingEntity.blockPosition().below()) == Fluids.WATER.getSource().defaultFluidState().createLegacyBlock()) {
-            world.setBlockAndUpdate(livingEntity.blockPosition().below(), Blocks.FROSTED_ICE.defaultBlockState());
-            world.playSound(null, livingEntity.blockPosition(), SoundEvents.SNOW_HIT,
-                    SoundCategory.PLAYERS, 0.75F, 1.0F);
         } else
             EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
                     config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));

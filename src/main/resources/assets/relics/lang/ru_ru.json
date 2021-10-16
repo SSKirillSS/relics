@@ -189,10 +189,8 @@
   "item.relics.ice_skates": "Коньки",
   "tooltip.relics.ice_skates.ability.1.name": "Скольжение",
   "tooltip.relics.ice_skates.ability.1.description": "%1$s к скорости передвижения на льду",
-  "tooltip.relics.ice_skates.ability.2.name": "Ледоход",
-  "tooltip.relics.ice_skates.ability.2.description": "Замораживает воду под ногами",
-  "tooltip.relics.ice_skates.ability.3.name": "Таран",
-  "tooltip.relics.ice_skates.ability.3.description": "Отталкивает и наносит %1$s единиц урона мобам при столкновении во время бега на льду",
+  "tooltip.relics.ice_skates.ability.2.name": "Таран",
+  "tooltip.relics.ice_skates.ability.2.description": "Отталкивает и наносит %1$s единиц урона мобам при столкновении во время бега на льду",
 
   "item.relics.camouflage_ring": "Камуфляжное кольцо",
   "tooltip.relics.camouflage_ring.ability.1.name": "Камуфляж",
