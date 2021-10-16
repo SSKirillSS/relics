@@ -33,7 +33,7 @@ public class MixinLivingEntity {
         LivingEntity entity = (LivingEntity) (Object) this;
         Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), entity);
 
-        if (entity instanceof PlayerEntity && !RelicItem.isBroken(optional.get().getRight())
+        if (entity instanceof PlayerEntity && optional.isPresent() && !RelicItem.isBroken(optional.get().getRight())
                 && !((PlayerEntity) entity).getCooldowns().isOnCooldown(optional.get().getRight().getItem()))
             info.setReturnValue(false);
     }
