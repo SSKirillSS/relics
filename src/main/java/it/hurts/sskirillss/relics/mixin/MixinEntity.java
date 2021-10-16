@@ -20,7 +20,7 @@ public class MixinEntity {
     protected void setWet(CallbackInfoReturnable<Boolean> info) {
         Entity entity = (Entity) (Object) this;
 
-        if (entity instanceof LivingEntity)
+        if (!(entity instanceof LivingEntity))
             return;
 
         Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(),
