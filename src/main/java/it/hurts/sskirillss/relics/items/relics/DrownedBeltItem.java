@@ -11,13 +11,16 @@ import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.Rarity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -70,6 +73,7 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
+
             PlayerEntity player = null;
             float value = 1.0F;
 
@@ -81,7 +85,7 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
                 value = config.dealtDamageMultiplier;
             }
 
-            if (player != null && player.isInWater()) {
+            if (player != null && player.isUnderWater()) {
                 float multiplier = value;
 
                 CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(), player).ifPresent(triple -> {
@@ -90,10 +94,49 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
                 });
             }
         }
+
+        @SubscribeEvent
+        public static void onItemUseStart(LivingEntityUseItemEvent.Start event) {
+            ItemStack stack = event.getItem();
+
+            if (!(event.getEntityLiving() instanceof PlayerEntity) || stack.getItem() != Items.TRIDENT)
+                return;
+
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+
+            if (player.getCooldowns().isOnCooldown(stack.getItem()))
+                event.setCanceled(true);
+        }
+
+        @SubscribeEvent
+        public static void onItemUseFinish(LivingEntityUseItemEvent.Stop event) {
+            Stats config = INSTANCE.config;
+
+            ItemStack stack = event.getItem();
+
+            if (!(event.getEntityLiving() instanceof PlayerEntity) || stack.getItem() != Items.TRIDENT)
+                return;
+
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+
+            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(), player).ifPresent(triple -> {
+                if (isBroken(triple.getRight()))
+                    return;
+
+                int duration = stack.getItem().getUseDuration(stack) - event.getDuration();
+                int enchantment = EnchantmentHelper.getRiptide(stack);
+
+                if (duration < 10 || enchantment <= 0)
+                    return;
+
+                player.getCooldowns().addCooldown(stack.getItem(), (config.riptideCooldown / (enchantment + 1)) * 20);
+            });
+        }
     }
 
     public static class Stats extends RelicStats {
         public float incomingDamageMultiplier = 1.5F;
-        public float dealtDamageMultiplier = 3.0F;
+        public float dealtDamageMultiplier = 2.0F;
+        public int riptideCooldown = 10;
     }
 }

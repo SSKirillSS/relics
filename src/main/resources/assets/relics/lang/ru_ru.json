@@ -134,7 +134,7 @@
 
   "item.relics.drowned_belt": "Пояс утопленника",
   "tooltip.relics.drowned_belt.ability.1.name": "Поток",
-  "tooltip.relics.drowned_belt.ability.1.description": "Позволяет использовать зачарование трезубца \"Тягун\" без воды или дождя",
+  "tooltip.relics.drowned_belt.ability.1.description": "Позволяет использовать зачарование трезубца \"Тягун\" без воды или дождя, но увеличивает время его перезарядки",
   "tooltip.relics.drowned_belt.ability.2.name": "Благословение океана",
   "tooltip.relics.drowned_belt.ability.2.description": "%1$s к наносимому под водой урону",
   "tooltip.relics.drowned_belt.ability.3.name": "Давление",

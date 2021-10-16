@@ -136,7 +136,7 @@
 
   "item.relics.drowned_belt": "Drowned Belt",
   "tooltip.relics.drowned_belt.ability.1.name": "Flow",
-  "tooltip.relics.drowned_belt.ability.1.description": "Allows to use trident \"Riptide\" enchantment without of rain or water",
+  "tooltip.relics.drowned_belt.ability.1.description": "Allows to use trident \"Riptide\" enchantment without of rain or water, but increases it's recharge time",
   "tooltip.relics.drowned_belt.ability.2.name": "Ocean blessing",
   "tooltip.relics.drowned_belt.ability.2.description": "%1$s dealt underwater damage",
   "tooltip.relics.drowned_belt.ability.3.name": "Pressure",
