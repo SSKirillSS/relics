@@ -6,7 +6,6 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
-import it.hurts.sskirillss.relics.utils.CompatibilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.item.ItemStack;
@@ -33,9 +32,6 @@ public class DungeonLootModifier extends LootModifier {
     @Nonnull
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
-        if (!CompatibilityUtils.isValidForgeVersion())
-            return generatedLoot;
-
         Random random = context.getRandom();
 
         List<RelicItem<?>> relics = ItemRegistry.getRegisteredRelics();
@@ -87,9 +83,6 @@ public class DungeonLootModifier extends LootModifier {
     public static class EventHandler {
         @SubscribeEvent
         public static void registerModifierSerializers(@Nonnull final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
-            if (!CompatibilityUtils.isValidForgeVersion())
-                return;
-
             event.getRegistry().register(new DungeonLootModifier.Serializer().setRegistryName(
                     new ResourceLocation(Reference.MODID, "dungeon_loot_modifier")));
         }

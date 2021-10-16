@@ -15,18 +15,6 @@ public class RelicsConfig {
         }
     }
 
-    public static class RelicsCompatibility {
-        public static ForgeConfigSpec.BooleanValue WARN_ABOUT_OLD_FORGE;
-
-        private static void setupCompatibilityConfig(ForgeConfigSpec.Builder builder) {
-            builder.push("compatibility");
-
-            WARN_ABOUT_OLD_FORGE = builder.define("warn_about_old_forge", true);
-
-            builder.pop();
-        }
-    }
-
     public static class RelicsGeneral {
         public static ForgeConfigSpec.BooleanValue ENABLE_RELIC_DURABILITY;
         public static ForgeConfigSpec.ConfigValue<String> LEVELING_BAR_STYLE;
@@ -67,7 +55,6 @@ public class RelicsConfig {
         builder.push("relics");
 
         RelicsGeneral.setupGeneralConfig(builder);
-        RelicsCompatibility.setupCompatibilityConfig(builder);
 
         RELICS_CONFIG = builder.build();
     }
