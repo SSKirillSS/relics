@@ -10,10 +10,14 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -27,7 +31,6 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .model(new DrownedBeltModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.AQUATIC)
                         .chance(0.1F)
@@ -54,6 +57,12 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
                         .negative()
                         .build())
                 .build();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new DrownedBeltModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

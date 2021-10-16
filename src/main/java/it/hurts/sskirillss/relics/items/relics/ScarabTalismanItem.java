@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -20,6 +21,8 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -45,7 +48,6 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .model(new ScarabTalismanModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.DESERT)
                         .chance(0.15F)
@@ -92,6 +94,12 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
 
         EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
                 config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new ScarabTalismanModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

@@ -27,6 +27,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -70,7 +72,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Override
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
-        BipedModel<LivingEntity> model = getData().getModel();
+        BipedModel<LivingEntity> model = getModel();
 
         if (model == null)
             return;
@@ -81,7 +83,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
         ICurio.RenderHelper.followBodyRotations(livingEntity, model);
         model.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(new ResourceLocation(
-                Reference.MODID, "textures/items/models/" + this.getRegistryName().getPath() + ".png"))),
+                        Reference.MODID, "textures/items/models/" + this.getRegistryName().getPath() + ".png"))),
                 light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
         matrixStack.popPose();
@@ -135,6 +137,11 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     @Override
     public boolean isDamageable(ItemStack stack) {
         return getMaxDamage(stack) > 0;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return null;
     }
 
     public RelicTooltip getShiftTooltip(ItemStack stack) {

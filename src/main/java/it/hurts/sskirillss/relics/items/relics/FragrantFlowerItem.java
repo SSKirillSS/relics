@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.renderer.FragrantFlowerModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.BeeEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.TickRangeConverter;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,7 +36,6 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> impl
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .model(new FragrantFlowerModel())
                 .loot(RelicLoot.builder()
                         .table(LootTables.JUNGLE_TEMPLE.toString())
                         .chance(0.2F)
@@ -75,6 +77,12 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> impl
             bee.setTarget(null);
             bee.setRemainingPersistentAngerTime(0);
         }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new FragrantFlowerModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

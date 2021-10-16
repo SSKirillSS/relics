@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,7 +37,6 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
     public MagmaWalkerItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .model(new MagmaWalkerModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.NETHER)
                         .chance(0.15F)
@@ -70,6 +72,12 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
 
         if (state.getBlock() == BlockRegistry.MAGMA_STONE_BLOCK.get() && state.getValue(MagmaStoneBlock.AGE) > 0)
             world.setBlock(pos.below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState(), 2);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new MagmaWalkerModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

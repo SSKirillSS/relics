@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.renderer.SporeSackModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
@@ -22,6 +23,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,7 +38,6 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> implements ICu
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
                 .config(Stats.class)
-                .model(new SporeSackModel())
                 .loot(RelicLoot.builder()
                         .table(LootTables.JUNGLE_TEMPLE.toString())
                         .chance(0.2F)
@@ -53,6 +55,12 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> implements ICu
                         .varArg(config.radius)
                         .build())
                 .build();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new SporeSackModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

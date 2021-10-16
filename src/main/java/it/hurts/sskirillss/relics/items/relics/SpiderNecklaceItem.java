@@ -8,10 +8,13 @@ import it.hurts.sskirillss.relics.items.relics.renderer.SpiderNecklaceModel;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> implements ICurioItem {
@@ -19,7 +22,6 @@ public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> impl
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .model(new SpiderNecklaceModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.CAVE)
                         .chance(0.15F)
@@ -55,6 +57,12 @@ public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> impl
                     config.climbSpeed, livingEntity.getDeltaMovement().z());
             livingEntity.fallDistance = 0F;
         }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new SpiderNecklaceModel();
     }
 
     public static class Stats extends RelicStats {

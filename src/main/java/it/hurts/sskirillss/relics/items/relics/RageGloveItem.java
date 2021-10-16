@@ -11,10 +11,13 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -31,7 +34,6 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .model(new RageGloveModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.NETHER)
                         .chance(0.15F)
@@ -64,6 +66,12 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, time - 1);
         else
             NBTUtils.setInt(stack, TAG_STACKS_AMOUNT, 0);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new RageGloveModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

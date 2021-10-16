@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.utils.WorldUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -28,6 +29,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -48,7 +51,6 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .model(new IceSkatesModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.COLD)
                         .chance(0.2F)
@@ -113,6 +115,12 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         EntityUtils.removeAttributeModifier(slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED),
                 new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new IceSkatesModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

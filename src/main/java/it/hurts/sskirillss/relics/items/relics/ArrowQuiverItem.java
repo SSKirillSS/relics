@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -30,6 +31,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,7 +54,6 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
                 .config(Stats.class)
-                .model(new ArrowQuiverModel())
                 .loot(RelicLoot.builder()
                         .table(LootTables.VILLAGE_FLETCHER.toString())
                         .chance(0.25F)
@@ -130,6 +132,12 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
 
         NBTUtils.setBoolean(stack, TAG_CHARGED, !NBTUtils.getBoolean(stack, TAG_CHARGED, false));
         NBTUtils.setString(stack, TAG_ARROW, "");
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new ArrowQuiverModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

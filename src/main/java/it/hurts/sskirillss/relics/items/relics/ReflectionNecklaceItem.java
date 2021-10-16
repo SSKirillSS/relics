@@ -17,6 +17,7 @@ import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -33,6 +34,8 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -50,7 +53,6 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
         super(RelicData.builder()
                 .rarity(Rarity.EPIC)
                 .config(Stats.class)
-                .model(new ReflectionNecklaceModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.NETHER)
                         .chance(0.1F)
@@ -114,6 +116,12 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
                 matrixStack.popPose();
             }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new ReflectionNecklaceModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

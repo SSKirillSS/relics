@@ -9,12 +9,16 @@ import it.hurts.sskirillss.relics.items.relics.renderer.OldBootModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -25,7 +29,6 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> implements ICurioI
         super(RelicData.builder()
                 .rarity(Rarity.COMMON)
                 .config(Stats.class)
-                .model(new OldBootModel())
                 .loot(RelicLoot.builder()
                         .table(LootTables.FISHING.toString())
                         .chance(0.1F)
@@ -54,8 +57,9 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> implements ICurioI
     }
 
     @Override
-    public boolean showAttributesTooltip(String identifier, ItemStack stack) {
-        return false;
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new OldBootModel();
     }
 
     public static class Stats extends RelicStats {

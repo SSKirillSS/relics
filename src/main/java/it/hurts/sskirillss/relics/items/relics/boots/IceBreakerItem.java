@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -25,6 +26,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -42,7 +45,6 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .model(new IceBreakerModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.COLD)
                         .chance(0.2F)
@@ -96,6 +98,12 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
 
         player.setDeltaMovement(motion.x(), motion.y() * config.fallMotionMultiplier, motion.z());
         player.getCommandSenderWorld().addParticle(ParticleTypes.SMOKE, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new IceBreakerModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

@@ -14,6 +14,7 @@ import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.SoulFireBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,6 +31,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -50,7 +53,6 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
         super(RelicData.builder()
                 .rarity(Rarity.EPIC)
                 .config(Stats.class)
-                .model(new BlazingFlaskModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.NETHER)
                         .chance(0.1F)
@@ -224,6 +226,12 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
         player.abilities.flying = false;
 
         player.onUpdateAbilities();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new BlazingFlaskModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

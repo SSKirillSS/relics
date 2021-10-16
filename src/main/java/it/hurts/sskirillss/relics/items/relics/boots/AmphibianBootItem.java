@@ -10,10 +10,14 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -27,7 +31,6 @@ public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> implem
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .model(new AmphibianBootModel())
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.AQUATIC)
                         .chance(0.15F)
@@ -58,6 +61,12 @@ public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> implem
                     config.swimSpeedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         return result;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new AmphibianBootModel();
     }
 
     public static class Stats extends RelicStats {
