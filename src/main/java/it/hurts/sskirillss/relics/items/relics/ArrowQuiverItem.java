@@ -54,6 +54,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
                 .config(Stats.class)
+                .hasAbility()
                 .loot(RelicLoot.builder()
                         .table(LootTables.VILLAGE_FLETCHER.toString())
                         .chance(0.25F)

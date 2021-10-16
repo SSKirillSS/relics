@@ -28,9 +28,8 @@ public class RelicData {
     @Builder.Default
     private RelicDurability durability = new RelicDurability(100);
 
-    @Builder.Default
     @Accessors(fluent = true)
-    private boolean hasAbility = false;
+    private boolean hasAbility;
 
     @Builder.Default
     private Class<? extends RelicStats> config = RelicStats.class;
@@ -41,5 +40,13 @@ public class RelicData {
     @SneakyThrows
     public RelicConfigData<?> toConfigData() {
         return new RelicConfigData<>(config.newInstance(), level, durability, loot);
+    }
+
+    public static class RelicDataBuilder {
+        public RelicDataBuilder hasAbility() {
+            hasAbility = true;
+
+            return this;
+        }
     }
 }

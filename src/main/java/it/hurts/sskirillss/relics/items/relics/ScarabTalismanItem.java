@@ -58,7 +58,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .hasAbility(true)
+                .hasAbility()
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.DESERT)
                         .chance(0.15F)

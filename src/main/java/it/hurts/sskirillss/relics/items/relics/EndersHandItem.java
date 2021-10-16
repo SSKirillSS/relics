@@ -45,6 +45,7 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
+                .hasAbility()
                 .loot(RelicLoot.builder()
                         .table(LootTables.END_CITY_TREASURE.toString())
                         .chance(0.1F)
