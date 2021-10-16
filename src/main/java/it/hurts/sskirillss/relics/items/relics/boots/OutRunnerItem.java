@@ -50,7 +50,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
     public RelicTooltip getShiftTooltip(ItemStack stack) {
         return new RelicTooltip.Builder(stack)
                 .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.speedModifier * 100 * 10) + "%")
+                        .varArg("+" + (int) (config.speedModifier * 100 * 5) + "%")
                         .build())
                 .build();
     }
@@ -65,8 +65,8 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
         ModifiableAttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
         int duration = NBTUtils.getInt(stack, TAG_RUN_DURATION, 0);
 
-        if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater()) {
-            if (duration < config.maxModifiers && player.tickCount % 2 == 0)
+        if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
+            if (duration < config.maxModifiers && player.tickCount % 4 == 0)
                 NBTUtils.setInt(stack, TAG_RUN_DURATION, duration + 1);
 
             if (world.getRandom().nextInt(config.maxModifiers) < duration)
@@ -85,7 +85,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
             player.maxUpStep = 1.1F;
         } else {
             EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
-                    SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    SPEED_INFO.getLeft(),  movementSpeed.getValue(), AttributeModifier.Operation.MULTIPLY_TOTAL));
 
             player.maxUpStep = 0.6F;
         }
@@ -99,7 +99,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
         LivingEntity entity = slotContext.getWearer();
 
         EntityUtils.removeAttributeModifier(entity.getAttribute(Attributes.MOVEMENT_SPEED), new AttributeModifier(SPEED_INFO.getRight(),
-                SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                SPEED_INFO.getLeft(), 0.1, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         entity.maxUpStep = 0.6F;
     }
@@ -111,7 +111,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
     }
 
     public static class Stats extends RelicStats {
-        public float speedModifier = 0.025F;
-        public int maxModifiers = 200;
+        public float speedModifier = 0.01F;
+        public int maxModifiers = 125;
     }
 }
