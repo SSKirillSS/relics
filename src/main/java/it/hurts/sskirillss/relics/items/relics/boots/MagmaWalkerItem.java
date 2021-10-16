@@ -15,6 +15,8 @@ import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.fluid.FlowingFluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -59,12 +61,16 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
         World world = livingEntity.getCommandSenderWorld();
         BlockPos pos = livingEntity.blockPosition();
         BlockState state = world.getBlockState(pos.below());
+        FluidState fluid = state.getFluidState();
 
         if (isBroken(stack))
             return;
 
-        if (state == Fluids.LAVA.getSource().defaultFluidState().createLegacyBlock()) {
-            world.setBlockAndUpdate(pos.below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState());
+        if (fluid.getType() == Fluids.LAVA || fluid.getType() == Fluids.FLOWING_LAVA) {
+            world.setBlockAndUpdate(pos.below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState()
+                    .setValue(MagmaStoneBlock.LEVEL, fluid.isSource() ? 0 : fluid.getValue(FlowingFluid.LEVEL))
+                    .setValue(MagmaStoneBlock.FALLING, !fluid.isSource() && fluid.getValue(FlowingFluid.FALLING)));
+
             world.addParticle(ParticleTypes.LAVA, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, 1, 1, 1);
             world.playSound(null, livingEntity.blockPosition(), SoundEvents.BASALT_PLACE,
                     SoundCategory.PLAYERS, 1.0F, 1.0F);
