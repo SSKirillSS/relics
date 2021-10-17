@@ -61,7 +61,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
                 .hasAbility()
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.DESERT)
-                        .chance(0.15F)
+                        .chance(0.1F)
                         .build())
                 .build());
 

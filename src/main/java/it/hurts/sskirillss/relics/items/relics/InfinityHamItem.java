@@ -34,7 +34,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.1F)
+                        .chance(0.025F)
                         .build())
                 .build());
     }

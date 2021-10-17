@@ -36,7 +36,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.NETHER)
-                        .chance(0.15F)
+                        .chance(0.05F)
                         .build())
                 .build());
 

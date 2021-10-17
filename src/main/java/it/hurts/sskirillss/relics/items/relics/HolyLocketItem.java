@@ -31,7 +31,7 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.DESERT)
-                        .chance(0.1F)
+                        .chance(0.05F)
                         .build())
                 .build());
 

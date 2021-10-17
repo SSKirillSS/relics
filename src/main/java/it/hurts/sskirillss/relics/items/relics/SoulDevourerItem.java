@@ -40,7 +40,7 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.15F)
+                        .chance(0.1F)
                         .build())
                 .build());
 

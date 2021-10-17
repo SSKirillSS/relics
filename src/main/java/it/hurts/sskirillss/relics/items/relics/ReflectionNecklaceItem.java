@@ -55,7 +55,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.NETHER)
-                        .chance(0.1F)
+                        .chance(0.01F)
                         .build())
                 .build());
 

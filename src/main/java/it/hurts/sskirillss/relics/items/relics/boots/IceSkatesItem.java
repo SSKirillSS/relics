@@ -51,7 +51,7 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.COLD)
-                        .chance(0.2F)
+                        .chance(0.1F)
                         .build())
                 .build());
 

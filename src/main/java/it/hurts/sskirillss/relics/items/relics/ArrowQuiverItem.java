@@ -61,7 +61,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
                         .build())
                 .loot(RelicLoot.builder()
                         .table(EntityType.SKELETON.getDefaultLootTable().toString())
-                        .chance(0.05F)
+                        .chance(0.005F)
                         .build())
                 .build());
 

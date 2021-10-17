@@ -41,7 +41,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.1F)
+                        .chance(0.05F)
                         .build())
                 .build());
     }

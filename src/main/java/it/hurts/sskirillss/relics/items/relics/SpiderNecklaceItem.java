@@ -28,11 +28,11 @@ public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> impl
                         .build())
                 .loot(RelicLoot.builder()
                         .table(EntityType.SPIDER.getDefaultLootTable().toString())
-                        .chance(0.01F)
+                        .chance(0.001F)
                         .build())
                 .loot(RelicLoot.builder()
                         .table(EntityType.CAVE_SPIDER.getDefaultLootTable().toString())
-                        .chance(0.01F)
+                        .chance(0.0075F)
                         .build())
                 .build());
     }

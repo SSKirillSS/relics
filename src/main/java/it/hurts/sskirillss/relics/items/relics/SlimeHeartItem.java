@@ -52,11 +52,11 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.15F)
+                        .chance(0.1F)
                         .build())
                 .loot(RelicLoot.builder()
                         .table(EntityType.SLIME.getDefaultLootTable().toString())
-                        .chance(0.01F)
+                        .chance(0.001F)
                         .build())
                 .build());
 

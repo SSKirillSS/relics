@@ -39,7 +39,7 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements
                         .build())
                 .loot(RelicLoot.builder()
                         .table(EntityType.PIGLIN_BRUTE.getDefaultLootTable().toString())
-                        .chance(0.01F)
+                        .chance(0.05F)
                         .build())
                 .build());
     }

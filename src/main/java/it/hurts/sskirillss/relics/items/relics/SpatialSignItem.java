@@ -53,7 +53,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
                 .durability(new RelicDurability(1))
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.15F)
+                        .chance(0.1F)
                         .build())
                 .build());
 

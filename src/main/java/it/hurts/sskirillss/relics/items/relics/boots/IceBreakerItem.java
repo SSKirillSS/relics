@@ -47,7 +47,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.COLD)
-                        .chance(0.2F)
+                        .chance(0.1F)
                         .build())
                 .build());
 

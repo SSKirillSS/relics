@@ -32,7 +32,7 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.1F)
+                        .chance(0.05F)
                         .build())
                 .build());
 

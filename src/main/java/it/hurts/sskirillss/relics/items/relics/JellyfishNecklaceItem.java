@@ -45,7 +45,7 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
                 .hasAbility()
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.AQUATIC)
-                        .chance(0.15F)
+                        .chance(0.1F)
                         .build())
                 .build());
 

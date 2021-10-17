@@ -41,7 +41,7 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
                 .rarity(Rarity.RARE)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.NETHER)
-                        .chance(0.15F)
+                        .chance(0.05F)
                         .build())
                 .build());
     }

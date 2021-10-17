@@ -51,7 +51,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.1F)
+                        .chance(0.05F)
                         .build())
                 .build());
 

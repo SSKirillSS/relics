@@ -28,7 +28,7 @@ public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> impl
                         .build())
                 .loot(RelicLoot.builder()
                         .table(EntityType.ZOMBIE_HORSE.getDefaultLootTable().toString())
-                        .chance(0.01F)
+                        .chance(0.075F)
                         .build())
                 .build());
     }

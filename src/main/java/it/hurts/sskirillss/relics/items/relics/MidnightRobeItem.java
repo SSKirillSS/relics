@@ -46,7 +46,7 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
                 .config(Stats.class)
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.15F)
+                        .chance(0.1F)
                         .build())
                 .build());
 
