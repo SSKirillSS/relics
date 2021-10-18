@@ -10,7 +10,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
@@ -69,17 +69,17 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.speedModifier * 100 - 100) + "%")
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.speedModifier * 100 - 100) + "%")
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.digModifier * 100 - 100) + "%")
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.digModifier * 100 - 100) + "%")
                         .build())
-                .ability(new AbilityTooltip.Builder()
+                .shift(ShiftTooltip.builder()
                         .build())
-                .ability(new AbilityTooltip.Builder()
+                .shift(ShiftTooltip.builder()
                         .active()
                         .build())
                 .build();

@@ -12,12 +12,14 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class RunicAltarCategory implements IRecipeCategory<RunicAltarRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(Reference.MODID, "runic_altar");
     private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/jei/runic_altar.png");
+
     private final IDrawable background;
     private final IDrawable icon;
 
@@ -27,39 +29,41 @@ public class RunicAltarCategory implements IRecipeCategory<RunicAltarRecipe> {
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public @NotNull ResourceLocation getUid() {
         return UID;
     }
 
     @Override
-    public Class<? extends RunicAltarRecipe> getRecipeClass() {
+    public @NotNull Class<? extends RunicAltarRecipe> getRecipeClass() {
         return RunicAltarRecipe.class;
     }
 
     @Override
-    public String getTitle() {
+    public @NotNull String getTitle() {
         return "Runic Infusion";
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return this.background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return this.icon;
     }
 
     @Override
     public void setIngredients(RunicAltarRecipe runicAltarRecipe, IIngredients iIngredients) {
         iIngredients.setOutput(VanillaTypes.ITEM, runicAltarRecipe.getResultItem());
+
         iIngredients.setInputIngredients(runicAltarRecipe.getIngredients());
     }
 
     @Override
-    public void setRecipe(IRecipeLayout iRecipeLayout, RunicAltarRecipe runicAltarRecipe, IIngredients iIngredients) {
+    public void setRecipe(IRecipeLayout iRecipeLayout, @NotNull RunicAltarRecipe runicAltarRecipe, IIngredients iIngredients) {
         IGuiItemStackGroup stacks = iRecipeLayout.getItemStacks();
+
         List<List<ItemStack>> inputs = iIngredients.getInputs(VanillaTypes.ITEM);
         List<List<ItemStack>> outputs = iIngredients.getOutputs(VanillaTypes.ITEM);
 
@@ -70,7 +74,9 @@ public class RunicAltarCategory implements IRecipeCategory<RunicAltarRecipe> {
         stacks.init(4, true, 62, 33);
         stacks.init(5, false, 117, 34);
 
-        for (int i = 0; i < inputs.size(); i++) stacks.set(i, inputs.get(i));
+        for (int i = 0; i < inputs.size(); i++)
+            stacks.set(i, inputs.get(i));
+
         stacks.set(5, outputs.get(0));
     }
 }

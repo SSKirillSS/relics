@@ -11,13 +11,14 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
 public class RelicsJEIPlugin implements IModPlugin {
     public static final ResourceLocation UID = new ResourceLocation(Reference.MODID, "jei_plugin");
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public @NotNull ResourceLocation getPluginUid() {
         return UID;
     }
 
@@ -29,9 +30,12 @@ public class RelicsJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerRecipes(IRecipeRegistration registration) {
+    public void registerRecipes(@NotNull IRecipeRegistration registration) {
         ClientWorld world = Minecraft.getInstance().level;
-        if (world == null) return;
+
+        if (world == null)
+            return;
+
         registration.addRecipes(world.getRecipeManager().getAllRecipesFor(RunicAltarRecipe.RECIPE), RunicAltarCategory.UID);
     }
 }

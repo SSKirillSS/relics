@@ -8,7 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -59,10 +59,10 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg(config.delayDuration)
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg(config.delayDuration)
                         .build())
                 .build();
     }

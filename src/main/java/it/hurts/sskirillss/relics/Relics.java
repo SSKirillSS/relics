@@ -24,12 +24,15 @@ public class Relics {
     public Relics() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupCommon);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueue);
+
         MinecraftForge.EVENT_BUS.register(this);
+
         ItemRegistry.registerItems();
         BlockRegistry.registerBlocks();
         TileRegistry.registerTiles();
         EntityRegistry.registerEntities();
         RecipeRegistry.registerRecipes();
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RelicsConfig.RELICS_CONFIG);
     }
 

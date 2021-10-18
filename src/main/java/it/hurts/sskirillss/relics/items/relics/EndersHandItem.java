@@ -9,7 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.renderer.EndersHandModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -58,14 +58,14 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
                         .build())
-                .ability(new AbilityTooltip.Builder()
+                .shift(ShiftTooltip.builder()
                         .active(Minecraft.getInstance().options.keyShift)
                         .build())
-                .ability(new AbilityTooltip.Builder()
+                .shift(ShiftTooltip.builder()
                         .active()
                         .build())
                 .build();

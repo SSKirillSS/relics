@@ -7,7 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -48,11 +48,11 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg((int) (config.soulFromHealthMultiplier * 100) + "%")
-                        .varArg(config.damageMultiplierPerSoul + "%")
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg((int) (config.soulFromHealthMultiplier * 100) + "%")
+                        .arg(config.damageMultiplierPerSoul + "%")
                         .build())
                 .build();
     }

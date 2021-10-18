@@ -7,8 +7,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.SporeSackModel;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,11 +48,11 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> implements ICu
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg((int) (config.chance * 100) + "%")
-                        .varArg(config.radius)
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg((int) (config.chance * 100) + "%")
+                        .arg(config.radius)
                         .build())
                 .build();
     }

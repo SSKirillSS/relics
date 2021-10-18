@@ -9,7 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.JellyfishNecklaceModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
@@ -53,19 +53,19 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.healMultiplier * 100 - 100) + "%")
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.healMultiplier * 100 - 100) + "%")
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.magicResistance * 100) + "%")
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.magicResistance * 100) + "%")
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("-" + (int) Math.abs(config.swimSpeedModifier * 100) + "%")
+                .shift(ShiftTooltip.builder()
+                        .arg("-" + (int) Math.abs(config.swimSpeedModifier * 100) + "%")
                         .negative()
                         .build())
-                .ability(new AbilityTooltip.Builder()
+                .shift(ShiftTooltip.builder()
                         .active()
                         .build())
                 .build();

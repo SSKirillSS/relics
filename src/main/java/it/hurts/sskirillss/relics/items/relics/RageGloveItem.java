@@ -9,7 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.renderer.RageGloveModel;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
@@ -44,12 +44,12 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.dealtDamageMultiplier * 100) + "%")
-                        .varArg("+" + (int) (config.incomingDamageMultiplier * 100) + "%")
-                        .varArg(config.stackDuration)
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.dealtDamageMultiplier * 100) + "%")
+                        .arg("+" + (int) (config.incomingDamageMultiplier * 100) + "%")
+                        .arg(config.stackDuration)
                         .build())
                 .build();
     }

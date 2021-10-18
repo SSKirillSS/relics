@@ -7,7 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.FragrantFlowerModel;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
@@ -46,13 +46,14 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> impl
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg(config.luringRadius)
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg(config.luringRadius)
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArgs(config.healingMultiplier, config.luringRadius)
+                .shift(ShiftTooltip.builder()
+                        .arg(config.healingMultiplier)
+                        .arg(config.luringRadius)
                         .build())
                 .build();
     }

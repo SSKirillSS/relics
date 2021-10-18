@@ -8,7 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -40,10 +40,12 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArgs(config.feedAmount, config.maxPieces, config.rechargeTime)
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg(config.feedAmount)
+                        .arg(config.maxPieces)
+                        .arg(config.rechargeTime)
                         .build())
                 .build();
     }

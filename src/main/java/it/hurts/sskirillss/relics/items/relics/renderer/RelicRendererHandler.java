@@ -33,20 +33,27 @@ public class RelicRendererHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void handlePostRenderPlayerLow(RenderPlayerEvent.Post event) {
         PlayerEntity player = event.getPlayer();
+
         if (!haveBoot(player))
             return;
+
         restoreItems(cache.getUnchecked(player));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void handlePreRenderPlayerHigh(RenderPlayerEvent.Pre event) {
         PlayerEntity player = event.getPlayer();
+
         if (!haveBoot(player))
             return;
+
         Deque<Runnable> queue = cache.getUnchecked(player);
+
         restoreItems(queue);
+
         NonNullList<ItemStack> armor = player.inventory.armor;
         ItemStack stack = armor.get(0);
+
         queue.add(() -> armor.set(0, stack));
         armor.set(0, ItemStack.EMPTY);
     }
@@ -55,14 +62,18 @@ public class RelicRendererHandler {
     public static void handlePreRenderPlayerLowest(RenderPlayerEvent.Pre event) {
         if (!event.isCanceled())
             return;
+
         PlayerEntity player = event.getPlayer();
+
         if (!haveBoot(player))
             return;
+
         restoreItems(cache.getUnchecked(player));
     }
 
     private static void restoreItems(Deque<Runnable> queue) {
         Runnable runnable;
+
         while ((runnable = queue.poll()) != null) {
             try {
                 runnable.run();
@@ -75,11 +86,14 @@ public class RelicRendererHandler {
     private static boolean haveBoot(PlayerEntity player) {
         if (ModList.get().isLoaded("cosmeticarmorreworked"))
             return false;
+
         LazyOptional<ICuriosItemHandler> helper = CuriosApi.getCuriosHelper().getCuriosHandler(player);
+
         return helper.map(curios -> curios.getStacksHandler("feet").map(handler -> {
             for (int i = 0; i < handler.getSlots(); i++)
                 if (!handler.getStacks().getStackInSlot(i).isEmpty() && handler.getRenders().get(i))
                     return true;
+
             return false;
         }).orElse(false)).orElse(false);
     }

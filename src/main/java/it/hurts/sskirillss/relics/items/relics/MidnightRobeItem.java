@@ -8,7 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -54,13 +54,13 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.speedModifier * 100 - 100) + "%")
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.speedModifier * 100 - 100) + "%")
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArg(config.minLightLevel)
+                .shift(ShiftTooltip.builder()
+                        .arg(config.minLightLevel)
                         .build())
                 .build();
     }

@@ -35,7 +35,6 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RelicItem<T extends RelicStats> extends Item implements ICurioItem {
@@ -144,16 +143,8 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         return null;
     }
 
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip();
-    }
-
-    public List<ITextComponent> getAltTooltip(ItemStack stack) {
-        return new ArrayList<>();
-    }
-
-    public List<ITextComponent> getControlTooltip(ItemStack stack) {
-        return new ArrayList<>();
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return null;
     }
 
     public static boolean isBroken(ItemStack stack) {

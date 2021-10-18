@@ -6,7 +6,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -38,13 +38,13 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg(config.additionalLooting)
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg(config.additionalLooting)
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.petDamageMultiplier * 100 - 100) + "%")
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.petDamageMultiplier * 100 - 100) + "%")
                         .build())
                 .build();
     }

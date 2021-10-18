@@ -60,12 +60,13 @@ public class TooltipHandler {
     }
 
     private static void drawDescription(ItemStack stack, List<ITextComponent> tooltip) {
-        RelicTooltip relicTooltip = ((RelicItem) stack.getItem()).getShiftTooltip(stack);
+        RelicItem<?> relic = (RelicItem<?>) stack.getItem();
+        RelicTooltip relicTooltip = relic.getTooltip(stack);
 
-        if (!relicTooltip.getAbilities().isEmpty() && Screen.hasShiftDown()) {
+        if (!relicTooltip.getShift().isEmpty() && Screen.hasShiftDown()) {
             tooltip.add(new StringTextComponent(" "));
 
-            List<MutablePair<ITextComponent, Boolean>> tooltips = TooltipUtils.buildTooltips(relicTooltip);
+            List<MutablePair<ITextComponent, Boolean>> tooltips = TooltipUtils.buildTooltips(relic);
             List<ITextComponent> active = new ArrayList<>();
             List<ITextComponent> passive = new ArrayList<>();
 
@@ -96,27 +97,29 @@ public class TooltipHandler {
             }
         }
 
-        if (!((RelicItem) stack.getItem()).getAltTooltip(stack).isEmpty() && Screen.hasAltDown()) {
-            tooltip.add(new StringTextComponent(" "));
-            tooltip.addAll(((RelicItem) stack.getItem()).getAltTooltip(stack));
-        }
+        RelicTooltip lines = relic.getTooltip(stack);
 
-        if (!((RelicItem) stack.getItem()).getControlTooltip(stack).isEmpty() && Screen.hasControlDown()) {
-            tooltip.add(new StringTextComponent(" "));
-            tooltip.addAll(((RelicItem) stack.getItem()).getControlTooltip(stack));
-        }
+//        if (!lines.getAlt().isEmpty() && Screen.hasAltDown()) {
+//            tooltip.add(new StringTextComponent(" "));
+//            tooltip.addAll(lines.getAlt());
+//        }
+//
+//        if (!lines.getControl().isEmpty() && Screen.hasControlDown()) {
+//            tooltip.add(new StringTextComponent(" "));
+//            tooltip.addAll(lines.getControl());
+//        }
 
-        if ((!((RelicItem) stack.getItem()).getShiftTooltip(stack).getAbilities().isEmpty() && !Screen.hasShiftDown()) || (!((RelicItem) stack.getItem()).getAltTooltip(stack).isEmpty() && !Screen.hasAltDown())
-                || (!((RelicItem) stack.getItem()).getControlTooltip(stack).isEmpty() && !Screen.hasControlDown()))
+        if ((!lines.getShift().isEmpty() && !Screen.hasShiftDown()) || (!lines.getAlt().isEmpty() && !Screen.hasAltDown())
+                || (!lines.getControl().isEmpty() && !Screen.hasControlDown()))
             tooltip.add(new StringTextComponent(" "));
 
-        if (!Screen.hasShiftDown() && !((RelicItem) stack.getItem()).getShiftTooltip(stack).getAbilities().isEmpty())
+        if (!Screen.hasShiftDown() && !lines.getShift().isEmpty())
             tooltip.add(new TranslationTextComponent("tooltip.relics.shift.tooltip"));
 
-        if (!Screen.hasAltDown() && !((RelicItem) stack.getItem()).getAltTooltip(stack).isEmpty())
+        if (!Screen.hasAltDown() && !lines.getAlt().isEmpty())
             tooltip.add(new TranslationTextComponent("tooltip.relics.alt.tooltip"));
 
-        if (!Screen.hasControlDown() && !((RelicItem) stack.getItem()).getControlTooltip(stack).isEmpty())
+        if (!Screen.hasControlDown() && !lines.getControl().isEmpty())
             tooltip.add(new TranslationTextComponent("tooltip.relics.ctrl.tooltip"));
     }
 

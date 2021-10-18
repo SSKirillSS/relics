@@ -13,7 +13,7 @@ import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -63,11 +63,11 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg(config.maxCharges)
-                        .varArg((int) (config.reflectedDamageMultiplier * 100) + "%")
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg(config.maxCharges)
+                        .arg((int) (config.reflectedDamageMultiplier * 100) + "%")
                         .build())
                 .build();
     }

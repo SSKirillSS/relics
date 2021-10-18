@@ -12,7 +12,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -61,15 +61,15 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg(config.timeBeforeActivation)
-                        .varArg(config.experiencePerSecond)
-                        .varArg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg(config.timeBeforeActivation)
+                        .arg(config.experiencePerSecond)
+                        .arg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())
-                .ability(new AbilityTooltip.Builder()
+                .shift(ShiftTooltip.builder()
                         .build())
                 .build();
     }

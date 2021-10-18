@@ -4,7 +4,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -34,13 +34,13 @@ public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> impl
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.lootingChance * 100) + "%")
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.lootingChance * 100) + "%")
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.fortuneChance * 100) + "%")
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.fortuneChance * 100) + "%")
                         .build())
                 .build();
     }

@@ -8,7 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.DrownedBeltModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -48,15 +48,15 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.dealtDamageMultiplier * 100 - 100) + "%")
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.dealtDamageMultiplier * 100 - 100) + "%")
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArg("+" + (int) (config.incomingDamageMultiplier * 100 - 100) + "%")
+                .shift(ShiftTooltip.builder()
+                        .arg("+" + (int) (config.incomingDamageMultiplier * 100 - 100) + "%")
                         .negative()
                         .build())
                 .build();

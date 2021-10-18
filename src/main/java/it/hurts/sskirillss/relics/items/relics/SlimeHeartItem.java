@@ -8,7 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.AbilityTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -64,14 +64,14 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
     }
 
     @Override
-    public RelicTooltip getShiftTooltip(ItemStack stack) {
-        return new RelicTooltip.Builder(stack)
-                .ability(new AbilityTooltip.Builder()
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .shift(ShiftTooltip.builder()
                         .active(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString()
                                 + " + " + Minecraft.getInstance().options.keyUse.getKey().getDisplayName().getString())
                         .build())
-                .ability(new AbilityTooltip.Builder()
-                        .varArg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
+                .shift(ShiftTooltip.builder()
+                        .arg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
                         .build())
                 .build();
     }
