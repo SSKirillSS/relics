@@ -25,12 +25,12 @@ public class AmphibianBootModel extends BipedModel<LivingEntity> {
         cube_r1.setPos(0.0F, 0.0F, 0.0F);
         model.addChild(cube_r1);
         RenderUtils.setRotationAngle(cube_r1, 0.0F, 0.4363F, 0.0F);
-        cube_r1.texOffs(4, 21).addBox(2.275F, -4.8F, 4.325F, 1.0F, 4.0F, 3.0F, 0.0F, true);
+        cube_r1.texOffs(4, 21).addBox(2.275F, -5.0F, 4.825F, 1.0F, 4.0F, 3.0F, 0.0F, true);
 
         ModelRenderer cube_r2 = new ModelRenderer(this);
         cube_r2.setPos(0.0F, 0.0F, 0.0F);
         model.addChild(cube_r2);
         RenderUtils.setRotationAngle(cube_r2, 0.0F, -0.4363F, 0.0F);
-        cube_r2.texOffs(21, 0).addBox(0.35F, -4.975F, 2.6F, 1.0F, 4.0F, 3.0F, 0.0F, false);
+        cube_r2.texOffs(21, 0).addBox(0.35F, -5.0F, 3.075F, 1.0F, 4.0F, 3.0F, 0.0F, false);
     }
 }
