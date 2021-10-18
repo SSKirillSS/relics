@@ -42,19 +42,13 @@ public class Relics {
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> SlotTypePreset.BELT.getMessageBuilder().build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
-                () -> SlotTypePreset.BODY.getMessageBuilder().build());
-        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
-                () -> SlotTypePreset.BRACELET.getMessageBuilder().build());
-        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
-                () -> SlotTypePreset.CHARM.getMessageBuilder().build());
-        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> SlotTypePreset.HANDS.getMessageBuilder().build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> SlotTypePreset.HEAD.getMessageBuilder().build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> SlotTypePreset.NECKLACE.getMessageBuilder().build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
-                () -> SlotTypePreset.RING.getMessageBuilder().build());
+                () -> SlotTypePreset.RING.getMessageBuilder().size(2).build());
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
                 () -> new SlotTypeMessage.Builder("feet").priority(220)
                         .icon(PlayerContainer.EMPTY_ARMOR_SLOT_BOOTS).build());
