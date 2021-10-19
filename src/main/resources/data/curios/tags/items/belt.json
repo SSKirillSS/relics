@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "relics:drowned_belt",
-    "relics:hunter_belt"
+    "relics:hunter_belt",
+    "relics:leather_belt"
   ]
 }

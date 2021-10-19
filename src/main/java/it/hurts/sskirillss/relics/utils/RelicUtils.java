@@ -150,6 +150,14 @@ public class RelicUtils {
                 LootTables.STRONGHOLD_LIBRARY.toString(),
                 LootTables.ABANDONED_MINESHAFT.toString()
         );
+
+        public static final List<String> VILLAGE = Arrays.asList(
+                LootTables.VILLAGE_DESERT_HOUSE.toString(),
+                LootTables.VILLAGE_SNOWY_HOUSE.toString(),
+                LootTables.VILLAGE_TAIGA_HOUSE.toString(),
+                LootTables.VILLAGE_PLAINS_HOUSE.toString(),
+                LootTables.VILLAGE_SAVANNA_HOUSE.toString()
+        );
     }
 
     public static class Crafting {

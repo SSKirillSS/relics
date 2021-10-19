@@ -63,6 +63,9 @@ public class TooltipHandler {
         RelicItem<?> relic = (RelicItem<?>) stack.getItem();
         RelicTooltip relicTooltip = relic.getTooltip(stack);
 
+        if (relicTooltip == null)
+            return;
+
         if (!relicTooltip.getShift().isEmpty() && Screen.hasShiftDown()) {
             tooltip.add(new StringTextComponent(" "));
 

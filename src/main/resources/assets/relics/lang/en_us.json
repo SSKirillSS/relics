@@ -269,6 +269,8 @@
   "tooltip.relics.slime_heart.ability.2.name": "Elastic",
   "tooltip.relics.slime_heart.ability.2.description": "Expends accumulated slimy energy to suppress fall damage. Holding down the %1$s key will prevent ability triggering",
 
+  "item.relics.leather_belt": "Leather Belt",
+
   "block.relics.magma_stone": "Magma Stone",
   "block.relics.pedestal": "Pedestal",
   "block.relics.runic_altar": "Runic Altar",
@@ -313,6 +315,8 @@
   "advancements.relics.infinity_ham.description": "Obtain the Infinity Ham",
   "advancements.relics.jellyfish_necklace.title" :  "PI-KA-CHU",
   "advancements.relics.jellyfish_necklace.description": "Obtain the Jellyfish Necklace",
+  "advancements.relics.leather_belt.title" :  "Be obedient",
+  "advancements.relics.leather_belt.description": "Obtain the Leather Belt",
   "advancements.relics.lucky_horseshoe.title" :  "Don't amuse my...",
   "advancements.relics.lucky_horseshoe.description": "Obtain the Lucky Horseshoe",
   "advancements.relics.magic_mirror.title" :  "Deja vu",
