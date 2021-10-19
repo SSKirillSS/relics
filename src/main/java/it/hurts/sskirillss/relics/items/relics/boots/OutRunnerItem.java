@@ -85,7 +85,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
             player.maxUpStep = 1.1F;
         } else {
             EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
-                    SPEED_INFO.getLeft(),  movementSpeed.getValue(), AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    SPEED_INFO.getLeft(),  config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
             player.maxUpStep = 0.6F;
         }
@@ -99,7 +99,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> implements ICu
         LivingEntity entity = slotContext.getWearer();
 
         EntityUtils.removeAttributeModifier(entity.getAttribute(Attributes.MOVEMENT_SPEED), new AttributeModifier(SPEED_INFO.getRight(),
-                SPEED_INFO.getLeft(), 0.1, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         entity.maxUpStep = 0.6F;
     }
