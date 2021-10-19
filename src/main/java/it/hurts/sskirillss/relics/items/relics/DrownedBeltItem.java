@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
@@ -24,6 +25,7 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.tuple.MutablePair;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -59,6 +61,13 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
                         .arg("+" + (int) (config.incomingDamageMultiplier * 100 - 100) + "%")
                         .negative()
                         .build())
+                .build();
+    }
+
+    @Override
+    public RelicAttribute getAttributes(ItemStack stack) {
+        return RelicAttribute.builder()
+                .slot(new MutablePair<>("talisman", 1))
                 .build();
     }
 

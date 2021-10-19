@@ -1,10 +1,12 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.handlers.TooltipHandler;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -57,18 +59,47 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
-        LivingEntity entity = slotContext.getWearer();
+        if (isBroken(stack))
+            return;
 
-        if (slotContext.getIdentifier().equals("belt"))
-            CuriosApi.getSlotHelper().growSlotType("talisman", 3, entity);
+        LivingEntity entity = slotContext.getWearer();
+        RelicAttribute modifiers = getAttributes(stack);
+
+        modifiers.getAttributes().forEach(attribute ->
+                EntityUtils.applyAttribute(entity, stack, attribute.getAttribute(), attribute.getMultiplier(), attribute.getOperation()));
+
+        modifiers.getSlots().forEach(slot -> {
+            int amount = slot.getRight();
+
+            if (amount == 0)
+                return;
+
+            if (amount > 0)
+                CuriosApi.getSlotHelper().growSlotType(slot.getLeft(), amount, entity);
+            else
+                CuriosApi.getSlotHelper().shrinkSlotType(slot.getLeft(), Math.abs(amount), entity);
+        });
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         LivingEntity entity = slotContext.getWearer();
+        RelicAttribute modifiers = getAttributes(stack);
 
-        if (slotContext.getIdentifier().equals("belt"))
-            CuriosApi.getSlotHelper().shrinkSlotType("talisman", 3, entity);
+        modifiers.getAttributes().forEach(attribute ->
+                EntityUtils.removeAttribute(entity, stack, attribute.getAttribute(), attribute.getMultiplier(), attribute.getOperation()));
+
+        modifiers.getSlots().forEach(slot -> {
+            int amount = slot.getRight();
+
+            if (amount == 0)
+                return;
+
+            if (amount > 0)
+                CuriosApi.getSlotHelper().shrinkSlotType(slot.getLeft(), amount, entity);
+            else
+                CuriosApi.getSlotHelper().growSlotType(slot.getLeft(), Math.abs(amount), entity);
+        });
     }
 
     @Override
@@ -161,6 +192,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public RelicTooltip getTooltip(ItemStack stack) {
+        return null;
+    }
+
+    public RelicAttribute getAttributes(ItemStack stack) {
         return null;
     }
 

@@ -2,12 +2,13 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -18,6 +19,7 @@ import net.minecraft.loot.LootTables;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.tuple.MutablePair;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -46,6 +48,13 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
                 .shift(ShiftTooltip.builder()
                         .arg("+" + (int) (config.petDamageMultiplier * 100 - 100) + "%")
                         .build())
+                .build();
+    }
+
+    @Override
+    public RelicAttribute getAttributes(ItemStack stack) {
+        return RelicAttribute.builder()
+                .slot(new MutablePair<>("talisman", 1))
                 .build();
     }
 

@@ -1,21 +1,19 @@
 package it.hurts.sskirillss.relics.items.relics.boots;
 
-import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.IceBreakerModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -32,10 +30,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
-
-import java.util.UUID;
 
 public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements ICurioItem {
 
@@ -72,17 +67,11 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> result = super.getAttributeModifiers(slotContext, uuid, stack);
-
-        if (!RelicItem.isBroken(stack)) {
-            result.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, Reference.MODID + ":" + "ice_breaker_movement_speed",
-                    config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
-            result.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, Reference.MODID + ":" + "ice_breaker_knockback_resistance",
-                    config.knockbackResistanceModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
-        }
-
-        return result;
+    public RelicAttribute getAttributes(ItemStack stack) {
+        return RelicAttribute.builder()
+                .attribute(new RelicAttribute.Modifier(Attributes.MOVEMENT_SPEED, config.speedModifier))
+                .attribute(new RelicAttribute.Modifier(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistanceModifier))
+                .build();
     }
 
     @Override

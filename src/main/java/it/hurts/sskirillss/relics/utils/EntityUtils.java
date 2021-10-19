@@ -2,17 +2,22 @@ package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public class EntityUtils {
@@ -89,6 +94,48 @@ public class EntityUtils {
         }
 
         return entity == null ? null : new EntityRayTraceResult(entity, vector3d);
+    }
+
+    private static String getAttributeName(ItemStack stack, Attribute attribute) {
+        return stack.getItem().getRegistryName().getPath() + "_" + attribute.getRegistryName().getPath();
+    }
+
+    public static boolean applyAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
+        String name = getAttributeName(stack, attribute);
+
+        if (name.equals(""))
+            return false;
+
+        UUID uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
+
+        ModifiableAttributeInstance instance = entity.getAttribute(attribute);
+        AttributeModifier modifier = new AttributeModifier(uuid, name, value, operation);
+
+        if (instance == null || instance.hasModifier(modifier))
+            return false;
+
+        instance.addTransientModifier(modifier);
+
+        return true;
+    }
+
+    public static boolean removeAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
+        String name = getAttributeName(stack, attribute);
+
+        if (name.equals(""))
+            return false;
+
+        UUID uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
+
+        ModifiableAttributeInstance instance = entity.getAttribute(attribute);
+        AttributeModifier modifier = new AttributeModifier(uuid, name, value, operation);
+
+        if (instance == null || !instance.hasModifier(modifier))
+            return false;
+
+        instance.removeModifier(modifier);
+
+        return true;
     }
 
     public static void applyAttributeModifier(ModifiableAttributeInstance instance, AttributeModifier modifier) {
