@@ -65,6 +65,9 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         LivingEntity entity = slotContext.getWearer();
         RelicAttribute modifiers = getAttributes(stack);
 
+        if (modifiers == null)
+            return;
+
         modifiers.getAttributes().forEach(attribute ->
                 EntityUtils.applyAttribute(entity, stack, attribute.getAttribute(), attribute.getMultiplier(), attribute.getOperation()));
 
@@ -85,6 +88,9 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         LivingEntity entity = slotContext.getWearer();
         RelicAttribute modifiers = getAttributes(stack);
+
+        if (modifiers == null)
+            return;
 
         modifiers.getAttributes().forEach(attribute ->
                 EntityUtils.removeAttribute(entity, stack, attribute.getAttribute(), attribute.getMultiplier(), attribute.getOperation()));
@@ -125,6 +131,17 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
             return;
 
         matrixStack.pushPose();
+
+        if (identifier.equals("talisman")) {
+            if (index > 3)
+                return;
+
+            float xOffset = index * 0.3F - 0.625F;
+            float zOffset = (index == 0 || index == 3 ? 0.15F : 0F) - 0.1F;
+
+            matrixStack.scale(0.75F, 0.75F, 0.75F);
+            matrixStack.translate(xOffset, 0.35F, zOffset);
+        }
 
         model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
