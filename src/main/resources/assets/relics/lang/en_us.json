@@ -18,6 +18,8 @@
 
   "curios.identifier.feet": "Feet",
   "curios.modifiers.feet": "When on feet:",
+  "curios.identifier.talisman": "Talisman",
+  "curios.modifiers.talisman": "When equipped as talisman:",
 
   "item.relics.chrysolite": "Chrysolite",
   "item.relics.aquasteel_ingot": "Aquasteel Ingot",

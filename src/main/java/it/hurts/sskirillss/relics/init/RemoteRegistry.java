@@ -17,9 +17,11 @@ import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -28,6 +30,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class RemoteRegistry {
+    public static final ResourceLocation TALISMAN_ICON = new ResourceLocation(Reference.MODID, "gui/curios/empty_talisman_slot");
+    public static final ResourceLocation FEET_ICON = new ResourceLocation(Reference.MODID, "gui/curios/empty_feet_slot");
+
+    @SubscribeEvent
+    public static void onTextureStitch(TextureStitchEvent.Pre event) {
+        if (event.getMap().location().equals(AtlasTexture.LOCATION_BLOCKS)) {
+            event.addSprite(TALISMAN_ICON);
+            event.addSprite(FEET_ICON);
+        }
+    }
+
     @SubscribeEvent
     public static void setupClient(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), new StellarCatalystProjectileRenderer.RenderFactory());

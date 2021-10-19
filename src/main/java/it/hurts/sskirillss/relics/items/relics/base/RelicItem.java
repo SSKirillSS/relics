@@ -29,6 +29,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -52,6 +53,22 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
         setData(data);
         setConfig((T) data.getConfig().newInstance());
+    }
+
+    @Override
+    public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
+        LivingEntity entity = slotContext.getWearer();
+
+        if (slotContext.getIdentifier().equals("belt"))
+            CuriosApi.getSlotHelper().growSlotType("talisman", 3, entity);
+    }
+
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        LivingEntity entity = slotContext.getWearer();
+
+        if (slotContext.getIdentifier().equals("belt"))
+            CuriosApi.getSlotHelper().shrinkSlotType("talisman", 3, entity);
     }
 
     @Override

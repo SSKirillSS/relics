@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "relics:stellar_catalyst",
+    "relics:lucky_horseshoe",
+    "relics:soul_devourer",
+    "relics:scarab_talisman",
+    "relics:blazing_flask",
+    "relics:spore_sack",
+    "relics:slime_heart",
+    "relics:chorus_inhibitor"
+  ]
+}

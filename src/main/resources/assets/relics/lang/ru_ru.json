@@ -19,6 +19,8 @@
 
   "curios.identifier.feet": "Ноги",
   "curios.modifiers.feet": "Если надето на ноги:",
+  "curios.identifier.talisman": "Талисман",
+  "curios.modifiers.talisman": "Когда экипировано как талисман:",
 
   "item.relics.chrysolite": "Хризолит",
   "item.relics.aquasteel_ingot": "Слиток аквастали",
