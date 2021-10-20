@@ -5,11 +5,12 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -30,7 +31,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -160,58 +160,52 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
 
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), player).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DELAY_RING.get());
 
-                if (isBroken(stack) || player.getCooldowns().isOnCooldown(stack.getItem()))
-                    return;
+            if (stack.isEmpty())
+                return;
 
-                Entity source = event.getSource().getEntity();
+            Entity source = event.getSource().getEntity();
 
-                if (source instanceof PlayerEntity)
-                    NBTUtils.setString(stack, TAG_KILLER_UUID, source.getUUID().toString());
+            if (source instanceof PlayerEntity)
+                NBTUtils.setString(stack, TAG_KILLER_UUID, source.getUUID().toString());
 
-                NBTUtils.setInt(stack, TAG_UPDATE_TIME, config.delayDuration);
-                NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
+            NBTUtils.setInt(stack, TAG_UPDATE_TIME, config.delayDuration);
+            NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
 
-                player.setHealth(1.0F);
+            player.setHealth(1.0F);
 
-                event.setCanceled(true);
-            });
+            event.setCanceled(true);
         }
 
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), event.getEntityLiving()).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.DELAY_RING.get());
 
-                if (isBroken(stack) || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
-                    return;
+            if (stack.isEmpty() || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
+                return;
 
-                NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
-                        - Math.round(event.getAmount() * config.damageMultiplier));
+            NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
+                    - Math.round(event.getAmount() * config.damageMultiplier));
 
-                event.setCanceled(true);
-            });
+            event.setCanceled(true);
         }
 
         @SubscribeEvent
         public static void onEntityHeal(LivingHealEvent event) {
             Stats config = INSTANCE.config;
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DELAY_RING.get(), event.getEntityLiving()).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.DELAY_RING.get());
 
-                if (isBroken(stack) || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
-                    return;
+            if (stack.isEmpty() || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
+                return;
 
-                NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
-                        + Math.round(event.getAmount() * config.healMultiplier));
+            NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
+                    + Math.round(event.getAmount() * config.healMultiplier));
 
-                event.setCanceled(true);
-            });
+            event.setCanceled(true);
         }
     }
 

@@ -1,20 +1,19 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.JellyfishNecklaceModel;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -29,11 +28,7 @@ import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
-
-import java.util.UUID;
 
 public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats> implements ICurioItem {
     public static JellyfishNecklaceItem INSTANCE;
@@ -72,6 +67,13 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     }
 
     @Override
+    public RelicAttribute getAttributes(ItemStack stack) {
+        return RelicAttribute.builder()
+                .attribute(new RelicAttribute.Modifier(ForgeMod.SWIM_SPEED.get(), config.swimSpeedModifier))
+                .build();
+    }
+
+    @Override
     public void castAbility(PlayerEntity player, ItemStack stack) {
         if (!player.isInWaterOrRain() || player.getCooldowns().isOnCooldown(stack.getItem()))
             return;
@@ -96,17 +98,6 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> result = super.getAttributeModifiers(slotContext, uuid, stack);
-
-        if (!isBroken(stack))
-            result.put(ForgeMod.SWIM_SPEED.get(), new AttributeModifier(uuid, Reference.MODID + ":" + "ice_breaker_movement_speed",
-                    config.swimSpeedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
-
-        return result;
-    }
-
-    @Override
     @OnlyIn(Dist.CLIENT)
     public BipedModel<LivingEntity> getModel() {
         return new JellyfishNecklaceModel();
@@ -119,29 +110,22 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
             Stats config = INSTANCE.config;
             LivingEntity entity = event.getEntityLiving();
 
-            if (!entity.isInWater())
+            if (EntityUtils.findEquippedCurio(entity, ItemRegistry.JELLYFISH_NECKLACE.get()).isEmpty()
+                    || !entity.isInWater())
                 return;
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.JELLYFISH_NECKLACE.get(), entity).ifPresent(triple -> {
-                if (isBroken(triple.getRight()))
-                    return;
 
-                event.setAmount(event.getAmount() * config.healMultiplier);
-            });
+            event.setAmount(event.getAmount() * config.healMultiplier);
         }
 
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
             Stats config = INSTANCE.config;
 
-            if (event.getSource() != DamageSource.MAGIC)
+            if (EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.JELLYFISH_NECKLACE.get()).isEmpty()
+                    || event.getSource() != DamageSource.MAGIC)
                 return;
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.JELLYFISH_NECKLACE.get(), event.getEntityLiving()).ifPresent(triple -> {
-                if (isBroken(triple.getRight()))
-                    return;
-
-                event.setAmount(event.getAmount() * config.magicResistance);
-            });
+            event.setAmount(event.getAmount() * config.magicResistance);
         }
     }
 

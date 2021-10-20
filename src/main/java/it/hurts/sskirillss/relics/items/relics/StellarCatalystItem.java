@@ -6,6 +6,7 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
@@ -20,7 +21,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> implements ICurioItem {
@@ -63,25 +63,23 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> im
 
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.STELLAR_CATALYST.get(), player).ifPresent(triple -> {
-                if (isBroken(triple.getRight()))
-                    return;
+            if (EntityUtils.findEquippedCurio(player, ItemRegistry.STELLAR_CATALYST.get()).isEmpty())
+                return;
 
-                LivingEntity target = event.getEntityLiving();
-                World world = target.getCommandSenderWorld();
+            LivingEntity target = event.getEntityLiving();
+            World world = target.getCommandSenderWorld();
 
-                if (world.isNight() && world.canSeeSky(target.blockPosition())
-                        && random.nextFloat() <= config.chance) {
-                    StellarCatalystProjectileEntity projectile = new StellarCatalystProjectileEntity((LivingEntity) event.getSource().getEntity(),
-                            event.getEntityLiving(), event.getAmount() * config.damageMultiplier);
+            if (world.isNight() && world.canSeeSky(target.blockPosition())
+                    && random.nextFloat() <= config.chance) {
+                StellarCatalystProjectileEntity projectile = new StellarCatalystProjectileEntity((LivingEntity) event.getSource().getEntity(),
+                        event.getEntityLiving(), event.getAmount() * config.damageMultiplier);
 
-                    projectile.setPos(target.getX(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(),
-                            target.getY() + target.getCommandSenderWorld().getRandom().nextInt(config.additionalSummonHeight) + config.minSummonHeight)), target.getZ());
-                    projectile.owner = player;
+                projectile.setPos(target.getX(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(),
+                        target.getY() + target.getCommandSenderWorld().getRandom().nextInt(config.additionalSummonHeight) + config.minSummonHeight)), target.getZ());
+                projectile.owner = player;
 
-                    world.addFreshEntity(projectile);
-                }
-            });
+                world.addFreshEntity(projectile);
+            }
         }
     }
 

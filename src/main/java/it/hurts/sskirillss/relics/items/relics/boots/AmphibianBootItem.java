@@ -19,6 +19,7 @@ import net.minecraftforge.common.ForgeMod;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> implements ICurioItem {
+
     public static AmphibianBootItem INSTANCE;
 
     public AmphibianBootItem() {

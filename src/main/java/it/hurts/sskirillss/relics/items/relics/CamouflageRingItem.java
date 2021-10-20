@@ -5,10 +5,11 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.block.BushBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
@@ -20,11 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
-
-import java.util.Optional;
 
 public class CamouflageRingItem extends RelicItem<RelicStats> implements ICurioItem {
     public CamouflageRingItem() {
@@ -53,9 +50,7 @@ public class CamouflageRingItem extends RelicItem<RelicStats> implements ICurioI
     }
 
     private static boolean canHide(LivingEntity entity) {
-        Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CAMOUFLAGE_RING.get(), entity);
-
-        return optional.isPresent() && !isBroken(optional.get().getRight()) && entity.isShiftKeyDown()
+        return !EntityUtils.findEquippedCurio(entity, ItemRegistry.CAMOUFLAGE_RING.get()).isEmpty() && entity.isShiftKeyDown()
                 && entity.getCommandSenderWorld().getBlockState(entity.blockPosition()).getBlock() instanceof BushBlock;
     }
 

@@ -9,8 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.renderer.EndersHandModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
@@ -33,7 +33,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.function.Predicate;
@@ -131,12 +130,15 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
     public static class EndersHandClientEvents {
         @SubscribeEvent
         public static void onFOVUpdate(FOVUpdateEvent event) {
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ENDERS_HAND.get(), event.getEntity()).ifPresent(triple -> {
-                int time = NBTUtils.getInt(triple.getRight(), TAG_UPDATE_TIME, 0);
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.ENDERS_HAND.get());
 
-                if (time > 0 && !isBroken(triple.getRight()))
-                    event.setNewfov(event.getNewfov() - time / 32.0F);
-            });
+            if (stack.isEmpty())
+                return;
+
+            int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
+
+            if (time > 0)
+                event.setNewfov(event.getNewfov() - time / 32.0F);
         }
     }
 

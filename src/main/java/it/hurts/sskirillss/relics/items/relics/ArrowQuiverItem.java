@@ -8,10 +8,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.ArrowQuiverModel;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -37,7 +38,6 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.ArrayList;
@@ -151,41 +151,42 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
                 return;
 
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-            Item item = ItemRegistry.ARROW_QUIVER.get();
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(item, player).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
-                World world = player.getCommandSenderWorld();
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-                if (isBroken(stack) || !NBTUtils.getBoolean(stack, TAG_CHARGED, false))
-                    return;
+            if (stack.isEmpty())
+                return;
 
-                event.setCanceled(true);
+            World world = player.getCommandSenderWorld();
 
-                ItemStack bow = event.getBow();
-                ItemStack ammo = player.getProjectile(bow);
+            if (!NBTUtils.getBoolean(stack, TAG_CHARGED, false))
+                return;
 
-                if (ammo.isEmpty())
-                    return;
+            event.setCanceled(true);
 
-                AbstractArrowEntity projectile = ((ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW)).createArrow(world, ammo, player);
+            ItemStack bow = event.getBow();
+            ItemStack ammo = player.getProjectile(bow);
 
-                if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, bow) <= 0 && !player.isCreative()) {
-                    projectile.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
-                    ammo.shrink(1);
-                }
+            if (ammo.isEmpty())
+                return;
 
-                projectile.shootFromRotation(player, player.xRot, player.yRot, 0.0F, BowItem.getPowerForTime(event.getCharge()) * 3F, 0F);
-                world.addFreshEntity(projectile);
+            AbstractArrowEntity projectile = ((ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW)).createArrow(world, ammo, player);
 
-                NBTUtils.setString(stack, TAG_ARROW, projectile.getStringUUID());
+            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, bow) <= 0 && !player.isCreative()) {
+                projectile.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+                ammo.shrink(1);
+            }
 
-                player.getCooldowns().addCooldown(item, config.activeCooldown * 20);
+            projectile.shootFromRotation(player, player.xRot, player.yRot, 0.0F, BowItem.getPowerForTime(event.getCharge()) * 3F, 0F);
+            world.addFreshEntity(projectile);
 
-                world.addParticle(ParticleTypes.EXPLOSION, player.getX(), player.getY() + 1, player.getZ(), 0, 0, 0);
-                world.playSound(player, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
-                world.playSound(player, player.blockPosition(), SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundCategory.PLAYERS, 1F, 1.75F);
-            });
+            NBTUtils.setString(stack, TAG_ARROW, projectile.getStringUUID());
+
+            player.getCooldowns().addCooldown(stack.getItem(), config.activeCooldown * 20);
+
+            world.addParticle(ParticleTypes.EXPLOSION, player.getX(), player.getY() + 1, player.getZ(), 0, 0, 0);
+            world.playSound(player, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
+            world.playSound(player, player.blockPosition(), SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundCategory.PLAYERS, 1F, 1.75F);
         }
 
         @SubscribeEvent
@@ -205,35 +206,37 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
             if (owner == null)
                 return;
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ARROW_QUIVER.get(), owner).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
-                World world = owner.getCommandSenderWorld();
+            ItemStack stack = EntityUtils.findEquippedCurio(owner, ItemRegistry.ARROW_QUIVER.get());
 
-                if (isBroken(stack) || !event.getEntity().getUUID().toString().equals(NBTUtils.getString(stack, TAG_ARROW, "")))
+            if (stack.isEmpty())
+                return;
+
+            World world = owner.getCommandSenderWorld();
+
+            if (isBroken(stack) || !event.getEntity().getUUID().toString().equals(NBTUtils.getString(stack, TAG_ARROW, "")))
+                return;
+
+            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(config.explosionRadius))) {
+                if (world.isClientSide())
                     return;
 
-                for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(config.explosionRadius))) {
-                    if (world.isClientSide())
-                        return;
+                Vector3d motion = entity.position().add(0F, 2.25F, 0F).subtract(projectile.position())
+                        .normalize().multiply(1.5F, 1.5F, 1.5F);
 
-                    Vector3d motion = entity.position().add(0F, 2.25F, 0F).subtract(projectile.position())
-                            .normalize().multiply(1.5F, 1.5F, 1.5F);
+                if (!world.isClientSide() && entity instanceof ServerPlayerEntity)
+                    NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x(), motion.y(), motion.z()), (ServerPlayerEntity) entity);
+                else
+                    entity.setDeltaMovement(motion);
 
-                    if (!world.isClientSide() && entity instanceof ServerPlayerEntity)
-                        NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x(), motion.y(), motion.z()), (ServerPlayerEntity) entity);
-                    else
-                        entity.setDeltaMovement(motion);
+                if (!entity.getStringUUID().equals(owner.getStringUUID()))
+                    entity.hurt(DamageSource.playerAttack(owner), (float) Math.min(config.maxExplosionDamage,
+                            entity.position().distanceTo(owner.position()) * config.explosionDamageMultiplier));
+            }
 
-                    if (!entity.getStringUUID().equals(owner.getStringUUID()))
-                        entity.hurt(DamageSource.playerAttack(owner), (float) Math.min(config.maxExplosionDamage,
-                                entity.position().distanceTo(owner.position()) * config.explosionDamageMultiplier));
-                }
+            NBTUtils.setString(stack, TAG_ARROW, "");
+            NBTUtils.setBoolean(stack, TAG_CHARGED, false);
 
-                NBTUtils.setString(stack, TAG_ARROW, "");
-                NBTUtils.setBoolean(stack, TAG_CHARGED, false);
-
-                world.playSound(null, projectile.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
-            });
+            world.playSound(null, projectile.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
         }
     }
 

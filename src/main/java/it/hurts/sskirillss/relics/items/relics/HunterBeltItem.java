@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.HunterBeltModel;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
@@ -24,7 +25,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.MutablePair;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements ICurioItem {
@@ -85,14 +85,11 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
 
             TameableEntity pet = (TameableEntity) entity;
 
-            if (pet.getOwner() instanceof PlayerEntity)
-                CuriosApi.getCuriosHelper()
-                        .findEquippedCurio(ItemRegistry.HUNTER_BELT.get(), pet.getOwner()).ifPresent(triple -> {
-                    if (isBroken(triple.getRight()))
-                        return;
+            if (!(pet.getOwner() instanceof PlayerEntity)
+                    && EntityUtils.findEquippedCurio(pet.getOwner(), ItemRegistry.HUNTER_BELT.get()).isEmpty())
+                return;
 
-                    event.setAmount(event.getAmount() * config.petDamageMultiplier);
-                });
+            event.setAmount(event.getAmount() * config.petDamageMultiplier);
         }
     }
 

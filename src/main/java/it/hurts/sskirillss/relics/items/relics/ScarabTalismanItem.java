@@ -10,8 +10,8 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -168,34 +168,26 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
         public static void onEntityHurt(LivingHurtEvent event) {
             LivingEntity entity = event.getEntityLiving();
 
-            if (event.getSource() != DamageSource.IN_WALL)
+            if (EntityUtils.findEquippedCurio(entity, ItemRegistry.SCARAB_TALISMAN.get()).isEmpty()
+                    || event.getSource() != DamageSource.IN_WALL)
                 return;
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), entity).ifPresent(triple -> {
-                if (isBroken(triple.getRight()))
-                    return;
+            entity.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
 
-                entity.heal(event.getAmount());
-
-                event.setCanceled(true);
-            });
+            event.setCanceled(true);
         }
 
         @SubscribeEvent
         public static void onEntityAttack(LivingAttackEvent event) {
             LivingEntity entity = event.getEntityLiving();
 
-            if (event.getSource() != DamageSource.IN_WALL)
+            if (EntityUtils.findEquippedCurio(entity, ItemRegistry.SCARAB_TALISMAN.get()).isEmpty()
+                    || event.getSource() != DamageSource.IN_WALL)
                 return;
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), entity).ifPresent(triple -> {
-                if (isBroken(triple.getRight()))
-                    return;
+            entity.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
 
-                entity.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
-
-                event.setCanceled(true);
-            });
+            event.setCanceled(true);
         }
 
         @SubscribeEvent

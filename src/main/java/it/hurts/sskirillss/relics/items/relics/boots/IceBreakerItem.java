@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.IceBreakerModel;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -29,7 +30,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements ICurioItem {
@@ -107,37 +107,33 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
 
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.ICE_BREAKER.get(), player).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
+            if (EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_BREAKER.get()).isEmpty())
+                return;
 
-                if (player.getCooldowns().isOnCooldown(stack.getItem()) || isBroken(stack))
-                    return;
+            float distance = event.getDistance();
+            World world = player.getCommandSenderWorld();
 
-                float distance = event.getDistance();
-                World world = player.getCommandSenderWorld();
+            if (distance < 2 || !player.isShiftKeyDown())
+                return;
 
-                if (distance < 2 || !player.isShiftKeyDown())
-                    return;
+            world.playSound(null, player.blockPosition(), SoundEvents.WITHER_BREAK_BLOCK,
+                    SoundCategory.PLAYERS, 0.75F, 1.0F);
+            world.addParticle(ParticleTypes.EXPLOSION_EMITTER, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
 
-                world.playSound(null, player.blockPosition(), SoundEvents.WITHER_BREAK_BLOCK,
-                        SoundCategory.PLAYERS, 0.75F, 1.0F);
-                world.addParticle(ParticleTypes.EXPLOSION_EMITTER, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
+            player.getCooldowns().addCooldown(ItemRegistry.ICE_BREAKER.get(), Math.round(distance * config.stompCooldownMultiplier * 20));
 
-                player.getCooldowns().addCooldown(ItemRegistry.ICE_BREAKER.get(), Math.round(distance * config.stompCooldownMultiplier * 20));
+            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class,
+                    player.getBoundingBox().inflate(distance * config.stompRadiusMultiplier))) {
+                if (entity == player)
+                    continue;
 
-                for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class,
-                        player.getBoundingBox().inflate(distance * config.stompRadiusMultiplier))) {
-                    if (entity == player)
-                        continue;
+                entity.hurt(DamageSource.playerAttack(player), Math.min(config.maxDealtDamage,
+                        distance * config.dealtDamageMultiplier));
+                entity.setDeltaMovement(entity.position().subtract(player.position()).add(0, 1.005F, 0)
+                        .multiply(config.stompMotionMultiplier, config.stompMotionMultiplier, config.stompMotionMultiplier));
+            }
 
-                    entity.hurt(DamageSource.playerAttack(player), Math.min(config.maxDealtDamage,
-                            distance * config.dealtDamageMultiplier));
-                    entity.setDeltaMovement(entity.position().subtract(player.position()).add(0, 1.005F, 0)
-                            .multiply(config.stompMotionMultiplier, config.stompMotionMultiplier, config.stompMotionMultiplier));
-                }
-
-                event.setDamageMultiplier(config.incomingFallDamageMultiplier);
-            });
+            event.setDamageMultiplier(config.incomingFallDamageMultiplier);
         }
     }
 

@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
@@ -23,7 +24,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> implements ICurioItem {
@@ -63,38 +63,35 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> im
 
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.CHORUS_INHIBITOR.get(), player).ifPresent(triple -> {
+            if (EntityUtils.findEquippedCurio(player, ItemRegistry.CHORUS_INHIBITOR.get()).isEmpty())
+                return;
 
-                if (isBroken(triple.getRight()))
-                    return;
+            World world = player.getCommandSenderWorld();
+            Vector3d view = player.getViewVector(0);
+            Vector3d eyeVec = player.getEyePosition(0);
+            BlockRayTraceResult ray = world.clip(new RayTraceContext(eyeVec, eyeVec.add(view.x * config.maxDistance, view.y * config.maxDistance,
+                    view.z * config.maxDistance), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
+            BlockPos pos = ray.getBlockPos();
 
-                World world = player.getCommandSenderWorld();
-                Vector3d view = player.getViewVector(0);
-                Vector3d eyeVec = player.getEyePosition(0);
-                BlockRayTraceResult ray = world.clip(new RayTraceContext(eyeVec, eyeVec.add(view.x * config.maxDistance, view.y * config.maxDistance,
-                        view.z * config.maxDistance), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
-                BlockPos pos = ray.getBlockPos();
+            if (!world.getBlockState(pos).getMaterial().isSolid())
+                return;
 
-                if (!world.getBlockState(pos).getMaterial().isSolid())
-                    return;
+            pos = pos.above();
 
-                pos = pos.above();
+            for (int i = 0; i < config.safeChecks; i++) {
+                if (world.getBlockState(pos).getMaterial().blocksMotion() || world.getBlockState(pos.above()).getMaterial().blocksMotion()) {
+                    pos = pos.above();
 
-                for (int i = 0; i < config.safeChecks; i++) {
-                    if (world.getBlockState(pos).getMaterial().blocksMotion() || world.getBlockState(pos.above()).getMaterial().blocksMotion()) {
-                        pos = pos.above();
-
-                        continue;
-                    }
-
-                    event.setCanceled(true);
-
-                    player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
-                    world.playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-                    break;
+                    continue;
                 }
-            });
+
+                event.setCanceled(true);
+
+                player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
+                world.playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+                break;
+            }
         }
     }
 

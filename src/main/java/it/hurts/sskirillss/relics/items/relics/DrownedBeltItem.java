@@ -7,10 +7,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.DrownedBeltModel;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
@@ -26,7 +27,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.MutablePair;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements ICurioItem {
@@ -94,14 +94,9 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
                 value = config.dealtDamageMultiplier;
             }
 
-            if (player != null && player.isUnderWater()) {
-                float multiplier = value;
-
-                CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(), player).ifPresent(triple -> {
-                    if (!isBroken(triple.getRight()))
-                        event.setAmount(event.getAmount() * multiplier);
-                });
-            }
+            if (player != null && player.isUnderWater()
+                    && !EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get()).isEmpty())
+                event.setAmount(event.getAmount() * value);
         }
 
         @SubscribeEvent
@@ -128,18 +123,16 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
 
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.DROWNED_BELT.get(), player).ifPresent(triple -> {
-                if (isBroken(triple.getRight()))
-                    return;
+            if (EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get()).isEmpty())
+                return;
 
-                int duration = stack.getItem().getUseDuration(stack) - event.getDuration();
-                int enchantment = EnchantmentHelper.getRiptide(stack);
+            int duration = stack.getItem().getUseDuration(stack) - event.getDuration();
+            int enchantment = EnchantmentHelper.getRiptide(stack);
 
-                if (duration < 10 || enchantment <= 0)
-                    return;
+            if (duration < 10 || enchantment <= 0)
+                return;
 
-                player.getCooldowns().addCooldown(stack.getItem(), (config.riptideCooldown / (enchantment + 1)) * 20);
-            });
+            player.getCooldowns().addCooldown(stack.getItem(), (config.riptideCooldown / (enchantment + 1)) * 20);
         }
     }
 

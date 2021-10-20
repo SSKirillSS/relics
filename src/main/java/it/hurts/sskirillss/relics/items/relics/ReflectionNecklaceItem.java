@@ -10,11 +10,12 @@ import it.hurts.sskirillss.relics.items.relics.renderer.ReflectionNecklaceModel;
 import it.hurts.sskirillss.relics.items.relics.renderer.ReflectionNecklaceShieldModel;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -40,7 +41,6 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Stats> implements ICurioItem {
@@ -133,41 +133,39 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
             if (!(event.getEntityLiving() instanceof PlayerEntity))
                 return;
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), event.getEntityLiving()).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.REFLECTION_NECKLACE.get());
 
-                if (isBroken(stack))
-                    return;
+            if (stack.isEmpty())
+                return;
 
-                PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-                int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
+            int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
 
-                if (charges <= 0 || !(event.getSource().getEntity() instanceof LivingEntity))
-                    return;
+            if (charges <= 0 || !(event.getSource().getEntity() instanceof LivingEntity))
+                return;
 
-                LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
+            LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
 
-                if (attacker == null || attacker == player)
-                    return;
+            if (attacker == null || attacker == player)
+                return;
 
-                if (player.position().distanceTo(attacker.position()) < 10) {
-                    Vector3d motion = attacker.position().subtract(player.position()).normalize().multiply(2F, 1.5F, 2F);
+            if (player.position().distanceTo(attacker.position()) < 10) {
+                Vector3d motion = attacker.position().subtract(player.position()).normalize().multiply(2F, 1.5F, 2F);
 
-                    if (attacker instanceof PlayerEntity)
-                        NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) attacker);
-                    else
-                        attacker.setDeltaMovement(motion);
+                if (attacker instanceof PlayerEntity)
+                    NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) attacker);
+                else
+                    attacker.setDeltaMovement(motion);
 
-                    player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                            SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 0.5F, 1.0F);
-                }
+                player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 0.5F, 1.0F);
+            }
 
-                NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, charges - 1);
+            NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, charges - 1);
 
-                attacker.hurt(DamageSource.playerAttack(player), event.getAmount() * config.reflectedDamageMultiplier);
+            attacker.hurt(DamageSource.playerAttack(player), event.getAmount() * config.reflectedDamageMultiplier);
 
-                event.setCanceled(true);
-            });
+            event.setCanceled(true);
         }
 
         @SubscribeEvent
@@ -183,33 +181,31 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
             PlayerEntity player = (PlayerEntity) target;
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.REFLECTION_NECKLACE.get(), player).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.REFLECTION_NECKLACE.get());
 
-                if (isBroken(stack) || NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) <= 0)
-                    return;
+            if (stack.isEmpty() || NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) <= 0)
+                return;
 
-                undefinedProjectile.setDeltaMovement(undefinedProjectile.getDeltaMovement().reverse());
+            undefinedProjectile.setDeltaMovement(undefinedProjectile.getDeltaMovement().reverse());
 
-                if (undefinedProjectile instanceof DamagingProjectileEntity) {
-                    DamagingProjectileEntity projectile = (DamagingProjectileEntity) undefinedProjectile;
+            if (undefinedProjectile instanceof DamagingProjectileEntity) {
+                DamagingProjectileEntity projectile = (DamagingProjectileEntity) undefinedProjectile;
 
-                    projectile.setOwner(player);
+                projectile.setOwner(player);
 
-                    projectile.xPower *= -1;
-                    projectile.yPower *= -1;
-                    projectile.zPower *= -1;
-                }
+                projectile.xPower *= -1;
+                projectile.yPower *= -1;
+                projectile.zPower *= -1;
+            }
 
-                event.setCanceled(true);
+            event.setCanceled(true);
 
-                undefinedProjectile.hurtMarked = true;
+            undefinedProjectile.hurtMarked = true;
 
-                NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) - 1);
+            NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) - 1);
 
-                player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 0.5F, 1.0F);
-            });
+            player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 0.5F, 1.0F);
         }
     }
 

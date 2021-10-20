@@ -8,10 +8,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.MagmaWalkerModel;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
@@ -32,7 +33,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem {
@@ -91,26 +91,16 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
 
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
-            if (event.getSource() != DamageSource.HOT_FLOOR)
-                return;
-
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MAGMA_WALKER.get(),
-                    event.getEntityLiving()).ifPresent(triple -> {
-                if (!isBroken(triple.getRight()))
-                    event.setCanceled(true);
-            });
+            if (!EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get()).isEmpty()
+                    && event.getSource() == DamageSource.HOT_FLOOR)
+                event.setCanceled(true);
         }
 
         @SubscribeEvent
         public static void onLivingAttack(LivingAttackEvent event) {
-            if (event.getSource() != DamageSource.HOT_FLOOR)
-                return;
-
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MAGMA_WALKER.get(),
-                    event.getEntityLiving()).ifPresent(triple -> {
-                if (!isBroken(triple.getRight()))
-                    event.setCanceled(true);
-            });
+            if (!EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get()).isEmpty()
+                    && event.getSource() == DamageSource.HOT_FLOOR)
+                event.setCanceled(true);
         }
     }
 }

@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -13,6 +14,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -146,5 +149,23 @@ public class EntityUtils {
     public static void removeAttributeModifier(ModifiableAttributeInstance instance, AttributeModifier modifier) {
         if (instance.hasModifier(modifier))
             instance.removeModifier(modifier);
+    }
+
+    public static ItemStack findEquippedCurio(LivingEntity entity, Item item) {
+        if (!(entity instanceof PlayerEntity))
+            return ItemStack.EMPTY;
+
+        return findEquippedCurio((PlayerEntity) entity, item);
+    }
+
+    public static ItemStack findEquippedCurio(PlayerEntity player, Item item) {
+        Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(item, player);
+
+        if (!optional.isPresent())
+            return ItemStack.EMPTY;
+
+        ItemStack stack = optional.get().getRight();
+
+        return player.getCooldowns().isOnCooldown(stack.getItem()) || RelicItem.isBroken(stack) ? ItemStack.EMPTY : stack;
     }
 }

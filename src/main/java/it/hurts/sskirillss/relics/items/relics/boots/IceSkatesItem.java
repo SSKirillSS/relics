@@ -10,8 +10,8 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.WorldUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -33,7 +33,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.MutablePair;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -126,11 +125,10 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
 
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), player).ifPresent(triple -> {
-                if (!isBroken(triple.getRight()) && event.getSource() == DamageSource.FALL
-                        && player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).is(BlockTags.ICE))
-                    event.setAmount(event.getAmount() * config.fallingDamageMultiplier);
-            });
+            if (!EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_SKATES.get()).isEmpty()
+                    && player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).is(BlockTags.ICE)
+                    && event.getSource() == DamageSource.FALL)
+                event.setAmount(event.getAmount() * config.fallingDamageMultiplier);
         }
     }
 

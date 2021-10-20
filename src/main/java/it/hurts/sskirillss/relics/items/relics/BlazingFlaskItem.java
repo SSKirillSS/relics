@@ -8,8 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.BlazingFlaskModel;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.SoulFireBlock;
 import net.minecraft.client.Minecraft;
@@ -37,7 +37,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -240,24 +239,18 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
         public static void onEntityHurt(LivingHurtEvent event) {
             DamageSource source = event.getSource();
 
-            if (source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE)
-                CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BLAZING_FLASK.get(),
-                        event.getEntityLiving()).ifPresent(triple -> {
-                    if (!isBroken(triple.getRight()))
-                        event.setCanceled(true);
-                });
+            if (!EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.BLAZING_FLASK.get()).isEmpty()
+                    && (source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE))
+                event.setCanceled(true);
         }
 
         @SubscribeEvent
         public static void onEntityAttack(LivingAttackEvent event) {
             DamageSource source = event.getSource();
 
-            if (source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE)
-                CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.BLAZING_FLASK.get(),
-                        event.getEntityLiving()).ifPresent(triple -> {
-                    if (!isBroken(triple.getRight()))
-                        event.setCanceled(true);
-                });
+            if (!EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.BLAZING_FLASK.get()).isEmpty()
+                    && (source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE))
+                event.setCanceled(true);
         }
     }
 

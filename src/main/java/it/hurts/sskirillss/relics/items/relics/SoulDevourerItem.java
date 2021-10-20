@@ -1,14 +1,15 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,7 +23,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import javax.annotation.Nullable;
@@ -96,18 +96,17 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
             LivingEntity target = event.getEntityLiving();
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SOUL_DEVOURER.get(), player).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
-                int soul = NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0);
-                int capacity = config.soulCapacity;
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.SOUL_DEVOURER.get());
 
-                if (isBroken(stack) || player.getCooldowns().isOnCooldown(stack.getItem()) || soul >= capacity)
-                    return;
+            int soul = NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0);
+            int capacity = config.soulCapacity;
 
-                NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, Math.min(soul + (int) (target.getMaxHealth()
-                        * config.soulFromHealthMultiplier), capacity));
-                NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
-            });
+            if (stack.isEmpty() || soul >= capacity)
+                return;
+
+            NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, Math.min(soul + (int) (target.getMaxHealth()
+                    * config.soulFromHealthMultiplier), capacity));
+            NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
         }
 
         @SubscribeEvent
@@ -119,12 +118,15 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
 
             PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SOUL_DEVOURER.get(), player).ifPresent(triple -> {
-                int soul = NBTUtils.getInt(triple.getRight(), TAG_SOUL_AMOUNT, 0);
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.SOUL_DEVOURER.get());
 
-                if (isBroken(triple.getRight()) || soul > 0)
-                    event.setAmount(event.getAmount() + (event.getAmount() * (soul * config.damageMultiplierPerSoul)));
-            });
+            if (stack.isEmpty())
+                return;
+
+            int soul = NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0);
+
+            if (soul > 0)
+                event.setAmount(event.getAmount() + (event.getAmount() * (soul * config.damageMultiplierPerSoul)));
         }
     }
 

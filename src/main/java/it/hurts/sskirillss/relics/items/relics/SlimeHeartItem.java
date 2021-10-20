@@ -1,15 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -33,7 +34,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 
 import javax.annotation.Nullable;
@@ -119,23 +119,21 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
         @SubscribeEvent
         public static void onEntityFall(LivingFallEvent event) {
             Stats config = INSTANCE.getConfig();
+
             LivingEntity entity = event.getEntityLiving();
+            ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.SLIME_HEART.get());
+            int amount = NBTUtils.getInt(stack, TAG_SLIME_AMOUNT, 0);
 
-            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SLIME_HEART.get(), entity).ifPresent(triple -> {
-                ItemStack stack = triple.getRight();
-                int amount = NBTUtils.getInt(stack, TAG_SLIME_AMOUNT, 0);
+            if (stack.isEmpty() || event.getDistance() < 2 || entity.isShiftKeyDown() || amount <= 0)
+                return;
 
-                if (isBroken(stack) || event.getDistance() < 2 || entity.isShiftKeyDown() || amount <= 0)
-                    return;
+            entity.fallDistance = 0.0F;
+            event.setCanceled(true);
 
-                entity.fallDistance = 0.0F;
-                event.setCanceled(true);
+            NBTUtils.setInt(stack, TAG_SLIME_AMOUNT, amount - 1);
 
-                NBTUtils.setInt(stack, TAG_SLIME_AMOUNT, amount - 1);
-
-                entity.playSound(SoundEvents.SLIME_SQUISH, 1F, 1F);
-                BounceHandler.addBounceHandler(entity, -entity.getDeltaMovement().y() * config.motionMultiplier);
-            });
+            entity.playSound(SoundEvents.SLIME_SQUISH, 1F, 1F);
+            BounceHandler.addBounceHandler(entity, -entity.getDeltaMovement().y() * config.motionMultiplier);
         }
     }
 

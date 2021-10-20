@@ -8,8 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -25,16 +25,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.MutablePair;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implements ICurioItem {
+
     public static MidnightRobeItem INSTANCE;
 
     private final MutablePair<String, UUID> SPEED_INFO = new MutablePair<>(Reference.MODID
@@ -86,11 +84,10 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
     }
 
     private static boolean canHide(LivingEntity entity) {
-        Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.MIDNIGHT_ROBE.get(), entity);
         World world = entity.getCommandSenderWorld();
         BlockPos position = entity.blockPosition();
 
-        return optional.isPresent() && !isBroken(optional.get().getRight())
+        return !EntityUtils.findEquippedCurio(entity, ItemRegistry.MIDNIGHT_ROBE.get()).isEmpty()
                 && world.getBrightness(LightType.BLOCK, position)
                 + world.getBrightness(LightType.SKY, position) <= INSTANCE.config.minLightLevel;
     }
