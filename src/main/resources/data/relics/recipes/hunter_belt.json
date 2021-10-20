@@ -1,0 +1,15 @@
+{
+  "type": "relics:runic_altar",
+  "input": {
+    "item": "relics:leather_belt"
+  },
+  "ingredients": [
+    { "item": "relics:rune_of_earth" },
+    { "item": "relics:rune_of_love" },
+    { "item": "relics:rune_of_earth" },
+    { "item": "relics:rune_of_love" }
+  ],
+  "result": {
+    "item": "relics:hunter_belt"
+  }
+}
