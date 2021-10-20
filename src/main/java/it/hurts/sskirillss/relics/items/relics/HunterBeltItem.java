@@ -6,9 +6,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.items.relics.renderer.HunterBeltModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -16,6 +18,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -56,6 +60,12 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
         return RelicAttribute.builder()
                 .slot(new MutablePair<>("talisman", 1))
                 .build();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new HunterBeltModel();
     }
 
     @Override
