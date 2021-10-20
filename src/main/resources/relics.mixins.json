@@ -11,8 +11,5 @@
     "MixinPiglinMobsSensor",
     "MixinWebBlock"
   ],
-  "minVersion": "0.8",
-  "client": [
-    "MixinPlayerRendering"
-  ]
+  "minVersion": "0.8"
 }
