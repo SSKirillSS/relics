@@ -89,7 +89,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         LivingEntity entity = slotContext.getWearer();
         RelicAttribute modifiers = getAttributes(stack);
 
-        if (modifiers == null)
+        if (modifiers == null || (stack.getItem() == newStack.getItem() && !isBroken(newStack)))
             return;
 
         modifiers.getAttributes().forEach(attribute ->
