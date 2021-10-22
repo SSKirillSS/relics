@@ -27,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -136,11 +137,13 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
             if (index > 3)
                 return;
 
-            float xOffset = index * 0.3F - 0.625F;
+            float xOffset = index * 0.3F - 0.575F;
             float zOffset = (index == 0 || index == 3 ? 0.15F : 0F) - 0.1F;
 
             matrixStack.scale(0.75F, 0.75F, 0.75F);
             matrixStack.translate(xOffset, 0.35F, zOffset);
+
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(10));
         }
 
         model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);

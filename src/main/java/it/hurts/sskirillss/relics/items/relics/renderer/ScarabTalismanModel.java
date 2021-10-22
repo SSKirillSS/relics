@@ -14,8 +14,8 @@ public class ScarabTalismanModel extends BipedModel<LivingEntity> {
         ModelRenderer model = new ModelRenderer(this);
         body.addChild(model);
         model.setPos(0.0F, 24.0F, 0.0F);
-        model.texOffs(8, 7).addBox(-5.0F, -15.0F, -1.0F, 1.0F, 3.0F, 2.0F, 0.0F, false);
-        model.texOffs(0, 0).addBox(-4.51F, -16.0F, -2.0F, 1.0F, 5.0F, 4.0F, 0.0F, false);
-        model.texOffs(0, 0).addBox(-4.999F, -15.5F, -0.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        model.texOffs(8, 7).addBox(1.5F, -15.0F, -6.0F, 1.0F, 3.0F, 2.0F, 0.0F, false);
+        model.texOffs(0, 0).addBox(1.75F, -16.0F, -7.0F, 1.0F, 5.0F, 4.0F, 0.0F, false);
+        model.texOffs(0, 0).addBox(1.5F, -15.5F, -5.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
     }
 }
