@@ -6,7 +6,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.FragrantFlowerModel;
+import it.hurts.sskirillss.relics.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
@@ -18,14 +20,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.TickRangeConverter;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import java.awt.*;
 import java.util.List;
 
 public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> implements ICurioItem {
@@ -63,12 +68,25 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> impl
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
+        World world = player.getCommandSenderWorld();
 
         if (player.tickCount % 5 != 0)
             return;
 
-        for (BeeEntity bee : player.getCommandSenderWorld().getEntitiesOfClass(BeeEntity.class,
-                player.getBoundingBox().inflate(config.luringRadius, config.luringRadius, config.luringRadius))) {
+        List<BeeEntity> bees = world.getEntitiesOfClass(BeeEntity.class,
+                player.getBoundingBox().inflate(config.luringRadius, config.luringRadius, config.luringRadius));
+
+        if (!bees.isEmpty() && world.isClientSide())
+            CuriosApi.getCuriosHelper().getCuriosHandler(player).map(curios -> curios.getStacksHandler(identifier).map(handler -> {
+                if (!handler.getStacks().getStackInSlot(index).isEmpty() && handler.getRenders().get(index))
+                    world.addParticle(new SparkTintData(new Color(255, 255 - random.nextInt(50), 0), 0.2F, 30),
+                            player.position().x(), player.getEyeY() + 0.25F, player.position().z(),
+                            MathUtils.randomFloat(random) * 0.01F, 0, MathUtils.randomFloat(random) * 0.01F);
+
+                return true;
+            }).orElse(false));
+
+        for (BeeEntity bee : bees) {
             if (bee.getPersistentAngerTarget() == null || !bee.getPersistentAngerTarget().equals(player.getUUID()))
                 continue;
 
@@ -145,16 +163,16 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> impl
             Stats config = INSTANCE.config;
             LivingEntity entity = event.getEntityLiving();
 
-                if (EntityUtils.findEquippedCurio(entity, ItemRegistry.FRAGRANT_FLOWER.get()).isEmpty())
-                    return;
+            if (EntityUtils.findEquippedCurio(entity, ItemRegistry.FRAGRANT_FLOWER.get()).isEmpty())
+                return;
 
-                List<BeeEntity> bees = entity.getCommandSenderWorld().getEntitiesOfClass(BeeEntity.class, entity.getBoundingBox()
-                        .inflate(config.luringRadius, config.luringRadius, config.luringRadius));
+            List<BeeEntity> bees = entity.getCommandSenderWorld().getEntitiesOfClass(BeeEntity.class, entity.getBoundingBox()
+                    .inflate(config.luringRadius, config.luringRadius, config.luringRadius));
 
-                if (bees.isEmpty())
-                    return;
+            if (bees.isEmpty())
+                return;
 
-                event.setAmount(event.getAmount() + (event.getAmount() * (bees.size() * config.healingMultiplier)));
+            event.setAmount(event.getAmount() + (event.getAmount() * (bees.size() * config.healingMultiplier)));
         }
     }
 
