@@ -1,19 +1,21 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.piglin.PiglinEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -64,7 +66,7 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements
         PiglinEntity piglin = world.getNearestLoadedEntity(PiglinEntity.class, EntityPredicate.DEFAULT, livingEntity,
                 livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), livingEntity.getBoundingBox().inflate(config.locateRadius));
 
-        if (piglin == null)
+        if (piglin == null || piglin.getTarget() == livingEntity)
             return;
 
         ServerWorld serverWorld = (ServerWorld) world;
@@ -74,7 +76,7 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements
         if (bastionPos == null)
             return;
 
-        piglin.setDeltaMovement(0F, 0F, 0F);
+        piglin.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 20, 255, false, false));
 
         Vector3d currentVec = piglin.position();
         Vector3d finalVec = currentVec.add(new Vector3d(bastionPos.getX(), piglin.getY(),

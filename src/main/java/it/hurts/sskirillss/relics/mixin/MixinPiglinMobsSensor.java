@@ -40,7 +40,7 @@ public class MixinPiglinMobsSensor {
             player = (PlayerEntity) entity;
 
             if (EntityPredicates.ATTACK_ALLOWED.test(player) && !PiglinTasks.isWearingGold(player)
-                    && (!EntityUtils.findEquippedCurio(player, ItemRegistry.BASTION_RING.get()).isEmpty()))
+                    && EntityUtils.findEquippedCurio(player, ItemRegistry.BASTION_RING.get()).isEmpty())
                 brain.setMemory(MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, Optional.of(player));
         }
     }
