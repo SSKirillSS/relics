@@ -122,9 +122,9 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
 
         if (isEmptySpot(world, position) && isEmptySpot(world, position.above())) {
             vec = vec.add(0F, -2F, 0F);
-            target = target.below(2);
+            target = target.below(3);
 
-            if (!isEmptySpot(world, target) && !isEmptySpot(world, target.above()))
+            if (!isEmptySpot(world, target) && !isEmptySpot(world, target.above()) && !isEmptySpot(world, target.above()))
                 canTeleport = true;
         } else if (!isEmptySpot(world, position) && !isEmptySpot(world, position.above())) {
             vec = vec.add(0F, 2F, 0F);
@@ -163,6 +163,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
                 return;
 
             entity.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
+            entity.addEffect(new EffectInstance(Effects.BLINDNESS, 20, 0, false, false));
 
             event.setCanceled(true);
         }
@@ -175,7 +176,8 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
                     || event.getSource() != DamageSource.IN_WALL)
                 return;
 
-            entity.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
+            entity.addEffect(new EffectInstance(Effects.INVISIBILITY, 30, 0, false, false));
+            entity.addEffect(new EffectInstance(Effects.BLINDNESS, 30, 0, false, false));
 
             event.setCanceled(true);
         }
