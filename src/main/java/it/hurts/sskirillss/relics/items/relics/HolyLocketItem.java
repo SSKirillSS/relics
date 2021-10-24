@@ -5,16 +5,20 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.items.relics.renderer.HolyLocketModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -66,6 +70,12 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
 
             NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, false);
         }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new HolyLocketModel();
     }
 
     @Mod.EventBusSubscriber
