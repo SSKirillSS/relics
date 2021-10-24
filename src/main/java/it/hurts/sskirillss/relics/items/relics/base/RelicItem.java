@@ -72,15 +72,18 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
                 EntityUtils.applyAttribute(entity, stack, attribute.getAttribute(), attribute.getMultiplier(), attribute.getOperation()));
 
         modifiers.getSlots().forEach(slot -> {
+            String identifier = slot.getLeft();
             int amount = slot.getRight();
 
-            if (amount == 0)
+            if (amount == 0 || !identifier.equals("talisman"))
                 return;
 
-            if (amount > 0)
-                CuriosApi.getSlotHelper().growSlotType(slot.getLeft(), amount, entity);
-            else
-                CuriosApi.getSlotHelper().shrinkSlotType(slot.getLeft(), Math.abs(amount), entity);
+            CuriosApi.getSlotHelper().setSlotsForType(identifier, entity, amount);
+
+//            if (amount > 0)
+//                CuriosApi.getSlotHelper().growSlotType(slot.getLeft(), amount, entity);
+//            else
+//                CuriosApi.getSlotHelper().shrinkSlotType(slot.getLeft(), Math.abs(amount), entity);
         });
     }
 
@@ -96,15 +99,18 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
                 EntityUtils.removeAttribute(entity, stack, attribute.getAttribute(), attribute.getMultiplier(), attribute.getOperation()));
 
         modifiers.getSlots().forEach(slot -> {
+            String identifier = slot.getLeft();
             int amount = slot.getRight();
 
-            if (amount == 0)
+            if (amount == 0 || !identifier.equals("talisman"))
                 return;
 
-            if (amount > 0)
-                CuriosApi.getSlotHelper().shrinkSlotType(slot.getLeft(), amount, entity);
-            else
-                CuriosApi.getSlotHelper().growSlotType(slot.getLeft(), Math.abs(amount), entity);
+            CuriosApi.getSlotHelper().setSlotsForType(identifier, entity, 0);
+
+//            if (amount > 0)
+//                CuriosApi.getSlotHelper().shrinkSlotType(slot.getLeft(), amount, entity);
+//            else
+//                CuriosApi.getSlotHelper().growSlotType(slot.getLeft(), Math.abs(amount), entity);
         });
     }
 
