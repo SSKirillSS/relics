@@ -99,6 +99,8 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
     @Override
     public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing,
                        float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
+        super.render(identifier, index, matrixStack, renderTypeBuffer, light, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, stack);
+
         int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
         ReflectionNecklaceShieldModel shieldModel = new ReflectionNecklaceShieldModel();
 
