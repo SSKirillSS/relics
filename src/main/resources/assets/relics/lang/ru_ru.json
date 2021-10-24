@@ -261,9 +261,8 @@
   "tooltip.relics.infinity_ham.ability.1.description": "Бесконечная еда, восполняющая %1$s единиц сытости за каждое использование. Имеет %2$s заряда, восстанавливающихся каждые %3$s сек.",
 
   "item.relics.slime_heart": "Слизневое сердце",
-  "tooltip.relics.slime_heart.tooltip_1": "Слизневая энергия: %1$s/%2$s",
-  "tooltip.relics.slime_heart.ability.1.name": "Хищник",
-  "tooltip.relics.slime_heart.ability.1.description": "Поглощает жизненную энергию слизня, на котором используется реликвия",
+  "tooltip.relics.slime_heart.ability.1.name": "Хлипкость",
+  "tooltip.relics.slime_heart.ability.1.description": "%1$s регенерации здоровья",
   "tooltip.relics.slime_heart.ability.2.name": "Упругость",
   "tooltip.relics.slime_heart.ability.2.description": "Расходует накопленную слизневую энергию на подавление урона от падения. Зажатие клавиши %1$s предотвратит срабатывание этой способности",
 

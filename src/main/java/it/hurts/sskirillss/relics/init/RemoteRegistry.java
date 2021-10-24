@@ -6,7 +6,6 @@ import it.hurts.sskirillss.relics.entities.renderer.StellarCatalystProjectileRen
 import it.hurts.sskirillss.relics.items.RelicContractItem;
 import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
-import it.hurts.sskirillss.relics.items.relics.SlimeHeartItem;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.tiles.renderer.BloodyLecternTileRenderer;
@@ -67,8 +66,6 @@ public class RemoteRegistry {
                 (stack, world, entity) -> Math.min(8, NBTUtils.getInt(stack, ShadowGlaiveItem.TAG_CHARGES, 0)));
         ItemModelsProperties.register(ItemRegistry.RELIC_CONTRACT.get(), new ResourceLocation(Reference.MODID, "blood"), (stack, world, entity) ->
                 NBTUtils.getInt(stack, RelicContractItem.TAG_BLOOD, 0));
-        ItemModelsProperties.register(ItemRegistry.SLIME_HEART.get(), new ResourceLocation(Reference.MODID, "mode"), (stack, world, entity) ->
-                NBTUtils.getInt(stack, SlimeHeartItem.TAG_SLIME_AMOUNT, 0) > 0 ? 1 : 0);
 
         ItemRegistry.getRegisteredRelics().forEach(item -> ItemModelsProperties.register(item,
                 new ResourceLocation(Reference.MODID, "broken"),

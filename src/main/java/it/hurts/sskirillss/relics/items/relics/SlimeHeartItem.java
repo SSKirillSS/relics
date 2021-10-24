@@ -6,39 +6,27 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.SlimeEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.SlotContext;
 
-import javax.annotation.Nullable;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
@@ -67,8 +55,8 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .shift(ShiftTooltip.builder()
-                        .active(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString()
-                                + " + " + Minecraft.getInstance().options.keyUse.getKey().getDisplayName().getString())
+                        .arg((int) (config.healingMultiplier * 100 - 100) + "%")
+                        .negative()
                         .build())
                 .shift(ShiftTooltip.builder()
                         .arg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
@@ -76,45 +64,20 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
                 .build();
     }
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-
-        int slime = NBTUtils.getInt(stack, TAG_SLIME_AMOUNT, 0);
-
-        if (slime > 0)
-            tooltip.add(new TranslationTextComponent("tooltip.relics.slime_heart.tooltip_1", slime, config.slimeCapacity));
-    }
-
-    @Override
-    public ActionResultType interactLivingEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) {
-        World world = player.getCommandSenderWorld();
-
-        if (isBroken(stack) || !(entity instanceof SlimeEntity) || !player.isShiftKeyDown())
-            return ActionResultType.FAIL;
-
-        SlimeEntity slime = (SlimeEntity) entity;
-        int amount = NBTUtils.getInt(stack, TAG_SLIME_AMOUNT, 0);
-
-        if (amount >= config.slimeCapacity)
-            return ActionResultType.FAIL;
-
-        NBTUtils.setInt(stack, TAG_SLIME_AMOUNT, (int) Math.min(config.slimeCapacity,
-                amount + slime.getHealth() * (config.healthMultiplier + player.getRandom().nextFloat())));
-
-        slime.remove();
-        world.playSound(null, player.blockPosition(), SoundEvents.SLIME_ATTACK, SoundCategory.HOSTILE, 1.0F, 1.0F);
-
-        return super.interactLivingEntity(stack, player, entity, hand);
-    }
-
-    @Override
-    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
-        return !slotContext.getWearer().isShiftKeyDown();
-    }
-
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class SlimeHeartEvents {
+        @SubscribeEvent
+        public static void onEntityHeal(LivingHealEvent event) {
+            Stats config = INSTANCE.getConfig();
+
+            LivingEntity entity = event.getEntityLiving();
+            ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.SLIME_HEART.get());
+
+            if (stack.isEmpty())
+                return;
+
+            event.setAmount(event.getAmount() * config.healingMultiplier);
+        }
 
         @SubscribeEvent
         public static void onEntityFall(LivingFallEvent event) {
@@ -122,17 +85,15 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
 
             LivingEntity entity = event.getEntityLiving();
             ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.SLIME_HEART.get());
-            int amount = NBTUtils.getInt(stack, TAG_SLIME_AMOUNT, 0);
 
-            if (stack.isEmpty() || event.getDistance() < 2 || entity.isShiftKeyDown() || amount <= 0)
+            if (stack.isEmpty() || event.getDistance() < 2 || entity.isShiftKeyDown())
                 return;
 
             entity.fallDistance = 0.0F;
             event.setCanceled(true);
 
-            NBTUtils.setInt(stack, TAG_SLIME_AMOUNT, amount - 1);
-
             entity.playSound(SoundEvents.SLIME_SQUISH, 1F, 1F);
+
             BounceHandler.addBounceHandler(entity, -entity.getDeltaMovement().y() * config.motionMultiplier);
         }
     }
@@ -202,8 +163,7 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
     }
 
     public static class Stats extends RelicStats {
-        public int slimeCapacity = 100;
-        public float healthMultiplier = 2.0F;
         public float motionMultiplier = 0.9F;
+        public float healingMultiplier = 0.75F;
     }
 }
