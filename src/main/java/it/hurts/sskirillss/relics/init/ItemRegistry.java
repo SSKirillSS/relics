@@ -92,6 +92,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> OLD_BOOT = ITEMS.register("old_boot", OldBootItem::new);
     public static final RegistryObject<Item> SLIME_HEART = ITEMS.register("slime_heart", SlimeHeartItem::new);
     public static final RegistryObject<Item> LEATHER_BELT = ITEMS.register("leather_belt", LeatherBeltItem::new);
+    public static final RegistryObject<Item> HORSE_FLUTE = ITEMS.register("horse_flute", HorseFluteItem::new);
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());

@@ -266,6 +266,12 @@
   "tooltip.relics.slime_heart.ability.2.name": "Упругость",
   "tooltip.relics.slime_heart.ability.2.description": "Расходует накопленную слизневую энергию на подавление урона от падения. Зажатие клавиши %1$s предотвратит срабатывание этой способности",
 
+  "item.relics.horse_flute": "Лошадиная флейта",
+  "tooltip.relics.horse_flute.ability.1.name": "Загон",
+  "tooltip.relics.horse_flute.ability.1.description": "Использование на прирученной лошади поместит её в особый загон вне пространства и времени. Повторное использование реликвии высвободит лошадь на текущей позиции игрока",
+  "tooltip.relics.horse_flute.ability.2.name": "Верность",
+  "tooltip.relics.horse_flute.ability.2.description": "Отдаление от прирученной лошади более чем на %1$s блоков автоматически применит к ней способность \"Загон\"",
+
   "item.relics.leather_belt": "Кожаный пояс",
 
   "block.relics.magma_stone": "Магмовый камень",
@@ -302,6 +308,8 @@
   "advancements.relics.fragrant_flower.description": "Получи ароматный цветок",
   "advancements.relics.holy_locket.title" :  "Ну ты видел? Видел?!",
   "advancements.relics.holy_locket.description": "Получи священный медальон",
+  "advancements.relics.horse_flute.title" :  "Крысолов",
+  "advancements.relics.horse_flute.description": "Получи лошадиную флейту",
   "advancements.relics.hunter_belt.title" :  "Каково быть слабее собаки?",
   "advancements.relics.hunter_belt.description": "Получи пояс охотника",
   "advancements.relics.ice_breaker.title" :  "Mirror's Edge",

@@ -268,6 +268,12 @@
   "tooltip.relics.slime_heart.ability.2.name": "Elastic",
   "tooltip.relics.slime_heart.ability.2.description": "Expends accumulated slimy energy to suppress fall damage. Holding down the %1$s key will prevent ability triggering",
 
+  "item.relics.horse_flute": "Horse Flute",
+  "tooltip.relics.horse_flute.ability.1.name": "Enclosure",
+  "tooltip.relics.horse_flute.ability.1.description": "Using on a tamed horse will place it in a special enclosure outside of space and time. Reuse of relic will free horse at the player's current position",
+  "tooltip.relics.horse_flute.ability.2.name": "Loyalty",
+  "tooltip.relics.horse_flute.ability.2.description": "Moving more than %1$s blocks away from a tamed horse will automatically apply \"Enclosure\" ability to it",
+
   "item.relics.leather_belt": "Leather Belt",
 
   "block.relics.magma_stone": "Magma Stone",
@@ -304,6 +310,8 @@
   "advancements.relics.fragrant_flower.description": "Obtain the Fragrant Flower",
   "advancements.relics.holy_locket.title" :  "Did you see that? Saw that?!",
   "advancements.relics.holy_locket.description": "Obtain the Holy Locket",
+  "advancements.relics.horse_flute.title" :  "Pied Piper",
+  "advancements.relics.horse_flute.description": "Obtain the Horse Flute",
   "advancements.relics.hunter_belt.title" :  "How does it feel to be weaker than a dog?",
   "advancements.relics.hunter_belt.description": "Obtain the Hunter's Belt",
   "advancements.relics.ice_breaker.title" :  "Mirror's Edge",
