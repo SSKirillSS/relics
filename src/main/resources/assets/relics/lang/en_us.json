@@ -274,6 +274,10 @@
   "tooltip.relics.horse_flute.ability.2.name": "Loyalty",
   "tooltip.relics.horse_flute.ability.2.description": "Moving more than %1$s blocks away from a tamed horse will automatically apply \"Enclosure\" ability to it",
 
+  "item.relics.wool_mitten": "Wool Mitten",
+  "tooltip.relics.wool_mitten.ability.1.name": "Molding",
+  "tooltip.relics.wool_mitten.ability.1.description": "Snowballs deal %1$s damage on hit. Damage increasing by %2$s for every second the snowball flies",
+
   "item.relics.leather_belt": "Leather Belt",
 
   "block.relics.magma_stone": "Magma Stone",
@@ -357,5 +361,7 @@
   "advancements.relics.spore_sack.title" :  "Santa's bag",
   "advancements.relics.spore_sack.description": "Obtain the Spore Sack",
   "advancements.relics.stellar_catalyst.title" :  "This is a rain of stars",
-  "advancements.relics.stellar_catalyst.description": "Obtain the Stellar Catalyst"
+  "advancements.relics.stellar_catalyst.description": "Obtain the Stellar Catalyst",
+  "advancements.relics.wool_mitten.title" :  "Thunderstorm of snowmens",
+  "advancements.relics.wool_mitten.description": "Obtain the Wool Mitten"
 }

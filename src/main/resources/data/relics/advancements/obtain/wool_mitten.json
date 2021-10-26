@@ -1,0 +1,26 @@
+{
+  "parent": "relics:obtain/root",
+  "display": {
+    "icon": {
+      "item": "relics:wool_mitten"
+    },
+    "title": {
+      "translate": "advancements.relics.wool_mitten.title"
+    },
+    "description": {
+      "translate": "advancements.relics.wool_mitten.description"
+    }
+  },
+  "criteria": {
+    "obtain_relic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "relics:wool_mitten"
+          }
+        ]
+      }
+    }
+  }
+}

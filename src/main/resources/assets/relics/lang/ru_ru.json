@@ -272,6 +272,10 @@
   "tooltip.relics.horse_flute.ability.2.name": "Верность",
   "tooltip.relics.horse_flute.ability.2.description": "Отдаление от прирученной лошади более чем на %1$s блоков автоматически применит к ней способность \"Загон\"",
 
+  "item.relics.wool_mitten": "Шерстяная рукавица",
+  "tooltip.relics.wool_mitten.ability.1.name": "Лепка",
+  "tooltip.relics.wool_mitten.ability.1.description": "Снежки носителя реликвии наносят %1$s урона при попадании. Урон увеличивается на %2$s за каждую секунду полёта снежка",
+
   "item.relics.leather_belt": "Кожаный пояс",
 
   "block.relics.magma_stone": "Магмовый камень",
@@ -355,5 +359,7 @@
   "advancements.relics.spore_sack.title" :  "Мешок Санты",
   "advancements.relics.spore_sack.description": "Получи мешок со спорами",
   "advancements.relics.stellar_catalyst.title" :  "Это дождь из звёзд",
-  "advancements.relics.stellar_catalyst.description": "Получи звёздный катализатор"
+  "advancements.relics.stellar_catalyst.description": "Получи звёздный катализатор",
+  "advancements.relics.wool_mitten.title": "Гроза снеговиков",
+  "advancements.relics.wool_mitten.description": "Получи шерстяную рукавицу"
 }
