@@ -1,0 +1,15 @@
+{
+  "type": "relics:runic_altar",
+  "input": {
+    "item": "relics:wool_mitten"
+  },
+  "ingredients": [
+    { "item": "relics:rune_of_lightning" },
+    { "item": "relics:rune_of_fire" },
+    { "item": "relics:rune_of_fire" },
+    { "item": "relics:rune_of_explosion" }
+  ],
+  "result": {
+    "item": "relics:rage_glove"
+  }
+}
