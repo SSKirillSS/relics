@@ -64,7 +64,7 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
             return ActionResultType.FAIL;
 
         HorseEntity horse = (HorseEntity) entity;
-        CompoundNBT nbt = stack.getTag();
+        CompoundNBT nbt = stack.getTagElement(TAG_ENTITY);
 
         if (horse.getUUID().toString().equals(NBTUtils.getString(stack, TAG_UUID, ""))
                 && player.isShiftKeyDown()) {
@@ -73,7 +73,7 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
             return ActionResultType.SUCCESS;
         }
 
-        if (nbt != null && !nbt.getString(TAG_ENTITY).equals("")) {
+        if (nbt != null) {
             releaseHorse(stack, player);
             catchHorse(horse, player, stack);
 
@@ -89,12 +89,12 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
     public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         ItemStack stack = context.getItemInHand();
-        CompoundNBT nbt = stack.getTag();
+        CompoundNBT nbt = stack.getTagElement(TAG_ENTITY);
 
-        if (nbt == null || player == null)
+        if (player == null)
             return ActionResultType.FAIL;
 
-        if (nbt.getString(TAG_ENTITY).equals("")) {
+        if (nbt == null) {
             catchHorse(stack, player);
 
             return ActionResultType.SUCCESS;
@@ -108,12 +108,9 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        CompoundNBT nbt = stack.getTag();
+        CompoundNBT nbt = stack.getTagElement(TAG_ENTITY);
 
-        if (nbt == null)
-            return ActionResult.fail(stack);
-
-        if (nbt.getString(TAG_ENTITY).equals("")) {
+        if (nbt == null) {
             catchHorse(stack, player);
 
             return ActionResult.success(stack);
@@ -160,10 +157,9 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
         CompoundNBT nbt = new CompoundNBT();
         Vector3d pos = horse.position();
 
-        nbt.putString(TAG_ENTITY, EntityType.getKey(horse.getType()).toString());
         horse.saveWithoutId(nbt);
 
-        stack.setTag(nbt);
+        stack.addTagElement(TAG_ENTITY, nbt);
         NBTUtils.setString(stack, TAG_UUID, "");
 
         horse.remove();
@@ -186,13 +182,15 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
         World world = player.getCommandSenderWorld();
         HorseEntity horse = new HorseEntity(EntityType.HORSE, world);
         Vector3d pos = player.position();
+        CompoundNBT data = stack.getTagElement(TAG_ENTITY);
 
-        if (stack.getTag() != null)
-            horse.load(stack.getTag());
+        if (data != null)
+            horse.load(data);
 
         horse.setPos(pos.x(), pos.y(), pos.z());
         world.addFreshEntity(horse);
         horse.setDeltaMovement(player.getViewVector(1.0F).normalize());
+        horse.fallDistance = 0F;
 
         stack.setTag(new CompoundNBT());
         NBTUtils.setString(stack, TAG_UUID, horse.getUUID().toString());
@@ -204,7 +202,7 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return stack.getTag() != null && !stack.getTag().getString(TAG_ENTITY).equals("");
+        return stack.getTagElement(TAG_ENTITY) != null;
     }
 
     @Override
