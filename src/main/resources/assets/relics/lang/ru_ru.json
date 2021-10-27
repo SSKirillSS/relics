@@ -16,6 +16,7 @@
 
   "tooltip.relics.shift.abilities.active.tooltip": "Активные способности:",
   "tooltip.relics.shift.abilities.passive.tooltip": "Пассивные способности:",
+  "tooltip.relics.shift.slots.tooltip": "Модификаторы слотов:",
 
   "curios.identifier.feet": "Ноги",
   "curios.modifiers.feet": "Если надето на ноги:",

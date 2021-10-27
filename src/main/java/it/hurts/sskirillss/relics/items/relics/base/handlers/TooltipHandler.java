@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics.base.handlers;
 
 import it.hurts.sskirillss.relics.items.RelicContractItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
@@ -62,68 +63,96 @@ public class TooltipHandler {
     private static void drawDescription(ItemStack stack, List<ITextComponent> tooltip) {
         RelicItem<?> relic = (RelicItem<?>) stack.getItem();
         RelicTooltip relicTooltip = relic.getTooltip(stack);
+        RelicAttribute attribute = relic.getAttributes(stack);
 
-        if (relicTooltip == null)
-            return;
+        if (Screen.hasShiftDown()) {
+            if (relicTooltip != null) {
+                if (!relicTooltip.getShift().isEmpty()) {
+                    tooltip.add(new StringTextComponent(" "));
 
-        if (!relicTooltip.getShift().isEmpty() && Screen.hasShiftDown()) {
-            tooltip.add(new StringTextComponent(" "));
+                    List<MutablePair<ITextComponent, Boolean>> tooltips = TooltipUtils.buildTooltips(relic);
+                    List<ITextComponent> active = new ArrayList<>();
+                    List<ITextComponent> passive = new ArrayList<>();
 
-            List<MutablePair<ITextComponent, Boolean>> tooltips = TooltipUtils.buildTooltips(relic);
-            List<ITextComponent> active = new ArrayList<>();
-            List<ITextComponent> passive = new ArrayList<>();
+                    tooltips.forEach(pair -> {
+                        ITextComponent component = pair.getLeft();
 
-            tooltips.forEach(pair -> {
-                ITextComponent component = pair.getLeft();
-                if (pair.getRight())
-                    active.add(component);
-                else
-                    passive.add(component);
-            });
+                        if (pair.getRight())
+                            active.add(component);
+                        else
+                            passive.add(component);
+                    });
 
-            if (!passive.isEmpty()) {
-                tooltip.add((new StringTextComponent("▶ ").withStyle(TextFormatting.DARK_GREEN))
-                        .append(new TranslationTextComponent("tooltip.relics.shift.abilities.passive.tooltip")
-                                .withStyle(TextFormatting.GREEN)));
+                    if (!passive.isEmpty()) {
+                        tooltip.add((new StringTextComponent("▶ ").withStyle(TextFormatting.DARK_GREEN))
+                                .append(new TranslationTextComponent("tooltip.relics.shift.abilities.passive.tooltip")
+                                        .withStyle(TextFormatting.GREEN)));
 
-                tooltip.addAll(passive);
+                        tooltip.addAll(passive);
 
-                tooltip.add(new StringTextComponent(" "));
+                        tooltip.add(new StringTextComponent(" "));
+                    }
+
+                    if (!active.isEmpty()) {
+                        tooltip.add((new StringTextComponent("▶ ").withStyle(TextFormatting.DARK_GREEN))
+                                .append(new TranslationTextComponent("tooltip.relics.shift.abilities.active.tooltip")
+                                        .withStyle(TextFormatting.GREEN)));
+
+                        tooltip.addAll(active);
+                    }
+                }
             }
 
-            if (!active.isEmpty()) {
-                tooltip.add((new StringTextComponent("▶ ").withStyle(TextFormatting.DARK_GREEN))
-                        .append(new TranslationTextComponent("tooltip.relics.shift.abilities.active.tooltip")
-                                .withStyle(TextFormatting.GREEN)));
+            if (attribute != null) {
+                List<MutablePair<String, Integer>> slots = attribute.getSlots();
 
-                tooltip.addAll(active);
+                if (!slots.isEmpty()) {
+                    if (relicTooltip == null || relicTooltip.getShift().isEmpty())
+                        tooltip.add(new StringTextComponent(" "));
+                    tooltip.add((new StringTextComponent("▶ ").withStyle(TextFormatting.DARK_GREEN))
+                            .append(new TranslationTextComponent("tooltip.relics.shift.slots.tooltip")
+                                    .withStyle(TextFormatting.GREEN)));
+
+                    for (MutablePair<String, Integer> slot : slots) {
+                        String identifier = slot.getLeft();
+                        int amount = slot.getRight();
+
+                        tooltip.add((new StringTextComponent("   ◆ ")
+                                .withStyle(amount <= 0 ? TextFormatting.RED : TextFormatting.GREEN))
+                                .append(new StringTextComponent((amount <= 0 ? "-" : "+") + amount + " ")
+                                        .withStyle(TextFormatting.YELLOW))
+                                .append(new TranslationTextComponent("curios.identifier." + identifier)
+                                        .withStyle(TextFormatting.GRAY)));
+                    }
+                }
             }
         }
 
-        RelicTooltip lines = relic.getTooltip(stack);
-
-//        if (!lines.getAlt().isEmpty() && Screen.hasAltDown()) {
+//        if (!relicTooltip.getAlt().isEmpty() && Screen.hasAltDown()) {
 //            tooltip.add(new StringTextComponent(" "));
-//            tooltip.addAll(lines.getAlt());
+//            tooltip.addAll(relicTooltip.getAlt());
 //        }
 //
-//        if (!lines.getControl().isEmpty() && Screen.hasControlDown()) {
+//        if (!relicTooltip.getControl().isEmpty() && Screen.hasControlDown()) {
 //            tooltip.add(new StringTextComponent(" "));
-//            tooltip.addAll(lines.getControl());
+//            tooltip.addAll(relicTooltip.getControl());
 //        }
 
-        if ((!lines.getShift().isEmpty() && !Screen.hasShiftDown()) || (!lines.getAlt().isEmpty() && !Screen.hasAltDown())
-                || (!lines.getControl().isEmpty() && !Screen.hasControlDown()))
+        if ((attribute != null && !attribute.getSlots().isEmpty())
+                || (relicTooltip != null && ((!relicTooltip.getShift().isEmpty() && !Screen.hasShiftDown())
+                || (!relicTooltip.getAlt().isEmpty() && !Screen.hasAltDown())
+                || (!relicTooltip.getControl().isEmpty() && !Screen.hasControlDown()))))
             tooltip.add(new StringTextComponent(" "));
 
-        if (!Screen.hasShiftDown() && !lines.getShift().isEmpty())
+        if (!Screen.hasShiftDown() && (relicTooltip != null && !relicTooltip.getShift().isEmpty()
+                || (attribute != null && !attribute.getSlots().isEmpty())))
             tooltip.add(new TranslationTextComponent("tooltip.relics.shift.tooltip"));
-
-        if (!Screen.hasAltDown() && !lines.getAlt().isEmpty())
-            tooltip.add(new TranslationTextComponent("tooltip.relics.alt.tooltip"));
-
-        if (!Screen.hasControlDown() && !lines.getControl().isEmpty())
-            tooltip.add(new TranslationTextComponent("tooltip.relics.ctrl.tooltip"));
+//
+//        if (!Screen.hasAltDown() && !relicTooltip.getAlt().isEmpty())
+//            tooltip.add(new TranslationTextComponent("tooltip.relics.alt.tooltip"));
+//
+//        if (!Screen.hasControlDown() && !relicTooltip.getControl().isEmpty())
+//            tooltip.add(new TranslationTextComponent("tooltip.relics.ctrl.tooltip"));
     }
 
     @SubscribeEvent

@@ -15,6 +15,7 @@
 
   "tooltip.relics.shift.abilities.active.tooltip": "Active abilities:",
   "tooltip.relics.shift.abilities.passive.tooltip": "Passive abilities:",
+  "tooltip.relics.shift.slots.tooltip": "Slot modifiers:",
 
   "curios.identifier.feet": "Feet",
   "curios.modifiers.feet": "When on feet:",
