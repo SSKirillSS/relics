@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -78,7 +79,7 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> implements I
         PlayerEntity player = (PlayerEntity) livingEntity;
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (player.getCooldowns().isOnCooldown(stack.getItem()) || isBroken(stack))
+        if (player.getCooldowns().isOnCooldown(stack.getItem()) || IRepairableItem.isBroken(stack))
             return;
 
         if (player.isShiftKeyDown()) {

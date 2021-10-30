@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -8,8 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -66,7 +67,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (isBroken(stack) || entityIn.tickCount % 20 != 0)
+        if (IRepairableItem.isBroken(stack) || entityIn.tickCount % 20 != 0)
             return;
 
         int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
@@ -89,7 +90,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!isBroken(stack) && NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
+        if (!IRepairableItem.isBroken(stack) && NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
                 && player.getFoodData().needsFood())
             return super.use(world, player, hand);
 

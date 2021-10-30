@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -82,7 +83,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (isBroken(stack))
+        if (IRepairableItem.isBroken(stack))
             return;
 
         handleArrow(stack, livingEntity.getCommandSenderWorld());
@@ -213,7 +214,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
 
             World world = owner.getCommandSenderWorld();
 
-            if (isBroken(stack) || !event.getEntity().getUUID().toString().equals(NBTUtils.getString(stack, TAG_ARROW, "")))
+            if (IRepairableItem.isBroken(stack) || !event.getEntity().getUUID().toString().equals(NBTUtils.getString(stack, TAG_ARROW, "")))
                 return;
 
             for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(config.explosionRadius))) {

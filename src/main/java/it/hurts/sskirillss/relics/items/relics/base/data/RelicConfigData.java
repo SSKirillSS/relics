@@ -8,12 +8,9 @@ public class RelicConfigData<T extends RelicStats> {
     @Getter
     private final T config;
     @Getter
-    private final RelicDurability durability;
-    @Getter
     private final List<RelicLoot> loot;
 
-    public RelicConfigData(T config, RelicDurability durability, List<RelicLoot> loot) {
-        this.durability = durability;
+    public RelicConfigData(T config, List<RelicLoot> loot) {
         this.config = config;
         this.loot = loot;
     }

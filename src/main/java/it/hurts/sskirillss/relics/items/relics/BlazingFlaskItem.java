@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -82,7 +83,7 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || isBroken(stack))
+        if (!(livingEntity instanceof PlayerEntity) || IRepairableItem.isBroken(stack))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;

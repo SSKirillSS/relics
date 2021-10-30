@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.client.tooltip;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
@@ -26,7 +27,7 @@ public class TooltipHandler {
         if (!(stack.getItem() instanceof RelicItem))
             return;
 
-        if (RelicItem.isBroken(stack)) {
+        if (IRepairableItem.isBroken(stack)) {
             event.setBorderStart(0xFFff0000);
             event.setBorderEnd(0xFFff0000);
         } else {
@@ -83,7 +84,7 @@ public class TooltipHandler {
     }
 
     private static RelicTooltip.TooltipWindow getWindowData(ItemStack stack) {
-        if (!(stack.getItem() instanceof RelicItem) || RelicItem.isBroken(stack))
+        if (!(stack.getItem() instanceof RelicItem) || IRepairableItem.isBroken(stack))
             return null;
 
         RelicItem<?> relic = (RelicItem<?>) stack.getItem();

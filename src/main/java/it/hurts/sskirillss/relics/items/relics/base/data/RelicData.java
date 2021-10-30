@@ -22,9 +22,6 @@ public class RelicData {
     @Builder.Default
     private Rarity rarity = Rarity.COMMON;
 
-    @Builder.Default
-    private RelicDurability durability = new RelicDurability(100);
-
     @Accessors(fluent = true)
     private boolean hasAbility;
 
@@ -36,7 +33,7 @@ public class RelicData {
 
     @SneakyThrows
     public RelicConfigData<?> toConfigData() {
-        return new RelicConfigData<>(config.newInstance(), durability, loot);
+        return new RelicConfigData<>(config.newInstance(), loot);
     }
 
     public static class RelicDataBuilder {

@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.boots;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.blocks.MagmaStoneBlock;
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
@@ -63,7 +64,7 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> implements ICurioItem
         BlockState state = world.getBlockState(pos.below());
         FluidState fluid = state.getFluidState();
 
-        if (isBroken(stack))
+        if (IRepairableItem.isBroken(stack))
             return;
 
         if (fluid.getType() == Fluids.LAVA || fluid.getType() == Fluids.FLOWING_LAVA) {

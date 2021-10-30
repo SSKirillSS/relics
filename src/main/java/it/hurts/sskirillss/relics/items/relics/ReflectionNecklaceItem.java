@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -74,7 +75,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (isBroken(stack) || livingEntity.tickCount % 20 != 0)
+        if (IRepairableItem.isBroken(stack) || livingEntity.tickCount % 20 != 0)
             return;
 
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);

@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.boots;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -75,7 +76,7 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> implements ICu
         World world = livingEntity.getCommandSenderWorld();
         BlockPos pos = WorldUtils.getSolidBlockUnderFeet(world, livingEntity.blockPosition());
 
-        if (pos == null || isBroken(stack))
+        if (pos == null || IRepairableItem.isBroken(stack))
             return;
 
         if (world.getBlockState(pos).is(BlockTags.ICE)) {

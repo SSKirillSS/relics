@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.hud;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
@@ -188,7 +189,7 @@ public class HUDEventHandler {
 
                 RelicItem<?> relic = (RelicItem<?>) stack.getItem();
 
-                if (RelicItem.isBroken(stack) || !relic.getData().hasAbility())
+                if (IRepairableItem.isBroken(stack) || !relic.getData().hasAbility())
                     continue;
 
                 relics.add(new ImmutablePair<>(stack, i));

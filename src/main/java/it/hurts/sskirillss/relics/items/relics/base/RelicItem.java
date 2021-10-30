@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
@@ -40,7 +41,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 
-public abstract class RelicItem<T extends RelicStats> extends Item implements ICurioItem {
+public abstract class RelicItem<T extends RelicStats> extends Item implements ICurioItem, IRepairableItem {
     @Getter
     @Setter
     protected RelicData data;
@@ -59,7 +60,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
-        if (isBroken(stack))
+        if (IRepairableItem.isBroken(stack))
             return;
 
         LivingEntity entity = slotContext.getWearer();
@@ -92,7 +93,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         LivingEntity entity = slotContext.getWearer();
         RelicAttribute modifiers = getAttributes(stack);
 
-        if (modifiers == null || (stack.getItem() == newStack.getItem() && !isBroken(newStack)))
+        if (modifiers == null || (stack.getItem() == newStack.getItem() && !IRepairableItem.isBroken(newStack)))
             return;
 
         modifiers.getAttributes().forEach(attribute ->
@@ -116,7 +117,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        if (!isBroken(stack)) {
+        if (!IRepairableItem.isBroken(stack)) {
             Vector3d pos = entity.position();
 
             entity.getCommandSenderWorld().addParticle(new CircleTintData(stack.getRarity().color.getColor() != null
@@ -175,22 +176,33 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Override
     public boolean canEquip(String identifier, LivingEntity livingEntity, ItemStack stack) {
-        return !isBroken(stack);
+        return !IRepairableItem.isBroken(stack);
     }
 
     @Override
     public boolean canRender(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        return !isBroken(stack);
+        return !IRepairableItem.isBroken(stack);
     }
 
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
-        return !isBroken(stack);
+        return !IRepairableItem.isBroken(stack);
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return data.getDurability().getMaxDurability();
+        switch (stack.getRarity()) {
+            case COMMON:
+                return 100;
+            case UNCOMMON:
+                return 150;
+            case RARE:
+                return 200;
+            case EPIC:
+                return 250;
+            default:
+                return 0;
+        }
     }
 
     @Override
@@ -209,10 +221,6 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     public RelicAttribute getAttributes(ItemStack stack) {
         return null;
-    }
-
-    public static boolean isBroken(ItemStack stack) {
-        return stack.getMaxDamage() - stack.getDamageValue() <= 0;
     }
 
     public void castAbility(PlayerEntity player, ItemStack stack) {

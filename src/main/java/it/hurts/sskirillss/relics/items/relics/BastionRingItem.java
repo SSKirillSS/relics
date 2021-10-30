@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
@@ -60,7 +61,7 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         World world = livingEntity.getCommandSenderWorld();
 
-        if (world.isClientSide() || world.dimension() != World.NETHER || isBroken(stack))
+        if (world.isClientSide() || world.dimension() != World.NETHER || IRepairableItem.isBroken(stack))
             return;
 
         PiglinEntity piglin = world.getNearestLoadedEntity(PiglinEntity.class, EntityPredicate.DEFAULT, livingEntity,

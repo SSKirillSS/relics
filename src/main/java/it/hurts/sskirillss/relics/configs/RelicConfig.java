@@ -37,7 +37,7 @@ public class RelicConfig {
         ItemRegistry.getRegisteredRelics().forEach(relic -> {
             RelicConfigData data = readConfig(relic);
 
-            if (data == null || data.getConfig() == null || data.getDurability() == null || data.getLoot() == null) {
+            if (data == null || data.getConfig() == null || data.getLoot() == null) {
                 Path sourcePath = getRootPath().resolve(relic.getRegistryName().getPath() + ".json");
 
                 if (Files.exists(sourcePath)) {
@@ -97,7 +97,6 @@ public class RelicConfig {
         RelicData relicData = relic.getData();
 
         relicData.setConfig(data.getConfig().getClass());
-        relicData.setDurability(data.getDurability());
         relicData.setLoot(data.getLoot());
 
         relic.setData(relicData);

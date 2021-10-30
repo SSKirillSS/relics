@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -70,7 +71,7 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         World world = livingEntity.getCommandSenderWorld();
 
-        if (world.isClientSide() || isBroken(stack) || livingEntity.tickCount % 20 != 0)
+        if (world.isClientSide() || IRepairableItem.isBroken(stack) || livingEntity.tickCount % 20 != 0)
             return;
 
         if (canHide(livingEntity))

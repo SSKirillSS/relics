@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -79,7 +80,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || isBroken(stack))
+        if (!(livingEntity instanceof PlayerEntity) || IRepairableItem.isBroken(stack))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
@@ -110,7 +111,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> implements ICu
     }
 
     private void delay(LivingEntity entity, ItemStack stack) {
-        if (!(entity instanceof PlayerEntity) || isBroken(stack))
+        if (!(entity instanceof PlayerEntity) || IRepairableItem.isBroken(stack))
             return;
 
         NBTUtils.setInt(stack, TAG_UPDATE_TIME, -1);

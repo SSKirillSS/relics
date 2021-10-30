@@ -1,9 +1,9 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicDurability;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
@@ -12,8 +12,8 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
@@ -50,7 +50,6 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .config(Stats.class)
-                .durability(new RelicDurability(1))
                 .loot(RelicLoot.builder()
                         .table(RelicUtils.Worldgen.CAVE)
                         .chance(0.1F)
@@ -90,7 +89,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
-        if (isBroken(stack))
+        if (IRepairableItem.isBroken(stack))
             return ActionResult.fail(stack);
 
         if (NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
@@ -109,7 +108,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (worldIn.isClientSide() || isBroken(stack) || !(entityIn instanceof PlayerEntity))
+        if (worldIn.isClientSide() || IRepairableItem.isBroken(stack) || !(entityIn instanceof PlayerEntity))
             return;
 
         PlayerEntity player = (PlayerEntity) entityIn;
@@ -129,6 +128,11 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
         }
 
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return 1;
     }
 
     @Override
@@ -191,7 +195,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
 
             ItemStack stack = player.inventory.getItem(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
 
-            if (!isBroken(stack) && !NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
+            if (!IRepairableItem.isBroken(stack) && !NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
                 teleportPlayer(player, stack);
                 player.setHealth(1.0F);
 

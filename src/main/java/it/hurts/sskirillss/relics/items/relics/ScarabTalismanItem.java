@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -86,7 +87,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
         ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         World world = livingEntity.getCommandSenderWorld();
 
-        if (isBroken(stack))
+        if (IRepairableItem.isBroken(stack))
             return;
 
         if (config.allowedBiomes.stream().map(Biome.Category::byName).collect(Collectors.toList())
@@ -187,7 +188,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> impl
             Stats config = INSTANCE.config;
 
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), event.getEntityLiving()).ifPresent(triple -> {
-                if (isBroken(triple.getRight()))
+                if (IRepairableItem.isBroken(triple.getRight()))
                     return;
 
                 event.setNewSpeed(event.getNewSpeed() * config.digModifier);

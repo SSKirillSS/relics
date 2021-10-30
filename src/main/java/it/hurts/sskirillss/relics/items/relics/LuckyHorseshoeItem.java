@@ -1,11 +1,12 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -47,12 +48,12 @@ public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> impl
 
     @Override
     public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return !isBroken(curio) && livingEntity.getRandom().nextFloat() <= config.lootingChance ? config.additionalLooting : 0;
+        return !IRepairableItem.isBroken(curio) && livingEntity.getRandom().nextFloat() <= config.lootingChance ? config.additionalLooting : 0;
     }
 
     @Override
     public int getFortuneBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return !isBroken(curio) && livingEntity.getRandom().nextFloat() <= config.fortuneChance ? config.additionalFortune : 0;
+        return !IRepairableItem.isBroken(curio) && livingEntity.getRandom().nextFloat() <= config.fortuneChance ? config.additionalFortune : 0;
     }
 
     public static class Stats extends RelicStats {

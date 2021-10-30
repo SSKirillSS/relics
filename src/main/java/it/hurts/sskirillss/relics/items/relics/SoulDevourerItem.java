@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -66,7 +67,7 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> implemen
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (isBroken(stack) || !(livingEntity instanceof PlayerEntity))
+        if (IRepairableItem.isBroken(stack) || !(livingEntity instanceof PlayerEntity))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;

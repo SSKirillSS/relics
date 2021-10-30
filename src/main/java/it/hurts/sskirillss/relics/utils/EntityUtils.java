@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -166,6 +166,7 @@ public class EntityUtils {
 
         ItemStack stack = optional.get().getRight();
 
-        return player.getCooldowns().isOnCooldown(stack.getItem()) || RelicItem.isBroken(stack) ? ItemStack.EMPTY : stack;
+        return player.getCooldowns().isOnCooldown(stack.getItem())
+                || IRepairableItem.isBroken(stack) ? ItemStack.EMPTY : stack;
     }
 }

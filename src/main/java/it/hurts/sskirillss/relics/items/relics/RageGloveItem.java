@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -9,8 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.renderer.RageGloveModel;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
+import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -59,7 +60,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
         int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (isBroken(stack) || livingEntity.tickCount % 20 != 0 || stacks <= 0)
+        if (IRepairableItem.isBroken(stack) || livingEntity.tickCount % 20 != 0 || stacks <= 0)
             return;
 
         if (time > 0)
@@ -87,7 +88,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), (LivingEntity) source).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
 
-                if (isBroken(stack))
+                if (IRepairableItem.isBroken(stack))
                     return;
 
                 int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
@@ -101,7 +102,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> implements ICu
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), event.getEntityLiving()).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
 
-                if (isBroken(stack))
+                if (IRepairableItem.isBroken(stack))
                     return;
 
                 int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
