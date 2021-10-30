@@ -10,14 +10,11 @@ public class RelicConfigData<T extends RelicStats> {
     @Getter
     private final RelicDurability durability;
     @Getter
-    private final RelicLevel level;
-    @Getter
     private final List<RelicLoot> loot;
 
-    public RelicConfigData(T config, RelicLevel level, RelicDurability durability, List<RelicLoot> loot) {
+    public RelicConfigData(T config, RelicDurability durability, List<RelicLoot> loot) {
         this.durability = durability;
         this.config = config;
-        this.level = level;
         this.loot = loot;
     }
 }

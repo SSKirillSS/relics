@@ -1,11 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics.base.handlers;
 
+import it.hurts.sskirillss.relics.api.leveling.ILeveledItem;
 import it.hurts.sskirillss.relics.items.RelicContractItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import it.hurts.sskirillss.relics.utils.tooltip.TooltipUtils;
 import net.minecraft.client.gui.screen.Screen;
@@ -46,24 +46,30 @@ public class TooltipHandler {
     }
 
     private static void drawLevel(ItemStack stack, List<ITextComponent> tooltip) {
-        int level = RelicUtils.Level.getLevel(stack);
-        int prevExp = RelicUtils.Level.getTotalExperienceForLevel(stack, Math.max(level, level - 1));
+        if (!(stack.getItem() instanceof ILeveledItem))
+            return;
 
-        tooltip.add(new TranslationTextComponent("tooltip.relics.level", level, RelicUtils.Level.getExperience(stack) - prevExp,
-                RelicUtils.Level.getTotalExperienceForLevel(stack, level + 1) - prevExp));
+        ILeveledItem item = (ILeveledItem) stack.getItem();
 
-        float percentage = (RelicUtils.Level.getExperience(stack) - prevExp) * 1.0F / (RelicUtils.Level.getTotalExperienceForLevel(stack,
-                RelicUtils.Level.getLevel(stack) + 1) - prevExp) * 100;
+        int level = item.getLevel(stack);
+        int prevExp = item.getTotalExperienceForLevel(Math.max(level, level - 1));
 
-        tooltip.add(drawProgressBar(percentage, RelicsConfig.RelicsGeneral.LEVELING_BAR_STYLE.get(),
-                RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_LOW.get(), RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_MEDIUM.get(),
-                RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_HIGH.get(), RelicsConfig.RelicsGeneral.LEVELING_BAR_COLOR_NEUTRAL.get(), true));
+        tooltip.add(new StringTextComponent(" "));
+        tooltip.add(new TranslationTextComponent("tooltip.relics.level", level, item.getExperience(stack) - prevExp,
+                item.getTotalExperienceForLevel(level + 1) - prevExp));
+
+        float percentage = (item.getExperience(stack) - prevExp) * 1.0F / (item.getTotalExperienceForLevel(item.getLevel(stack) + 1) - prevExp) * 100;
+
+        tooltip.add(drawProgressBar(percentage, "||||||||||||||||||||||||||||||",
+                "#FF5555", "#FFFF55", "#55FF55", "#808080", true));
     }
 
     private static void drawDescription(ItemStack stack, List<ITextComponent> tooltip) {
         RelicItem<?> relic = (RelicItem<?>) stack.getItem();
         RelicTooltip relicTooltip = relic.getTooltip(stack);
         RelicAttribute attribute = relic.getAttributes(stack);
+
+        drawLevel(stack, tooltip);
 
         if (Screen.hasShiftDown()) {
             if (relicTooltip != null) {
