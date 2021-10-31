@@ -27,7 +27,12 @@ public class RelicUtils {
         @Nullable
         public static PlayerEntity getOwner(ItemStack stack, World world) {
             String uuid = getOwnerUUID(stack);
-            return !uuid.equals("") ? world.getPlayerByUUID(UUID.fromString(uuid)) : null;
+
+            try {
+                return world.getPlayerByUUID(UUID.fromString(uuid));
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
         }
 
         public static void setOwnerUUID(ItemStack stack, String uuid) {
