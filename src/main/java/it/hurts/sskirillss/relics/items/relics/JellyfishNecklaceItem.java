@@ -10,8 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.renderer.JellyfishNecklaceModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,17 +50,17 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (config.healMultiplier * 100 - 100) + "%")
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (config.magicResistance * 100) + "%")
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg("-" + (int) Math.abs(config.swimSpeedModifier * 100) + "%")
                         .negative()
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .active()
                         .build())
                 .build();

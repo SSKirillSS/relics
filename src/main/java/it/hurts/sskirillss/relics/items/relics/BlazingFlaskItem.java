@@ -8,8 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.SoulFireBlock;
 import net.minecraft.client.Minecraft;
@@ -59,11 +59,11 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> implemen
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyJump.getKey().getDisplayName().getString() + " x2")
                         .build())
                 .build();

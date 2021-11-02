@@ -4,18 +4,18 @@ import net.minecraft.item.ItemStack;
 
 public interface IRepairableItem {
     static boolean isBroken(ItemStack stack) {
-        return getDurability(stack) <= 0;
+        return stack.getDamageValue() >= stack.getMaxDamage();
     }
 
-    static void hurt(ItemStack stack, int amount) {
+    default void hurt(ItemStack stack, int amount) {
         stack.setDamageValue(Math.min(stack.getDamageValue() + amount, stack.getMaxDamage()));
     }
 
-    static void repair(ItemStack stack, int amount) {
+    default void repair(ItemStack stack, int amount) {
         stack.setDamageValue(Math.max(stack.getDamageValue() - amount, 0));
     }
 
-    static int getDurability(ItemStack stack) {
+    default int getDurability(ItemStack stack) {
         return stack.getMaxDamage() - stack.getDamageValue();
     }
 }

@@ -10,8 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.renderer.HolyLocketModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -46,14 +46,14 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (config.damageMultiplier * 100 - 100) + "%")
                         .arg((int) (config.igniteChance * 100) + "%")
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (config.healMultiplier * 100 - 100) + "%")
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg(config.invulnerabilityTime / 20.0F)
                         .build())
                 .build();

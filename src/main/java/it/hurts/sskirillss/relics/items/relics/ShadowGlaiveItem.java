@@ -10,8 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,7 +48,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg(config.maxBounces)
                         .arg(config.damage)
                         .arg(config.chargeRegenerationTime)

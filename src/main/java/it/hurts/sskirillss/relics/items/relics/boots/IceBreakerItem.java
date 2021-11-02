@@ -11,8 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.renderer.IceBreakerModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
@@ -31,9 +31,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements ICurioItem {
+public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
 
     public static IceBreakerItem INSTANCE;
 
@@ -53,15 +52,15 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> implements I
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .negative()
                         .arg("-" + (int) Math.abs(config.speedModifier * 100) + "%")
                         .arg("+" + (int) ((config.fallMotionMultiplier - 1) * 100) + "%")
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (config.knockbackResistanceModifier * 100) + "%")
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyShift)
                         .build())
                 .build();

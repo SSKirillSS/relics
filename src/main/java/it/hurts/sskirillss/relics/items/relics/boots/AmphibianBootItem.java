@@ -7,8 +7,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.AmphibianBootModel;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -16,9 +16,8 @@ import net.minecraft.item.Rarity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> implements ICurioItem {
+public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> {
 
     public static AmphibianBootItem INSTANCE;
 
@@ -38,10 +37,10 @@ public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> implem
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (config.swimSpeedModifier * 100 - 100) + "%")
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg(config.airSupplyModifier)
                         .build())
                 .build();

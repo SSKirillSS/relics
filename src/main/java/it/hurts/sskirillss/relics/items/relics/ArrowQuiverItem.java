@@ -12,8 +12,8 @@ import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -72,10 +72,10 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg(config.skippedTicks + 1)
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .active()
                         .build())
                 .build();

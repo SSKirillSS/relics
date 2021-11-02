@@ -7,8 +7,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -45,7 +45,7 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> im
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg(config.maxDistance)
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())

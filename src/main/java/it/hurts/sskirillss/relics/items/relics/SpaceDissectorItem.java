@@ -8,8 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,13 +49,13 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg(config.maxBounces)
                         .arg(config.baseDamage)
                         .arg((int) (config.damageMultiplierPerBounce * 100 - 100) + "%")
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())

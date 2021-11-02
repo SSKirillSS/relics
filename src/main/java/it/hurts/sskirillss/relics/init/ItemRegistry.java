@@ -1,11 +1,13 @@
 package it.hurts.sskirillss.relics.init;
 
+import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
 import it.hurts.sskirillss.relics.items.*;
 import it.hurts.sskirillss.relics.items.relics.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.boots.*;
 import it.hurts.sskirillss.relics.items.runes.*;
 import it.hurts.sskirillss.relics.utils.Reference;
+import lombok.Getter;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
@@ -13,7 +15,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID)
@@ -99,12 +103,23 @@ public class ItemRegistry {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
-    public static List<RelicItem<?>> getRegisteredRelics() {
-        return ITEMS.getEntries().stream()
+    @Getter
+    private static List<RelicItem<?>> registeredRelics = new ArrayList<>();
+
+    @Getter
+    private static List<Item> slotModifiers = new ArrayList<>();
+
+    public static void syncItemLists() {
+        registeredRelics = ITEMS.getEntries().stream()
                 .filter(RegistryObject::isPresent)
                 .map(RegistryObject::get)
                 .filter(item -> item instanceof RelicItem)
                 .map(item -> (RelicItem<?>) item)
+                .collect(Collectors.toList());
+
+        slotModifiers = ForgeRegistries.ITEMS.getEntries().stream()
+                .map(Map.Entry::getValue)
+                .filter(entry -> entry instanceof ISlotModifier)
                 .collect(Collectors.toList());
     }
 }

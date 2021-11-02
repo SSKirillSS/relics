@@ -1,14 +1,14 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -23,11 +23,10 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.server.ServerWorld;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.awt.*;
 
-public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements ICurioItem {
+public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
     public BastionRingItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
@@ -50,9 +49,9 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> implements
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .build())
                 .build();
     }

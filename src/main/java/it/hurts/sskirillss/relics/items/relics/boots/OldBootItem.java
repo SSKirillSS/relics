@@ -6,8 +6,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.OldBootModel;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -33,7 +33,7 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> implements ICurioI
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (config.speedModifier * 100) + "%")
                         .build())
                 .build();

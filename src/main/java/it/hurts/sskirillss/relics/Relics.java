@@ -61,5 +61,6 @@ public class Relics {
         NetworkHandler.registerMessages();
         RelicConfig.setupEverything();
         JSONManager.setupRunesConfig();
+        ItemRegistry.syncItemLists();
     }
 }

@@ -15,8 +15,8 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -66,7 +66,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg(config.maxCharges)
                         .arg((int) (config.reflectedDamageMultiplier * 100) + "%")
                         .build())

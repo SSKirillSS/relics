@@ -1,16 +1,17 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
+import it.hurts.sskirillss.relics.api.integration.curios.SlotModifierData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.items.relics.renderer.HunterBeltModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -24,10 +25,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.commons.lang3.tuple.MutablePair;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
+import org.apache.commons.lang3.tuple.Pair;
 
-public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements ICurioItem {
+public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements ISlotModifier {
     public static HunterBeltItem INSTANCE;
 
     public HunterBeltItem() {
@@ -46,19 +46,19 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg(config.additionalLooting)
                         .build())
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (config.petDamageMultiplier * 100 - 100) + "%")
                         .build())
                 .build();
     }
 
     @Override
-    public RelicAttribute getAttributes(ItemStack stack) {
-        return RelicAttribute.builder()
-                .slot(new MutablePair<>("talisman", 1))
+    public SlotModifierData getSlotModifiers() {
+        return SlotModifierData.builder()
+                .entry(Pair.of("talisman", 1))
                 .build();
     }
 

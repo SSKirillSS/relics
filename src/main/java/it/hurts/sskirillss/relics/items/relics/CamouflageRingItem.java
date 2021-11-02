@@ -8,8 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.block.BushBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
@@ -37,7 +37,7 @@ public class CamouflageRingItem extends RelicItem<RelicStats> implements ICurioI
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyShift)
                         .build())
                 .build();

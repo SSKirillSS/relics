@@ -9,8 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.renderer.ElytraBoosterModel;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
-import it.hurts.sskirillss.relics.utils.tooltip.ShiftTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
@@ -51,7 +51,7 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
-                .shift(ShiftTooltip.builder()
+                .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyShift)
                         .build())
                 .build();

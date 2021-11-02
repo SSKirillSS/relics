@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.utils.tooltip;
+package it.hurts.sskirillss.relics.client.tooltip.base;
 
 import lombok.Builder;
 import lombok.Data;
@@ -10,41 +10,35 @@ import java.util.List;
 
 @Builder
 @Data
-public class ShiftTooltip {
+public class AbilityTooltip {
     @Singular("arg")
     private final List<Object> args;
-
-    @Accessors(fluent = true)
-    private final boolean isActive;
 
     private final String keybinding;
 
     @Accessors(fluent = true)
     private final boolean isNegative;
 
-    public static class ShiftTooltipBuilder {
-        public ShiftTooltipBuilder negative() {
+    public static class AbilityTooltipBuilder {
+        public AbilityTooltipBuilder negative() {
             this.isNegative = true;
 
             return this;
         }
 
-        public ShiftTooltipBuilder active(String keybinding) {
-            this.isActive = true;
+        public AbilityTooltipBuilder active(String keybinding) {
             this.keybinding = keybinding;
 
             return this;
         }
 
-        public ShiftTooltipBuilder active() {
-            this.isActive = true;
-            this.keybinding = "";
+        public AbilityTooltipBuilder active() {
+            this.keybinding = "Alt";
 
             return this;
         }
 
-        public ShiftTooltipBuilder active(KeyBinding keybinding) {
-            this.isActive = true;
+        public AbilityTooltipBuilder active(KeyBinding keybinding) {
             this.keybinding = keybinding.getKey().getDisplayName().getString();
 
             return this;

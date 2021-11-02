@@ -2,15 +2,14 @@ package it.hurts.sskirillss.relics.items.relics.base;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.items.relics.base.handlers.TooltipHandler;
 import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.tooltip.RelicTooltip;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -18,7 +17,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
@@ -29,16 +27,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RelicItem<T extends RelicStats> extends Item implements ICurioItem, IRepairableItem {
@@ -72,20 +68,20 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         modifiers.getAttributes().forEach(attribute ->
                 EntityUtils.applyAttribute(entity, stack, attribute.getAttribute(), attribute.getMultiplier(), attribute.getOperation()));
 
-        modifiers.getSlots().forEach(slot -> {
-            String identifier = slot.getLeft();
-            int amount = slot.getRight();
-
-            if (amount == 0 || !identifier.equals("talisman"))
-                return;
-
-            CuriosApi.getSlotHelper().setSlotsForType(identifier, entity, amount);
-
+//        modifiers.getSlots().forEach(slot -> {
+//            String identifier = slot.getLeft();
+//            int amount = slot.getRight();
+//
+//            if (amount == 0 || !identifier.equals("talisman"))
+//                return;
+//
+//            CuriosApi.getSlotHelper().setSlotsForType(identifier, entity, amount);
+//
 //            if (amount > 0)
 //                CuriosApi.getSlotHelper().growSlotType(slot.getLeft(), amount, entity);
 //            else
 //                CuriosApi.getSlotHelper().shrinkSlotType(slot.getLeft(), Math.abs(amount), entity);
-        });
+//        });
     }
 
     @Override
@@ -99,20 +95,20 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         modifiers.getAttributes().forEach(attribute ->
                 EntityUtils.removeAttribute(entity, stack, attribute.getAttribute(), attribute.getMultiplier(), attribute.getOperation()));
 
-        modifiers.getSlots().forEach(slot -> {
-            String identifier = slot.getLeft();
-            int amount = slot.getRight();
-
-            if (amount == 0 || !identifier.equals("talisman"))
-                return;
-
-            CuriosApi.getSlotHelper().setSlotsForType(identifier, entity, 0);
-
+//        modifiers.getSlots().forEach(slot -> {
+//            String identifier = slot.getLeft();
+//            int amount = slot.getRight();
+//
+//            if (amount == 0 || !identifier.equals("talisman"))
+//                return;
+//
+//            CuriosApi.getSlotHelper().setSlotsForType(identifier, entity, 0);
+//
 //            if (amount > 0)
 //                CuriosApi.getSlotHelper().shrinkSlotType(slot.getLeft(), amount, entity);
 //            else
 //                CuriosApi.getSlotHelper().growSlotType(slot.getLeft(), Math.abs(amount), entity);
-        });
+//        });
     }
 
     @Override
@@ -150,6 +146,11 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     @Override
+    public List<ITextComponent> getTagsTooltip(List<ITextComponent> tagTooltips, ItemStack stack) {
+        return new ArrayList<>();
+    }
+
+    @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment == Enchantments.UNBREAKING;
     }
@@ -162,16 +163,6 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     @Override
     public boolean showAttributesTooltip(String identifier, ItemStack stack) {
         return false;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        if (worldIn == null)
-            return;
-
-        TooltipHandler.setupTooltip(stack, worldIn, tooltip);
-
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     @Override

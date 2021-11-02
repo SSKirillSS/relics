@@ -9,14 +9,19 @@
   "key.relics.hud_fourth": "Использовать четвертую способность",
   "key.relics.hud_fifth": "Использовать пятую способность",
 
+  "tooltip.relics.shift.title": "§7Удерживай §8[Shift] §7для подробной информации",
 
-  "tooltip.relics.shift.tooltip": "§7Удерживай §8[Shift] §7для просмотра способностей",
-  "tooltip.relics.alt.tooltip": "§7Удерживай §8[Alt] §7для подробной информации",
-  "tooltip.relics.ctrl.tooltip": "§7Удерживай §8[Ctrl] §7для подробной информации",
+  "tooltip.relics.relic.broken": "Реликвия сломана!",
+  "tooltip.relics.relic.damaged": "Реликвия скоро сломается!",
+  "tooltip.relics.relic.requires_slot": "Отсутствует свободный слот:",
+  "tooltip.relics.relic.allowed_modifiers": "Доступные модификаторы:",
 
-  "tooltip.relics.shift.abilities.active.tooltip": "Активные способности:",
-  "tooltip.relics.shift.abilities.passive.tooltip": "Пассивные способности:",
-  "tooltip.relics.shift.slots.tooltip": "Модификаторы слотов:",
+  "tooltip.relics.shift.abilities": "Способности:",
+  "tooltip.relics.shift.stats": "Характеристики:",
+  "tooltip.relics.shift.stats.slot": "Слот:",
+  "tooltip.relics.shift.stats.level": "Уровень:",
+  "tooltip.relics.shift.stats.durability": "Прочность:",
+  "tooltip.relics.shift.slots": "Модификаторы слотов:",
 
   "curios.identifier.feet": "Ноги",
   "curios.modifiers.feet": "Если надето на ноги:",
