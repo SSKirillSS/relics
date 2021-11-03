@@ -36,6 +36,7 @@ public class CamouflageRingItem extends RelicItem<RelicStats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#009122", "#002816")
                 .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyShift)
                         .build())
