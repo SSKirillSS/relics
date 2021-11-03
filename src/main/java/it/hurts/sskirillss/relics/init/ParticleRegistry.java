@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.particles.circle.*;
-import it.hurts.sskirillss.relics.particles.spark.*;
+import it.hurts.sskirillss.relics.client.particles.circle.*;
+import it.hurts.sskirillss.relics.client.particles.spark.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleType;

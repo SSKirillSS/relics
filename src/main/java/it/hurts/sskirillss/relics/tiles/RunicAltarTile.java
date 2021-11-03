@@ -5,7 +5,7 @@ import it.hurts.sskirillss.relics.crafting.RunicAltarRecipe;
 import it.hurts.sskirillss.relics.crafting.SingletonInventory;
 import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
-import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.block.BlockState;

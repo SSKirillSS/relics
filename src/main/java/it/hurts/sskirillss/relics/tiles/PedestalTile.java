@@ -2,8 +2,7 @@ package it.hurts.sskirillss.relics.tiles;
 
 import it.hurts.sskirillss.relics.blocks.PedestalBlock;
 import it.hurts.sskirillss.relics.init.TileRegistry;
-import it.hurts.sskirillss.relics.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.particles.spark.SparkTintData;
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.block.BlockState;

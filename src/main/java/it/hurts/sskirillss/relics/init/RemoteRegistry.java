@@ -1,17 +1,17 @@
 package it.hurts.sskirillss.relics.init;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
-import it.hurts.sskirillss.relics.entities.renderer.ShadowGlaiveRenderer;
-import it.hurts.sskirillss.relics.entities.renderer.SpaceDissectorRenderer;
-import it.hurts.sskirillss.relics.entities.renderer.StellarCatalystProjectileRenderer;
+import it.hurts.sskirillss.relics.client.renderer.entities.ShadowGlaiveRenderer;
+import it.hurts.sskirillss.relics.client.renderer.entities.SpaceDissectorRenderer;
+import it.hurts.sskirillss.relics.client.renderer.entities.StellarCatalystProjectileRenderer;
 import it.hurts.sskirillss.relics.items.RelicContractItem;
 import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
-import it.hurts.sskirillss.relics.tiles.renderer.BloodyLecternTileRenderer;
-import it.hurts.sskirillss.relics.tiles.renderer.PedestalTileRenderer;
-import it.hurts.sskirillss.relics.tiles.renderer.RunicAltarTileRenderer;
-import it.hurts.sskirillss.relics.tiles.renderer.RunicAnvilTileRenderer;
+import it.hurts.sskirillss.relics.client.renderer.tiles.BloodyLecternTileRenderer;
+import it.hurts.sskirillss.relics.client.renderer.tiles.PedestalTileRenderer;
+import it.hurts.sskirillss.relics.client.renderer.tiles.RunicAltarTileRenderer;
+import it.hurts.sskirillss.relics.client.renderer.tiles.RunicAnvilTileRenderer;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.renderer.RenderType;

@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.mixin;
 
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.boots.AmphibianBootItem;
+import it.hurts.sskirillss.relics.items.relics.feet.AmphibianBootItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;

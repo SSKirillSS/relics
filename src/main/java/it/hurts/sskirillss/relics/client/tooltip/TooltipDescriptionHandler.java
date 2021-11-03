@@ -152,8 +152,6 @@ public class TooltipDescriptionHandler {
 
         ILeveledItem item = (ILeveledItem) stack.getItem();
 
-        item.addExperience(stack, 1);
-
         int level = item.getLevel(stack);
 
         int currExp = item.getExperience(stack);
