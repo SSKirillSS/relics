@@ -1,13 +1,14 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -34,15 +35,6 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
     public HorseFluteItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.VILLAGE)
-                        .chance(0.05F)
-                        .build())
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.05F)
-                        .build())
                 .build());
     }
 
@@ -53,7 +45,22 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg(config.teleportDistance)
+                        .arg(stats.teleportDistance)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.VILLAGE)
+                        .chance(0.05F)
+                        .build())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.05F)
                         .build())
                 .build();
     }
@@ -125,7 +132,7 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         HorseEntity horse = findHorse(worldIn, stack);
 
-        if (horse == null || entityIn.distanceTo(horse) < config.teleportDistance)
+        if (horse == null || entityIn.distanceTo(horse) < stats.teleportDistance)
             return;
 
         catchHorse(horse, entityIn, stack);

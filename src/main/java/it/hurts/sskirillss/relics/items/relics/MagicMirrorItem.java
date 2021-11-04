@@ -1,16 +1,17 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketItemActivation;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -33,11 +34,6 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     public MagicMirrorItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.1F)
-                        .build())
                 .build());
     }
 
@@ -46,6 +42,17 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyUse)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -84,7 +91,7 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
             NetworkHandler.sendToClient(new PacketItemActivation(stack), serverPlayer);
 
             if (!playerIn.abilities.instabuild)
-                playerIn.getCooldowns().addCooldown(ItemRegistry.MAGIC_MIRROR.get(), config.cooldown * 20);
+                playerIn.getCooldowns().addCooldown(ItemRegistry.MAGIC_MIRROR.get(), stats.cooldown * 20);
         } else
             playerIn.displayClientMessage(message, true);
 

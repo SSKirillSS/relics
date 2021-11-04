@@ -1,15 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.*;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.SoulFireBlock;
 import net.minecraft.client.Minecraft;
@@ -34,6 +35,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotContext;
 
 import javax.annotation.Nullable;
@@ -47,11 +49,6 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
     public BlazingFlaskItem() {
         super(RelicData.builder()
                 .rarity(Rarity.EPIC)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.NETHER)
-                        .chance(0.01F)
-                        .build())
                 .build());
     }
 
@@ -69,7 +66,18 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.NETHER)
+                        .chance(0.01F)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable World worldIn, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
         int fire = NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0);
@@ -152,7 +160,7 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
 
         player.abilities.flying = fire > 0;
 
-        player.setDeltaMovement(player.getDeltaMovement().multiply(config.levitationSpeed, config.levitationSpeed, config.levitationSpeed));
+        player.setDeltaMovement(player.getDeltaMovement().multiply(stats.levitationSpeed, stats.levitationSpeed, stats.levitationSpeed));
 
         Vector3d motion = player.getDeltaMovement();
 
@@ -166,13 +174,13 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
 
         if (!player.isShiftKeyDown())
             player.setDeltaMovement(motion.x(), riseVelocity * ((getGroundHeight(player)
-                    - (player.getY() - config.levitationHeight))), motion.z());
+                    - (player.getY() - stats.levitationHeight))), motion.z());
 
-        if (player.getY() - config.levitationHeight > getGroundHeight(player)) {
+        if (player.getY() - stats.levitationHeight > getGroundHeight(player)) {
             if (motion.y() > 0)
                 player.setDeltaMovement(motion.x(), 0, motion.z());
 
-            player.setDeltaMovement(motion.x(), -Math.min(player.getY() - config.levitationHeight
+            player.setDeltaMovement(motion.x(), -Math.min(player.getY() - stats.levitationHeight
                     - getGroundHeight(player), 2) / 8, motion.z());
         }
 
@@ -184,10 +192,10 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
         World world = player.getCommandSenderWorld();
         int fire = NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0);
 
-        if (player.isSpectator() || fire >= config.capacity)
+        if (player.isSpectator() || fire >= stats.capacity)
             return;
 
-        List<BlockPos> positions = WorldUtils.getBlockSphere(player.blockPosition(), config.consumptionRadius).stream()
+        List<BlockPos> positions = WorldUtils.getBlockSphere(player.blockPosition(), stats.consumptionRadius).stream()
                 .filter(pos -> (world.getBlockState(pos).getBlock() instanceof AbstractFireBlock)).collect(Collectors.toList());
 
         for (BlockPos pos : positions) {
@@ -199,10 +207,10 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
                             : new Color(255, 122, 0), (float) (distance * 0.075F), (int) distance * 5, 0.95F, false),
                     blockVec.x(), blockVec.y(), blockVec.z(), direction.x * 0.2F, direction.y * 0.2F, direction.z * 0.2F);
 
-            if (player.tickCount % config.consumptionCooldown == 0) {
+            if (player.tickCount % stats.consumptionCooldown == 0) {
                 world.playSound(null, pos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
-                NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, Math.min(config.capacity, fire + positions.size()));
+                NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, Math.min(stats.capacity, fire + positions.size()));
             }
         }
     }

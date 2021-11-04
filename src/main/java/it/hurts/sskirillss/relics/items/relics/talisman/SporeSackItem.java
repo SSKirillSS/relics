@@ -2,10 +2,11 @@ package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -32,11 +33,6 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> {
     public SporeSackItem() {
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.JUNGLE_TEMPLE.toString())
-                        .chance(0.2F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -46,8 +42,19 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg((int) (config.chance * 100) + "%")
-                        .arg(config.radius)
+                        .arg((int) (stats.chance * 100) + "%")
+                        .arg(stats.radius)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.JUNGLE_TEMPLE.toString())
+                        .chance(0.2F)
                         .build())
                 .build();
     }
@@ -56,7 +63,7 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> {
     public static class SporeSackEvents {
         @SubscribeEvent
         public static void onProjectileImpact(ProjectileImpactEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getEntity() instanceof ProjectileEntity))
                 return;
@@ -73,21 +80,21 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> {
                 return;
 
             if (EntityUtils.findEquippedCurio(player, ItemRegistry.SPORE_SACK.get()).isEmpty()
-                    || world.getRandom().nextFloat() > config.chance)
+                    || world.getRandom().nextFloat() > stats.chance)
                 return;
 
             ((ServerWorld) world).sendParticles(new RedstoneParticleData(0, 255, 0, 1),
                     projectile.getX(), projectile.getY(), projectile.getZ(), 100, 1, 1, 1, 0.5);
             world.playSound(null, projectile.blockPosition(), SoundEvents.FIRE_EXTINGUISH,
                     SoundCategory.PLAYERS, 1.0F, 0.5F);
-            player.getCooldowns().addCooldown(ItemRegistry.SPORE_SACK.get(), config.cooldown * 20);
+            player.getCooldowns().addCooldown(ItemRegistry.SPORE_SACK.get(), stats.cooldown * 20);
 
-            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(config.radius))) {
+            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(stats.radius))) {
                 if (entity == player)
                     continue;
 
-                entity.addEffect(new EffectInstance(Effects.POISON, config.poisonDuration * 20, config.poisonAmplifier));
-                entity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, config.slownessDuration * 20, config.slownessAmplifier));
+                entity.addEffect(new EffectInstance(Effects.POISON, stats.poisonDuration * 20, stats.poisonAmplifier));
+                entity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, stats.slownessDuration * 20, stats.slownessAmplifier));
             }
         }
     }

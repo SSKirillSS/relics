@@ -1,9 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -30,22 +31,11 @@ import java.util.IdentityHashMap;
 import java.util.function.Consumer;
 
 public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
-    public static final String TAG_SLIME_AMOUNT = "slime";
-
     public static SlimeHeartItem INSTANCE;
 
     public SlimeHeartItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.1F)
-                        .build())
-                .loot(RelicLoot.builder()
-                        .table(EntityType.SLIME.getDefaultLootTable().toString())
-                        .chance(0.001F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -55,7 +45,7 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg((int) (config.healingMultiplier * 100 - 100) + "%")
+                        .arg((int) (stats.healingMultiplier * 100 - 100) + "%")
                         .negative()
                         .build())
                 .ability(AbilityTooltip.builder()
@@ -64,11 +54,26 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
                 .build();
     }
 
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.1F)
+                        .build())
+                .loot(LootData.builder()
+                        .table(EntityType.SLIME.getDefaultLootTable().toString())
+                        .chance(0.001F)
+                        .build())
+                .build();
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class SlimeHeartEvents {
         @SubscribeEvent
         public static void onEntityHeal(LivingHealEvent event) {
-            Stats config = INSTANCE.getConfig();
+            Stats stats = INSTANCE.getStats();
 
             LivingEntity entity = event.getEntityLiving();
             ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.SLIME_HEART.get());
@@ -76,12 +81,12 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
             if (stack.isEmpty())
                 return;
 
-            event.setAmount(event.getAmount() * config.healingMultiplier);
+            event.setAmount(event.getAmount() * stats.healingMultiplier);
         }
 
         @SubscribeEvent
         public static void onEntityFall(LivingFallEvent event) {
-            Stats config = INSTANCE.getConfig();
+            Stats stats = INSTANCE.getStats();
 
             LivingEntity entity = event.getEntityLiving();
             ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.SLIME_HEART.get());
@@ -94,7 +99,7 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
 
             entity.playSound(SoundEvents.SLIME_SQUISH, 1F, 1F);
 
-            BounceHandler.addBounceHandler(entity, -entity.getDeltaMovement().y() * config.motionMultiplier);
+            BounceHandler.addBounceHandler(entity, -entity.getDeltaMovement().y() * stats.motionMultiplier);
         }
     }
 

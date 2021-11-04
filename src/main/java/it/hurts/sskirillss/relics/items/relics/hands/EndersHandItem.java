@@ -4,10 +4,11 @@ import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.renderer.items.models.EndersHandModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -43,16 +44,7 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
     public EndersHandItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
                 .hasAbility()
-                .loot(RelicLoot.builder()
-                        .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.1F)
-                        .build())
-                .loot(RelicLoot.builder()
-                        .table(EntityType.ENDERMAN.getDefaultLootTable().toString())
-                        .chance(0.01F)
-                        .build())
                 .build());
     }
 
@@ -71,6 +63,21 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
     }
 
     @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
+                        .build())
+                .loot(LootData.builder()
+                        .table(EntityType.ENDERMAN.getDefaultLootTable().toString())
+                        .chance(0.01F)
+                        .build())
+                .build();
+    }
+
+    @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (!(livingEntity instanceof PlayerEntity))
             return;
@@ -83,10 +90,10 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
 
         if (player.isShiftKeyDown()) {
             Predicate<Entity> predicate = (entity) -> !entity.isSpectator() && entity.isPickable();
-            EntityRayTraceResult result = EntityUtils.rayTraceEntity(player, predicate, config.maxDistance);
+            EntityRayTraceResult result = EntityUtils.rayTraceEntity(player, predicate, stats.maxDistance);
 
             if (result != null && result.getEntity() instanceof EndermanEntity) {
-                if (time >= config.preparationTime * 20) {
+                if (time >= stats.preparationTime * 20) {
                     Vector3d swapVec = player.position();
                     EndermanEntity enderman = (EndermanEntity) result.getEntity();
                     World world = player.getCommandSenderWorld();
@@ -101,7 +108,7 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
 
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
 
-                    player.getCooldowns().addCooldown(stack.getItem(), config.cooldown * 20);
+                    player.getCooldowns().addCooldown(stack.getItem(), stats.cooldown * 20);
                 } else
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
             } else if (time > 0)

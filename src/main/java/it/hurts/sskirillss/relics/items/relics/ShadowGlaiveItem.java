@@ -1,17 +1,18 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,11 +36,6 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     public ShadowGlaiveItem() {
         super(RelicData.builder()
                 .rarity(Rarity.EPIC)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -49,10 +45,21 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg(config.maxBounces)
-                        .arg(config.damage)
-                        .arg(config.chargeRegenerationTime)
+                        .arg(stats.maxBounces)
+                        .arg(stats.damage)
+                        .arg(stats.chargeRegenerationTime)
                         .active(Minecraft.getInstance().options.keyUse)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -64,7 +71,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
 
         ItemStack stack = new ItemStack(ItemRegistry.SHADOW_GLAIVE.get());
 
-        NBTUtils.setInt(stack, TAG_CHARGES, config.maxCharges);
+        NBTUtils.setInt(stack, TAG_CHARGES, stats.maxCharges);
 
         items.add(stack);
 
@@ -75,12 +82,12 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
-        if (IRepairableItem.isBroken(stack) || entityIn.tickCount % 20 != 0 || charges >= config.maxCharges)
+        if (IRepairableItem.isBroken(stack) || entityIn.tickCount % 20 != 0 || charges >= stats.maxCharges)
             return;
 
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
 
-        if (time >= config.chargeRegenerationTime) {
+        if (time >= stats.chargeRegenerationTime) {
             NBTUtils.setInt(stack, TAG_CHARGES, charges + 1);
             NBTUtils.setInt(stack, TAG_TIME, 0);
         } else
@@ -99,7 +106,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
 
         glaive.setOwner(playerIn);
         glaive.teleportTo(playerIn.getX(), playerIn.getY() + playerIn.getBbHeight() * 0.5F, playerIn.getZ());
-        glaive.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, config.projectileSpeed, 1, 0.0F);
+        glaive.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, stats.projectileSpeed, 1, 0.0F);
 
         worldIn.addFreshEntity(glaive);
 
@@ -107,7 +114,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
                 SoundCategory.MASTER, 0.5F, 0.75F + (random.nextFloat() * 0.5F));
 
         NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
-        playerIn.getCooldowns().addCooldown(stack.getItem(), config.throwCooldown);
+        playerIn.getCooldowns().addCooldown(stack.getItem(), stats.throwCooldown);
 
         return super.use(worldIn, playerIn, handIn);
     }

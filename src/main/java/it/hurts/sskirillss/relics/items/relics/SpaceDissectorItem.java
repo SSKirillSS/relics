@@ -1,15 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.entities.SpaceDissectorEntity;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,11 +37,6 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
     public SpaceDissectorItem() {
         super(RelicData.builder()
                 .rarity(Rarity.EPIC)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -50,14 +46,25 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg(config.maxBounces)
-                        .arg(config.baseDamage)
-                        .arg((int) (config.damageMultiplierPerBounce * 100 - 100) + "%")
+                        .arg(stats.maxBounces)
+                        .arg(stats.baseDamage)
+                        .arg((int) (stats.damageMultiplierPerBounce * 100 - 100) + "%")
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())
                 .ability(AbilityTooltip.builder()
                         .arg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
                         .active(Minecraft.getInstance().options.keyUse)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -76,7 +83,7 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
             NBTUtils.setString(stack, TAG_UUID, entity.getUUID().toString());
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
 
-            entity.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, 1.0F, config.projectileSpeed, 0.0F);
+            entity.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, 1.0F, stats.projectileSpeed, 0.0F);
             entity.stack = playerIn.getItemInHand(handIn);
             entity.setOwner(playerIn);
 
@@ -108,13 +115,13 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
                     worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(),
                             SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
-                    playerIn.getCooldowns().addCooldown(stack.getItem(), config.cooldownAfterTeleport * 20);
+                    playerIn.getCooldowns().addCooldown(stack.getItem(), stats.cooldownAfterTeleport * 20);
 
                     NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
                     dissector.remove();
                 }
             } else {
-                playerIn.getCooldowns().addCooldown(stack.getItem(), config.cooldownAfterTeleport * 20);
+                playerIn.getCooldowns().addCooldown(stack.getItem(), stats.cooldownAfterTeleport * 20);
 
                 NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
             }
@@ -132,7 +139,7 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
 
         NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
 
-        if (time > config.maxThrownTime)
+        if (time > stats.maxThrownTime)
             NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
 
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);

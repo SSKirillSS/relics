@@ -67,7 +67,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
         super.tick();
 
-        SpaceDissectorItem.Stats config = SpaceDissectorItem.INSTANCE.getConfig();
+        SpaceDissectorItem.Stats config = SpaceDissectorItem.INSTANCE.getStats();
 
         for (int i = 0; i < 3; i++)
             level.addParticle(new SparkTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(100)), 0.2F, 30),
@@ -120,7 +120,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
     @Override
     protected void onHit(@Nonnull RayTraceResult rayTraceResult) {
-        SpaceDissectorItem.Stats config = SpaceDissectorItem.INSTANCE.getConfig();
+        SpaceDissectorItem.Stats config = SpaceDissectorItem.INSTANCE.getStats();
 
         switch (rayTraceResult.getType()) {
             case BLOCK: {

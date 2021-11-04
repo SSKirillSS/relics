@@ -3,10 +3,11 @@ package it.hurts.sskirillss.relics.items.relics.ring;
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -48,11 +49,6 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
     public DelayRingItem() {
         super(RelicData.builder()
                 .rarity(Rarity.EPIC)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.05F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -63,8 +59,19 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
         return RelicTooltip.builder()
                 .borders("#e60032", "#670d4e")
                 .ability(AbilityTooltip.builder()
-                        .arg(config.delayDuration)
+                        .arg(stats.delayDuration)
 
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.05F)
                         .build())
                 .build();
     }
@@ -122,7 +129,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
         int points = NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0);
 
         world.playSound(null, player.blockPosition(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundCategory.MASTER, 1.0F, 1.0F);
-        player.getCooldowns().addCooldown(stack.getItem(), config.useCooldown * 20);
+        player.getCooldowns().addCooldown(stack.getItem(), stats.useCooldown * 20);
 
         if (points > 0)
             player.heal(points);
@@ -155,7 +162,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
     public static class DelayRingEvents {
         @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void onEntityDeath(LivingDeathEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getEntityLiving() instanceof PlayerEntity))
                 return;
@@ -172,7 +179,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
             if (source instanceof PlayerEntity)
                 NBTUtils.setString(stack, TAG_KILLER_UUID, source.getUUID().toString());
 
-            NBTUtils.setInt(stack, TAG_UPDATE_TIME, config.delayDuration);
+            NBTUtils.setInt(stack, TAG_UPDATE_TIME, stats.delayDuration);
             NBTUtils.setInt(stack, TAG_STORED_AMOUNT, 0);
 
             player.setHealth(1.0F);
@@ -182,7 +189,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
 
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.DELAY_RING.get());
 
@@ -190,14 +197,14 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
                 return;
 
             NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
-                    - Math.round(event.getAmount() * config.damageMultiplier));
+                    - Math.round(event.getAmount() * stats.damageMultiplier));
 
             event.setCanceled(true);
         }
 
         @SubscribeEvent
         public static void onEntityHeal(LivingHealEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.DELAY_RING.get());
 
@@ -205,7 +212,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
                 return;
 
             NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
-                    + Math.round(event.getAmount() * config.healMultiplier));
+                    + Math.round(event.getAmount() * stats.healMultiplier));
 
             event.setCanceled(true);
         }

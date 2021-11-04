@@ -5,11 +5,12 @@ import it.hurts.sskirillss.relics.blocks.MagmaStoneBlock;
 import it.hurts.sskirillss.relics.client.renderer.items.models.MagmaWalkerModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -39,10 +40,6 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> {
     public MagmaWalkerItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.NETHER)
-                        .chance(0.05F)
-                        .build())
                 .build());
     }
 
@@ -52,6 +49,16 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> {
                 .ability(AbilityTooltip.builder()
                         .build())
                 .ability(AbilityTooltip.builder()
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<RelicStats> getConfigData() {
+        return ConfigData.builder()
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.NETHER)
+                        .chance(0.05F)
                         .build())
                 .build();
     }

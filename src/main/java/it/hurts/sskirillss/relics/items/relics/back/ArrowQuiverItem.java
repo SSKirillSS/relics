@@ -1,19 +1,20 @@
 package it.hurts.sskirillss.relics.items.relics.back;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.renderer.items.models.ArrowQuiverModel;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.client.renderer.items.models.ArrowQuiverModel;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -54,16 +55,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
     public ArrowQuiverItem() {
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
-                .config(Stats.class)
                 .hasAbility()
-                .loot(RelicLoot.builder()
-                        .table(LootTables.VILLAGE_FLETCHER.toString())
-                        .chance(0.25F)
-                        .build())
-                .loot(RelicLoot.builder()
-                        .table(EntityType.SKELETON.getDefaultLootTable().toString())
-                        .chance(0.005F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -73,10 +65,25 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg(config.skippedTicks + 1)
+                        .arg(stats.skippedTicks + 1)
                         .build())
                 .ability(AbilityTooltip.builder()
                         .active()
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.VILLAGE_FLETCHER.toString())
+                        .chance(0.25F)
+                        .build())
+                .loot(LootData.builder()
+                        .table(EntityType.SKELETON.getDefaultLootTable().toString())
+                        .chance(0.005F)
                         .build())
                 .build();
     }
@@ -119,8 +126,8 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
         Item item = entity.getMainHandItem().getItem();
         String id = item.getRegistryName().toString();
 
-        if ((item instanceof BowItem && !config.blacklistedItems.contains(id)) || config.whitelistedItems.contains(id))
-            for (int i = 0; i < config.skippedTicks; i++)
+        if ((item instanceof BowItem && !stats.blacklistedItems.contains(id)) || stats.whitelistedItems.contains(id))
+            for (int i = 0; i < stats.skippedTicks; i++)
                 entity.updatingUsingItem();
     }
 
@@ -146,7 +153,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
     public static class Events {
         @SubscribeEvent
         public static void onArrowLoose(ArrowLooseEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getEntityLiving() instanceof PlayerEntity))
                 return;
@@ -183,7 +190,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
 
             NBTUtils.setString(stack, TAG_ARROW, projectile.getStringUUID());
 
-            player.getCooldowns().addCooldown(stack.getItem(), config.activeCooldown * 20);
+            player.getCooldowns().addCooldown(stack.getItem(), stats.activeCooldown * 20);
 
             world.addParticle(ParticleTypes.EXPLOSION, player.getX(), player.getY() + 1, player.getZ(), 0, 0, 0);
             world.playSound(player, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
@@ -192,7 +199,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
 
         @SubscribeEvent
         public static void onProjectileImpact(ProjectileImpactEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getEntity() instanceof ProjectileEntity))
                 return;
@@ -217,7 +224,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
             if (IRepairableItem.isBroken(stack) || !event.getEntity().getUUID().toString().equals(NBTUtils.getString(stack, TAG_ARROW, "")))
                 return;
 
-            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(config.explosionRadius))) {
+            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(stats.explosionRadius))) {
                 if (world.isClientSide())
                     return;
 
@@ -230,8 +237,8 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
                     entity.setDeltaMovement(motion);
 
                 if (!entity.getStringUUID().equals(owner.getStringUUID()))
-                    entity.hurt(DamageSource.playerAttack(owner), (float) Math.min(config.maxExplosionDamage,
-                            entity.position().distanceTo(owner.position()) * config.explosionDamageMultiplier));
+                    entity.hurt(DamageSource.playerAttack(owner), (float) Math.min(stats.maxExplosionDamage,
+                            entity.position().distanceTo(owner.position()) * stats.explosionDamageMultiplier));
             }
 
             NBTUtils.setString(stack, TAG_ARROW, "");

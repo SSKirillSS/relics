@@ -2,10 +2,11 @@ package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -31,11 +32,6 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> {
     public ChorusInhibitorItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -45,8 +41,19 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg(config.maxDistance)
+                        .arg(stats.maxDistance)
                         .active(Minecraft.getInstance().options.keyUse)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -55,7 +62,7 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> {
     public static class ChorusInhibitorEvents {
         @SubscribeEvent
         public static void onChorusTeleport(EntityTeleportEvent.ChorusFruit event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getEntityLiving() instanceof PlayerEntity))
                 return;
@@ -68,8 +75,8 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> {
             World world = player.getCommandSenderWorld();
             Vector3d view = player.getViewVector(0);
             Vector3d eyeVec = player.getEyePosition(0);
-            BlockRayTraceResult ray = world.clip(new RayTraceContext(eyeVec, eyeVec.add(view.x * config.maxDistance, view.y * config.maxDistance,
-                    view.z * config.maxDistance), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
+            BlockRayTraceResult ray = world.clip(new RayTraceContext(eyeVec, eyeVec.add(view.x * stats.maxDistance, view.y * stats.maxDistance,
+                    view.z * stats.maxDistance), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
             BlockPos pos = ray.getBlockPos();
 
             if (!world.getBlockState(pos).getMaterial().isSolid())
@@ -77,7 +84,7 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> {
 
             pos = pos.above();
 
-            for (int i = 0; i < config.safeChecks; i++) {
+            for (int i = 0; i < stats.safeChecks; i++) {
                 if (world.getBlockState(pos).getMaterial().blocksMotion() || world.getBlockState(pos.above()).getMaterial().blocksMotion()) {
                     pos = pos.above();
 

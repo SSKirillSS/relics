@@ -3,10 +3,11 @@ package it.hurts.sskirillss.relics.items.relics.feet;
 import it.hurts.sskirillss.relics.client.renderer.items.models.OldBootModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
@@ -21,11 +22,6 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> {
     public OldBootItem() {
         super(RelicData.builder()
                 .rarity(Rarity.COMMON)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.FISHING.toString())
-                        .chance(0.1F)
-                        .build())
                 .build());
     }
 
@@ -33,7 +29,18 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.speedModifier * 100) + "%")
+                        .arg("+" + (int) (stats.speedModifier * 100) + "%")
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.FISHING.toString())
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -41,7 +48,7 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> {
     @Override
     public RelicAttribute getAttributes(ItemStack stack) {
         return RelicAttribute.builder()
-                .attribute(new RelicAttribute.Modifier(Attributes.MOVEMENT_SPEED, config.speedModifier))
+                .attribute(new RelicAttribute.Modifier(Attributes.MOVEMENT_SPEED, stats.speedModifier))
                 .build();
     }
 

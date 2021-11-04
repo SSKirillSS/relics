@@ -1,9 +1,7 @@
 package it.hurts.sskirillss.relics.blocks;
 
 import com.google.common.collect.ImmutableList;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.tiles.PedestalTile;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -48,8 +46,7 @@ public class PedestalBlock extends Block {
         PedestalTile pedestal = (PedestalTile) world.getBlockEntity(pos);
         if (pedestal.getStack().isEmpty()) {
             ItemStack stack = player.getMainHandItem();
-            if (stack.isEmpty() || (!RelicsConfig.Pedestal.ACCEPT_ANY_ITEM.get()
-                    && !(stack.getItem() instanceof RelicItem))) return ActionResultType.FAIL;
+            if (stack.isEmpty()) return ActionResultType.FAIL;
             pedestal.setStack(player.getMainHandItem().split(1));
         } else {
             ItemStack stack = pedestal.getStack();

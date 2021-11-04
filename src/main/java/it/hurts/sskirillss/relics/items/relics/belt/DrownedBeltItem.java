@@ -2,17 +2,18 @@ package it.hurts.sskirillss.relics.items.relics.belt;
 
 import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
 import it.hurts.sskirillss.relics.api.integration.curios.SlotModifierData;
+import it.hurts.sskirillss.relics.client.renderer.items.models.DrownedBeltModel;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.client.renderer.items.models.DrownedBeltModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
@@ -35,15 +36,6 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
     public DrownedBeltItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.AQUATIC)
-                        .chance(0.1F)
-                        .build())
-                .loot(RelicLoot.builder()
-                        .table(EntityType.DROWNED.getDefaultLootTable().toString())
-                        .chance(0.01F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -55,11 +47,26 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
                 .ability(AbilityTooltip.builder()
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.dealtDamageMultiplier * 100 - 100) + "%")
+                        .arg("+" + (int) (stats.dealtDamageMultiplier * 100 - 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.incomingDamageMultiplier * 100 - 100) + "%")
+                        .arg("+" + (int) (stats.incomingDamageMultiplier * 100 - 100) + "%")
                         .negative()
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.AQUATIC)
+                        .chance(0.1F)
+                        .build())
+                .loot(LootData.builder()
+                        .table(EntityType.DROWNED.getDefaultLootTable().toString())
+                        .chance(0.01F)
                         .build())
                 .build();
     }
@@ -81,17 +88,17 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
     public static class DrownedBeltServerEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             PlayerEntity player = null;
             float value = 1.0F;
 
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 player = (PlayerEntity) event.getEntityLiving();
-                value = config.incomingDamageMultiplier;
+                value = stats.incomingDamageMultiplier;
             } else if (event.getSource().getEntity() instanceof PlayerEntity) {
                 player = (PlayerEntity) event.getSource().getEntity();
-                value = config.dealtDamageMultiplier;
+                value = stats.dealtDamageMultiplier;
             }
 
             if (player != null && player.isUnderWater()
@@ -114,7 +121,7 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
 
         @SubscribeEvent
         public static void onItemUseFinish(LivingEntityUseItemEvent.Stop event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             ItemStack stack = event.getItem();
 
@@ -132,7 +139,7 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
             if (duration < 10 || enchantment <= 0)
                 return;
 
-            player.getCooldowns().addCooldown(stack.getItem(), (config.riptideCooldown / (enchantment + 1)) * 20);
+            player.getCooldowns().addCooldown(stack.getItem(), (stats.riptideCooldown / (enchantment + 1)) * 20);
         }
     }
 

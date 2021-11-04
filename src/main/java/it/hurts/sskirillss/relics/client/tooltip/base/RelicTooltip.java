@@ -7,8 +7,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
-@Builder
 @Data
+@Builder
 public class RelicTooltip {
     @Singular("ability")
     private List<AbilityTooltip> abilities;

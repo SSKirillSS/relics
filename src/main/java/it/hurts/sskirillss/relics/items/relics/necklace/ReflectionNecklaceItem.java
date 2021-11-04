@@ -6,10 +6,11 @@ import it.hurts.sskirillss.relics.client.renderer.items.models.ReflectionNecklac
 import it.hurts.sskirillss.relics.client.renderer.items.models.ReflectionNecklaceShieldModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
@@ -52,11 +53,6 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
     public ReflectionNecklaceItem() {
         super(RelicData.builder()
                 .rarity(Rarity.EPIC)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.NETHER)
-                        .chance(0.01F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -66,8 +62,19 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg(config.maxCharges)
-                        .arg((int) (config.reflectedDamageMultiplier * 100) + "%")
+                        .arg(stats.maxCharges)
+                        .arg((int) (stats.reflectedDamageMultiplier * 100) + "%")
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.NETHER)
+                        .chance(0.01F)
                         .build())
                 .build();
     }
@@ -80,10 +87,10 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
         int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
 
-        if (charges >= config.maxCharges)
+        if (charges >= stats.maxCharges)
             return;
 
-        if (time < Math.max(config.timePerCharge, charges * config.timePerCharge))
+        if (time < Math.max(stats.timePerCharge, charges * stats.timePerCharge))
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
         else {
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
@@ -130,7 +137,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
     public static class ReflectionNecklaceServerEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getEntityLiving() instanceof PlayerEntity))
                 return;
@@ -165,7 +172,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
             NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, charges - 1);
 
-            attacker.hurt(DamageSource.playerAttack(player), event.getAmount() * config.reflectedDamageMultiplier);
+            attacker.hurt(DamageSource.playerAttack(player), event.getAmount() * stats.reflectedDamageMultiplier);
 
             event.setCanceled(true);
         }

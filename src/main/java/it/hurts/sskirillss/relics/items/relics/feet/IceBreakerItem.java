@@ -1,18 +1,19 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.renderer.items.models.IceBreakerModel;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.client.renderer.items.models.IceBreakerModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
@@ -39,11 +40,6 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
     public IceBreakerItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.COLD)
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -54,11 +50,11 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
                         .negative()
-                        .arg("-" + (int) Math.abs(config.speedModifier * 100) + "%")
-                        .arg("+" + (int) ((config.fallMotionMultiplier - 1) * 100) + "%")
+                        .arg("-" + (int) Math.abs(stats.speedModifier * 100) + "%")
+                        .arg("+" + (int) ((stats.fallMotionMultiplier - 1) * 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.knockbackResistanceModifier * 100) + "%")
+                        .arg("+" + (int) (stats.knockbackResistanceModifier * 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyShift)
@@ -67,10 +63,21 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
     }
 
     @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.COLD)
+                        .chance(0.1F)
+                        .build())
+                .build();
+    }
+
+    @Override
     public RelicAttribute getAttributes(ItemStack stack) {
         return RelicAttribute.builder()
-                .attribute(new RelicAttribute.Modifier(Attributes.MOVEMENT_SPEED, config.speedModifier))
-                .attribute(new RelicAttribute.Modifier(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistanceModifier))
+                .attribute(new RelicAttribute.Modifier(Attributes.MOVEMENT_SPEED, stats.speedModifier))
+                .attribute(new RelicAttribute.Modifier(Attributes.KNOCKBACK_RESISTANCE, stats.knockbackResistanceModifier))
                 .build();
     }
 
@@ -86,7 +93,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
                 || player.isFallFlying() || player.isSpectator())
             return;
 
-        player.setDeltaMovement(motion.x(), motion.y() * config.fallMotionMultiplier, motion.z());
+        player.setDeltaMovement(motion.x(), motion.y() * stats.fallMotionMultiplier, motion.z());
         player.getCommandSenderWorld().addParticle(ParticleTypes.SMOKE, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
     }
 
@@ -100,7 +107,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
     public static class IceBreakerServerEvents {
         @SubscribeEvent
         public static void onEntityFall(LivingFallEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getEntityLiving() instanceof PlayerEntity))
                 return;
@@ -120,20 +127,20 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
                     SoundCategory.PLAYERS, 0.75F, 1.0F);
             world.addParticle(ParticleTypes.EXPLOSION_EMITTER, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
 
-            player.getCooldowns().addCooldown(ItemRegistry.ICE_BREAKER.get(), Math.round(distance * config.stompCooldownMultiplier * 20));
+            player.getCooldowns().addCooldown(ItemRegistry.ICE_BREAKER.get(), Math.round(distance * stats.stompCooldownMultiplier * 20));
 
             for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class,
-                    player.getBoundingBox().inflate(distance * config.stompRadiusMultiplier))) {
+                    player.getBoundingBox().inflate(distance * stats.stompRadiusMultiplier))) {
                 if (entity == player)
                     continue;
 
-                entity.hurt(DamageSource.playerAttack(player), Math.min(config.maxDealtDamage,
-                        distance * config.dealtDamageMultiplier));
+                entity.hurt(DamageSource.playerAttack(player), Math.min(stats.maxDealtDamage,
+                        distance * stats.dealtDamageMultiplier));
                 entity.setDeltaMovement(entity.position().subtract(player.position()).add(0, 1.005F, 0)
-                        .multiply(config.stompMotionMultiplier, config.stompMotionMultiplier, config.stompMotionMultiplier));
+                        .multiply(stats.stompMotionMultiplier, stats.stompMotionMultiplier, stats.stompMotionMultiplier));
             }
 
-            event.setDamageMultiplier(config.incomingFallDamageMultiplier);
+            event.setDamageMultiplier(stats.incomingFallDamageMultiplier);
         }
     }
 

@@ -3,10 +3,11 @@ package it.hurts.sskirillss.relics.items.relics.talisman;
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -53,12 +54,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
     public ScarabTalismanItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
                 .hasAbility()
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.DESERT)
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -68,15 +64,26 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.speedModifier * 100 - 100) + "%")
+                        .arg("+" + (int) (stats.speedModifier * 100 - 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.digModifier * 100 - 100) + "%")
+                        .arg("+" + (int) (stats.digModifier * 100 - 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
                         .build())
                 .ability(AbilityTooltip.builder()
                         .active()
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.DESERT)
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -89,13 +96,13 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
         if (IRepairableItem.isBroken(stack))
             return;
 
-        if (config.allowedBiomes.stream().map(Biome.Category::byName).collect(Collectors.toList())
+        if (stats.allowedBiomes.stream().map(Biome.Category::byName).collect(Collectors.toList())
                 .contains(world.getBiome(livingEntity.blockPosition()).getBiomeCategory()))
             EntityUtils.applyAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
-                    SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
         else
             EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
-                    config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 
     @Override
@@ -103,7 +110,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
         ModifiableAttributeInstance movementSpeed = slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED);
 
         EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
-                config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 
     @Override
@@ -136,7 +143,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
         }
 
         if (canTeleport) {
-            player.getCooldowns().addCooldown(stack.getItem(), config.burrowCooldown * 20);
+            player.getCooldowns().addCooldown(stack.getItem(), stats.burrowCooldown * 20);
 
             player.teleportTo(vec.x(), vec.y(), vec.z());
 
@@ -184,13 +191,13 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
 
         @SubscribeEvent
         public static void onBlockBreakCalculate(PlayerEvent.BreakSpeed event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), event.getEntityLiving()).ifPresent(triple -> {
                 if (IRepairableItem.isBroken(triple.getRight()))
                     return;
 
-                event.setNewSpeed(event.getNewSpeed() * config.digModifier);
+                event.setNewSpeed(event.getNewSpeed() * stats.digModifier);
             });
         }
     }

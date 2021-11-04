@@ -48,7 +48,7 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     public void tick() {
         super.tick();
 
-        StellarCatalystItem.Stats config = StellarCatalystItem.INSTANCE.getConfig();
+        StellarCatalystItem.Stats config = StellarCatalystItem.INSTANCE.getStats();
 
         Random random = this.getCommandSenderWorld().getRandom();
 
@@ -65,7 +65,7 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
 
     @Override
     protected void onHit(@NotNull RayTraceResult result) {
-        StellarCatalystItem.Stats config = StellarCatalystItem.INSTANCE.getConfig();
+        StellarCatalystItem.Stats config = StellarCatalystItem.INSTANCE.getStats();
 
         Random random = this.getCommandSenderWorld().getRandom();
 

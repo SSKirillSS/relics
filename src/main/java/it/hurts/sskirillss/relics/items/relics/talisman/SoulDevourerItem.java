@@ -3,10 +3,11 @@ package it.hurts.sskirillss.relics.items.relics.talisman;
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -37,11 +38,6 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
     public SoulDevourerItem() {
         super(RelicData.builder()
                 .rarity(Rarity.EPIC)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -51,8 +47,19 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg((int) (config.soulFromHealthMultiplier * 100) + "%")
-                        .arg(config.damageMultiplierPerSoul + "%")
+                        .arg((int) (stats.soulFromHealthMultiplier * 100) + "%")
+                        .arg(stats.damageMultiplierPerSoul + "%")
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -74,12 +81,12 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
         if (player.tickCount % 20 == 0) {
-            if (time < config.soulLooseCooldown)
+            if (time < stats.soulLooseCooldown)
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, time + 1);
             else {
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
                 NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, Math.round(Math.max(soul - (soul
-                        * config.soulLoseMultiplierPerSoul + config.minSoulLooseAmount), 0)));
+                        * stats.soulLoseMultiplierPerSoul + stats.minSoulLooseAmount), 0)));
             }
         }
     }
@@ -88,7 +95,7 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
     public static class SoulDevourerServerEvents {
         @SubscribeEvent
         public static void onEntityDeath(LivingDeathEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getSource().getEntity() instanceof PlayerEntity))
                 return;
@@ -99,19 +106,19 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.SOUL_DEVOURER.get());
 
             int soul = NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0);
-            int capacity = config.soulCapacity;
+            int capacity = stats.soulCapacity;
 
             if (stack.isEmpty() || soul >= capacity)
                 return;
 
             NBTUtils.setInt(stack, TAG_SOUL_AMOUNT, Math.min(soul + (int) (target.getMaxHealth()
-                    * config.soulFromHealthMultiplier), capacity));
+                    * stats.soulFromHealthMultiplier), capacity));
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
         }
 
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getSource().getEntity() instanceof PlayerEntity))
                 return;
@@ -126,7 +133,7 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
             int soul = NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0);
 
             if (soul > 0)
-                event.setAmount(event.getAmount() + (event.getAmount() * (soul * config.damageMultiplierPerSoul)));
+                event.setAmount(event.getAmount() + (event.getAmount() * (soul * stats.damageMultiplierPerSoul)));
         }
     }
 

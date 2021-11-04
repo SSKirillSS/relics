@@ -1,17 +1,18 @@
 package it.hurts.sskirillss.relics.items.relics.necklace;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.renderer.items.models.HolyLocketModel;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.client.renderer.items.models.HolyLocketModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -33,11 +34,6 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
     public HolyLocketItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.DESERT)
-                        .chance(0.05F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -47,14 +43,25 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.damageMultiplier * 100 - 100) + "%")
-                        .arg((int) (config.igniteChance * 100) + "%")
+                        .arg("+" + (int) (stats.damageMultiplier * 100 - 100) + "%")
+                        .arg((int) (stats.igniteChance * 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.healMultiplier * 100 - 100) + "%")
+                        .arg("+" + (int) (stats.healMultiplier * 100 - 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg(config.invulnerabilityTime / 20.0F)
+                        .arg(stats.invulnerabilityTime / 20.0F)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.DESERT)
+                        .chance(0.05F)
                         .build())
                 .build();
     }
@@ -67,7 +74,7 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
         if (livingEntity.invulnerableTime <= 10)
             NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, true);
         else if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
-            livingEntity.invulnerableTime += config.invulnerabilityTime;
+            livingEntity.invulnerableTime += stats.invulnerabilityTime;
 
             NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, false);
         }
@@ -83,7 +90,7 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
     static class HolyLocketEvents {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
             Entity source = event.getSource().getEntity();
 
             if (!(source instanceof PlayerEntity))
@@ -97,20 +104,20 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
             if (EntityUtils.findEquippedCurio((PlayerEntity) source, ItemRegistry.HOLY_LOCKET.get()).isEmpty())
                 return;
 
-            if (random.nextFloat() <= config.igniteChance)
+            if (random.nextFloat() <= stats.igniteChance)
                 entity.setSecondsOnFire(4);
 
-            event.setAmount(event.getAmount() * config.damageMultiplier);
+            event.setAmount(event.getAmount() * stats.damageMultiplier);
         }
 
         @SubscribeEvent
         public static void onLivingHeal(LivingHealEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.HOLY_LOCKET.get()).isEmpty())
                 return;
 
-            event.setAmount(event.getAmount() * config.healMultiplier);
+            event.setAmount(event.getAmount() * stats.healMultiplier);
         }
     }
 

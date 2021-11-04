@@ -4,10 +4,11 @@ import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.renderer.items.models.IceSkatesModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -47,11 +48,6 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
     public IceSkatesItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.COLD)
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -61,10 +57,21 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.speedModifier * 100 - 100) + "%")
+                        .arg("+" + (int) (stats.speedModifier * 100 - 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg((int) config.ramDamage)
+                        .arg((int) stats.ramDamage)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.COLD)
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -80,32 +87,32 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
 
         if (world.getBlockState(pos).is(BlockTags.ICE)) {
             EntityUtils.applyAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
-                    SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
             if (livingEntity.isSprinting()) {
                 if (livingEntity.isOnGround())
                     world.addParticle(ParticleTypes.SPIT, livingEntity.getX(),
                             livingEntity.getY() + 0.1F, livingEntity.getZ(), 0, 0.2F, 0);
 
-                for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox().inflate(config.ramRadius))) {
+                for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox().inflate(stats.ramRadius))) {
                     if (entity == livingEntity || entity.invulnerableTime > 0)
                         continue;
 
                     entity.setDeltaMovement(entity.position().subtract(livingEntity.position()).normalize().multiply(0.25F, 0.1F, 0.25F));
                     world.playSound(null, entity.blockPosition(), SoundEvents.AXE_STRIP,
                             SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    entity.hurt(DamageSource.FLY_INTO_WALL, config.ramDamage);
+                    entity.hurt(DamageSource.FLY_INTO_WALL, stats.ramDamage);
                 }
             }
         } else
             EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
-                    config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         EntityUtils.removeAttributeModifier(slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED),
-                new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(), config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 
     @Override
@@ -118,7 +125,7 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
     public static class IceSkatesEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (!(event.getEntityLiving() instanceof PlayerEntity))
                 return;
@@ -128,7 +135,7 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
             if (!EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_SKATES.get()).isEmpty()
                     && player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).is(BlockTags.ICE)
                     && event.getSource() == DamageSource.FALL)
-                event.setAmount(event.getAmount() * config.fallingDamageMultiplier);
+                event.setAmount(event.getAmount() * stats.fallingDamageMultiplier);
         }
     }
 

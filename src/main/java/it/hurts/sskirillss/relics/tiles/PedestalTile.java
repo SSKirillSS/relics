@@ -1,10 +1,9 @@
 package it.hurts.sskirillss.relics.tiles;
 
 import it.hurts.sskirillss.relics.blocks.PedestalBlock;
-import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -38,7 +37,7 @@ public class PedestalTile extends TileBase implements ITickableTileEntity {
     public void tick() {
         if (level == null) return;
         ticksExisted++;
-        if (RelicsConfig.Pedestal.SPAWN_PARTICLES.get() && stack != null && !stack.isEmpty() && this.ticksExisted % 3 == 0) {
+        if (stack != null && !stack.isEmpty() && this.ticksExisted % 3 == 0) {
             Random random = level.getRandom();
             CircleTintData particle = new CircleTintData(stack.getRarity().color.getColor() != null ? new Color(stack.getRarity().color.getColor(),
                     false) : new Color(255, 255, 255), random.nextFloat() * 0.025F + 0.04F, 20, 0.94F, true);

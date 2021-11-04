@@ -1,16 +1,17 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,11 +33,6 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
                         .stacksTo(1)
                         .rarity(Rarity.RARE)
                         .food(new Food.Builder().build()))
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.025F)
-                        .build())
                 .build());
     }
 
@@ -44,9 +40,20 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg(config.feedAmount)
-                        .arg(config.maxPieces)
-                        .arg(config.rechargeTime)
+                        .arg(stats.feedAmount)
+                        .arg(stats.maxPieces)
+                        .arg(stats.rechargeTime)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.025F)
                         .build())
                 .build();
     }
@@ -58,7 +65,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
 
         ItemStack stack = new ItemStack(ItemRegistry.INFINITY_HAM.get());
 
-        NBTUtils.setInt(stack, TAG_PIECES, config.maxPieces);
+        NBTUtils.setInt(stack, TAG_PIECES, stats.maxPieces);
 
         items.add(stack);
 
@@ -72,12 +79,12 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
 
         int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
 
-        if (pieces >= config.maxPieces)
+        if (pieces >= stats.maxPieces)
             return;
 
         int charge = NBTUtils.getInt(stack, TAG_CHARGE, 0);
 
-        if (charge >= config.rechargeTime) {
+        if (charge >= stats.rechargeTime) {
             NBTUtils.setInt(stack, TAG_PIECES, pieces + 1);
             NBTUtils.setInt(stack, TAG_CHARGE, 0);
         } else
@@ -108,7 +115,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
         if (pieces > 0) {
             NBTUtils.setInt(stack, TAG_PIECES, pieces - 1);
 
-            player.getFoodData().eat(config.feedAmount, (float) config.saturationAmount / (float) config.feedAmount / 2F);
+            player.getFoodData().eat(stats.feedAmount, (float) stats.saturationAmount / (float) stats.feedAmount / 2F);
         }
 
         return stack;
@@ -121,7 +128,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
 
     @Override
     public int getUseDuration(ItemStack stack) {
-        return config.useDuration;
+        return stats.useDuration;
     }
 
     public static class Stats extends RelicStats {

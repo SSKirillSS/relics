@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.base.handlers;
 
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.utils.RelicsConfig;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
@@ -18,9 +17,6 @@ import java.util.List;
 public class DurabilityHandler {
     @SubscribeEvent
     public static void onEntityHurt(LivingHurtEvent event) {
-        if (!RelicsConfig.RelicsGeneral.ENABLE_RELIC_DURABILITY.get())
-            return;
-
         LivingEntity entity = event.getEntityLiving();
         List<ItemStack> relics = new ArrayList<>();
 

@@ -1,9 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics.back;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.client.renderer.items.models.ElytraBoosterModel;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
@@ -27,6 +28,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import javax.annotation.Nullable;
@@ -40,11 +42,6 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
     public ElytraBoosterItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.05F)
-                        .build())
                 .build());
     }
 
@@ -58,7 +55,18 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.END_CITY_TREASURE.toString())
+                        .chance(0.05F)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable World worldIn, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
         int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
@@ -91,9 +99,9 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
         World world = player.getCommandSenderWorld();
         Random random = world.getRandom();
 
-        player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * config.flySpeed - motion.x) * 0.5D,
-                look.y * 0.1D + (look.y * config.flySpeed - motion.y) * 0.5D,
-                look.z * 0.1D + (look.z * config.flySpeed - motion.z) * 0.5D));
+        player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * stats.flySpeed - motion.x) * 0.5D,
+                look.y * 0.1D + (look.y * stats.flySpeed - motion.y) * 0.5D,
+                look.z * 0.1D + (look.z * stats.flySpeed - motion.z) * 0.5D));
 
         world.addParticle(ParticleTypes.DRAGON_BREATH,
                 player.getX() + (MathUtils.randomFloat(random) * 0.5F),
@@ -109,15 +117,15 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
         World world = player.getCommandSenderWorld();
         int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
 
-        if (breath >= config.breathCapacity)
+        if (breath >= stats.breathCapacity)
             return;
 
         if (world.dimension() == World.END && player.tickCount %
-                (config.breathRegenerationCooldown * 20) == 0)
+                (stats.breathRegenerationCooldown * 20) == 0)
             NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
 
         for (AreaEffectCloudEntity cloud : world.getEntitiesOfClass(AreaEffectCloudEntity.class,
-                player.getBoundingBox().inflate(config.breathConsumptionRadius))) {
+                player.getBoundingBox().inflate(stats.breathConsumptionRadius))) {
             if (cloud.getParticle() != ParticleTypes.DRAGON_BREATH)
                 continue;
 
@@ -127,7 +135,7 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
             if (cloud.getRadius() <= 0)
                 cloud.remove();
 
-            cloud.setRadius(cloud.getRadius() - config.breathConsumptionSpeed);
+            cloud.setRadius(cloud.getRadius() - stats.breathConsumptionSpeed);
 
             Vector3d direction = player.position().add(0, 1, 0).subtract(cloud.position()).normalize();
             double distance = player.position().add(0, 1, 0).distanceTo(cloud.position());

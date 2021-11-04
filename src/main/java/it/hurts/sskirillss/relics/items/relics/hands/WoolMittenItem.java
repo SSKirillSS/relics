@@ -1,14 +1,15 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.SnowballEntity;
@@ -23,12 +24,7 @@ public class WoolMittenItem extends RelicItem<WoolMittenItem.Stats> {
 
     public WoolMittenItem() {
         super(RelicData.builder()
-                .config(Stats.class)
                 .rarity(Rarity.COMMON)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.COLD)
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -38,8 +34,19 @@ public class WoolMittenItem extends RelicItem<WoolMittenItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg((int) config.minDamage)
-                        .arg((int) config.damagePerSecond)
+                        .arg((int) stats.minDamage)
+                        .arg((int) stats.damagePerSecond)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.COLD)
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -48,7 +55,7 @@ public class WoolMittenItem extends RelicItem<WoolMittenItem.Stats> {
     public static class WoolMittenEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             Entity source = event.getSource().getDirectEntity();
 
@@ -65,7 +72,7 @@ public class WoolMittenItem extends RelicItem<WoolMittenItem.Stats> {
             if (EntityUtils.findEquippedCurio(player, ItemRegistry.WOOL_MITTEN.get()).isEmpty())
                 return;
 
-            event.setAmount(event.getAmount() + config.minDamage + (snowball.tickCount / 20F * config.damagePerSecond));
+            event.setAmount(event.getAmount() + stats.minDamage + (snowball.tickCount / 20F * stats.damagePerSecond));
         }
     }
 

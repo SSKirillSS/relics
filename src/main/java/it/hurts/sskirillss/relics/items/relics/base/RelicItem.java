@@ -2,11 +2,12 @@ package it.hurts.sskirillss.relics.items.relics.base;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -43,7 +44,9 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     protected RelicData data;
     @Getter
     @Setter
-    protected T config;
+    protected T stats;
+    @Getter
+    protected ConfigData<T> config;
 
     @SneakyThrows
     public RelicItem(RelicData data) {
@@ -51,7 +54,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
                 : data.getProperties().rarity(data.getRarity()));
 
         setData(data);
-        setConfig((T) data.getConfig().newInstance());
+        setConfig(getConfigData());
     }
 
     @Override
@@ -214,7 +217,16 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         return null;
     }
 
+    public ConfigData<T> getConfigData() {
+        return new ConfigData<>();
+    }
+
     public void castAbility(PlayerEntity player, ItemStack stack) {
 
+    }
+
+    public void setConfig(ConfigData<?> data) {
+        this.config = (ConfigData<T>) data;
+        this.stats = (T) data.getStats();
     }
 }

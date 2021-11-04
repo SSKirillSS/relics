@@ -1,10 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics.back;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.client.renderer.items.models.MidnightRobeModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -45,11 +46,6 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
     public MidnightRobeItem() {
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -59,10 +55,21 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.speedModifier * 100 - 100) + "%")
+                        .arg("+" + (int) (stats.speedModifier * 100 - 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg(config.minLightLevel)
+                        .arg(stats.minLightLevel)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -79,7 +86,7 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
 
         ModifiableAttributeInstance attribSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         AttributeModifier speedModifier = new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
-                config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         if (world.isNight())
             EntityUtils.applyAttributeModifier(attribSpeed, speedModifier);
@@ -93,14 +100,14 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
 
         return !EntityUtils.findEquippedCurio(entity, ItemRegistry.MIDNIGHT_ROBE.get()).isEmpty()
                 && world.getBrightness(LightType.BLOCK, position)
-                + world.getBrightness(LightType.SKY, position) <= INSTANCE.config.minLightLevel;
+                + world.getBrightness(LightType.SKY, position) <= INSTANCE.stats.minLightLevel;
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         EntityUtils.removeAttributeModifier(slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED),
                 new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
-                        config.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                        stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 
     @Override

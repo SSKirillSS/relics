@@ -2,10 +2,11 @@ package it.hurts.sskirillss.relics.items.relics.ring;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -26,10 +27,6 @@ public class CamouflageRingItem extends RelicItem<RelicStats> {
     public CamouflageRingItem() {
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.1F)
-                        .build())
                 .build());
     }
 
@@ -39,6 +36,16 @@ public class CamouflageRingItem extends RelicItem<RelicStats> {
                 .borders("#009122", "#002816")
                 .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyShift)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<RelicStats> getConfigData() {
+        return ConfigData.builder()
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.1F)
                         .build())
                 .build();
     }

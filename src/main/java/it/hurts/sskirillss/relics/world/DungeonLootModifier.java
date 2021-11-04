@@ -5,7 +5,7 @@ import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.item.ItemStack;
@@ -40,7 +40,7 @@ public class DungeonLootModifier extends LootModifier {
             RelicItem<?> relic = relics.get(random.nextInt(relics.size()));
             int generated = 0;
 
-            for (RelicLoot loot : relic.getData().getLoot()) {
+            for (LootData loot : relic.getConfigData().getLoot()) {
                 if (loot.getTable().contains(context.getQueriedLootTableId().toString())
                         && random.nextFloat() <= loot.getChance()) {
                     generatedLoot.add(new ItemStack(relic));

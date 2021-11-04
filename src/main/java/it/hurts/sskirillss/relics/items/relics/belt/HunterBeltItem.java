@@ -2,16 +2,17 @@ package it.hurts.sskirillss.relics.items.relics.belt;
 
 import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
 import it.hurts.sskirillss.relics.api.integration.curios.SlotModifierData;
+import it.hurts.sskirillss.relics.client.renderer.items.models.HunterBeltModel;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.client.renderer.items.models.HunterBeltModel;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -33,11 +34,6 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
     public HunterBeltItem() {
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.VILLAGE_BUTCHER.toString())
-                        .chance(0.2F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -47,10 +43,21 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg(config.additionalLooting)
+                        .arg(stats.additionalLooting)
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (config.petDamageMultiplier * 100 - 100) + "%")
+                        .arg("+" + (int) (stats.petDamageMultiplier * 100 - 100) + "%")
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.VILLAGE_BUTCHER.toString())
+                        .chance(0.2F)
                         .build())
                 .build();
     }
@@ -70,14 +77,14 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
 
     @Override
     public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return config.additionalLooting;
+        return stats.additionalLooting;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class HunterBeltEvents {
         @SubscribeEvent
         public static void onLivingDamage(LivingHurtEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
             Entity entity = event.getSource().getEntity();
 
             if (!(entity instanceof TameableEntity))
@@ -89,7 +96,7 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
                     && EntityUtils.findEquippedCurio(pet.getOwner(), ItemRegistry.HUNTER_BELT.get()).isEmpty())
                 return;
 
-            event.setAmount(event.getAmount() * config.petDamageMultiplier);
+            event.setAmount(event.getAmount() * stats.petDamageMultiplier);
         }
     }
 

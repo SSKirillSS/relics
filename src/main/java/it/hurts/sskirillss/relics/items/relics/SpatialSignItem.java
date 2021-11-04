@@ -1,10 +1,13 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketItemActivation;
@@ -12,8 +15,6 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
@@ -49,11 +50,6 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     public SpatialSignItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.1F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -63,12 +59,23 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg(config.timeBeforeActivation)
-                        .arg(config.experiencePerSecond)
+                        .arg(stats.timeBeforeActivation)
+                        .arg(stats.experiencePerSecond)
                         .arg(Minecraft.getInstance().options.keyShift.getKey().getDisplayName().getString())
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())
                 .ability(AbilityTooltip.builder()
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(RelicUtils.Worldgen.CAVE)
+                        .chance(0.1F)
                         .build())
                 .build();
     }
@@ -96,7 +103,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
             if (playerIn.totalExperience > 0) {
                 NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.position()));
                 NBTUtils.setString(stack, TAG_WORLD, playerIn.getCommandSenderWorld().dimension().location().toString());
-                NBTUtils.setInt(stack, TAG_TIME, config.timeBeforeActivation);
+                NBTUtils.setInt(stack, TAG_TIME, stats.timeBeforeActivation);
 
                 worldIn.playSound(playerIn, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
@@ -120,7 +127,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
                 NBTUtils.setInt(stack, TAG_TIME, time - 1);
 
                 if (player.totalExperience > 0)
-                    player.giveExperiencePoints(-config.experiencePerSecond);
+                    player.giveExperiencePoints(-stats.experiencePerSecond);
                 else
                     teleportPlayer(player, stack);
             } else
@@ -151,7 +158,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     }
 
     public static void teleportPlayer(PlayerEntity player, ItemStack stack) {
-        Stats config = INSTANCE.config;
+        Stats stats = INSTANCE.stats;
 
         if (player.getCommandSenderWorld().isClientSide())
             return;
@@ -169,7 +176,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
 
         if (!player.abilities.instabuild)
             player.getCooldowns().addCooldown(stack.getItem(),
-                    (config.timeBeforeActivation - NBTUtils.getInt(stack, TAG_TIME, 0)) * 20);
+                    (stats.timeBeforeActivation - NBTUtils.getInt(stack, TAG_TIME, 0)) * 20);
 
         NBTUtils.setString(stack, TAG_WORLD, "");
         NBTUtils.setString(stack, TAG_POSITION, "");

@@ -3,13 +3,9 @@ package it.hurts.sskirillss.relics.items.relics.base.data;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Singular;
-import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -24,17 +20,6 @@ public class RelicData {
 
     @Accessors(fluent = true)
     private boolean hasAbility;
-
-    @Builder.Default
-    private Class<? extends RelicStats> config = RelicStats.class;
-
-    @Singular("loot")
-    private List<RelicLoot> loot;
-
-    @SneakyThrows
-    public RelicConfigData<?> toConfigData() {
-        return new RelicConfigData<>(config.newInstance(), loot);
-    }
 
     public static class RelicDataBuilder {
         public RelicDataBuilder hasAbility() {

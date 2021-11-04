@@ -66,7 +66,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     }
 
     private void locateNearestTarget() {
-        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getConfig();
+        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getStats();
         int bounces = entityData.get(BOUNCES);
 
         if (level.getRandom().nextFloat() > 1.0F - (bounces * config.bounceChanceMultiplier)) {
@@ -117,7 +117,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     public void tick() {
         super.tick();
 
-        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getConfig();
+        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getStats();
 
         for (int i = 0; i < 3; i++)
             level.addParticle(new SparkTintData(new Color(255, random.nextInt(100), 255), 0.2F, 30),

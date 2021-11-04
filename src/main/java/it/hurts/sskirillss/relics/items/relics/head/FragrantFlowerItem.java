@@ -1,15 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics.head;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.client.renderer.items.models.FragrantFlowerModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicLoot;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -39,11 +40,6 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
     public FragrantFlowerItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
-                .config(Stats.class)
-                .loot(RelicLoot.builder()
-                        .table(LootTables.JUNGLE_TEMPLE.toString())
-                        .chance(0.2F)
-                        .build())
                 .build());
 
         INSTANCE = this;
@@ -53,11 +49,22 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
                 .ability(AbilityTooltip.builder()
-                        .arg(config.luringRadius)
+                        .arg(stats.luringRadius)
                         .build())
                 .ability(AbilityTooltip.builder()
-                        .arg(config.healingMultiplier)
-                        .arg(config.luringRadius)
+                        .arg(stats.healingMultiplier)
+                        .arg(stats.luringRadius)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public ConfigData<Stats> getConfigData() {
+        return ConfigData.<Stats>builder()
+                .stats(new Stats())
+                .loot(LootData.builder()
+                        .table(LootTables.JUNGLE_TEMPLE.toString())
+                        .chance(0.2F)
                         .build())
                 .build();
     }
@@ -74,7 +81,7 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
             return;
 
         List<BeeEntity> bees = world.getEntitiesOfClass(BeeEntity.class,
-                player.getBoundingBox().inflate(config.luringRadius, config.luringRadius, config.luringRadius));
+                player.getBoundingBox().inflate(stats.luringRadius, stats.luringRadius, stats.luringRadius));
 
         if (!bees.isEmpty() && world.isClientSide())
             CuriosApi.getCuriosHelper().getCuriosHandler(player).map(curios -> curios.getStacksHandler(identifier).map(handler -> {
@@ -107,7 +114,7 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
     public static class FragrantFlowerServerEvents {
         @SubscribeEvent
         public static void onEntityDamage(LivingHurtEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
 
             if (event.getSource().getEntity() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
@@ -120,7 +127,7 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
                     return;
 
                 for (BeeEntity bee : player.getCommandSenderWorld().getEntitiesOfClass(BeeEntity.class, player.getBoundingBox()
-                        .inflate(config.luringRadius, config.luringRadius, config.luringRadius))) {
+                        .inflate(stats.luringRadius, stats.luringRadius, stats.luringRadius))) {
                     bee.setLastHurtByMob(target);
                     bee.setPersistentAngerTarget(target.getUUID());
                     bee.setTarget(target);
@@ -131,9 +138,9 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
                 BeeEntity bee = (BeeEntity) event.getSource().getEntity();
 
                 for (PlayerEntity player : bee.getCommandSenderWorld().getEntitiesOfClass(PlayerEntity.class, bee.getBoundingBox()
-                        .inflate(config.luringRadius, config.luringRadius, config.luringRadius)))
+                        .inflate(stats.luringRadius, stats.luringRadius, stats.luringRadius)))
                     if (!EntityUtils.findEquippedCurio(player, ItemRegistry.FRAGRANT_FLOWER.get()).isEmpty())
-                        event.setAmount(event.getAmount() * config.damageMultiplier);
+                        event.setAmount(event.getAmount() * stats.damageMultiplier);
             } else if (event.getEntityLiving() instanceof PlayerEntity && event.getSource().getEntity() instanceof LivingEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 LivingEntity source = (LivingEntity) event.getSource().getEntity();
@@ -145,7 +152,7 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
                     return;
 
                 for (BeeEntity bee : player.getCommandSenderWorld().getEntitiesOfClass(BeeEntity.class, player.getBoundingBox()
-                        .inflate(config.luringRadius, config.luringRadius, config.luringRadius))) {
+                        .inflate(stats.luringRadius, stats.luringRadius, stats.luringRadius))) {
                     if (bee.getPersistentAngerTarget() != null)
                         continue;
 
@@ -160,19 +167,19 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
 
         @SubscribeEvent
         public static void onEntityHeal(LivingHealEvent event) {
-            Stats config = INSTANCE.config;
+            Stats stats = INSTANCE.stats;
             LivingEntity entity = event.getEntityLiving();
 
             if (EntityUtils.findEquippedCurio(entity, ItemRegistry.FRAGRANT_FLOWER.get()).isEmpty())
                 return;
 
             List<BeeEntity> bees = entity.getCommandSenderWorld().getEntitiesOfClass(BeeEntity.class, entity.getBoundingBox()
-                    .inflate(config.luringRadius, config.luringRadius, config.luringRadius));
+                    .inflate(stats.luringRadius, stats.luringRadius, stats.luringRadius));
 
             if (bees.isEmpty())
                 return;
 
-            event.setAmount(event.getAmount() + (event.getAmount() * (bees.size() * config.healingMultiplier)));
+            event.setAmount(event.getAmount() + (event.getAmount() * (bees.size() * stats.healingMultiplier)));
         }
     }
 

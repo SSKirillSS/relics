@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinLivingEntity {
     @Inject(at = @At(value = "RETURN"), method = "decreaseAirSupply", cancellable = true)
     protected void calculateAir(int air, CallbackInfoReturnable<Integer> info) {
-        AmphibianBootItem.Stats config = AmphibianBootItem.INSTANCE.getConfig();
+        AmphibianBootItem.Stats config = AmphibianBootItem.INSTANCE.getStats();
         LivingEntity entity = (LivingEntity) (Object) this;
 
         if (!EntityUtils.findEquippedCurio(entity, ItemRegistry.AMPHIBIAN_BOOT.get()).isEmpty()
