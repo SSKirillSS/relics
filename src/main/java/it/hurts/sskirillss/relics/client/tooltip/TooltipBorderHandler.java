@@ -2,9 +2,10 @@ package it.hurts.sskirillss.relics.client.tooltip;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.item.ItemStack;
@@ -61,6 +62,8 @@ public class TooltipBorderHandler {
 
         matrix.pushPose();
 
+        RenderSystem.enableBlend();
+
         matrix.translate(0, 0, 410.0);
 
         AbstractGui.blit(matrix, x - 8 - 6, y - 8 - 6, 1, 1 % texHeight, 16, 16, texWidth, texHeight);
@@ -73,6 +76,8 @@ public class TooltipBorderHandler {
             AbstractGui.blit(matrix, x + (width / 2) - 47, y - 16, 16 + 2 * texWidth + 1, 1 % texHeight, 94, 16, texWidth, texHeight);
             AbstractGui.blit(matrix, x + (width / 2) - 47, y + height, 16 + 2 * texWidth + 1, 1 % texHeight + 16, 94, 16, texWidth, texHeight);
         }
+
+        RenderSystem.disableBlend();
 
         matrix.popPose();
     }
