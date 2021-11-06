@@ -45,7 +45,6 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     @Getter
     @Setter
     protected T stats;
-    @Getter
     protected ConfigData<T> config;
 
     @SneakyThrows

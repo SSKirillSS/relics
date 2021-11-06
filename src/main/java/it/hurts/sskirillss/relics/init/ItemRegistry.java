@@ -125,6 +125,9 @@ public class ItemRegistry {
     private static List<RelicItem<?>> registeredRelics = new ArrayList<>();
 
     @Getter
+    private static List<RuneItem> registeredRunes = new ArrayList<>();
+
+    @Getter
     private static List<Item> slotModifiers = new ArrayList<>();
 
     public static void syncItemLists() {
@@ -133,6 +136,13 @@ public class ItemRegistry {
                 .map(RegistryObject::get)
                 .filter(item -> item instanceof RelicItem)
                 .map(item -> (RelicItem<?>) item)
+                .collect(Collectors.toList());
+
+        registeredRunes = ITEMS.getEntries().stream()
+                .filter(RegistryObject::isPresent)
+                .map(RegistryObject::get)
+                .filter(item -> item instanceof RuneItem)
+                .map(item -> (RuneItem) item)
                 .collect(Collectors.toList());
 
         slotModifiers = ForgeRegistries.ITEMS.getEntries().stream()

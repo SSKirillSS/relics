@@ -14,5 +14,5 @@ public class LootData {
     private List<String> table = new ArrayList<>();
 
     @Builder.Default
-    private double chance = 0.05D;
+    private float chance = 0.05F;
 }
