@@ -218,7 +218,7 @@
   "tooltip.relics.bastion_ring.ability.1.name": "Nether's contract",
   "tooltip.relics.bastion_ring.ability.1.description": "Piglins will be neutral to the wearer",
   "tooltip.relics.bastion_ring.ability.2.name": "Piggy compass",
-  "tooltip.relics.bastion_ring.ability.2.description": "Piblins will point to the nearest bastion in the Nether",
+  "tooltip.relics.bastion_ring.ability.2.description": "Piglins will point to the nearest bastion in the Nether",
 
   "item.relics.blazing_flask": "Blazing Flask",
   "tooltip.relics.blazing_flask.tooltip_1": "Fire amount: %1$s",
