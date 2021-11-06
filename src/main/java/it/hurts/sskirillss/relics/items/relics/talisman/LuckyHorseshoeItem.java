@@ -24,6 +24,7 @@ public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#ffdd00", "#eaa000")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.lootingChance * 100) + "%")
                         .build())

@@ -55,6 +55,7 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#e09614", "#302a44")
                 .ability(AbilityTooltip.builder()
                         .build())
                 .ability(AbilityTooltip.builder()

@@ -46,6 +46,7 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#8261be", "#433994")
                 .ability(AbilityTooltip.builder()
                         .arg((int) (stats.soulFromHealthMultiplier * 100) + "%")
                         .arg(stats.damageMultiplierPerSoul + "%")

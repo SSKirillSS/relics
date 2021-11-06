@@ -41,6 +41,7 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#398f00", "#006e00")
                 .ability(AbilityTooltip.builder()
                         .arg((int) (stats.chance * 100) + "%")
                         .arg(stats.radius)

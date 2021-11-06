@@ -40,6 +40,7 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#6e0096", "#201425")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.maxDistance)
                         .active(Minecraft.getInstance().options.keyUse)

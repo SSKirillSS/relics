@@ -44,6 +44,7 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#73c262", "#40a31c")
                 .ability(AbilityTooltip.builder()
                         .arg((int) (stats.healingMultiplier * 100 - 100) + "%")
                         .negative()

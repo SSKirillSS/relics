@@ -63,6 +63,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#fcc100", "#fca900")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.speedModifier * 100 - 100) + "%")
                         .build())
