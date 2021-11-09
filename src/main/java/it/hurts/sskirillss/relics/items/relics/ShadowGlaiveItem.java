@@ -1,16 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.client.Minecraft;
@@ -54,10 +54,10 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(LootTables.END_CITY_TREASURE.toString())
                         .chance(0.1F)
                         .build())
@@ -82,7 +82,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
-        if (IRepairableItem.isBroken(stack) || entityIn.tickCount % 20 != 0 || charges >= stats.maxCharges)
+        if (DurabilityUtils.isBroken(stack) || entityIn.tickCount % 20 != 0 || charges >= stats.maxCharges)
             return;
 
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
@@ -99,7 +99,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
         ItemStack stack = playerIn.getItemInHand(handIn);
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
-        if (IRepairableItem.isBroken(stack) || charges <= 0 || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
+        if (DurabilityUtils.isBroken(stack) || charges <= 0 || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
             return ActionResult.fail(stack);
 
         ShadowGlaiveEntity glaive = new ShadowGlaiveEntity(worldIn, playerIn);

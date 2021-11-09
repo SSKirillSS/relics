@@ -2,8 +2,8 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
@@ -51,14 +51,14 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.VILLAGE)
                         .chance(0.05F)
                         .build())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.CAVE)
                         .chance(0.05F)
                         .build())

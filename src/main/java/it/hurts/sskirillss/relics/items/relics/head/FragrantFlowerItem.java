@@ -1,16 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics.head;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.client.renderer.items.models.FragrantFlowerModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -59,10 +59,10 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(LootTables.JUNGLE_TEMPLE.toString())
                         .chance(0.2F)
                         .build())
@@ -71,7 +71,7 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || IRepairableItem.isBroken(stack))
+        if (!(livingEntity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;

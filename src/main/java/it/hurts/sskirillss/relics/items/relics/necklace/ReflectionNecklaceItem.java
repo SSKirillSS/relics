@@ -1,23 +1,19 @@
 package it.hurts.sskirillss.relics.items.relics.necklace;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.renderer.items.models.ReflectionNecklaceModel;
 import it.hurts.sskirillss.relics.client.renderer.items.models.ReflectionNecklaceShieldModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -69,10 +65,10 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.NETHER)
                         .chance(0.01F)
                         .build())
@@ -81,7 +77,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (IRepairableItem.isBroken(stack) || livingEntity.tickCount % 20 != 0)
+        if (DurabilityUtils.isBroken(stack) || livingEntity.tickCount % 20 != 0)
             return;
 
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);

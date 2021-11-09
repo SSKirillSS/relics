@@ -1,13 +1,12 @@
 package it.hurts.sskirillss.relics.world;
 
 import com.google.gson.JsonObject;
-import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
+import it.hurts.sskirillss.relics.configs.data.runes.RuneLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.conditions.ILootCondition;
@@ -21,8 +20,6 @@ import net.minecraftforge.fml.common.Mod;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
-
-;
 
 public class DungeonLootModifier extends LootModifier {
     public DungeonLootModifier(ILootCondition[] conditionsIn) {
@@ -40,7 +37,7 @@ public class DungeonLootModifier extends LootModifier {
             RelicItem<?> relic = relics.get(random.nextInt(relics.size()));
             int generated = 0;
 
-            for (LootData loot : relic.getConfigData().getLoot()) {
+            for (RelicLootData loot : relic.getConfigData().getLoot()) {
                 if (loot.getTable().contains(context.getQueriedLootTableId().toString())
                         && random.nextFloat() <= loot.getChance()) {
                     generatedLoot.add(new ItemStack(relic));
@@ -53,13 +50,13 @@ public class DungeonLootModifier extends LootModifier {
                 break;
         }
 
-        for (RuneItem rune : RelicUtils.RunesWorldgen.LOOT.keySet()) {
-            RuneLoot loot = RelicUtils.RunesWorldgen.LOOT.get(rune);
+        for (RuneItem rune : ItemRegistry.getRegisteredRunes()) {
+            RuneLootData loot = rune.getConfigData().getLoot();
             ItemStack stack = new ItemStack(rune);
 
             stack.setCount(random.nextInt(5) + 1);
 
-            if (loot.getLootChests().contains(context.getQueriedLootTableId().toString())
+            if (loot.getTable().contains(context.getQueriedLootTableId().toString())
                     && random.nextFloat() <= loot.getChance())
                 generatedLoot.add(stack);
         }

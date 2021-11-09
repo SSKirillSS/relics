@@ -1,16 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketItemActivation;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,10 +47,10 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.CAVE)
                         .chance(0.1F)
                         .build())
@@ -62,7 +62,7 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
         if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get())
-                || IRepairableItem.isBroken(stack) || worldIn.isClientSide())
+                || DurabilityUtils.isBroken(stack) || worldIn.isClientSide())
             return ActionResult.fail(stack);
 
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;

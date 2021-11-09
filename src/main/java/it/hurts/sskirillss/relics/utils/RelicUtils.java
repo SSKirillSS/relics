@@ -1,18 +1,12 @@
 package it.hurts.sskirillss.relics.utils;
 
-import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.configs.variables.worldgen.RuneLoot;
-import it.hurts.sskirillss.relics.items.RuneItem;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTables;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -80,37 +74,6 @@ public class RelicUtils {
                 LootTables.VILLAGE_TAIGA_HOUSE.toString(),
                 LootTables.VILLAGE_PLAINS_HOUSE.toString(),
                 LootTables.VILLAGE_SAVANNA_HOUSE.toString()
-        );
-    }
-
-    public static class Crafting {
-        public static HashMap<RuneItem, List<Item>> INGREDIENTS = new HashMap<RuneItem, List<Item>>();
-
-        public static List<Item> getIngredients(Item item) {
-            if (!(item instanceof RuneItem)) return Lists.newArrayList();
-            return INGREDIENTS.get((RuneItem) item);
-        }
-    }
-
-    public static class RunesWorldgen {
-        public static HashMap<RuneItem, RuneLoot> LOOT = new HashMap<RuneItem, RuneLoot>();
-
-        public static final List<ResourceLocation> CHESTS = Arrays.asList(
-                LootTables.UNDERWATER_RUIN_BIG,
-                LootTables.UNDERWATER_RUIN_SMALL,
-                LootTables.SHIPWRECK_TREASURE,
-                LootTables.NETHER_BRIDGE,
-                LootTables.BASTION_BRIDGE,
-                LootTables.BASTION_OTHER,
-                LootTables.BASTION_TREASURE,
-                LootTables.BASTION_HOGLIN_STABLE,
-                LootTables.RUINED_PORTAL,
-                LootTables.IGLOO_CHEST,
-                LootTables.DESERT_PYRAMID,
-                LootTables.STRONGHOLD_CORRIDOR,
-                LootTables.STRONGHOLD_CROSSING,
-                LootTables.STRONGHOLD_LIBRARY,
-                LootTables.ABANDONED_MINESHAFT
         );
     }
 }

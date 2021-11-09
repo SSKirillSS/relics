@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
@@ -55,7 +56,7 @@ public class TooltipDescriptionHandler {
         Item item = stack.getItem();
 
         if (item instanceof IRepairableItem) {
-            if (IRepairableItem.isBroken(stack))
+            if (DurabilityUtils.isBroken(stack))
                 tooltip.add((new StringTextComponent("▶ ")
                         .withStyle(TextFormatting.GOLD))
                         .append((new TranslationTextComponent("tooltip.relics.relic.broken"))
@@ -171,16 +172,14 @@ public class TooltipDescriptionHandler {
     private static List<ITextComponent> getDurabilityTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = new ArrayList<>();
 
-        if (!(stack.getItem() instanceof IRepairableItem) || IRepairableItem.isBroken(stack))
+        if (!(stack.getItem() instanceof IRepairableItem) || DurabilityUtils.isBroken(stack))
             return tooltip;
-
-        IRepairableItem item = (IRepairableItem) stack.getItem();
 
         tooltip.add((new StringTextComponent("   ◆ ")
                 .withStyle(TextFormatting.GREEN))
                 .append((new TranslationTextComponent("tooltip.relics.shift.stats.durability"))
                         .withStyle(TextFormatting.YELLOW))
-                .append((new StringTextComponent(" " + item.getDurability(stack) + "/" + stack.getMaxDamage()))
+                .append((new StringTextComponent(String.format(" %d/%d", DurabilityUtils.getDurability(stack), stack.getMaxDamage())))
                         .withStyle(TextFormatting.WHITE)));
 
         return tooltip;

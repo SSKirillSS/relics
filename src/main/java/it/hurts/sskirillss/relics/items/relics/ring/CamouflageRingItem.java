@@ -2,8 +2,8 @@ package it.hurts.sskirillss.relics.items.relics.ring;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -41,9 +41,9 @@ public class CamouflageRingItem extends RelicItem<RelicStats> {
     }
 
     @Override
-    public ConfigData<RelicStats> getConfigData() {
-        return ConfigData.builder()
-                .loot(LootData.builder()
+    public RelicConfigData<RelicStats> getConfigData() {
+        return RelicConfigData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.CAVE)
                         .chance(0.1F)
                         .build())

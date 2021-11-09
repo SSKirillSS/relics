@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.api.leveling;
 
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.item.ItemStack;
 
@@ -7,14 +8,14 @@ public interface ILeveledItem {
     String TAG_EXPERIENCE = "experience";
     String TAG_LEVEL = "level";
 
-    LevelingData getLevelingData();
+    RelicLevelingData getLevelingData();
 
     default int getLevel(ItemStack stack) {
         return NBTUtils.getInt(stack, TAG_LEVEL, 0);
     }
 
     default int getLevelFromExperience(int experience) {
-        LevelingData data = getLevelingData();
+        RelicLevelingData data = getLevelingData();
 
         int min = 0;
         int max = data.getMaxLevel();
@@ -56,12 +57,12 @@ public interface ILeveledItem {
         return getTotalExperienceForLevel(getLevelingData(), level);
     }
 
-    default int getTotalExperienceForLevel(LevelingData data, int level) {
+    default int getTotalExperienceForLevel(RelicLevelingData data, int level) {
         return (2 * data.getInitialCost() + data.getCostRatio() * (level - 1)) * level / 2;
     }
 
     default void setExperience(ItemStack stack, int experience) {
-        LevelingData data = getLevelingData();
+        RelicLevelingData data = getLevelingData();
 
         experience = Math.max(0, Math.min(getMaxExperience(), experience));
 

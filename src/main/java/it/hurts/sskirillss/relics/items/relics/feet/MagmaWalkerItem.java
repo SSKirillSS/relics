@@ -1,17 +1,17 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.blocks.MagmaStoneBlock;
 import it.hurts.sskirillss.relics.client.renderer.items.models.MagmaWalkerModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -54,9 +54,9 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> {
     }
 
     @Override
-    public ConfigData<RelicStats> getConfigData() {
-        return ConfigData.builder()
-                .loot(LootData.builder()
+    public RelicConfigData<RelicStats> getConfigData() {
+        return RelicConfigData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.NETHER)
                         .chance(0.05F)
                         .build())
@@ -70,7 +70,7 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> {
         BlockState state = world.getBlockState(pos.below());
         FluidState fluid = state.getFluidState();
 
-        if (IRepairableItem.isBroken(stack))
+        if (DurabilityUtils.isBroken(stack))
             return;
 
         if (fluid.getType() == Fluids.LAVA || fluid.getType() == Fluids.FLOWING_LAVA) {

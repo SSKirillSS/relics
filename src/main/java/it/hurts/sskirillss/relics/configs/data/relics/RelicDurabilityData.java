@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.configs.data;
+package it.hurts.sskirillss.relics.configs.data.relics;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DurabilityData {
+public class RelicDurabilityData {
     int maxDurability;
 }

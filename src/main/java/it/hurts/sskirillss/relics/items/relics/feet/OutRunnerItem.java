@@ -1,18 +1,14 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.renderer.items.models.OutRunnerModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -53,10 +49,10 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.CAVE)
                         .chance(0.05F)
                         .build())
@@ -65,7 +61,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || IRepairableItem.isBroken(stack))
+        if (!(livingEntity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
@@ -93,7 +89,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> {
             player.maxUpStep = 1.1F;
         } else {
             EntityUtils.removeAttributeModifier(Objects.requireNonNull(movementSpeed), new AttributeModifier(SPEED_INFO.getRight(),
-                    SPEED_INFO.getLeft(),  stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
             player.maxUpStep = 0.6F;
         }

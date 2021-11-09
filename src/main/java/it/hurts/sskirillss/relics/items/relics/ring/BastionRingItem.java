@@ -1,14 +1,14 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
@@ -46,18 +46,18 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.NETHER)
                         .chance(0.1F)
                         .build())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(EntityType.PIGLIN.getDefaultLootTable().toString())
                         .chance(0.01F)
                         .build())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(EntityType.PIGLIN_BRUTE.getDefaultLootTable().toString())
                         .chance(0.05F)
                         .build())
@@ -68,7 +68,7 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         World world = livingEntity.getCommandSenderWorld();
 
-        if (world.isClientSide() || world.dimension() != World.NETHER || IRepairableItem.isBroken(stack))
+        if (world.isClientSide() || world.dimension() != World.NETHER || DurabilityUtils.isBroken(stack))
             return;
 
         PiglinEntity piglin = world.getNearestLoadedEntity(PiglinEntity.class, EntityPredicate.DEFAULT, livingEntity,

@@ -167,6 +167,6 @@ public class EntityUtils {
         ItemStack stack = optional.get().getRight();
 
         return player.getCooldowns().isOnCooldown(stack.getItem())
-                || IRepairableItem.isBroken(stack) ? ItemStack.EMPTY : stack;
+                || DurabilityUtils.isBroken(stack) ? ItemStack.EMPTY : stack;
     }
 }

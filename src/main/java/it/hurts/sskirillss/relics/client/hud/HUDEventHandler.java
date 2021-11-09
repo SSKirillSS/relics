@@ -2,11 +2,11 @@ package it.hurts.sskirillss.relics.client.hud;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketRelicAbility;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -189,7 +189,7 @@ public class HUDEventHandler {
 
                 RelicItem<?> relic = (RelicItem<?>) stack.getItem();
 
-                if (IRepairableItem.isBroken(stack) || !relic.getData().hasAbility())
+                if (DurabilityUtils.isBroken(stack) || !relic.getData().hasAbility())
                     continue;
 
                 relics.add(new ImmutablePair<>(stack, i));

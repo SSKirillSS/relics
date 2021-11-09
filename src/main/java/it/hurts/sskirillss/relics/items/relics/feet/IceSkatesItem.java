@@ -1,19 +1,15 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.renderer.items.models.IceSkatesModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
-import it.hurts.sskirillss.relics.utils.WorldUtils;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -66,10 +62,10 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.COLD)
                         .chance(0.1F)
                         .build())
@@ -82,7 +78,7 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
         World world = livingEntity.getCommandSenderWorld();
         BlockPos pos = WorldUtils.getSolidBlockUnderFeet(world, livingEntity.blockPosition());
 
-        if (pos == null || IRepairableItem.isBroken(stack))
+        if (pos == null || DurabilityUtils.isBroken(stack))
             return;
 
         if (world.getBlockState(pos).is(BlockTags.ICE)) {

@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.configs.data;
+package it.hurts.sskirillss.relics.configs.data.relics;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LootData {
+public class RelicLootData {
     @Singular("table")
     private List<String> table = new ArrayList<>();
 

@@ -1,19 +1,23 @@
 package it.hurts.sskirillss.relics.items;
 
-import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
+import it.hurts.sskirillss.relics.configs.data.runes.RuneConfigData;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.awt.*;
-import java.util.List;
 
 public class RuneItem extends Item {
+    @Getter
     private final Color color;
+
+    @Getter
+    @Setter
+    private RuneConfigData configData = new RuneConfigData();
 
     public RuneItem(Color color) {
         super(new Item.Properties()
@@ -21,22 +25,6 @@ public class RuneItem extends Item {
                 .stacksTo(8)
                 .rarity(Rarity.UNCOMMON));
         this.color = color;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public List<Item> getIngredients() {
-        return Lists.newArrayList();
-    }
-
-    public float getWorldgenChance() {
-        return 0.01F;
-    }
-
-    public List<ResourceLocation> getLootChests() {
-        return RelicUtils.RunesWorldgen.CHESTS;
     }
 
     public void applyAbility(World world, BlockPos pos) {

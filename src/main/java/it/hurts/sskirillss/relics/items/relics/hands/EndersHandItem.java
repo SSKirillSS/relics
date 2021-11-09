@@ -1,15 +1,15 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.renderer.items.models.EndersHandModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -63,14 +63,14 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(LootTables.END_CITY_TREASURE.toString())
                         .chance(0.1F)
                         .build())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(EntityType.ENDERMAN.getDefaultLootTable().toString())
                         .chance(0.01F)
                         .build())
@@ -85,7 +85,7 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
         PlayerEntity player = (PlayerEntity) livingEntity;
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (player.getCooldowns().isOnCooldown(stack.getItem()) || IRepairableItem.isBroken(stack))
+        if (player.getCooldowns().isOnCooldown(stack.getItem()) || DurabilityUtils.isBroken(stack))
             return;
 
         if (player.isShiftKeyDown()) {

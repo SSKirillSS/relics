@@ -4,10 +4,11 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -45,7 +46,9 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     @Getter
     @Setter
     protected T stats;
-    protected ConfigData<T> config;
+    @Getter
+    @Setter
+    protected RelicConfigData<T> configData;
 
     @SneakyThrows
     public RelicItem(RelicData data) {
@@ -58,7 +61,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
-        if (IRepairableItem.isBroken(stack))
+        if (DurabilityUtils.isBroken(stack))
             return;
 
         LivingEntity entity = slotContext.getWearer();
@@ -91,7 +94,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         LivingEntity entity = slotContext.getWearer();
         RelicAttribute modifiers = getAttributes(stack);
 
-        if (modifiers == null || (stack.getItem() == newStack.getItem() && !IRepairableItem.isBroken(newStack)))
+        if (modifiers == null || (stack.getItem() == newStack.getItem() && !DurabilityUtils.isBroken(newStack)))
             return;
 
         modifiers.getAttributes().forEach(attribute ->
@@ -115,7 +118,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        if (!IRepairableItem.isBroken(stack)) {
+        if (!DurabilityUtils.isBroken(stack)) {
             Vector3d pos = entity.position();
 
             entity.getCommandSenderWorld().addParticle(new CircleTintData(stack.getRarity().color.getColor() != null
@@ -169,17 +172,17 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Override
     public boolean canEquip(String identifier, LivingEntity livingEntity, ItemStack stack) {
-        return !IRepairableItem.isBroken(stack);
+        return !DurabilityUtils.isBroken(stack);
     }
 
     @Override
     public boolean canRender(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        return !IRepairableItem.isBroken(stack);
+        return !DurabilityUtils.isBroken(stack);
     }
 
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
-        return !IRepairableItem.isBroken(stack);
+        return !DurabilityUtils.isBroken(stack);
     }
 
     @Override
@@ -216,16 +219,12 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         return null;
     }
 
-    public ConfigData<T> getConfigData() {
-        return new ConfigData<>();
-    }
-
     public void castAbility(PlayerEntity player, ItemStack stack) {
 
     }
 
-    public void setConfig(ConfigData<?> data) {
-        this.config = (ConfigData<T>) data;
+    public void setConfig(RelicConfigData<?> data) {
+        this.configData = (RelicConfigData<T>) data;
         this.stats = (T) data.getStats();
     }
 }

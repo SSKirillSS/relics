@@ -1,18 +1,14 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -66,10 +62,10 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(LootTables.END_CITY_TREASURE.toString())
                         .chance(0.05F)
                         .build())
@@ -88,7 +84,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || IRepairableItem.isBroken(stack))
+        if (!(livingEntity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
             return;
 
         PlayerEntity player = (PlayerEntity) livingEntity;
@@ -119,7 +115,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
     }
 
     private void delay(LivingEntity entity, ItemStack stack) {
-        if (!(entity instanceof PlayerEntity) || IRepairableItem.isBroken(stack))
+        if (!(entity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
             return;
 
         NBTUtils.setInt(stack, TAG_UPDATE_TIME, -1);

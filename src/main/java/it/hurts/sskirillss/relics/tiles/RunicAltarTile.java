@@ -1,13 +1,12 @@
 package it.hurts.sskirillss.relics.tiles;
 
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.crafting.RunicAltarContext;
 import it.hurts.sskirillss.relics.crafting.RunicAltarRecipe;
 import it.hurts.sskirillss.relics.crafting.SingletonInventory;
 import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
@@ -18,11 +17,13 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -168,7 +169,7 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
             if (getIngredient().isEmpty()) {
                 List<RuneItem> runes = getRunes().stream().map(rune -> (RuneItem) rune.getItem()).collect(Collectors.toList());
 
-                runes.removeIf(rune -> RelicUtils.Crafting.getIngredients(rune).isEmpty());
+                runes.removeIf(rune -> rune.getConfigData().getIngredients().isEmpty());
 
                 if (runes.isEmpty()) {
                     if (!world.isClientSide() && ticksExisted % 20 == 0)
@@ -178,7 +179,9 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
                 }
 
                 RuneItem rune = (RuneItem) runes.get(random.nextInt(runes.size())).getItem();
-                List<Item> ingredients = RelicUtils.Crafting.getIngredients(rune);
+                List<Item> ingredients = rune.getConfigData().getIngredients().stream()
+                        .map(name -> ForgeRegistries.ITEMS.getValue(new ResourceLocation(name)))
+                        .collect(Collectors.toList());
 
                 setIngredient(new ItemStack(ingredients.get(random.nextInt(ingredients.size()))));
 

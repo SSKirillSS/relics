@@ -1,15 +1,15 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.renderer.items.models.RageGloveModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
@@ -51,10 +51,10 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> {
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.NETHER)
                         .chance(0.05F)
                         .build())
@@ -66,7 +66,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> {
         int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
-        if (IRepairableItem.isBroken(stack) || livingEntity.tickCount % 20 != 0 || stacks <= 0)
+        if (DurabilityUtils.isBroken(stack) || livingEntity.tickCount % 20 != 0 || stacks <= 0)
             return;
 
         if (time > 0)
@@ -94,7 +94,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> {
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), (LivingEntity) source).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
 
-                if (IRepairableItem.isBroken(stack))
+                if (DurabilityUtils.isBroken(stack))
                     return;
 
                 int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);
@@ -108,7 +108,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> {
             CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.RAGE_GLOVE.get(), event.getEntityLiving()).ifPresent(triple -> {
                 ItemStack stack = triple.getRight();
 
-                if (IRepairableItem.isBroken(stack))
+                if (DurabilityUtils.isBroken(stack))
                     return;
 
                 int stacks = NBTUtils.getInt(stack, TAG_STACKS_AMOUNT, 0);

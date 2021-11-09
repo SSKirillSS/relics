@@ -1,14 +1,14 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
-import it.hurts.sskirillss.relics.configs.data.LootData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -48,10 +48,10 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     }
 
     @Override
-    public ConfigData<Stats> getConfigData() {
-        return ConfigData.<Stats>builder()
+    public RelicConfigData<Stats> getConfigData() {
+        return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(LootData.builder()
+                .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.CAVE)
                         .chance(0.025F)
                         .build())
@@ -74,7 +74,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (IRepairableItem.isBroken(stack) || entityIn.tickCount % 20 != 0)
+        if (DurabilityUtils.isBroken(stack) || entityIn.tickCount % 20 != 0)
             return;
 
         int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
@@ -97,7 +97,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!IRepairableItem.isBroken(stack) && NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
+        if (!DurabilityUtils.isBroken(stack) && NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
                 && player.getFoodData().needsFood())
             return super.use(world, player, hand);
 

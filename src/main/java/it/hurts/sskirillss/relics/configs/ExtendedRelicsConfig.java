@@ -1,72 +1,128 @@
 package it.hurts.sskirillss.relics.configs;
 
-import com.electronwill.nightconfig.core.Config;
-import com.electronwill.nightconfig.core.conversion.ObjectConverter;
-import com.electronwill.nightconfig.core.file.FileConfig;
-import it.hurts.sskirillss.relics.configs.data.ConfigData;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.configs.data.runes.RuneConfigData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import lombok.SneakyThrows;
-import net.minecraftforge.fml.loading.FMLPaths;
 
-import java.lang.reflect.Field;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Objects;
 
 public class ExtendedRelicsConfig {
-    private static final FileConfig config = FileConfig.of(FMLPaths.CONFIGDIR.get().resolve("relics-extended.toml"));
-    private static final ObjectConverter converter = new ObjectConverter();
+    private static Date launchDate;
 
-    @SneakyThrows
-    public static void setupConfig() {
+    public static void setupExtendedConfigs() {
         if (!RelicsConfig.ENABLE_EXTENDED_CONFIG.get())
             return;
 
-        config.load();
+        launchDate = new Date();
 
-        for (RelicItem<?> relic : ItemRegistry.getRegisteredRelics()) {
-            String path = "relics." + relic.getRegistryName().getPath();
-            Config entry = config.get(path);
+        setupRelicsConfigs();
+        setupRunesConfigs();
+    }
 
-            ConfigData<?> defaultConfig = relic.getConfigData();
+    private static void setupRelicsConfigs() {
+        Path rootPath = ConfigHelper.getRootPath()
+                .resolve("items")
+                .resolve("relics");
 
-            if (defaultConfig == null)
-                continue;
+        ItemRegistry.getRegisteredRelics().forEach(relic -> {
+            String path = Objects.requireNonNull(relic.getRegistryName()).getPath() + ".json";
 
-            RelicStats stats = defaultConfig.getStats();
-            ConfigData<?> data;
+            RelicConfigData<?> data;
 
-            if (entry == null || entry.isEmpty()) {
-                data = defaultConfig;
+            try {
+                data = (RelicConfigData<?>) ConfigHelper.readJSONConfig(rootPath.resolve(path), TypeToken.getParameterized(RelicConfigData.class,
+                        relic.getConfigData().getStats() == null ? RelicStats.class :relic.getConfigData().getStats().getClass()).getType());
+            } catch (JsonSyntaxException e) {
+                data = null;
+            }
 
-                config.set(path, converter.toConfig(data, Config::inMemory));
-            } else {
-                data = converter.toObject(entry, ConfigData::new);
+            if (data == null) {
+                Path sourcePath = rootPath.resolve(path);
 
-                for (Field field : stats.getClass().getDeclaredFields()) {
-                    String target = path + ".stats." + field.getName();
+                if (Files.exists(sourcePath)) {
+                    Path backupPath = rootPath
+                            .resolve("backups")
+                            .resolve(new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss").format(launchDate))
+                            .resolve(rootPath.relativize(sourcePath)).getParent();
 
                     try {
-                        Class<?> type = field.getType();
+                        Files.createDirectories(backupPath);
 
-                        if (type == Double.class || type == double.class) {
-                            field.setDouble(stats, config.getOrElse(target, field.getDouble(stats)));
-                        } else if (type == Float.class || type == float.class) {
-                            field.setFloat(stats, config.getOrElse(target, field.getFloat(stats)));
-                        } else {
-                            field.set(stats, config.get(target));
-                        }
-                    } catch (Exception e) {
+                        Files.move(sourcePath, backupPath.resolve(path));
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
 
-                data.setStats(stats);
+                try {
+                    Files.createDirectories(rootPath);
+
+                    ConfigHelper.createJSONConfig(sourcePath, relic.getConfigData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                data = relic.getConfigData();
             }
 
             relic.setConfig(data);
-        }
+        });
+    }
 
-        config.save();
-        config.close();
+    private static void setupRunesConfigs() {
+        Path rootPath = ConfigHelper.getRootPath()
+                .resolve("items")
+                .resolve("runes");
+
+        ItemRegistry.getRegisteredRunes().forEach(rune -> {
+            String path = Objects.requireNonNull(rune.getRegistryName()).getPath() + ".json";
+
+            RuneConfigData data;
+
+            try {
+                data = (RuneConfigData) ConfigHelper.readJSONConfig(rootPath.resolve(path), RuneConfigData.class);
+            } catch (JsonSyntaxException e) {
+                data = null;
+            }
+
+            if (data == null) {
+                Path sourcePath = rootPath.resolve(path);
+
+                if (Files.exists(sourcePath)) {
+                    Path backupPath = rootPath
+                            .resolve("backups")
+                            .resolve(new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss").format(launchDate))
+                            .resolve(rootPath.relativize(sourcePath)).getParent();
+
+                    try {
+                        Files.createDirectories(backupPath);
+
+                        Files.move(sourcePath, backupPath.resolve(path));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    Files.createDirectories(rootPath);
+
+                    ConfigHelper.createJSONConfig(sourcePath, rune.getConfigData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                data = rune.getConfigData();
+            }
+
+            rune.setConfigData(data);
+        });
     }
 }
