@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics.belt;
 import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
 import it.hurts.sskirillss.relics.api.integration.curios.SlotModifierData;
 import it.hurts.sskirillss.relics.client.renderer.items.models.LeatherBeltModel;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
@@ -11,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,6 +23,13 @@ public class LeatherBeltItem extends RelicItem<RelicStats> implements ISlotModif
         super(RelicData.builder()
                 .rarity(Rarity.COMMON)
                 .build());
+    }
+
+    @Override
+    public RelicTooltip getTooltip(ItemStack stack) {
+        return RelicTooltip.builder()
+                .borders("#a24f1d", "#4b1c00")
+                .build();
     }
 
     @Override

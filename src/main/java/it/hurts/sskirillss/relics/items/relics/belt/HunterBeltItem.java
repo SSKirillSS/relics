@@ -42,6 +42,7 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#32a167", "#16702e")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.additionalLooting)
                         .build())

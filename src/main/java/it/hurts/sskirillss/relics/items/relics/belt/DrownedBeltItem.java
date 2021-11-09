@@ -44,6 +44,7 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#7889b8", "#25374e")
                 .ability(AbilityTooltip.builder()
                         .build())
                 .ability(AbilityTooltip.builder()
