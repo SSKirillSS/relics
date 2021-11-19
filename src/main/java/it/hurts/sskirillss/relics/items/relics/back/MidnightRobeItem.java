@@ -56,7 +56,7 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
         return RelicTooltip.builder()
                 .borders("#00071f", "#001974")
                 .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (stats.speedModifier * 100 - 100) + "%")
+                        .arg("+" + (int) (stats.speedModifier * 100) + "%")
                         .build())
                 .ability(AbilityTooltip.builder()
                         .arg(stats.minLightLevel)
@@ -127,7 +127,7 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
     }
 
     public static class Stats extends RelicStats {
-        public float speedModifier = 1.15F;
+        public float speedModifier = 0.15F;
         public int minLightLevel = 2;
     }
 }
