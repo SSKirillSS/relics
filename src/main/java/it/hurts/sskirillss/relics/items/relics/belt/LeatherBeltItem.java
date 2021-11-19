@@ -37,7 +37,7 @@ public class LeatherBeltItem extends RelicItem<RelicStats> implements ISlotModif
         return RelicConfigData.builder()
                 .loot(RelicLootData.builder()
                         .table(RelicUtils.Worldgen.VILLAGE)
-                        .chance(0.05F)
+                        .chance(0.15F)
                         .build())
                 .build();
     }
