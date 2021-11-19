@@ -64,6 +64,7 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#c87625", "#ab661b")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.skippedTicks + 1)
                         .build())

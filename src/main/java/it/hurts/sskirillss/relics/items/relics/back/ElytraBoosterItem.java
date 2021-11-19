@@ -48,6 +48,7 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#b8b8d6", "#6e6e8f")
                 .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyShift)
                         .build())

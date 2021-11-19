@@ -54,6 +54,7 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#00071f", "#001974")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.speedModifier * 100 - 100) + "%")
                         .build())
