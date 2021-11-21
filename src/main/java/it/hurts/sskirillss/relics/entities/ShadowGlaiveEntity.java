@@ -132,18 +132,18 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
         if (this.tickCount > 300)
             this.remove();
 
-        if (target == null) {
+        if (target == null && this.tickCount > 10 && this.tickCount % 2 == 0) {
             this.locateNearestTarget();
 
             return;
         }
 
-        if (target.isAlive()) {
+        if (target != null && target.isAlive()) {
             EntityUtils.moveTowardsPosition(this, target.position()
                     .add(0D, target.getBbHeight() * 0.5D, 0D), config.projectileSpeed);
 
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class,
-                    this.getBoundingBox().inflate(0.25D, 3D, 0.25D))) {
+                    this.getBoundingBox().inflate(0.3D, 3D, 0.3D))) {
                 if (entity == owner)
                     return;
 

@@ -11,19 +11,19 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.loot.LootTables;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -109,6 +109,15 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
         glaive.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, stats.projectileSpeed, 1, 0.0F);
 
         worldIn.addFreshEntity(glaive);
+
+        EntityRayTraceResult result = EntityUtils.rayTraceEntity(playerIn, EntityPredicates.NO_CREATIVE_OR_SPECTATOR, 20);
+
+        if (result != null) {
+            Entity target = result.getEntity();
+
+            if (target instanceof LivingEntity)
+                glaive.setTarget((LivingEntity) target);
+        }
 
         worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW,
                 SoundCategory.MASTER, 0.5F, 0.75F + (random.nextFloat() * 0.5F));
