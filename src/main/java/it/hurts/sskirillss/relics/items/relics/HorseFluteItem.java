@@ -73,13 +73,6 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
         HorseEntity horse = (HorseEntity) entity;
         CompoundNBT nbt = stack.getTagElement(TAG_ENTITY);
 
-        if (horse.getUUID().toString().equals(NBTUtils.getString(stack, TAG_UUID, ""))
-                && player.isShiftKeyDown()) {
-            NBTUtils.setString(stack, TAG_UUID, "");
-
-            return ActionResultType.SUCCESS;
-        }
-
         if (nbt != null) {
             releaseHorse(stack, player);
             catchHorse(horse, player, stack);
@@ -102,12 +95,18 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
             return ActionResultType.FAIL;
 
         if (nbt == null) {
-            catchHorse(stack, player);
+            if (player.isShiftKeyDown())
+                NBTUtils.setString(stack, TAG_UUID, "");
+            else
+                catchHorse(stack, player);
 
             return ActionResultType.SUCCESS;
         }
 
         releaseHorse(stack, player);
+
+        if (player.isShiftKeyDown())
+            NBTUtils.setString(stack, TAG_UUID, "");
 
         return ActionResultType.SUCCESS;
     }
@@ -118,12 +117,18 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
         CompoundNBT nbt = stack.getTagElement(TAG_ENTITY);
 
         if (nbt == null) {
-            catchHorse(stack, player);
+            if (player.isShiftKeyDown())
+                NBTUtils.setString(stack, TAG_UUID, "");
+            else
+                catchHorse(stack, player);
 
             return ActionResult.success(stack);
         }
 
         releaseHorse(stack, player);
+
+        if (player.isShiftKeyDown())
+            NBTUtils.setString(stack, TAG_UUID, "");
 
         return ActionResult.success(stack);
     }
