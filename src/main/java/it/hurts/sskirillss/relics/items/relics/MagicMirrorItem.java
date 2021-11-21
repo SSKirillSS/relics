@@ -66,19 +66,18 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
             return ActionResult.fail(stack);
 
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;
-        ServerWorld serverWorld = (ServerWorld) worldIn;
         BlockPos pos = serverPlayer.getRespawnPosition();
-        boolean isForced = serverPlayer.isRespawnForced();
         float angle = serverPlayer.getRespawnAngle();
         ServerWorld world = serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
         TranslationTextComponent message = new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_location");
 
         if (pos == null || world == null) {
             playerIn.displayClientMessage(message, true);
+
             return ActionResult.fail(stack);
         }
 
-        Optional<Vector3d> optional = PlayerEntity.findRespawnPositionAndUseSpawnBlock(serverWorld, pos, angle, isForced, false);
+        Optional<Vector3d> optional = PlayerEntity.findRespawnPositionAndUseSpawnBlock(world, pos, angle, true, false);
 
         if (optional.isPresent()) {
             pos = new BlockPos(optional.get());
