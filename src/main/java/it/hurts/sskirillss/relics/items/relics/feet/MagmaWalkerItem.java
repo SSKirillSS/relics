@@ -46,6 +46,7 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#ff6900", "#ff2e00")
                 .ability(AbilityTooltip.builder()
                         .build())
                 .ability(AbilityTooltip.builder()

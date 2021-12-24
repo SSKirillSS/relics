@@ -48,6 +48,7 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#6098f4", "#16418a")
                 .ability(AbilityTooltip.builder()
                         .negative()
                         .arg("-" + (int) Math.abs(stats.speedModifier * 100) + "%")

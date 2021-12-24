@@ -42,6 +42,7 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#50d8a5", "#1f9367")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.speedModifier * 100 * 5) + "%")
                         .build())

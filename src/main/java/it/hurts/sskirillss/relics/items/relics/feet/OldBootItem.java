@@ -28,6 +28,7 @@ public class OldBootItem extends RelicItem<OldBootItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#80551b", "#534006")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.speedModifier * 100) + "%")
                         .build())

@@ -32,6 +32,7 @@ public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#60c6b5", "#43645e")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.swimSpeedModifier * 100 - 100) + "%")
                         .build())
