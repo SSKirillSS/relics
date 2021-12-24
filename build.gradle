@@ -78,8 +78,8 @@ dependencies {
 
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.13'
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.3")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.3:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.6.7")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.6.7:api")
 
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75")
     compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
