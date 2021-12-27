@@ -56,6 +56,9 @@ public class TooltipDescriptionHandler {
     }
 
     private static void renderState(ItemStack stack, List<ITextComponent> tooltip, PlayerEntity player) {
+        if (player == null || stack == null)
+            return;
+
         Item item = stack.getItem();
 
         if (item instanceof IRepairableItem) {
@@ -74,6 +77,10 @@ public class TooltipDescriptionHandler {
         for (String tag : CuriosApi.getCuriosHelper().getCurioTags(item)) {
             CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler -> {
                 Map<String, ICurioStacksHandler> curios = handler.getCurios();
+
+                if (curios.size() == 0)
+                    return;
+
                 List<ITextComponent> list = new ArrayList<>();
 
                 if (curios.get(tag).getSlots() > 0)
