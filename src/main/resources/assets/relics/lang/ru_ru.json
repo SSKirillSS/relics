@@ -112,7 +112,7 @@
   "tooltip.relics.midnight_robe.ability.1.name": "Зов теней",
   "tooltip.relics.midnight_robe.ability.1.description": "%1$s к скорости передвижения в ночное время суток",
   "tooltip.relics.midnight_robe.ability.2.name": "Исчезновение",
-  "tooltip.relics.midnight_robe.ability.2.description": "Скрывает носителя реликвии в местах, с уровнем освещения ниже %1$s",
+  "tooltip.relics.midnight_robe.ability.2.description": "Скрывает носителя реликвии в местах с уровнем освещения ниже %1$s",
 
   "item.relics.old_boot": "Старый ботинок",
   "tooltip.relics.old_boot.ability.1.name": "Быстрый шаг",
