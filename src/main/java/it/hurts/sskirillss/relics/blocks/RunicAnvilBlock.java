@@ -70,6 +70,9 @@ public class RunicAnvilBlock extends FallingBlock {
 
                 ItemStack stack = items.get(0);
 
+                if (stack.getMaxDamage() == 0)
+                    return ActionResultType.FAIL;
+
                 int expCost = 1 + (50 / stack.getMaxDamage());
 
                 if (!(stack.getItem() instanceof RelicItem) || !stack.isDamaged()
