@@ -13,8 +13,8 @@
 
   "tooltip.relics.relic.broken": "Реликвия сломана!",
   "tooltip.relics.relic.damaged": "Реликвия скоро сломается!",
-  "tooltip.relics.relic.requires_slot": "Отсутствует свободный слот:",
-  "tooltip.relics.relic.allowed_modifiers": "Доступные модификаторы:",
+  "tooltip.relics.relic.requires_slot": "Отсутствует необходимый слот:",
+  "tooltip.relics.relic.allowed_modifiers": "Ты можешь разблокировать его с помощью:",
 
   "tooltip.relics.shift.abilities": "Способности:",
   "tooltip.relics.shift.stats": "Характеристики:",

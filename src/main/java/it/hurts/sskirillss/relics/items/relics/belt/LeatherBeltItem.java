@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
-import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
-import it.hurts.sskirillss.relics.api.integration.curios.SlotModifierData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.client.renderer.items.models.LeatherBeltModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -18,7 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class LeatherBeltItem extends RelicItem<RelicStats> implements ISlotModifier {
+public class LeatherBeltItem extends RelicItem<RelicStats> {
     public LeatherBeltItem() {
         super(RelicData.builder()
                 .rarity(Rarity.COMMON)
@@ -43,8 +42,8 @@ public class LeatherBeltItem extends RelicItem<RelicStats> implements ISlotModif
     }
 
     @Override
-    public SlotModifierData getSlotModifiers() {
-        return SlotModifierData.builder()
+    public RelicSlotModifier getSlotModifiers(ItemStack stack) {
+        return RelicSlotModifier.builder()
                 .entry(Pair.of("talisman", 3))
                 .build();
     }

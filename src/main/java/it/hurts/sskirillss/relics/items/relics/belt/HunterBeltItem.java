@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
-import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
-import it.hurts.sskirillss.relics.api.integration.curios.SlotModifierData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.client.renderer.items.models.HunterBeltModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
@@ -28,7 +27,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements ISlotModifier {
+public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> {
     public static HunterBeltItem INSTANCE;
 
     public HunterBeltItem() {
@@ -64,8 +63,8 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> implements I
     }
 
     @Override
-    public SlotModifierData getSlotModifiers() {
-        return SlotModifierData.builder()
+    public RelicSlotModifier getSlotModifiers(ItemStack stack) {
+        return RelicSlotModifier.builder()
                 .entry(Pair.of("talisman", 1))
                 .build();
     }

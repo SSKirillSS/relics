@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class RelicAttribute {
+public class RelicAttributeModifier {
     @Singular("attribute")
     List<Modifier> attributes;
 

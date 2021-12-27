@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.api.integration.curios;
+package it.hurts.sskirillss.relics.items.relics.base.data;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class SlotModifierData {
+public class RelicSlotModifier {
     @Singular("entry")
     private List<Pair<String, Integer>> modifiers;
 }

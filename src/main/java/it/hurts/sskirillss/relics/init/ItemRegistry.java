@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
 import it.hurts.sskirillss.relics.items.*;
 import it.hurts.sskirillss.relics.items.relics.*;
 import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
@@ -27,6 +26,7 @@ import it.hurts.sskirillss.relics.items.runes.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import lombok.Getter;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -128,7 +128,10 @@ public class ItemRegistry {
     private static List<RuneItem> registeredRunes = new ArrayList<>();
 
     @Getter
-    private static List<Item> slotModifiers = new ArrayList<>();
+    private static List<RelicItem<?>> slotModifiers = new ArrayList<>();
+
+    @Getter
+    private static List<RelicItem<?>> attributeModifiers = new ArrayList<>();
 
     public static void syncItemLists() {
         registeredRelics = ITEMS.getEntries().stream()
@@ -147,7 +150,18 @@ public class ItemRegistry {
 
         slotModifiers = ForgeRegistries.ITEMS.getEntries().stream()
                 .map(Map.Entry::getValue)
-                .filter(entry -> entry instanceof ISlotModifier)
+                .filter(entry -> entry instanceof RelicItem)
+                .map(item -> (RelicItem<?>) item)
+                .filter(relic -> relic.getSlotModifiers(new ItemStack(relic)) != null)
+                .filter(relic -> !relic.getSlotModifiers(new ItemStack(relic)).getModifiers().isEmpty())
+                .collect(Collectors.toList());
+
+        attributeModifiers = ForgeRegistries.ITEMS.getEntries().stream()
+                .map(Map.Entry::getValue)
+                .filter(entry -> entry instanceof RelicItem)
+                .map(item -> (RelicItem<?>) item)
+                .filter(relic -> relic.getAttributeModifiers(new ItemStack(relic)) != null)
+                .filter(relic -> !relic.getAttributeModifiers(new ItemStack(relic)).getAttributes().isEmpty())
                 .collect(Collectors.toList());
     }
 }

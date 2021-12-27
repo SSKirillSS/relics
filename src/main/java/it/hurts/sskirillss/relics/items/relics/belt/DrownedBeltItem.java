@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
-import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
-import it.hurts.sskirillss.relics.api.integration.curios.SlotModifierData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.client.renderer.items.models.DrownedBeltModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
@@ -30,7 +29,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements ISlotModifier {
+public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> {
     public static DrownedBeltItem INSTANCE;
 
     public DrownedBeltItem() {
@@ -73,8 +72,8 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> implements
     }
 
     @Override
-    public SlotModifierData getSlotModifiers() {
-        return SlotModifierData.builder()
+    public RelicSlotModifier getSlotModifiers(ItemStack stack) {
+        return RelicSlotModifier.builder()
                 .entry(Pair.of("talisman", 1))
                 .build();
     }

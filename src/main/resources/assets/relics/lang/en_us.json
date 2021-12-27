@@ -13,7 +13,7 @@
   "tooltip.relics.relic.broken": "Relic was broken!",
   "tooltip.relics.relic.damaged": "Relic will broke soon!",
   "tooltip.relics.relic.requires_slot": "There is no required slot:",
-  "tooltip.relics.relic.allowed_modifiers": "Available modifiers:",
+  "tooltip.relics.relic.allowed_modifiers": "You can unlock it with:",
 
   "tooltip.relics.shift.abilities": "Abilities:",
   "tooltip.relics.shift.stats": "Stats:",

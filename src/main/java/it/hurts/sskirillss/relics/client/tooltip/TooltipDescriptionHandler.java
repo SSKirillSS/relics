@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.client.tooltip;
 
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
-import it.hurts.sskirillss.relics.api.integration.curios.ISlotModifier;
 import it.hurts.sskirillss.relics.api.leveling.ILeveledItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
@@ -11,6 +10,7 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -24,35 +24,38 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class TooltipDescriptionHandler {
     @SubscribeEvent
     public static void onTooltipRender(ItemTooltipEvent event) {
+        PlayerEntity player = event.getPlayer();
         List<ITextComponent> original = event.getToolTip();
         ItemStack stack = event.getItemStack();
 
         List<ITextComponent> tooltip = new ArrayList<>();
 
-        renderState(stack, tooltip);
+        renderState(stack, tooltip, player);
         renderShift(stack, tooltip);
 
         try {
             if (event.getFlags() == ITooltipFlag.TooltipFlags.ADVANCED)
                 original.remove(new TranslationTextComponent("item.durability",
                         stack.getMaxDamage() - stack.getDamageValue(), stack.getMaxDamage()));
-        } catch (Exception e) {
-            // It is Wednesday my dudes
+        } catch (Exception ignored) {
+
         }
 
         original.addAll(1, tooltip);
     }
 
-    private static void renderState(ItemStack stack, List<ITextComponent> tooltip) {
+    private static void renderState(ItemStack stack, List<ITextComponent> tooltip, PlayerEntity player) {
         Item item = stack.getItem();
 
         if (item instanceof IRepairableItem) {
@@ -68,51 +71,52 @@ public class TooltipDescriptionHandler {
                                 .withStyle(TextFormatting.YELLOW)));
         }
 
-        if (item instanceof ICurioItem) {
-            for (String tag : CuriosApi.getCuriosHelper().getCurioTags(item)) {
+        for (String tag : CuriosApi.getCuriosHelper().getCurioTags(item)) {
+            CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler -> {
+                Map<String, ICurioStacksHandler> curios = handler.getCurios();
                 List<ITextComponent> list = new ArrayList<>();
 
-                CuriosApi.getSlotHelper().getSlotType(tag).ifPresent(slot -> {
-                    if (slot.getSize() > 0)
-                        return;
+                if (curios.get(tag).getSlots() > 0)
+                    return;
 
-                    for (Item curio : ItemRegistry.getSlotModifiers()) {
-                        ISlotModifier modifier = (ISlotModifier) curio;
+                for (Item curio : ItemRegistry.getSlotModifiers()) {
+                    RelicItem<?> relic = (RelicItem<?>) curio;
 
-                        for (Pair<String, Integer> pair : modifier.getSlotModifiers().getModifiers()) {
-                            String identifier = pair.getLeft();
-                            int amount = pair.getRight();
+                    for (Pair<String, Integer> pair : relic.getSlotModifiers(stack).getModifiers()) {
+                        String identifier = pair.getLeft();
+                        int amount = pair.getRight();
 
-                            if (identifier.equals(tag) && amount > 0)
-                                list.add((new StringTextComponent("   ◆ ")
-                                        .withStyle(TextFormatting.YELLOW))
-                                        .append(new StringTextComponent(new ItemStack(curio).getHoverName().getString())
-                                                .withStyle(TextFormatting.GREEN))
-                                        .append((new StringTextComponent(String.format(" [+%d]", amount))
-                                                .withStyle(TextFormatting.WHITE))));
-                        }
-                    }
-
-                    StringTextComponent info = new StringTextComponent("");
-
-                    info.append((new StringTextComponent("▶ ")
-                            .withStyle(TextFormatting.GOLD))
-                            .append((new TranslationTextComponent("tooltip.relics.relic.requires_slot"))
+                        if (identifier.equals(tag) && amount > 0)
+                            list.add((new StringTextComponent("   ◆ ")
                                     .withStyle(TextFormatting.YELLOW))
-                            .append(" ")
-                            .append((new TranslationTextComponent("curios.identifier." + slot.getIdentifier())
-                                    .withStyle(TextFormatting.GREEN))));
+                                    .append(new StringTextComponent(new ItemStack(curio).getHoverName().getString())
+                                            .withStyle(TextFormatting.GREEN))
+                                    .append((new StringTextComponent(String.format(" [+%d]", amount))
+                                            .withStyle(TextFormatting.WHITE))));
+                    }
+                }
 
-                    if (!list.isEmpty())
-                        info.append(". ").append(new TranslationTextComponent("tooltip.relics.relic.allowed_modifiers")
-                                .withStyle(TextFormatting.YELLOW));
+                StringTextComponent info = new StringTextComponent("");
 
-                    tooltip.add(info);
+                info.append((new StringTextComponent("▶ ")
+                        .withStyle(TextFormatting.GOLD))
+                        .append((new TranslationTextComponent("tooltip.relics.relic.requires_slot"))
+                                .withStyle(TextFormatting.YELLOW))
+                        .append(" ")
+                        .append((new TranslationTextComponent("curios.identifier." + tag)
+                                .withStyle(TextFormatting.GREEN))));
 
-                    if (!list.isEmpty())
-                        tooltip.addAll(list);
-                });
-            }
+                if (!list.isEmpty())
+                    info.append(". ")
+                            .withStyle(TextFormatting.YELLOW)
+                            .append(new TranslationTextComponent("tooltip.relics.relic.allowed_modifiers")
+                                    .withStyle(TextFormatting.YELLOW));
+
+                tooltip.add(info);
+
+                if (!list.isEmpty())
+                    tooltip.addAll(list);
+            });
         }
     }
 
@@ -225,10 +229,15 @@ public class TooltipDescriptionHandler {
     private static List<ITextComponent> getModifiersTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = new ArrayList<>();
 
-        if (!(stack.getItem() instanceof ISlotModifier))
+        if (!(stack.getItem() instanceof RelicItem<?>))
             return tooltip;
 
-        for (Pair<String, Integer> pair : ((ISlotModifier) stack.getItem()).getSlotModifiers().getModifiers()) {
+        RelicItem<?> relic = (RelicItem<?>) stack.getItem();
+
+        if (relic.getSlotModifiers(stack) == null)
+            return tooltip;
+
+        for (Pair<String, Integer> pair : relic.getSlotModifiers(stack).getModifiers()) {
             String identifier = pair.getLeft();
             int amount = pair.getRight();
 

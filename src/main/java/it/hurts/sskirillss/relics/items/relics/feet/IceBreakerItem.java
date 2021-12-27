@@ -7,7 +7,7 @@ import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
@@ -75,10 +75,10 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
     }
 
     @Override
-    public RelicAttribute getAttributes(ItemStack stack) {
-        return RelicAttribute.builder()
-                .attribute(new RelicAttribute.Modifier(Attributes.MOVEMENT_SPEED, stats.speedModifier))
-                .attribute(new RelicAttribute.Modifier(Attributes.KNOCKBACK_RESISTANCE, stats.knockbackResistanceModifier))
+    public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
+        return RelicAttributeModifier.builder()
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.MOVEMENT_SPEED, stats.speedModifier))
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, stats.knockbackResistanceModifier))
                 .build();
     }
 
