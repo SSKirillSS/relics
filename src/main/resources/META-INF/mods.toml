@@ -19,6 +19,6 @@ description="Just a mod about useful relics with unique mechanics ;)"
 [[dependencies.relics]]
     modId="curios"
     mandatory=true
-    versionRange="[1.16.5-4.0.6.7,)"
+    versionRange="[1.16.5-4.0.6.8,)"
     ordering="AFTER"
     side="BOTH"
