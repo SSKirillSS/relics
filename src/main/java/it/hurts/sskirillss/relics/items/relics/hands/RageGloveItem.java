@@ -42,6 +42,7 @@ public class RageGloveItem extends RelicItem<RageGloveItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#ffa90c", "#ff0606")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.dealtDamageMultiplier * 100) + "%")
                         .arg("+" + (int) (stats.incomingDamageMultiplier * 100) + "%")

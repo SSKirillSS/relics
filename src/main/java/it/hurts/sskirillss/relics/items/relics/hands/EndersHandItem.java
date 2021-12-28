@@ -51,6 +51,7 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#00c98f", "#027f44")
                 .ability(AbilityTooltip.builder()
                         .build())
                 .ability(AbilityTooltip.builder()

@@ -33,6 +33,7 @@ public class WoolMittenItem extends RelicItem<WoolMittenItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#db9d74", "#634733")
                 .ability(AbilityTooltip.builder()
                         .arg((int) stats.minDamage)
                         .arg((int) stats.damagePerSecond)
