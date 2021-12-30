@@ -55,6 +55,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#dc41ff", "#832698")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.timeBeforeActivation)
                         .arg(stats.experiencePerSecond)

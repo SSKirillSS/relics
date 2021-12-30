@@ -41,6 +41,7 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#eed551", "#dcbe1d")
                 .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())

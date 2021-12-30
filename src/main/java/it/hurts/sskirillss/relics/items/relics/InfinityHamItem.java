@@ -39,6 +39,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#ffe0d2", "#9c756b")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.feedAmount)
                         .arg(stats.maxPieces)

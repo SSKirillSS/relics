@@ -45,6 +45,7 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#e3dbd7", "#8a7d78")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.maxBounces)
                         .arg(stats.baseDamage)

@@ -40,6 +40,7 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#008cd7", "#0a3484")
                 .ability(AbilityTooltip.builder()
                         .active(Minecraft.getInstance().options.keyUse)
                         .build())

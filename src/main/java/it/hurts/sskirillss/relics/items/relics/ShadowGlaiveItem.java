@@ -44,6 +44,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#cd8aea", "#682a82")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.maxBounces)
                         .arg(stats.damage)
