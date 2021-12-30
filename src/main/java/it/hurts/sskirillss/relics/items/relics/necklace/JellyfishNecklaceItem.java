@@ -7,7 +7,7 @@ import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttribute;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -45,6 +45,7 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#53b2f8", "#0d4065")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.healMultiplier * 100 - 100) + "%")
                         .build())
@@ -73,9 +74,9 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     }
 
     @Override
-    public RelicAttribute getAttributes(ItemStack stack) {
-        return RelicAttribute.builder()
-                .attribute(new RelicAttribute.Modifier(ForgeMod.SWIM_SPEED.get(), stats.swimSpeedModifier))
+    public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
+        return RelicAttributeModifier.builder()
+                .attribute(new RelicAttributeModifier.Modifier(ForgeMod.SWIM_SPEED.get(), stats.swimSpeedModifier))
                 .build();
     }
 

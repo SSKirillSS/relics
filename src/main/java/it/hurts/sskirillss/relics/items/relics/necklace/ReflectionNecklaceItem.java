@@ -57,6 +57,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#004463", "#01144b")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.maxCharges)
                         .arg((int) (stats.reflectedDamageMultiplier * 100) + "%")

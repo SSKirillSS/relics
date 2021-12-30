@@ -42,6 +42,7 @@ public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#ff6800", "#0087ff")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.damageMultiplier * 100 - 100) + "%")
                         .arg((int) (stats.igniteChance * 100) + "%")

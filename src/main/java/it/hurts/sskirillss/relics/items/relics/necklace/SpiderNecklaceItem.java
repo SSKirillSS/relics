@@ -28,6 +28,7 @@ public class SpiderNecklaceItem extends RelicItem<SpiderNecklaceItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#ffffff", "#aea5ac")
                 .ability(AbilityTooltip.builder()
                         .build())
                 .ability(AbilityTooltip.builder()
