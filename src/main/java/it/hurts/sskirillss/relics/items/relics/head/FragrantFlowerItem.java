@@ -48,6 +48,7 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
     @Override
     public RelicTooltip getTooltip(ItemStack stack) {
         return RelicTooltip.builder()
+                .borders("#f95aa7", "#910d61")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.luringRadius)
                         .build())
