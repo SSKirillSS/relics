@@ -36,27 +36,27 @@ public class NBTUtils {
     }
 
     public static boolean getBoolean(ItemStack stack, String tag, boolean defaultValue) {
-        return safeCheck(stack, tag) ? stack.getOrCreateTag().getBoolean(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getBoolean(tag) : defaultValue;
     }
 
     public static int getInt(ItemStack stack, String tag, int defaultValue) {
-        return safeCheck(stack, tag) ? stack.getOrCreateTag().getInt(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getInt(tag) : defaultValue;
     }
 
     public static long getLong(ItemStack stack, String tag, long defaultValue) {
-        return safeCheck(stack, tag) ? stack.getOrCreateTag().getLong(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getLong(tag) : defaultValue;
     }
 
     public static float getFloat(ItemStack stack, String tag, float defaultValue) {
-        return safeCheck(stack, tag) ? stack.getOrCreateTag().getFloat(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getFloat(tag) : defaultValue;
     }
 
     public static double getDouble(ItemStack stack, String tag, double defaultValue) {
-        return safeCheck(stack, tag) ? stack.getOrCreateTag().getInt(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getInt(tag) : defaultValue;
     }
 
     public static String getString(ItemStack stack, String tag, String defaultValue) {
-        return safeCheck(stack, tag) ? stack.getOrCreateTag().getString(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getString(tag) : defaultValue;
     }
 
     public static boolean safeCheck(ItemStack stack, String tag) {
