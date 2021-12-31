@@ -18,9 +18,6 @@ public class ExtendedRelicsConfig {
     private static Date launchDate;
 
     public static void setupExtendedConfigs() {
-        if (!RelicsConfig.ENABLE_EXTENDED_CONFIG.get())
-            return;
-
         launchDate = new Date();
 
         setupRelicsConfigs();
@@ -33,6 +30,12 @@ public class ExtendedRelicsConfig {
                 .resolve("relics");
 
         ItemRegistry.getRegisteredRelics().forEach(relic -> {
+            if (!RelicsConfig.ENABLE_EXTENDED_CONFIG.get()) {
+                relic.setConfig(relic.getConfigData());
+
+                return;
+            }
+
             String path = Objects.requireNonNull(relic.getRegistryName()).getPath() + ".json";
 
             RelicConfigData<?> data;
@@ -83,6 +86,12 @@ public class ExtendedRelicsConfig {
                 .resolve("runes");
 
         ItemRegistry.getRegisteredRunes().forEach(rune -> {
+            if (!RelicsConfig.ENABLE_EXTENDED_CONFIG.get()) {
+                rune.setConfig(rune.getConfigData());
+
+                return;
+            }
+
             String path = Objects.requireNonNull(rune.getRegistryName()).getPath() + ".json";
 
             RuneConfigData data;
