@@ -169,7 +169,7 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
             if (getIngredient().isEmpty()) {
                 List<RuneItem> runes = getRunes().stream().map(rune -> (RuneItem) rune.getItem()).collect(Collectors.toList());
 
-                runes.removeIf(rune -> rune.getConfigData().getIngredients().isEmpty());
+                runes.removeIf(rune -> rune.getIngredients().isEmpty());
 
                 if (runes.isEmpty()) {
                     if (!world.isClientSide() && ticksExisted % 20 == 0)
@@ -179,7 +179,7 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
                 }
 
                 RuneItem rune = (RuneItem) runes.get(random.nextInt(runes.size())).getItem();
-                List<Item> ingredients = rune.getConfigData().getIngredients().stream()
+                List<Item> ingredients = rune.getIngredients().stream()
                         .map(name -> ForgeRegistries.ITEMS.getValue(new ResourceLocation(name)))
                         .collect(Collectors.toList());
 

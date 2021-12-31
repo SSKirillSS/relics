@@ -37,7 +37,7 @@ public class DungeonLootModifier extends LootModifier {
             RelicItem<?> relic = relics.get(random.nextInt(relics.size()));
             int generated = 0;
 
-            for (RelicLootData loot : relic.getConfigData().getLoot()) {
+            for (RelicLootData loot : relic.getLoot()) {
                 if (loot.getTable().contains(context.getQueriedLootTableId().toString())
                         && random.nextFloat() <= loot.getChance()) {
                     generatedLoot.add(new ItemStack(relic));
@@ -51,7 +51,7 @@ public class DungeonLootModifier extends LootModifier {
         }
 
         for (RuneItem rune : ItemRegistry.getRegisteredRunes()) {
-            RuneLootData loot = rune.getConfigData().getLoot();
+            RuneLootData loot = rune.getLoot();
             ItemStack stack = new ItemStack(rune);
 
             stack.setCount(random.nextInt(5) + 1);

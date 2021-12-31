@@ -4,6 +4,8 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLevelingData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
@@ -49,6 +51,12 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     @Getter
     @Setter
     protected RelicData data;
+    @Getter
+    @Setter
+    protected List<RelicLootData> loot;
+    @Getter
+    @Setter
+    protected RelicLevelingData leveling;
     @Getter
     @Setter
     protected T stats;
@@ -200,7 +208,8 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public void setConfig(RelicConfigData<?> data) {
-        this.configData = (RelicConfigData<T>) data;
+        this.leveling = data.getLevel();
+        this.loot = data.getLoot();
         this.stats = (T) data.getStats();
     }
 }

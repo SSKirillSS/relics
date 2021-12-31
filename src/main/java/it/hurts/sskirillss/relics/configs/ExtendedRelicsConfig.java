@@ -122,7 +122,7 @@ public class ExtendedRelicsConfig {
                 data = rune.getConfigData();
             }
 
-            rune.setConfigData(data);
+            rune.setConfig(data);
         });
     }
 }
