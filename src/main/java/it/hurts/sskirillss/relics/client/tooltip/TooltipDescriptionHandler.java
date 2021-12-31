@@ -83,7 +83,7 @@ public class TooltipDescriptionHandler {
 
                 List<ITextComponent> list = new ArrayList<>();
 
-                if (curios.get(tag).getSlots() > 0)
+                if (curios.get(tag) == null || curios.get(tag).getSlots() > 0)
                     return;
 
                 for (Item curio : ItemRegistry.getSlotModifiers()) {
