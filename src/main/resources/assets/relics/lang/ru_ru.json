@@ -282,6 +282,12 @@
   "tooltip.relics.wool_mitten.ability.1.name": "Лепка",
   "tooltip.relics.wool_mitten.ability.1.description": "Снежки носителя реликвии наносят %1$s урона при попадании. Урон увеличивается на %2$s за каждую секунду полёта снежка",
 
+  "item.relics.ghost_skin_talisman": "Талисман призрачной кожи",
+  "tooltip.relics.ghost_skin_talisman.ability.1.name": "Проницаемость",
+  "tooltip.relics.ghost_skin_talisman.ability.1.description": "Снаряды будут пролетать через носителя насквозь, не нанося при этом урона",
+  "tooltip.relics.ghost_skin_talisman.ability.2.name": "Слабость",
+  "tooltip.relics.ghost_skin_talisman.ability.2.description": "%1$s к скорости атаки",
+
   "item.relics.leather_belt": "Кожаный пояс",
 
   "block.relics.magma_stone": "Магмовый камень",
@@ -367,5 +373,7 @@
   "advancements.relics.stellar_catalyst.title" :  "Это дождь из звёзд",
   "advancements.relics.stellar_catalyst.description": "Получи звёздный катализатор",
   "advancements.relics.wool_mitten.title": "Гроза снеговиков",
-  "advancements.relics.wool_mitten.description": "Получи шерстяную рукавицу"
+  "advancements.relics.wool_mitten.description": "Получи шерстяную рукавицу",
+  "advancements.relics.ghost_skin_talisman.title": "Spooky Scary Skeletons",
+  "advancements.relics.ghost_skin_talisman.description": "Получи талисман призрачной кожи"
 }

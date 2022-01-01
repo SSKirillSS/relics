@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -151,7 +150,7 @@ public class EntityUtils {
             instance.removeModifier(modifier);
     }
 
-    public static ItemStack findEquippedCurio(LivingEntity entity, Item item) {
+    public static ItemStack findEquippedCurio(Entity entity, Item item) {
         if (!(entity instanceof PlayerEntity))
             return ItemStack.EMPTY;
 

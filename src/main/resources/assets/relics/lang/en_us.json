@@ -284,6 +284,12 @@
   "tooltip.relics.wool_mitten.ability.1.name": "Molding",
   "tooltip.relics.wool_mitten.ability.1.description": "Snowballs deal %1$s damage on hit. Damage increasing by %2$s for every second the snowball flies",
 
+  "item.relics.ghost_skin_talisman": "Ghost Skin Talisman",
+  "tooltip.relics.ghost_skin_talisman.ability.1.name": "Permeability",
+  "tooltip.relics.ghost_skin_talisman.ability.1.description": "Projectiles will fly through the wearer without causing damage",
+  "tooltip.relics.ghost_skin_talisman.ability.2.name": "Weakness",
+  "tooltip.relics.ghost_skin_talisman.ability.2.description": "%1$s attack speed",
+
   "item.relics.leather_belt": "Leather Belt",
 
   "block.relics.magma_stone": "Magma Stone",
@@ -369,5 +375,7 @@
   "advancements.relics.stellar_catalyst.title" :  "This is a rain of stars",
   "advancements.relics.stellar_catalyst.description": "Obtain the Stellar Catalyst",
   "advancements.relics.wool_mitten.title" :  "Thunderstorm of snowmens",
-  "advancements.relics.wool_mitten.description": "Obtain the Wool Mitten"
+  "advancements.relics.wool_mitten.description": "Obtain the Wool Mitten",
+  "advancements.relics.ghost_skin_talisman.title": "Spooky Scary Skeletons",
+  "advancements.relics.ghost_skin_talisman.description": "Obtain the Ghost Skin Talisman"
 }
