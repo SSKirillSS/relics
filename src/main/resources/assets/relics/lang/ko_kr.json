@@ -1,5 +1,4 @@
 {
-
   "itemGroup.relics": "유물",
 
   "key.relics.hud_up": "스크롤 업",
@@ -11,13 +10,22 @@
   "key.relics.hud_fifth": "다섯번째 능력 발동",
 
   "tooltip.relics.shift.tooltip": "§7더 많은 정보를 확인하려면 §8[Shift 키]§7를 눌러주세요.",
-  "tooltip.relics.alt.tooltip": "§7더 많은 정보를 확인하려면 §8[Alt 키]§7를 눌러주세요.",
-  "tooltip.relics.ctrl.tooltip": "§7더 많은 정보를 확인하려면 §8[Ctrl 키]§7를 눌러주세요.",
+  "tooltip.relics.relic.broken": "유물이 부서졌습니다!",
+  "tooltip.relics.relic.damaged": "유물이 곧 부서지려 합니다!",
+  "tooltip.relics.relic.requires_slot": "해당 슬롯 요구하지 않음:",
+  "tooltip.relics.relic.allowed_modifiers": "해금에 필요함:",
 
-  "message.relics.version.forge": "§4[RELICS-WARN] §cForge의 버전이 맞지 않는 것 같습니다. 즉, 유물들이 던전 상자에 등장하지 않습니다. 이 문제를 해결하시려면 Forge 버전을 1.16.5-36.0.14 이상으로 업데이트해주세요. Forge 버전 업데이트를 원치 않으신다면 직접 유물 획득처를 설정하시면 됩니다. 이 메세지를 더 이상 확인하고 싶지 않다면 Config에서 비활성화하시면 됩니다.",
+  "tooltip.relics.shift.abilities": "능력:",
+  "tooltip.relics.shift.stats": "능력치:",
+  "tooltip.relics.shift.stats.slot": "슬롯:",
+  "tooltip.relics.shift.stats.level": "레벨:",
+  "tooltip.relics.shift.stats.durability": "내구도:",
+  "tooltip.relics.shift.slots": "슬롯 개조:",															
 
   "curios.identifier.feet": "신발",
   "curios.modifiers.feet": "신발에 착용했을 때:",
+  "curios.identifier.talisman": "부적",
+  "curios.modifiers.talisman": "부적에 착용했을 때:",		
 
   "item.relics.chrysolite": "귀감람석",
   "item.relics.aquasteel_ingot": "물결철 주괴",
@@ -66,78 +74,224 @@
   "item.relics.spatial_sign": "공간 표식",
   "tooltip.relics.spatial_sign.tooltip_1": "저장 좌표: X:%1$s Y:%2$s Z:%3$s",
   "tooltip.relics.spatial_sign.tooltip_2": "남은 시간: %1$s",
+  "tooltip.relics.spatial_sign.ability.1.name": "봉인",
+  "tooltip.relics.spatial_sign.ability.1.description": "표식의 사용지점을 기억한 뒤 %1$s초 우헤 소유자를 해당 위치로 순간이동 시키며, 이 과정에서 %2$s의 경험치를 소모합니다. 다른 사용법으로서, %3$s 키를 눌러 마지막으로 저장한 지점으로 강제로 순간이동합니다.",
+  "tooltip.relics.spatial_sign.ability.2.name": "두 번째 목숨",
+  "tooltip.relics.spatial_sign.ability.2.description": "봉인이 활성화된 상태에서 치명적인 피해를 입으면 소유자는 마지막으로 저장했던 좌표로 순간이동되지만 유물은 파괴됩니다.",
 
   "item.relics.spider_necklace": "거미 목걸이",
+  "tooltip.relics.spider_necklace.ability.1.name": "등반 손톱",
+  "tooltip.relics.spider_necklace.ability.1.description": "벽을 타고 오를수 있게됩니다.",
+  "tooltip.relics.spider_necklace.ability.2.name": "아라키드",
+  "tooltip.relics.spider_necklace.ability.2.description": "거미줄을 쉽게 지나다닐 수 있게됩니다.",
 
   "item.relics.spore_sack": "포자 주머니",
+  "tooltip.relics.spore_sack.ability.1.name": "분사",
+  "tooltip.relics.spore_sack.ability.1.description": "발사체의 착탄 지점에 %1$s의 확률로 독 포자를 분사하여 반경 %2$s블록 내의 모든 몹을 중독시킵니다.",
 
   "item.relics.reflection_necklace": "반사의 목걸이",
+  "tooltip.relics.reflection_necklace.ability.1.name": "반사",
+  "tooltip.relics.reflection_necklace.ability.1.description": "최대 %1$s만큼의 보호막을 충전합니다. 받는 피해를 흡수하며 공격자에게 보호막 1개 분의 충전값 당 %2$s만큼의 피해를 반사합니다.",
 
   "item.relics.space_dissector": "공간 분해자",
-
+  "tooltip.relics.space_dissector.ability.1.name": "개석",
+  "tooltip.relics.space_dissector.ability.1.description": "디스크를 던지며, 최대 %1$s회 벽에 튕기며 부딪히는 모든 적에게 %2$s만큼의 피해를 가합니다. 벽에 튕길수록 %3$s만큼 피해량이 증가합니다.",
+  "tooltip.relics.space_dissector.ability.2.name": "귀환",
+  "tooltip.relics.space_dissector.ability.2.description": "강제로 디스크를 소유자에게 돌아오게 합니다. %1$s키를 누른 상태로 사용하면 소유자가 현재 디스크의 위치로 즉시 텔레포트 됩니다.",
+  
   "item.relics.soul_devourer": "영혼 포식자",
   "tooltip.relics.soul_devourer.tooltip_1": "흡수한 영혼의 양: %1$s",
-
+  "tooltip.relics.soul_devourer.ability.1.name": "레퀴엠",
+  "tooltip.relics.soul_devourer.ability.1.description": "쓰러뜨린 몹의 영혼을 최대 체력의 %1$s만큼 흡수합니다. 소모된 영혼 하나당 착용자의 피해가 %2$s만큼 증가합니다.",
+  
   "item.relics.magma_walker": "용암을 걷는 자",
-
+  "tooltip.relics.magma_walker.ability.1.name": "비늘",
+  "tooltip.relics.magma_walker.ability.1.description": "뜨거운 블록에 대한 피해 저항력을 부여합니다.",
+  "tooltip.relics.magma_walker.ability.2.name": "용암을 걷는 자",
+  "tooltip.relics.magma_walker.ability.2.description": "착용자의 발 아래 용암을 응축시켜 일시적으로 단단한 용암석으로 변형시킵니다.",
+  
   "item.relics.midnight_robe": "황혼의 로브",
-
+ "tooltip.relics.midnight_robe.ability.1.name": "그림자의 부름",
+  "tooltip.relics.midnight_robe.ability.1.description": "밤 시간대에 %1$s만큼 이동속도가 증가합니다.",
+  "tooltip.relics.midnight_robe.ability.2.name": "배니싱",
+  "tooltip.relics.midnight_robe.ability.2.description": "조명 수준이 %1$s미만인 장소에서 유물 착용자를 은신시킵니다.",
+  
   "item.relics.old_boot": "오래된 부츠",
-
+  "tooltip.relics.old_boot.ability.1.name": "퀵 스텝",
+  "tooltip.relics.old_boot.ability.1.description": "%1$s만큼 이동속도가 증가합니다.",
+  
   "item.relics.out_runner": "헤르메스의 부츠",
+  "tooltip.relics.out_runner.ability.1.name": "가속",
+  "tooltip.relics.out_runner.ability.1.description": "달릴수록 1초마다 %1$s만큼 이동속도가 증가합니다.",																											  
 
   "item.relics.scarab_talisman": "풍뎅이 부적",
-
+  "tooltip.relics.scarab_talisman.ability.1.name": "사막의 바람",
+  "tooltip.relics.scarab_talisman.ability.1.description": "사막 생물군계에서 %1$s만큼 이동속도가 증가합니다.",
+  "tooltip.relics.scarab_talisman.ability.2.name": "키틴질 발톱",
+  "tooltip.relics.scarab_talisman.ability.2.description": "블록 파괴속도가 %1$s만큼 증가합니다.",
+  "tooltip.relics.scarab_talisman.ability.3.name": "밀실증",
+  "tooltip.relics.scarab_talisman.ability.3.description": "질식 피해를 차단하며 차단하고 있는 동안에 착용자에게 투명화를 부여합니다.",
+  "tooltip.relics.scarab_talisman.ability.4.name": "버로우",
+  "tooltip.relics.scarab_talisman.ability.4.description": "착용자를 땅속에 묻거나 파냅니다.",
+  
   "item.relics.shadow_glaive": "그림자 월도",
-
+  "tooltip.relics.shadow_glaive.ability.1.name": "그림자 충전",
+  "tooltip.relics.shadow_glaive.ability.1.description": "근처 대상을 향해 최대 %1$s회 튕겨져 나가는 그림자 월도 발사체를 발사하여 %2$s만큼의 피해를 가합니다. 매 %3$s초 마다 1회 충전됩니다.",
+  
   "item.relics.stellar_catalyst": "유성 촉매",
+  "tooltip.relics.stellar_catalyst.ability.1.name": "달의 축복",
+  "tooltip.relics.stellar_catalyst.ability.1.description": "%1$s의 확률로 각 공격이 본래 피해에서 %2$s정도의 피해를 입히는 별똥별을 소환합니다. 밤에만 작동합니다.",
 
   "item.relics.drowned_belt": "익사자의 혁대",
+  "tooltip.relics.drowned_belt.ability.1.name": "수류",
+  "tooltip.relics.drowned_belt.ability.1.description": "비나 물 없이 삼지창의 \"급류\" 마법 부여가 작동하지만, 재사용 대기 시간이 늘어납니다.",
+  "tooltip.relics.drowned_belt.ability.2.name": "바다의 축복",
+  "tooltip.relics.drowned_belt.ability.2.description": "%1$s만큼 잠수했을 때 피해가 증가합니다.",
+  "tooltip.relics.drowned_belt.ability.3.name": "수압",
+  "tooltip.relics.drowned_belt.ability.3.description": "%1$s만큼 잠수했을 때 받는 피해가 증가합니다.",
 
   "item.relics.elytra_booster": "겉날개 가속기",
   "tooltip.relics.elytra_booster.tooltip_1": "충전량: %1$s",
+  "tooltip.relics.elytra_booster.ability.1.name": "엔드의 숨결",
+  "tooltip.relics.elytra_booster.ability.1.description": "엔드 공기 또는 드래곤 브레스에서 수집한 엔드의 에너지를 소모하여 겉날개 비행을 가속화합니다.",
 
   "item.relics.enders_hand": "엔더의 손",
+  "tooltip.relics.enders_hand.ability.1.name": "종말의 계약",
+  "tooltip.relics.enders_hand.ability.1.description": "엔더맨이 착용자에게 중립적이게 됩니다.",
+  "tooltip.relics.enders_hand.ability.2.name": "등가교환",
+  "tooltip.relics.enders_hand.ability.2.description": "바라보고 있는 엔더맨과 착용자의 위치를 바꿉니다.",
+  "tooltip.relics.enders_hand.ability.3.name": "엔더 상자",
+  "tooltip.relics.enders_hand.ability.3.description": "휴대용 엔더 상자를 소환합니다.",
 
   "item.relics.fragrant_flower": "향기로운 꽃",
   "tooltip.relics.fragrant_flower.tooltip_1": "꿀: %1$s",
+  "tooltip.relics.fragrant_flower.ability.1.name": "벌 떼",
+  "tooltip.relics.fragrant_flower.ability.1.description": "반경 %1$s블록 내의 꿀벌이 착용자와 함께 싸울 것입니다.",
+  "tooltip.relics.fragrant_flower.ability.2.name": "벌 테라피",
+  "tooltip.relics.fragrant_flower.ability.2.description": "반경 %2$s블록 내에 존재하는 꿀벌 당 착용자의 체력 재생이 %1$s만큼 증가합니다.",
 
   "item.relics.holy_locket": "성스러운 앙크",
+  "tooltip.relics.holy_locket.ability.1.name": "추방",
+  "tooltip.relics.holy_locket.ability.1.description": "언데드 적에게 %1$s만큼의 피해를 입힙니다. 언데드에게 공격 적중 시 %2$s의 확률로 불을 붙입니다.",
+  "tooltip.relics.holy_locket.ability.2.name": "축복",
+  "tooltip.relics.holy_locket.ability.2.description": "%1$s만큼 체력 재생이 증가합니다.",
+  "tooltip.relics.holy_locket.ability.3.name": "신성한 방패",
+  "tooltip.relics.holy_locket.ability.3.description": "피해를 입은 후의 무적 시간이 %1$s초만큼 증가합니다.",
 
   "item.relics.jellyfish_necklace": "해파리 목걸이",
+  "tooltip.relics.jellyfish_necklace.ability.1.name": "재생",
+  "tooltip.relics.jellyfish_necklace.ability.1.description": "물속에 있을 때 %1$s만큼 체력 재생이 증가합니다.",
+  "tooltip.relics.jellyfish_necklace.ability.2.name": "저항",
+  "tooltip.relics.jellyfish_necklace.ability.2.description": "%1$s만큼 마법 피해 저항이 증가합니다.",
+  "tooltip.relics.jellyfish_necklace.ability.3.name": "약화",
+  "tooltip.relics.jellyfish_necklace.ability.3.description": "%1$s만큼 수영속도 감소",
+  "tooltip.relics.jellyfish_necklace.ability.4.name": "반발 대시",
+  "tooltip.relics.jellyfish_necklace.ability.4.description": "착용자가 물 속에 있는 경우 착용자를 바라보고 있는 방향으로 밀어냅니다.",
 
   "item.relics.hunter_belt": "사냥꾼의 혁대",
+  "tooltip.relics.hunter_belt.ability.1.name": "약탈",
+  "tooltip.relics.hunter_belt.ability.1.description": "전리품의 양이 %1$s만큼 증가합니다.",
+  "tooltip.relics.hunter_belt.ability.2.name": "조련",
+  "tooltip.relics.hunter_belt.ability.2.description": "%1$s만큼 반려동물의 피해가 증가합니다.",
 
   "item.relics.rage_glove": "분노의 주먹",
+  "tooltip.relics.rage_glove.ability.1.name": "광분화",
+  "tooltip.relics.rage_glove.ability.1.description": "공격시 %3$s초 동안 가하는 피해가 %1$s만큼 증가하고 받는 피해가 %2$s만큼 증가합니다.",
 
   "item.relics.ice_skates": "아이스 스케이트",
+  "tooltip.relics.ice_skates.ability.1.name": "미끄러짐",
+  "tooltip.relics.ice_skates.ability.1.description": "얼음 위에서 %1$s만큼 이동속도가 증가합니다.",
+  "tooltip.relics.ice_skates.ability.2.name": "염소",
+  "tooltip.relics.ice_skates.ability.2.description": "얼음 위를 달리고 있을 때 충돌한 몹에게 %1$s만큼의 피해를 입히며 밀어냅니다.",
 
   "item.relics.camouflage_ring": "위장의 반지",
+  "tooltip.relics.camouflage_ring.ability.1.name": "위장",
+  "tooltip.relics.camouflage_ring.ability.1.description": "풀 사이에 있을 때 착용자를 투명하게 만듭니다.",
 
   "item.relics.delay_ring": "지연의 반지",
-  "tooltip.relics.delay_ring.tooltip_1": "시간: %1$s",
+  "tooltip.relics.delay_ring.tooltip_1": "시간: %1$s",																							   
   "tooltip.relics.delay_ring.tooltip_2": "체력: %1$s",
-
+  "tooltip.relics.delay_ring.ability.1.name": "지연",
+  "tooltip.relics.delay_ring.ability.1.description": "착용자의 운명을 일시적으로 지연시켜 %1$s초 동안 받는 모든 치유 및 피해를 연기합니다.",
+  
   "item.relics.bastion_ring": "보루의 반지",
-
+  "tooltip.relics.bastion_ring.ability.1.name": "네더의 계약",
+  "tooltip.relics.bastion_ring.ability.1.description": "피글린이 착용자에게 중립적이게 됩니다.",
+  "tooltip.relics.bastion_ring.ability.2.name": "돼지 나침반",
+  "tooltip.relics.bastion_ring.ability.2.description": "피글린이 네더에 존재하는 가장 가까운 요새를 가리킵니다.",
+  
   "item.relics.blazing_flask": "타오르는 플라스크",
   "tooltip.relics.blazing_flask.tooltip_1": "불꽃 저장량: %1$s",
+  "tooltip.relics.blazing_flask.ability.1.name": "무중력",
+  "tooltip.relics.blazing_flask.ability.1.description": "플라스크에 불이 존재할 때 낙하 피해를 방지합니다.",
+  "tooltip.relics.blazing_flask.ability.2.name": "불 면역",
+  "tooltip.relics.blazing_flask.ability.2.description": "화염 저항이 부여됩니다.",
+  "tooltip.relics.blazing_flask.ability.3.name": "불타는 발자국",
+  "tooltip.relics.blazing_flask.ability.3.description": "주변의 불 에너지를 소모하여 내부 저장공간에 축적합니다. 저장된 에너지는 약한 공중 부양 효과로 변환되어 발 아래 몹을 불태울 수 있습니다.",
 
   "item.relics.chorus_inhibitor": "음치",
-  "tooltip.relics.chorus_inhibitor.tooltip_1": "저장된 좌표: X:%1$s Y:%2$s Z:%3$s",
-  "tooltip.relics.chorus_inhibitor.tooltip_2": "남은 시간: %1$s",
-
+  "tooltip.relics.chorus_inhibitor.ability.1.name": "순간 이동",
+  "tooltip.relics.chorus_inhibitor.ability.1.description": "사용할 시 후렴과를 먹었을 때 바라보고있는 방향의 반경 %1$s내의 블록으로 순간이동 할 수 있습니다.",
+  
   "item.relics.arrow_quiver": "화살통",
-
+  "tooltip.relics.arrow_quiver.ability.1.name": "유연한 활시위",
+  "tooltip.relics.arrow_quiver.ability.1.description": "x%1$s배 만큼 활시위를 당기는 속도가 증가합니다.",
+  "tooltip.relics.arrow_quiver.ability.2.name": "폭발성 화살",
+  "tooltip.relics.arrow_quiver.ability.2.description": "다음 사격이 대상까지의 거리에 비례하여 범위 피해를 줍니다.",
+  
   "item.relics.lucky_horseshoe": "행운의 편자",
-
+  "tooltip.relics.lucky_horseshoe.ability.1.name": "약탈",
+  "tooltip.relics.lucky_horseshoe.ability.1.description": "%1$s의 확률로 착용자의 전리품을 증가시킵니다.",
+  "tooltip.relics.lucky_horseshoe.ability.2.name": "행운",
+  "tooltip.relics.lucky_horseshoe.ability.2.description": "%1$s의 확률로 착용자의 운을 증가시킵니다.",
+  
   "item.relics.magic_mirror": "마법의 거울",
+  "tooltip.relics.magic_mirror.ability.1.name": "복귀",
+  "tooltip.relics.magic_mirror.ability.1.description": "마지막 리스폰 포인트로 순간이동합니다.",
   "tooltip.relics.magic_mirror.invalid_location": "리스폰 지점이 저장되지 않았습니다.",
-
+  
   "item.relics.ice_breaker": "얼음 파괴자",
-
+  "tooltip.relics.ice_breaker.ability.1.name": "과체중",
+  "tooltip.relics.ice_breaker.ability.1.description": "%1$s만큼 이동속도가 감소하며, %2$s만큼 낙하 피해가 증가합니다.",
+  "tooltip.relics.ice_breaker.ability.2.name": "클러치",
+  "tooltip.relics.ice_breaker.ability.2.description": "%1$s만큼 넉백 저항이 부여됩니다.",
+  "tooltip.relics.ice_breaker.ability.3.name": "분쇄",
+  "tooltip.relics.ice_breaker.ability.3.description": "바닥에 착지할 때 강력한 폭발을 일으킵니다.",
+  
   "item.relics.amphibian_boot": "개구리 발",
+  "tooltip.relics.amphibian_boot.ability.1.name": "물갈퀴",
+  "tooltip.relics.amphibian_boot.ability.1.description": "%1$s만큼 수영속도가 증가합니다.",
+  "tooltip.relics.amphibian_boot.ability.2.name": "아가미",
+  "tooltip.relics.amphibian_boot.ability.2.description": "x%1$s배 만큼 공기량이 늘어납니다.",
 
+  "item.relics.infinity_ham": "무한의 햄",
+  "tooltip.relics.infinity_ham.ability.1.name": "회복",
+  "tooltip.relics.infinity_ham.ability.1.description": "한 번 사용할 때 마다 %1$s만큼의 허기를 회복시키는 무한 음식입니다. %2$s회분 충전되며 %3$s초마다 복원됩니다.",
+
+  "item.relics.slime_heart": "슬라임의 심장",
+  "tooltip.relics.slime_heart.ability.1.name": "취약함",
+  "tooltip.relics.slime_heart.ability.1.description": "%1$s만큼 체력 재생이 감소합니다.",
+  "tooltip.relics.slime_heart.ability.2.name": "탄성체",
+  "tooltip.relics.slime_heart.ability.2.description": "축적된 슬라임 에너지를 소모하여 낙하 데미지를 감소시킵니다. %1$s 키를 누르고 있으면 능력이 발동되지 않습니다.",
+
+  "item.relics.horse_flute": "말 피리",
+  "tooltip.relics.horse_flute.ability.1.name": "시공의 마구간",
+  "tooltip.relics.horse_flute.ability.1.description": "길들여진 말에 사용하면 시공간의 바깥에 존재하는 특별한 울타리 안에 들어보냅니다. 유물을 재사용하면 플레이어의 현재 위치에서 말을 꺼내줍니다.",
+  "tooltip.relics.horse_flute.ability.2.name": "충의",
+  "tooltip.relics.horse_flute.ability.2.description": "길들인 말에게서 %1$s블록 이상 멀어지면 자동으로 \"시공의 마구간\" 능력이 사용됩니다.",
+
+  "item.relics.wool_mitten": "양털 벙어리장갑",
+  "tooltip.relics.wool_mitten.ability.1.name": "돌 넣기",
+  "tooltip.relics.wool_mitten.ability.1.description": "눈덩이 적중 시 %1$s만큼의 피해를 입힙니다. 눈덩이가 날아간 시간에 따라 초당 %2$만큼의 추가 피해를 입힙니다.",
+
+  "item.relics.ghost_skin_talisman": "유령 피부 부적",
+  "tooltip.relics.ghost_skin_talisman.ability.1.name": "투과성",
+  "tooltip.relics.ghost_skin_talisman.ability.1.description": "투사체가 장착자에게 영향을 주지 못합니다.",
+  "tooltip.relics.ghost_skin_talisman.ability.2.name": "취약",
+  "tooltip.relics.ghost_skin_talisman.ability.2.description": "%1$s 공격 속도",
+
+  "item.relics.leather_belt": "가죽 벨트",
+  
   "block.relics.magma_stone": "용암석",
   "block.relics.pedestal": "받침대",
   "block.relics.runic_altar": "룬 제단",
@@ -166,18 +320,26 @@
   "advancements.relics.elytra_booster.description": "겉날개 가속기를 획득하세요.",
   "advancements.relics.enders_hand.title" :  "사회적 거리두기",
   "advancements.relics.enders_hand.description": "엔더의 손을 획득하세요.",
+  "advancements.relics.evil_mirror.title" :  "데자뷰, 느껴본 적 있...엥?",
+  "advancements.relics.evil_mirror.description": "악마의 거울을 획득하세요.",														   																		  
   "advancements.relics.fragrant_flower.title" :  "왕벌의 비행",
   "advancements.relics.fragrant_flower.description": "향기로운 꽃을 획득하세요.",
   "advancements.relics.holy_locket.title" :  "봤어? 봤냐니까?!",
   "advancements.relics.holy_locket.description": "성스러운 앙크를 획득하세요.",
-  "advancements.relics.hunter_belt.title" :  "개보다 약한 기분이 어떤가?",
+  "advancements.relics.horse_flute.title" :  "피리 부는 사나이",
+  "advancements.relics.horse_flute.description": "말 피리를 획득하세요.",
+  "advancements.relics.hunter_belt.title" :  "개보다 약한 기분이 어떤가?",																					 
   "advancements.relics.hunter_belt.description": "사냥꾼의 혁대를 획득하세요.",
   "advancements.relics.ice_breaker.title" :  "미러스 엣지",
   "advancements.relics.ice_breaker.description": "얼음 파괴자를 획득하세요.",
   "advancements.relics.ice_skates.title" :  "유리!!! on ICE",
   "advancements.relics.ice_skates.description": "아이스 스케이트를 획득하세요.",
+  "advancements.relics.infinity_ham.title" :  "자가수복 햄",
+  "advancements.relics.infinity_ham.description": "무한의 햄을 획득하세요.",														  																		
   "advancements.relics.jellyfish_necklace.title" :  "피-카-츄-!",
   "advancements.relics.jellyfish_necklace.description": "해파리 목걸이를 획득하세요.",
+  "advancements.relics.leather_belt.title" :  "순종하라",
+  "advancements.relics.leather_belt.description": "가죽 벨트를 획득하세요.",  
   "advancements.relics.lucky_horseshoe.title" :  "놀리지마...",
   "advancements.relics.lucky_horseshoe.description": "행운의 편자를 획득하세요.",
   "advancements.relics.magic_mirror.title" :  "데자뷰, 느껴본 적 있어?",
@@ -198,7 +360,9 @@
   "advancements.relics.scarab_talisman.description": "풍뎅이 부적을 획득하세요.",
   "advancements.relics.shadow_glaive.title" :  "야마토 v0.5",
   "advancements.relics.shadow_glaive.description": "그림자 월도를 획득하세요.",
-  "advancements.relics.soul_devourer.title" :  "고골이 고마워 하겠네",
+  "advancements.relics.slime_heart.title" :  "전생했더니 슬라임이였던 건에 대하여",
+  "advancements.relics.slime_heart.description": "슬라임 심장을 획득하세요.",
+  "advancements.relics.soul_devourer.title" :  "고골이 고마워 하겠네",																   
   "advancements.relics.soul_devourer.description": "영혼 포식자를 획득하세요.",
   "advancements.relics.space_dissector.title" :  "여전사 지나",
   "advancements.relics.space_dissector.description": "공간 분해자를 획득하세요.",
@@ -208,6 +372,10 @@
   "advancements.relics.spider_necklace.description": "거미 목걸이를 획득하세요.",
   "advancements.relics.spore_sack.title" :  "산타의 선물 주머니",
   "advancements.relics.spore_sack.description": "포자 주머니를 획득하세요.",
-  "advancements.relics.stellar_catalyst.title" :  "별 빛이 내린다",
-  "advancements.relics.stellar_catalyst.description": "유성 촉매를 획득하세요."
+  "advancements.relics.stellar_catalyst.title" :  "별빛이 내린다",
+  "advancements.relics.stellar_catalyst.description": "유성 촉매를 획득하세요.",
+  "advancements.relics.wool_mitten.title" :  "눈싸움의 재앙",
+  "advancements.relics.wool_mitten.description": "양털 벙어리장갑을 획득하세요.",
+  "advancements.relics.ghost_skin_talisman.title": "Spooky Scary Skeletons",
+  "advancements.relics.ghost_skin_talisman.description": "유령 피부 부적을 획득하세요."														 
 }
