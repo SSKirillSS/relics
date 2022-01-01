@@ -111,7 +111,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
 
         worldIn.addFreshEntity(glaive);
 
-        EntityRayTraceResult result = EntityUtils.rayTraceEntity(playerIn, EntityPredicates.NO_CREATIVE_OR_SPECTATOR, 20);
+        EntityRayTraceResult result = EntityUtils.rayTraceEntity(playerIn, EntityPredicates.NO_CREATIVE_OR_SPECTATOR, 32);
 
         if (result != null) {
             Entity target = result.getEntity();
