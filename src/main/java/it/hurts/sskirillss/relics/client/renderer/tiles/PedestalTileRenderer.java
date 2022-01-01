@@ -11,8 +11,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
-
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 
 public class PedestalTileRenderer extends TileEntityRenderer<PedestalTile> {
@@ -23,18 +21,24 @@ public class PedestalTileRenderer extends TileEntityRenderer<PedestalTile> {
     @Override
     public void render(PedestalTile tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
         ItemStack stack = tileEntity.getStack();
-        if (stack == null || stack.isEmpty()) return;
+
+        if (stack == null || stack.isEmpty())
+            return;
+
         matrixStack.pushPose();
-        matrixStack.translate(0.5, 0.55, 0.5);
+
+        matrixStack.translate(0.5D, 0.5D, 0.5D);
+
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         IBakedModel ibakedmodel = itemRenderer.getModel(stack, tileEntity.getLevel(), null);
+
         matrixStack.scale(0.35F, 0.35F, 0.35F);
         matrixStack.mulPose(tileEntity.getBlockState().getValue(PedestalBlock.DIRECTION).getRotation());
-        matrixStack.translate(0.0D, MathHelper.sin(tileEntity.ticksExisted / 10.0F) * 0.25F, 0.0D);
+        matrixStack.translate(0.0D, Math.cos(tileEntity.ticksExisted * 0.1D) * 0.2D, 0.0D);
         matrixStack.mulPose(Vector3f.YP.rotation(tileEntity.ticksExisted / 20.0F));
-        matrixStack.translate(0.0D, MathHelper.sin(tileEntity.ticksExisted / 10.0F) * 0.25F, 0.0D);
-        matrixStack.mulPose(Vector3f.YP.rotation(tileEntity.ticksExisted / 20.0F));
+
         itemRenderer.render(stack, ItemCameraTransforms.TransformType.FIXED, true, matrixStack, buffer, combinedLight, combinedOverlay, ibakedmodel);
+
         matrixStack.popPose();
     }
 }
