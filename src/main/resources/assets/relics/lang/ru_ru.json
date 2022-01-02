@@ -270,7 +270,7 @@
   "tooltip.relics.slime_heart.ability.1.name": "Хлипкость",
   "tooltip.relics.slime_heart.ability.1.description": "%1$s регенерации здоровья",
   "tooltip.relics.slime_heart.ability.2.name": "Упругость",
-  "tooltip.relics.slime_heart.ability.2.description": "Расходует накопленную слизневую энергию на подавление урона от падения. Зажатие клавиши %1$s предотвратит срабатывание этой способности",
+  "tooltip.relics.slime_heart.ability.2.description": "Подавляет урон от падения, отталкивая носителя от земли. Зажатие клавиши %1$s предотвратит срабатывание этой способности",
 
   "item.relics.horse_flute": "Лошадиная флейта",
   "tooltip.relics.horse_flute.ability.1.name": "Загон",

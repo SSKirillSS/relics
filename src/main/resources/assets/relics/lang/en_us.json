@@ -272,7 +272,7 @@
   "tooltip.relics.slime_heart.ability.1.name": "Fragility",
   "tooltip.relics.slime_heart.ability.1.description": "%1$s health regeneration",
   "tooltip.relics.slime_heart.ability.2.name": "Elastic",
-  "tooltip.relics.slime_heart.ability.2.description": "Expends accumulated slimy energy to suppress fall damage. Holding down the %1$s key will prevent ability triggering",
+  "tooltip.relics.slime_heart.ability.2.description": "Suppresses fall damage, bouncing wearer from the ground. Holding down the %1$s key will prevent ability triggering",
 
   "item.relics.horse_flute": "Horse Flute",
   "tooltip.relics.horse_flute.ability.1.name": "Enclosure",
