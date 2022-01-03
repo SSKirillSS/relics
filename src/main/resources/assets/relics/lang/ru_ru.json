@@ -288,6 +288,10 @@
   "tooltip.relics.ghost_skin_talisman.ability.2.name": "Слабость",
   "tooltip.relics.ghost_skin_talisman.ability.2.description": "%1$s к скорости атаки",
 
+  "item.relics.squire_bag": "Сумка оруженосца",
+  "tooltip.relics.squire_bag.ability.1.name": "Тяжеловес",
+  "tooltip.relics.squire_bag.ability.1.description": "%1$s к скорости передвижения",
+
   "item.relics.leather_belt": "Кожаный пояс",
 
   "block.relics.magma_stone": "Магмовый камень",
@@ -375,5 +379,7 @@
   "advancements.relics.wool_mitten.title": "Гроза снеговиков",
   "advancements.relics.wool_mitten.description": "Получи шерстяную рукавицу",
   "advancements.relics.ghost_skin_talisman.title": "Spooky Scary Skeletons",
-  "advancements.relics.ghost_skin_talisman.description": "Получи талисман призрачной кожи"
+  "advancements.relics.ghost_skin_talisman.description": "Получи талисман призрачной кожи",
+  "advancements.relics.squire_bag.title": "Бездонный мешок",
+  "advancements.relics.squire_bag.description": "Получи сумку оруженосца"
 }

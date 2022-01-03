@@ -290,6 +290,10 @@
   "tooltip.relics.ghost_skin_talisman.ability.2.name": "Weakness",
   "tooltip.relics.ghost_skin_talisman.ability.2.description": "%1$s attack speed",
 
+  "item.relics.squire_bag": "Squire's Bag",
+  "tooltip.relics.squire_bag.ability.1.name": "Heavyweight",
+  "tooltip.relics.squire_bag.ability.1.description": "%1$s movement speed",
+
   "item.relics.leather_belt": "Leather Belt",
 
   "block.relics.magma_stone": "Magma Stone",
@@ -377,5 +381,7 @@
   "advancements.relics.wool_mitten.title" :  "Thunderstorm of snowmens",
   "advancements.relics.wool_mitten.description": "Obtain the Wool Mitten",
   "advancements.relics.ghost_skin_talisman.title": "Spooky Scary Skeletons",
-  "advancements.relics.ghost_skin_talisman.description": "Obtain the Ghost Skin Talisman"
+  "advancements.relics.ghost_skin_talisman.description": "Obtain the Ghost Skin Talisman",
+  "advancements.relics.squire_bag.title": "Bottomless bag",
+  "advancements.relics.squire_bag.description": "Obtain the Squire's Bag"
 }
