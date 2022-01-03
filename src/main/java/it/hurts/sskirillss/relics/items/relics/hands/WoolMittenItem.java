@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
+import it.hurts.sskirillss.relics.client.renderer.items.models.WoolMittenModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -10,11 +11,15 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.SnowballEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -50,6 +55,12 @@ public class WoolMittenItem extends RelicItem<WoolMittenItem.Stats> {
                         .chance(0.1F)
                         .build())
                 .build();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BipedModel<LivingEntity> getModel() {
+        return new WoolMittenModel();
     }
 
     @Mod.EventBusSubscriber
