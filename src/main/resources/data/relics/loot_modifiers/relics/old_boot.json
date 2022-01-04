@@ -1,0 +1,17 @@
+{
+  "type": "relics:relic_gen",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:gameplay/fishing"
+    },
+    {
+      "condition": "random_chance",
+      "chance": 0.05
+    }
+  ],
+  "entry": {
+    "type": "minecraft:item",
+    "name": "relics:old_boot"
+  }
+}

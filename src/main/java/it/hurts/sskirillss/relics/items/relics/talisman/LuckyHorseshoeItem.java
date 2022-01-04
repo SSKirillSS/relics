@@ -3,16 +3,13 @@ package it.hurts.sskirillss.relics.items.relics.talisman;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.loot.LootTables;
 
 public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> {
     public LuckyHorseshoeItem() {
@@ -38,18 +35,6 @@ public class LuckyHorseshoeItem extends RelicItem<LuckyHorseshoeItem.Stats> {
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(LootTables.VILLAGE_BUTCHER.toString())
-                        .chance(0.2F)
-                        .build())
-                .loot(RelicLootData.builder()
-                        .table(EntityType.HORSE.getDefaultLootTable().toString())
-                        .chance(0.01F)
-                        .build())
-                .loot(RelicLootData.builder()
-                        .table(EntityType.ZOMBIE_HORSE.getDefaultLootTable().toString())
-                        .chance(0.075F)
-                        .build())
                 .build();
     }
 

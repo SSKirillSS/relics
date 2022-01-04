@@ -1,14 +1,12 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.client.renderer.items.models.LeatherBeltModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -34,10 +32,6 @@ public class LeatherBeltItem extends RelicItem<RelicStats> {
     @Override
     public RelicConfigData<RelicStats> getConfigData() {
         return RelicConfigData.builder()
-                .loot(RelicLootData.builder()
-                        .table(RelicUtils.Worldgen.VILLAGE)
-                        .chance(0.15F)
-                        .build())
                 .build();
     }
 

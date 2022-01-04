@@ -1,0 +1,22 @@
+{
+  "type": "relics:relic_gen",
+  "conditions": [
+    {
+      "condition": "minecraft:alternative",
+      "terms": [
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "minecraft:chests/jungle_temple"
+        }
+      ]
+    },
+    {
+      "condition": "random_chance",
+      "chance": 0.2
+    }
+  ],
+  "entry": {
+    "type": "minecraft:item",
+    "name": "relics:spore_sack"
+  }
+}

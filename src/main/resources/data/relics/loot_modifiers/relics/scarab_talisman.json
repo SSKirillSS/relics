@@ -1,0 +1,26 @@
+{
+  "type": "relics:relic_gen",
+  "conditions": [
+    {
+      "condition": "minecraft:alternative",
+      "terms": [
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "minecraft:chests/desert_pyramid"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "minecraft:chests/village/village_desert_house"
+        }
+      ]
+    },
+    {
+      "condition": "random_chance",
+      "chance": 0.1
+    }
+  ],
+  "entry": {
+    "type": "minecraft:item",
+    "name": "relics:scarab_talisman"
+  }
+}
