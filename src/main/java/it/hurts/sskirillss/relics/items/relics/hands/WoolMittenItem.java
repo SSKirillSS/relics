@@ -48,10 +48,6 @@ public class WoolMittenItem extends RelicItem<WoolMittenItem.Stats> {
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(RelicUtils.Worldgen.COLD)
-                        .chance(0.1F)
-                        .build())
                 .build();
     }
 

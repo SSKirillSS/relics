@@ -44,10 +44,6 @@ public class SquireBagItem extends RelicItem<SquireBagItem.Stats> {
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(RelicUtils.Worldgen.VILLAGE)
-                        .chance(0.1F)
-                        .build())
                 .build();
     }
 

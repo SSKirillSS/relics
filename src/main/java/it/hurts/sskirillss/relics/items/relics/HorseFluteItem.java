@@ -53,14 +53,6 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(RelicUtils.Worldgen.VILLAGE)
-                        .chance(0.05F)
-                        .build())
-                .loot(RelicLootData.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.05F)
-                        .build())
                 .build();
     }
 

@@ -48,10 +48,6 @@ public class GhostSkinTalismanItem extends RelicItem<GhostSkinTalismanItem.Stats
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(RelicUtils.Worldgen.NETHER)
-                        .chance(0.1F)
-                        .build())
                 .build();
     }
 

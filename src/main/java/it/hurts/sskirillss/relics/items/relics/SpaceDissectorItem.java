@@ -61,10 +61,6 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.1F)
-                        .build())
                 .build();
     }
 
