@@ -1,0 +1,17 @@
+{
+  "type": "relics:relic_gen",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/end_city_treasure"
+    },
+    {
+      "condition": "random_chance",
+      "chance": 0.1
+    }
+  ],
+  "entry": {
+    "type": "minecraft:item",
+    "name": "relics:stellar_catalyst"
+  }
+}

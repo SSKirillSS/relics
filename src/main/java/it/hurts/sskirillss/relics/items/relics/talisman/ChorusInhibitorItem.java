@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics.items.relics.talisman;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -14,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.loot.LootTables;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -52,10 +50,6 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> {
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(LootTables.END_CITY_TREASURE.toString())
-                        .chance(0.1F)
-                        .build())
                 .build();
     }
 

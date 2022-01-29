@@ -5,7 +5,6 @@ import it.hurts.sskirillss.relics.client.renderer.items.models.FragrantFlowerMod
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -20,7 +19,6 @@ import net.minecraft.entity.passive.BeeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.loot.LootTables;
 import net.minecraft.util.TickRangeConverter;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -63,10 +61,6 @@ public class FragrantFlowerItem extends RelicItem<FragrantFlowerItem.Stats> {
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(LootTables.JUNGLE_TEMPLE.toString())
-                        .chance(0.2F)
-                        .build())
                 .build();
     }
 

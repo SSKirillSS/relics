@@ -4,14 +4,16 @@ import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicDurabilityData;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketItemActivation;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
@@ -71,10 +73,6 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.1F)
-                        .build())
                 .durability(new RelicDurabilityData(1))
                 .build();
     }

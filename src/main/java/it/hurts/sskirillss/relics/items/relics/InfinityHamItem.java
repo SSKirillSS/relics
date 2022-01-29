@@ -3,14 +3,12 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -52,10 +50,6 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.025F)
-                        .build())
                 .build();
     }
 

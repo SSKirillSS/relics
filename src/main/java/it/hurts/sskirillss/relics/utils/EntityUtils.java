@@ -154,10 +154,8 @@ public class EntityUtils {
         if (!(entity instanceof PlayerEntity))
             return ItemStack.EMPTY;
 
-        return findEquippedCurio((PlayerEntity) entity, item);
-    }
+        PlayerEntity player = (PlayerEntity) entity;
 
-    public static ItemStack findEquippedCurio(PlayerEntity player, Item item) {
         Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(item, player);
 
         if (!optional.isPresent())
@@ -165,7 +163,6 @@ public class EntityUtils {
 
         ItemStack stack = optional.get().getRight();
 
-        return player.getCooldowns().isOnCooldown(stack.getItem())
-                || DurabilityUtils.isBroken(stack) ? ItemStack.EMPTY : stack;
+        return DurabilityUtils.isBroken(stack) ? ItemStack.EMPTY : stack;
     }
 }

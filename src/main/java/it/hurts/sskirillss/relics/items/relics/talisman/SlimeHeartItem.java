@@ -3,17 +3,14 @@ package it.hurts.sskirillss.relics.items.relics.talisman;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -59,14 +56,6 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
     public RelicConfigData<Stats> getConfigData() {
         return RelicConfigData.<Stats>builder()
                 .stats(new Stats())
-                .loot(RelicLootData.builder()
-                        .table(RelicUtils.Worldgen.CAVE)
-                        .chance(0.1F)
-                        .build())
-                .loot(RelicLootData.builder()
-                        .table(EntityType.SLIME.getDefaultLootTable().toString())
-                        .chance(0.001F)
-                        .build())
                 .build();
     }
 

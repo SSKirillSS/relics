@@ -1,9 +1,10 @@
 package it.hurts.sskirillss.relics.configs.data.relics;
 
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -15,9 +16,6 @@ public class RelicConfigData<T extends RelicStats> {
     private RelicLevelingData level;
 
     private RelicDurabilityData durability;
-
-    @Singular("loot")
-    private List<RelicLootData> loot;
 
     public void setStats(RelicStats stats) {
         this.stats = (T) stats;

@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.items.relics.*;
 import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
 import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
 import it.hurts.sskirillss.relics.items.relics.back.MidnightRobeItem;
+import it.hurts.sskirillss.relics.items.relics.back.SquireBagItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.belt.DrownedBeltItem;
 import it.hurts.sskirillss.relics.items.relics.belt.HunterBeltItem;
@@ -117,6 +118,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> HORSE_FLUTE = ITEMS.register("horse_flute", HorseFluteItem::new);
     public static final RegistryObject<Item> WOOL_MITTEN = ITEMS.register("wool_mitten", WoolMittenItem::new);
     public static final RegistryObject<Item> GHOST_SKIN_TALISMAN = ITEMS.register("ghost_skin_talisman", GhostSkinTalismanItem::new);
+    public static final RegistryObject<Item> SQUIRE_BAG = ITEMS.register("squire_bag", SquireBagItem::new);
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());

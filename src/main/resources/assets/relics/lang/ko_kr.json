@@ -12,11 +12,13 @@
   "tooltip.relics.shift.tooltip": "§7더 많은 정보를 확인하려면 §8[Shift 키]§7를 눌러주세요.",
   "tooltip.relics.relic.broken": "유물이 부서졌습니다!",
   "tooltip.relics.relic.damaged": "유물이 곧 부서지려 합니다!",
-  "tooltip.relics.relic.requires_slot": "필요한 슬롯 없음:",
+
+  "tooltip.relics.relic.requires_slot": "해당 슬롯 요구하지 않음:",
   "tooltip.relics.relic.allowed_modifiers": "해금에 필요함:",
 
   "tooltip.relics.shift.abilities": "능력:",
-  "tooltip.relics.shift.stats": "상태:",
+  "tooltip.relics.shift.stats": "능력치:",
+
   "tooltip.relics.shift.stats.slot": "슬롯:",
   "tooltip.relics.shift.stats.level": "레벨:",
   "tooltip.relics.shift.stats.durability": "내구도:",

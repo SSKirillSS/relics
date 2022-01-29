@@ -270,7 +270,7 @@
   "tooltip.relics.slime_heart.ability.1.name": "Хлипкость",
   "tooltip.relics.slime_heart.ability.1.description": "%1$s регенерации здоровья",
   "tooltip.relics.slime_heart.ability.2.name": "Упругость",
-  "tooltip.relics.slime_heart.ability.2.description": "Расходует накопленную слизневую энергию на подавление урона от падения. Зажатие клавиши %1$s предотвратит срабатывание этой способности",
+  "tooltip.relics.slime_heart.ability.2.description": "Подавляет урон от падения, отталкивая носителя от земли. Зажатие клавиши %1$s предотвратит срабатывание этой способности",
 
   "item.relics.horse_flute": "Лошадиная флейта",
   "tooltip.relics.horse_flute.ability.1.name": "Загон",
@@ -287,6 +287,10 @@
   "tooltip.relics.ghost_skin_talisman.ability.1.description": "Снаряды будут пролетать через носителя насквозь, не нанося при этом урона",
   "tooltip.relics.ghost_skin_talisman.ability.2.name": "Слабость",
   "tooltip.relics.ghost_skin_talisman.ability.2.description": "%1$s к скорости атаки",
+
+  "item.relics.squire_bag": "Сумка оруженосца",
+  "tooltip.relics.squire_bag.ability.1.name": "Тяжеловес",
+  "tooltip.relics.squire_bag.ability.1.description": "%1$s к скорости передвижения",
 
   "item.relics.leather_belt": "Кожаный пояс",
 
@@ -375,5 +379,7 @@
   "advancements.relics.wool_mitten.title": "Гроза снеговиков",
   "advancements.relics.wool_mitten.description": "Получи шерстяную рукавицу",
   "advancements.relics.ghost_skin_talisman.title": "Spooky Scary Skeletons",
-  "advancements.relics.ghost_skin_talisman.description": "Получи талисман призрачной кожи"
+  "advancements.relics.ghost_skin_talisman.description": "Получи талисман призрачной кожи",
+  "advancements.relics.squire_bag.title": "Бездонный мешок",
+  "advancements.relics.squire_bag.description": "Получи сумку оруженосца"
 }
