@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.necklace;
 
-import it.hurts.sskirillss.relics.client.renderer.items.models.JellyfishNecklaceModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -11,17 +10,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -75,16 +71,16 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
     }
 
     @Override
-    public void castAbility(PlayerEntity player, ItemStack stack) {
+    public void castAbility(Player player, ItemStack stack) {
         if (!player.isInWaterOrRain() || player.getCooldowns().isOnCooldown(stack.getItem()))
             return;
 
         float rot = ((float) Math.PI / 180F);
-        float f0 = MathHelper.cos(player.xRot * rot);
-        float f1 = -MathHelper.sin(player.yRot * rot) * f0;
-        float f2 = -MathHelper.sin(player.xRot * rot);
-        float f3 = MathHelper.cos(player.yRot * rot) * f0;
-        float f4 = MathHelper.sqrt(f1 * f1 + f2 * f2 + f3 * f3);
+        float f0 = Mth.cos(player.getXRot() * rot);
+        float f1 = -Mth.sin(player.getYRot() * rot) * f0;
+        float f2 = -Mth.sin(player.getXRot() * rot);
+        float f3 = Mth.cos(player.getYRot() * rot) * f0;
+        float f4 = Mth.sqrt(f1 * f1 + f2 * f2 + f3 * f3);
         float f5 = stats.riptidePower;
         f1 *= (f5 / f4);
         f2 *= (f5 / f4);
@@ -95,13 +91,7 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
 
         player.getCooldowns().addCooldown(stack.getItem(), stats.riptideCooldown * 20);
 
-        player.getCommandSenderWorld().playSound(null, player, SoundEvents.TRIDENT_RIPTIDE_3, SoundCategory.PLAYERS, 1.0F, 1.0F);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new JellyfishNecklaceModel();
+        player.getCommandSenderWorld().playSound(null, player, SoundEvents.TRIDENT_RIPTIDE_3, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

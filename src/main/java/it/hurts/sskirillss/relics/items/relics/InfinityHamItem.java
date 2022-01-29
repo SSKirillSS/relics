@@ -10,14 +10,18 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements ICurioItem {
@@ -30,7 +34,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
                         .tab(RelicsTab.RELICS_TAB)
                         .stacksTo(1)
                         .rarity(Rarity.RARE)
-                        .food(new Food.Builder().build()))
+                        .food(new FoodProperties.Builder().build()))
                 .build());
     }
 
@@ -54,7 +58,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if (group != RelicsTab.RELICS_TAB)
             return;
 
@@ -68,7 +72,7 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (DurabilityUtils.isBroken(stack) || entityIn.tickCount % 20 != 0)
             return;
 
@@ -89,22 +93,21 @@ public class InfinityHamItem extends RelicItem<InfinityHamItem.Stats> implements
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!DurabilityUtils.isBroken(stack) && NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
                 && player.getFoodData().needsFood())
             return super.use(world, player, hand);
 
-        return ActionResult.pass(stack);
+        return InteractionResultHolder.pass(stack);
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, World world, LivingEntity entity) {
-        if (!(entity instanceof PlayerEntity))
+    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
+        if (!(entity instanceof Player player))
             return stack;
 
-        PlayerEntity player = (PlayerEntity) entity;
         int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
 
         if (pieces > 0) {

@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.back;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.client.renderer.items.models.ElytraBoosterModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -12,20 +11,18 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -61,21 +58,19 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable World worldIn, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
         int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
 
         if (breath > 0)
-            tooltip.add(new TranslationTextComponent("tooltip.relics.elytra_booster.tooltip_1", breath));
+            tooltip.add(new TranslatableComponent("tooltip.relics.elytra_booster.tooltip_1", breath));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
+        if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
-
-        PlayerEntity player = (PlayerEntity) livingEntity;
 
         if (player.isFallFlying())
             accelerate(player, stack);
@@ -83,15 +78,15 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
             collectBreath(player, stack);
     }
 
-    private void accelerate(PlayerEntity player, ItemStack stack) {
+    private void accelerate(Player player, ItemStack stack) {
         int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
 
         if (!player.isShiftKeyDown() || breath <= 0)
             return;
 
-        Vector3d look = player.getLookAngle();
-        Vector3d motion = player.getDeltaMovement();
-        World world = player.getCommandSenderWorld();
+        Vec3 look = player.getLookAngle();
+        Vec3 motion = player.getDeltaMovement();
+        Level world = player.getCommandSenderWorld();
         Random random = world.getRandom();
 
         player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * stats.flySpeed - motion.x) * 0.5D,
@@ -108,18 +103,18 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
             NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath - 1);
     }
 
-    private void collectBreath(PlayerEntity player, ItemStack stack) {
-        World world = player.getCommandSenderWorld();
+    private void collectBreath(Player player, ItemStack stack) {
+        Level world = player.getCommandSenderWorld();
         int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
 
         if (breath >= stats.breathCapacity)
             return;
 
-        if (world.dimension() == World.END && player.tickCount %
+        if (world.dimension() == Level.END && player.tickCount %
                 (stats.breathRegenerationCooldown * 20) == 0)
             NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
 
-        for (AreaEffectCloudEntity cloud : world.getEntitiesOfClass(AreaEffectCloudEntity.class,
+        for (AreaEffectCloud cloud : world.getEntitiesOfClass(AreaEffectCloud.class,
                 player.getBoundingBox().inflate(stats.breathConsumptionRadius))) {
             if (cloud.getParticle() != ParticleTypes.DRAGON_BREATH)
                 continue;
@@ -128,23 +123,17 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
                 NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
 
             if (cloud.getRadius() <= 0)
-                cloud.remove();
+                cloud.remove(Entity.RemovalReason.KILLED);
 
             cloud.setRadius(cloud.getRadius() - stats.breathConsumptionSpeed);
 
-            Vector3d direction = player.position().add(0, 1, 0).subtract(cloud.position()).normalize();
+            Vec3 direction = player.position().add(0, 1, 0).subtract(cloud.position()).normalize();
             double distance = player.position().add(0, 1, 0).distanceTo(cloud.position());
 
             world.addParticle(new CircleTintData(new Color(160, 0, 255),
                             (float) (distance * 0.075F), (int) distance * 5, 0.95F, false),
                     cloud.getX(), cloud.getY(), cloud.getZ(), direction.x * 0.2F, direction.y * 0.2F, direction.z * 0.2F);
         }
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new ElytraBoosterModel();
     }
 
     public static class Stats extends RelicStats {

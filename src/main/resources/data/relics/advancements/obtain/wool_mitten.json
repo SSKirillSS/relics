@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:wool_mitten"
+            "items": [
+              "relics:wool_mitten"
+            ]
           }
         ]
       }

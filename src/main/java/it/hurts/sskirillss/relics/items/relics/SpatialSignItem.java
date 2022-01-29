@@ -15,22 +15,22 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -78,23 +78,23 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
         if (!NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
-            Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
+            Vec3 pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
 
-            tooltip.add(new TranslationTextComponent("tooltip.relics.spatial_sign.tooltip_1", pos.x(), pos.y(), pos.z()));
-            tooltip.add(new TranslationTextComponent("tooltip.relics.spatial_sign.tooltip_2", NBTUtils.getInt(stack, TAG_TIME, 0)));
+            tooltip.add(new TranslatableComponent("tooltip.relics.spatial_sign.tooltip_1", pos.x(), pos.y(), pos.z()));
+            tooltip.add(new TranslatableComponent("tooltip.relics.spatial_sign.tooltip_2", NBTUtils.getInt(stack, TAG_TIME, 0)));
         }
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
         if (DurabilityUtils.isBroken(stack))
-            return ActionResult.fail(stack);
+            return InteractionResultHolder.fail(stack);
 
         if (NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
             if (playerIn.totalExperience > 0) {
@@ -102,7 +102,7 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
                 NBTUtils.setString(stack, TAG_WORLD, playerIn.getCommandSenderWorld().dimension().location().toString());
                 NBTUtils.setInt(stack, TAG_TIME, stats.timeBeforeActivation);
 
-                worldIn.playSound(playerIn, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                worldIn.playSound(playerIn, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
             }
         } else if (playerIn.isShiftKeyDown())
             teleportPlayer(playerIn, stack);
@@ -111,11 +111,11 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (worldIn.isClientSide() || DurabilityUtils.isBroken(stack) || !(entityIn instanceof PlayerEntity))
+    public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        if (worldIn.isClientSide() || DurabilityUtils.isBroken(stack) || !(entityIn instanceof Player))
             return;
 
-        PlayerEntity player = (PlayerEntity) entityIn;
+        Player player = (Player) entityIn;
 
         int time = NBTUtils.getInt(stack, TAG_TIME, -1);
 
@@ -154,24 +154,24 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
         return NBTUtils.getInt(stack, TAG_TIME, 0) > 0;
     }
 
-    public static void teleportPlayer(PlayerEntity player, ItemStack stack) {
+    public static void teleportPlayer(Player player, ItemStack stack) {
         Stats stats = INSTANCE.stats;
 
         if (player.getCommandSenderWorld().isClientSide())
             return;
 
-        Vector3d pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
-        ServerWorld world = NBTUtils.parseWorld(player.getCommandSenderWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
-        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+        Vec3 pos = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
+        ServerLevel world = NBTUtils.parseLevel(player.getCommandSenderWorld(), NBTUtils.getString(stack, TAG_WORLD, ""));
+        ServerPlayer serverPlayer = (ServerPlayer) player;
 
         if (pos == null || world == null)
             return;
 
-        serverPlayer.teleportTo(world, pos.x(), pos.y(), pos.z(), player.yRot, player.xRot);
-        world.playSound(null, player.blockPosition(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        serverPlayer.teleportTo(world, pos.x(), pos.y(), pos.z(), player.getYRot(), player.getXRot());
+        world.playSound(null, player.blockPosition(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundSource.PLAYERS, 1.0F, 1.0F);
         NetworkHandler.sendToClient(new PacketItemActivation(stack), serverPlayer);
 
-        if (!player.abilities.instabuild)
+        if (!player.getAbilities().instabuild)
             player.getCooldowns().addCooldown(stack.getItem(),
                     (stats.timeBeforeActivation - NBTUtils.getInt(stack, TAG_TIME, 0)) * 20);
 
@@ -189,15 +189,13 @@ public class SpatialSignItem extends RelicItem<SpatialSignItem.Stats> {
     public static class SpatialSignServerEvents {
         @SubscribeEvent
         public static void onEntityDeath(LivingDeathEvent event) {
-            if (!(event.getEntity() instanceof PlayerEntity))
+            if (!(event.getEntity() instanceof Player player))
                 return;
-
-            PlayerEntity player = (PlayerEntity) event.getEntity();
 
             if (EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()) == -1)
                 return;
 
-            ItemStack stack = player.inventory.getItem(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
+            ItemStack stack = player.getInventory().getItem(EntityUtils.getSlotWithItem(player, ItemRegistry.SPATIAL_SIGN.get()));
 
             if (!DurabilityUtils.isBroken(stack) && !NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
                 teleportPlayer(player, stack);

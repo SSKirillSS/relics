@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:ghost_skin_talisman"
+            "items": [
+              "relics:ghost_skin_talisman"
+            ]
           }
         ]
       }

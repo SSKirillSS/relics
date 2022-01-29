@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:fragrant_flower"
+            "items": [
+              "relics:fragrant_flower"
+            ]
           }
         ]
       }

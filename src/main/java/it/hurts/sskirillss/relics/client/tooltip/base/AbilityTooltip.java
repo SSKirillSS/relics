@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
 import lombok.experimental.Accessors;
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.KeyMapping;
 
 import java.util.List;
 
@@ -26,8 +26,8 @@ public class AbilityTooltip {
             return this;
         }
 
-        public AbilityTooltipBuilder active(String keybinding) {
-            this.keybinding = keybinding;
+        public AbilityTooltipBuilder active(String key) {
+            this.keybinding = key;
 
             return this;
         }
@@ -38,8 +38,8 @@ public class AbilityTooltip {
             return this;
         }
 
-        public AbilityTooltipBuilder active(KeyBinding keybinding) {
-            this.keybinding = keybinding.getKey().getDisplayName().getString();
+        public AbilityTooltipBuilder active(KeyMapping key) {
+            this.keybinding = key.getKey().getDisplayName().getString();
 
             return this;
         }

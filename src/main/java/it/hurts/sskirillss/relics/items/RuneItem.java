@@ -5,10 +5,10 @@ import it.hurts.sskirillss.relics.configs.data.runes.RuneLootData;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.item.Item;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 
 import java.awt.*;
 import java.util.List;
@@ -35,7 +35,7 @@ public class RuneItem extends Item {
         this.color = color;
     }
 
-    public void applyAbility(World world, BlockPos pos) {
+    public void applyAbility(Level world, BlockPos pos) {
 
     }
 

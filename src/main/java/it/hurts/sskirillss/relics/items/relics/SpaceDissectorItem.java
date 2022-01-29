@@ -11,18 +11,19 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import top.theillusivec4.curios.api.SlotContext;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
@@ -65,11 +66,12 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
+        Random random = playerIn.getRandom();
 
         if (DurabilityUtils.isBroken(stack) || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
-            return ActionResult.fail(stack);
+            return InteractionResultHolder.fail(stack);
 
         if (!NBTUtils.getBoolean(stack, TAG_IS_THROWN, false)) {
             SpaceDissectorEntity entity = new SpaceDissectorEntity(worldIn, playerIn);
@@ -78,26 +80,26 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
             NBTUtils.setString(stack, TAG_UUID, entity.getUUID().toString());
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
 
-            entity.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, 1.0F, stats.projectileSpeed, 0.0F);
+            entity.shootFromRotation(playerIn, playerIn.getXRot(), playerIn.getYRot(), 1.0F, stats.projectileSpeed, 0.0F);
             entity.stack = playerIn.getItemInHand(handIn);
             entity.setOwner(playerIn);
 
             worldIn.addFreshEntity(entity);
 
             worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW,
-                    SoundCategory.MASTER, 0.5F, 0.75F + (random.nextFloat() * 0.5F));
+                    SoundSource.MASTER, 0.5F, 0.75F + (random.nextFloat() * 0.5F));
         } else {
             String string = NBTUtils.getString(stack, TAG_UUID, "");
 
             if (string.equals(""))
-                return ActionResult.fail(stack);
+                return InteractionResultHolder.fail(stack);
 
             UUID uuid = UUID.fromString(string);
 
-            if (!(worldIn instanceof ServerWorld))
-                return ActionResult.fail(stack);
+            if (!(worldIn instanceof ServerLevel))
+                return InteractionResultHolder.fail(stack);
 
-            Entity entity = ((ServerWorld) worldIn).getEntity(uuid);
+            Entity entity = ((ServerLevel) worldIn).getEntity(uuid);
 
             if (entity instanceof SpaceDissectorEntity && entity.isAlive()) {
                 SpaceDissectorEntity dissector = (SpaceDissectorEntity) entity;
@@ -108,12 +110,12 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
                 } else {
                     playerIn.teleportTo(dissector.getX(), dissector.getY(), dissector.getZ());
                     worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(),
-                            SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
 
                     playerIn.getCooldowns().addCooldown(stack.getItem(), stats.cooldownAfterTeleport * 20);
 
                     NBTUtils.setBoolean(stack, TAG_IS_THROWN, false);
-                    dissector.remove();
+                    dissector.remove(Entity.RemovalReason.KILLED);
                 }
             } else {
                 playerIn.getCooldowns().addCooldown(stack.getItem(), stats.cooldownAfterTeleport * 20);
@@ -126,7 +128,7 @@ public class SpaceDissectorItem extends RelicItem<SpaceDissectorItem.Stats> {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (DurabilityUtils.isBroken(stack) || !NBTUtils.getBoolean(stack, TAG_IS_THROWN, false) || entityIn.tickCount % 20 != 0)
             return;
 

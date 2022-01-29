@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:spider_necklace"
+            "items": [
+              "relics:spider_necklace"
+            ]
           }
         ]
       }

@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:leather_belt"
+            "items": [
+              "relics:leather_belt"
+            ]
           }
         ]
       }

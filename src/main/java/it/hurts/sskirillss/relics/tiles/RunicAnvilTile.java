@@ -2,39 +2,26 @@ package it.hurts.sskirillss.relics.tiles;
 
 import it.hurts.sskirillss.relics.init.TileRegistry;
 import lombok.Getter;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RunicAnvilTile extends TileBase implements ITickableTileEntity {
+public class RunicAnvilTile extends TileBase {
     @Getter
     private final ItemStackHandler handler = createHandler();
 
-    private int ticksExisted;
-
-    public RunicAnvilTile() {
-        super(TileRegistry.RUNIC_ANVIL_TILE.get());
-    }
-
-    @Override
-    public void tick() {
-        if (level == null)
-            return;
-
-        ticksExisted++;
+    public RunicAnvilTile(BlockPos pos, BlockState state) {
+        super(TileRegistry.RUNIC_ANVIL_TILE.get(), pos, state);
     }
 
     private ItemStackHandler createHandler() {
@@ -98,8 +85,8 @@ public class RunicAnvilTile extends TileBase implements ITickableTileEntity {
         if (slot == -1)
             return false;
 
-        Vector3d vec = entity.position();
-        World world = entity.getCommandSenderWorld();
+        Vec3 vec = entity.position();
+        Level world = entity.getCommandSenderWorld();
 
         ItemEntity item = new ItemEntity(world, vec.x(), vec.y(), vec.z(),
                 handler.getStackInSlot(slot));
@@ -126,31 +113,16 @@ public class RunicAnvilTile extends TileBase implements ITickableTileEntity {
     }
 
     @Override
-    public void load(@NotNull BlockState state, CompoundNBT compound) {
+    public void load(CompoundTag compound) {
         handler.deserializeNBT(compound.getCompound("items"));
 
-        super.load(state, compound);
+        super.load(compound);
     }
 
     @Override
-    public @NotNull CompoundNBT save(CompoundNBT compound) {
+    protected void saveAdditional(CompoundTag compound) {
         compound.put("items", handler.serializeNBT());
 
-        return super.save(compound);
-    }
-
-    @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
-    }
-
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.getBlockPos(), -1, this.getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        this.load(getBlockState(), packet.getTag());
+        super.saveAdditional(compound);
     }
 }

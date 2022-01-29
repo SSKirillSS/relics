@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:bastion_ring"
+            "items": [
+              "relics:bastion_ring"
+            ]
           }
         ]
       }

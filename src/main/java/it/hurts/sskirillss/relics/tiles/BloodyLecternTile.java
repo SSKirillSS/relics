@@ -1,28 +1,26 @@
 package it.hurts.sskirillss.relics.tiles;
 
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.items.RelicContractItem;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.awt.*;
 import java.util.Random;
 
-public class BloodyLecternTile extends TileBase implements ITickableTileEntity {
+public class BloodyLecternTile extends TileBase {
     private ItemStack stack = ItemStack.EMPTY;
     public int ticksExisted;
 
-    public BloodyLecternTile() {
-        super(TileRegistry.BLOODY_LECTERN_TILE.get());
+    public BloodyLecternTile(BlockPos pos, BlockState state) {
+        super(TileRegistry.BLOODY_LECTERN_TILE.get(), pos, state);
     }
 
     public void setStack(ItemStack stack) {
@@ -33,51 +31,49 @@ public class BloodyLecternTile extends TileBase implements ITickableTileEntity {
         return stack;
     }
 
-    @Override
-    public void tick() {
-        if (level == null) return;
-        ticksExisted++;
-        ItemStack stack = getStack();
-        if (stack.isEmpty() || stack.getItem() != ItemRegistry.RELIC_CONTRACT.get()) return;
+    public static void tick(Level level, BlockPos pos, BlockState state, BloodyLecternTile tile) {
+        if (level == null)
+            return;
+
+        tile.ticksExisted++;
+
+        ItemStack stack = tile.getStack();
+
+        if (stack.isEmpty() || stack.getItem() != ItemRegistry.RELIC_CONTRACT.get())
+            return;
+
         int blood = NBTUtils.getInt(stack, RelicContractItem.TAG_BLOOD, 0) + 1;
-        if (blood == 0) return;
+
+        if (blood == 0)
+            return;
+
         Random random = level.getRandom();
-        BlockPos pos = this.getBlockPos();
+
         for (int i = 0; i < blood; i++)
-            if (level.getRandom().nextInt(3) == 0) level.addParticle(new CircleTintData(new Color(255, 0, 0),
-                            random.nextFloat() * 0.025F + 0.04F, 20, 0.94F, true),
-                    pos.getX() + 0.5F + MathUtils.randomFloat(random) * 0.3F, pos.getY() + 0.95F,
-                    pos.getZ() + 0.5F + MathUtils.randomFloat(random) * 0.3F, 0, random.nextFloat() * 0.05D, 0);
+            if (level.getRandom().nextInt(3) == 0)
+                level.addParticle(new CircleTintData(new Color(255, 0, 0),
+                                random.nextFloat() * 0.025F + 0.04F, 20, 0.94F, true),
+                        pos.getX() + 0.5F + MathUtils.randomFloat(random) * 0.3F, pos.getY() + 0.95F,
+                        pos.getZ() + 0.5F + MathUtils.randomFloat(random) * 0.3F, 0, random.nextFloat() * 0.05D, 0);
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
-        stack = ItemStack.of((CompoundNBT) compound.get("itemStack"));
-        super.load(state, compound);
+    public void load(CompoundTag compound) {
+        stack = ItemStack.of((CompoundTag) compound.get("itemStack"));
+
+        super.load(compound);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    protected void saveAdditional(CompoundTag compound) {
         if (stack != null) {
-            CompoundNBT itemStack = new CompoundNBT();
+            CompoundTag itemStack = new CompoundTag();
+
             stack.save(itemStack);
+
             compound.put("itemStack", itemStack);
         }
-        return super.save(compound);
-    }
 
-    @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
-    }
-
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.getBlockPos(), -1, this.getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        this.load(getBlockState(), packet.getTag());
+        super.saveAdditional(compound);
     }
 }

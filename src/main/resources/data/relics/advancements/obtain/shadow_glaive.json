@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:shadow_glaive"
+            "items": [
+              "relics:shadow_glaive"
+            ]
           }
         ]
       }

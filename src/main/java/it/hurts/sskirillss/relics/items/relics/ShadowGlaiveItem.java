@@ -14,16 +14,22 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import top.theillusivec4.curios.api.SlotContext;
+
+import java.util.Random;
 
 public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     public static final String TAG_CHARGES = "charges";
@@ -60,7 +66,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if (group != RelicsTab.RELICS_TAB)
             return;
 
@@ -74,7 +80,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
         if (DurabilityUtils.isBroken(stack) || entityIn.tickCount % 20 != 0 || charges >= stats.maxCharges)
@@ -90,22 +96,23 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
+        Random random = playerIn.getRandom();
 
         if (DurabilityUtils.isBroken(stack) || charges <= 0 || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
-            return ActionResult.fail(stack);
+            return InteractionResultHolder.fail(stack);
 
         ShadowGlaiveEntity glaive = new ShadowGlaiveEntity(worldIn, playerIn);
 
         glaive.setOwner(playerIn);
         glaive.teleportTo(playerIn.getX(), playerIn.getY() + playerIn.getBbHeight() * 0.5F, playerIn.getZ());
-        glaive.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, stats.projectileSpeed, 1, 0.0F);
+        glaive.shootFromRotation(playerIn, playerIn.getXRot(), playerIn.getYRot(), stats.projectileSpeed, 1, 0.0F);
 
         worldIn.addFreshEntity(glaive);
 
-        EntityRayTraceResult result = EntityUtils.rayTraceEntity(playerIn, EntityPredicates.NO_CREATIVE_OR_SPECTATOR, 32);
+        EntityHitResult result = EntityUtils.rayTraceEntity(playerIn, EntitySelector.NO_CREATIVE_OR_SPECTATOR, 32);
 
         if (result != null) {
             Entity target = result.getEntity();
@@ -115,7 +122,7 @@ public class ShadowGlaiveItem extends RelicItem<ShadowGlaiveItem.Stats> {
         }
 
         worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW,
-                SoundCategory.MASTER, 0.5F, 0.75F + (random.nextFloat() * 0.5F));
+                SoundSource.MASTER, 0.5F, 0.75F + (random.nextFloat() * 0.5F));
 
         NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
         playerIn.getCooldowns().addCooldown(stack.getItem(), stats.throwCooldown);

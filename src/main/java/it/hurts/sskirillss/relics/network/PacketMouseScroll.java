@@ -1,9 +1,9 @@
 package it.hurts.sskirillss.relics.network;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -11,7 +11,7 @@ public class PacketMouseScroll {
     private final double delta;
     private final ItemStack stack;
 
-    public PacketMouseScroll(PacketBuffer buf) {
+    public PacketMouseScroll(FriendlyByteBuf buf) {
         delta = buf.readDouble();
         stack = buf.readItem();
     }
@@ -21,7 +21,7 @@ public class PacketMouseScroll {
         this.stack = stack;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeDouble(delta);
         buf.writeItem(stack);
     }
@@ -31,7 +31,7 @@ public class PacketMouseScroll {
             if (ctx.get().getSender() != null) {
                 double delta = this.delta;
                 ItemStack stack = this.stack;
-                PlayerEntity player = ctx.get().getSender();
+                Player player = ctx.get().getSender();
             }
         });
         return true;

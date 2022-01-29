@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
-import it.hurts.sskirillss.relics.client.renderer.items.models.EndersHandModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -13,23 +12,21 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.EndermanEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ChestContainer;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.FOVModifierEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -69,10 +66,9 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity))
+        if (!(livingEntity instanceof Player player))
             return;
 
-        PlayerEntity player = (PlayerEntity) livingEntity;
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
         if (player.getCooldowns().isOnCooldown(stack.getItem()) || DurabilityUtils.isBroken(stack))
@@ -80,21 +76,21 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
 
         if (player.isShiftKeyDown()) {
             Predicate<Entity> predicate = (entity) -> !entity.isSpectator() && entity.isPickable();
-            EntityRayTraceResult result = EntityUtils.rayTraceEntity(player, predicate, stats.maxDistance);
+            EntityHitResult result = EntityUtils.rayTraceEntity(player, predicate, stats.maxDistance);
 
-            if (result != null && result.getEntity() instanceof EndermanEntity) {
+            if (result != null && result.getEntity() instanceof EnderMan) {
                 if (time >= stats.preparationTime * 20) {
-                    Vector3d swapVec = player.position();
-                    EndermanEntity enderman = (EndermanEntity) result.getEntity();
-                    World world = player.getCommandSenderWorld();
+                    Vec3 swapVec = player.position();
+                    EnderMan enderman = (EnderMan) result.getEntity();
+                    Level world = player.getCommandSenderWorld();
 
                     player.teleportTo(enderman.getX(), enderman.getY(), enderman.getZ());
                     world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                            SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
 
                     enderman.teleportTo(swapVec.x(), swapVec.y(), swapVec.z());
                     world.playSound(null, swapVec.x(), swapVec.y(), swapVec.z(),
-                            SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
 
                     NBTUtils.setInt(stack, TAG_UPDATE_TIME, 0);
 
@@ -108,25 +104,19 @@ public class EndersHandItem extends RelicItem<EndersHandItem.Stats> {
     }
 
     @Override
-    public void castAbility(PlayerEntity player, ItemStack stack) {
+    public void castAbility(Player player, ItemStack stack) {
         if (player.getCommandSenderWorld().isClientSide)
             return;
 
-        player.openMenu(new SimpleNamedContainerProvider((windowId, playerInv, playerEntity) ->
-                ChestContainer.threeRows(windowId, playerInv, playerEntity.getEnderChestInventory()), stack.getDisplayName()));
-        player.playSound(SoundEvents.ENDER_CHEST_OPEN, 1F, 1F);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new EndersHandModel();
+        player.openMenu(new SimpleMenuProvider((windowId, playerInv, playerEntity) ->
+                ChestMenu.threeRows(windowId, playerInv, playerEntity.getEnderChestInventory()), stack.getDisplayName()));
+        player.level.playSound(player, player.blockPosition(), SoundEvents.ENDER_CHEST_OPEN, SoundSource.PLAYERS, 1F, 1F);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
     public static class EndersHandClientEvents {
         @SubscribeEvent
-        public static void onFOVUpdate(FOVUpdateEvent event) {
+        public static void onFOVUpdate(FOVModifierEvent event) {
             ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.ENDERS_HAND.get());
 
             if (stack.isEmpty())

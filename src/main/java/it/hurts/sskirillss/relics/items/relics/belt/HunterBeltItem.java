@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
-import it.hurts.sskirillss.relics.client.renderer.items.models.HunterBeltModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -11,15 +10,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -64,12 +60,6 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new HunterBeltModel();
-    }
-
-    @Override
     public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
         return stats.additionalLooting;
     }
@@ -81,12 +71,10 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> {
             Stats stats = INSTANCE.stats;
             Entity entity = event.getSource().getEntity();
 
-            if (!(entity instanceof TameableEntity))
+            if (!(entity instanceof TamableAnimal pet))
                 return;
 
-            TameableEntity pet = (TameableEntity) entity;
-
-            if (!(pet.getOwner() instanceof PlayerEntity)
+            if (!(pet.getOwner() instanceof Player)
                     && EntityUtils.findEquippedCurio(pet.getOwner(), ItemRegistry.HUNTER_BELT.get()).isEmpty())
                 return;
 

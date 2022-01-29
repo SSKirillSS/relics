@@ -4,7 +4,7 @@ import it.hurts.sskirillss.relics.client.particles.circle.*;
 import it.hurts.sskirillss.relics.client.particles.spark.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.event.RegistryEvent;

@@ -9,13 +9,13 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -62,18 +62,16 @@ public class GhostSkinTalismanItem extends RelicItem<GhostSkinTalismanItem.Stats
     public static class Events {
         @SubscribeEvent
         public static void onProjectileImpact(ProjectileImpactEvent event) {
-            RayTraceResult ray = event.getRayTraceResult();
+            HitResult ray = event.getRayTraceResult();
 
-            if (ray.getType() != RayTraceResult.Type.ENTITY)
+            if (ray.getType() != HitResult.Type.ENTITY)
                 return;
 
-            EntityRayTraceResult entityRay = (EntityRayTraceResult) ray;
+            EntityHitResult entityRay = (EntityHitResult) ray;
             Entity entity = entityRay.getEntity();
 
-            if (!(entity instanceof PlayerEntity))
+            if (!(entity instanceof Player player))
                 return;
-
-            PlayerEntity player = (PlayerEntity) entity;
 
             if (EntityUtils.findEquippedCurio(player, ItemRegistry.GHOST_SKIN_TALISMAN.get()).isEmpty())
                 return;

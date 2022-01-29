@@ -11,24 +11,24 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -40,6 +40,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -85,13 +86,13 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        World world = livingEntity.getCommandSenderWorld();
+        AttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
+        Level world = livingEntity.getCommandSenderWorld();
 
         if (DurabilityUtils.isBroken(stack))
             return;
 
-        if (stats.allowedBiomes.stream().map(Biome.Category::byName).collect(Collectors.toList())
+        if (stats.allowedBiomes.stream().map(Biome.BiomeCategory::byName).collect(Collectors.toList())
                 .contains(world.getBiome(livingEntity.blockPosition()).getBiomeCategory()))
             EntityUtils.applyAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
                     SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
@@ -102,23 +103,24 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        ModifiableAttributeInstance movementSpeed = slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeInstance movementSpeed = slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED);
 
         EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
                 stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 
     @Override
-    public void castAbility(PlayerEntity player, ItemStack stack) {
+    public void castAbility(Player player, ItemStack stack) {
         if (player.getCooldowns().isOnCooldown(stack.getItem()))
             return;
 
-        World world = player.getCommandSenderWorld();
+        Level world = player.getCommandSenderWorld();
+        Random random = world.getRandom();
         BlockPos position = player.blockPosition();
-        Vector3d vec = player.position();
+        Vec3 vec = player.position();
 
         BlockPos target = position;
-        Vector3d ground = vec;
+        Vec3 ground = vec;
         boolean canTeleport = false;
 
 
@@ -143,14 +145,14 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
             player.teleportTo(vec.x(), vec.y(), vec.z());
 
             for (int i = 0; i < 100; i++)
-                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, world.getBlockState(position.below())),
+                world.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, world.getBlockState(position.below())),
                         ground.x() + MathUtils.randomFloat(random) * 0.5F, ground.y() + 0.2F,
                         ground.z() + MathUtils.randomFloat(random) * 0.5F, 0, random.nextFloat(), 0);
-            world.playSound(null, player.blockPosition(), SoundEvents.BASALT_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            world.playSound(null, player.blockPosition(), SoundEvents.BASALT_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
         }
     }
 
-    private boolean isEmptySpot(World world, BlockPos position) {
+    private boolean isEmptySpot(Level world, BlockPos position) {
         return !world.getBlockState(position).getMaterial().blocksMotion();
     }
 
@@ -164,8 +166,8 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
                     || event.getSource() != DamageSource.IN_WALL)
                 return;
 
-            entity.addEffect(new EffectInstance(Effects.INVISIBILITY, 20, 0, false, false));
-            entity.addEffect(new EffectInstance(Effects.BLINDNESS, 20, 0, false, false));
+            entity.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 20, 0, false, false));
+            entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 20, 0, false, false));
 
             event.setCanceled(true);
         }
@@ -178,8 +180,8 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
                     || event.getSource() != DamageSource.IN_WALL)
                 return;
 
-            entity.addEffect(new EffectInstance(Effects.INVISIBILITY, 30, 0, false, false));
-            entity.addEffect(new EffectInstance(Effects.BLINDNESS, 30, 0, false, false));
+            entity.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 0, false, false));
+            entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 0, false, false));
 
             event.setCanceled(true);
         }

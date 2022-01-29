@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
-import it.hurts.sskirillss.relics.client.renderer.items.models.DrownedBeltModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -11,15 +10,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.Rarity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -67,26 +62,20 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> {
                 .build();
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new DrownedBeltModel();
-    }
-
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class DrownedBeltServerEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
             Stats stats = INSTANCE.stats;
 
-            PlayerEntity player = null;
+            Player player = null;
             float value = 1.0F;
 
-            if (event.getEntityLiving() instanceof PlayerEntity) {
-                player = (PlayerEntity) event.getEntityLiving();
+            if (event.getEntityLiving() instanceof Player) {
+                player = (Player) event.getEntityLiving();
                 value = stats.incomingDamageMultiplier;
-            } else if (event.getSource().getEntity() instanceof PlayerEntity) {
-                player = (PlayerEntity) event.getSource().getEntity();
+            } else if (event.getSource().getEntity() instanceof Player) {
+                player = (Player) event.getSource().getEntity();
                 value = stats.dealtDamageMultiplier;
             }
 
@@ -99,10 +88,8 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> {
         public static void onItemUseStart(LivingEntityUseItemEvent.Start event) {
             ItemStack stack = event.getItem();
 
-            if (!(event.getEntityLiving() instanceof PlayerEntity) || stack.getItem() != Items.TRIDENT)
+            if (!(event.getEntityLiving() instanceof Player player) || stack.getItem() != Items.TRIDENT)
                 return;
-
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             if (player.getCooldowns().isOnCooldown(stack.getItem()))
                 event.setCanceled(true);
@@ -114,10 +101,8 @@ public class DrownedBeltItem extends RelicItem<DrownedBeltItem.Stats> {
 
             ItemStack stack = event.getItem();
 
-            if (!(event.getEntityLiving() instanceof PlayerEntity) || stack.getItem() != Items.TRIDENT)
+            if (!(event.getEntityLiving() instanceof Player player) || stack.getItem() != Items.TRIDENT)
                 return;
-
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             if (EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get()).isEmpty())
                 return;

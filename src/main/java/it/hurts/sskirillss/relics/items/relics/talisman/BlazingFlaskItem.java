@@ -9,26 +9,26 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.*;
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.SoulFireBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.SoulFireBlock;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -72,7 +72,7 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable World worldIn, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
         int fire = NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0);
@@ -80,22 +80,21 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
         if (fire <= 0)
             return;
 
-        tooltip.add(new TranslationTextComponent("tooltip.relics.blazing_flask.tooltip_1", fire));
+        tooltip.add(new TranslatableComponent("tooltip.relics.blazing_flask.tooltip_1", fire));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
+        if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        PlayerEntity player = (PlayerEntity) livingEntity;
-        World world = player.getCommandSenderWorld();
+        Level world = player.getCommandSenderWorld();
         int fire = NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0);
 
         if (!player.isSpectator() && !player.isCreative()) {
-            player.abilities.mayfly = fire > 0;
+            player.getAbilities().mayfly = fire > 0;
 
-            if (player.abilities.flying) {
+            if (player.getAbilities().flying) {
                 handleIgnite(player);
 
                 handleLevitation(player, stack);
@@ -107,23 +106,23 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
         if (fire <= 0 || player.tickCount % 20 != 0 || !(world.isRainingAt(player.blockPosition()) || player.isInWater()))
             return;
 
-        world.playSound(player, player.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 1.0F);
+        world.playSound(player, player.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 1.0F);
 
         NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, fire - 1);
     }
 
-    protected double getGroundHeight(PlayerEntity player) {
-        RayTraceResult result = player.level.clip(new RayTraceContext(player.position(), new Vector3d(player.getX(),
-                player.getY() - 64, player.getZ()), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, player));
+    protected double getGroundHeight(Player player) {
+        HitResult result = player.level.clip(new ClipContext(player.position(), new Vec3(player.getX(),
+                player.getY() - 64, player.getZ()), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
 
-        if (result.getType() == RayTraceResult.Type.BLOCK)
+        if (result.getType() == HitResult.Type.BLOCK)
             return result.getLocation().y();
 
         return -player.getCommandSenderWorld().getMaxBuildHeight();
     }
 
-    protected void handleIgnite(PlayerEntity player) {
-        World world = player.getCommandSenderWorld();
+    protected void handleIgnite(Player player) {
+        Level world = player.getCommandSenderWorld();
 
         for (int i = 0; i < 3; i++)
             world.addParticle(player.isInWater() ? ParticleTypes.CLOUD : ParticleTypes.LARGE_SMOKE,
@@ -135,7 +134,7 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
         if (player.isInWater())
             return;
 
-        world.addParticle(world.dimension() == World.NETHER ? ParticleTypes.SOUL_FIRE_FLAME : ParticleTypes.FLAME,
+        world.addParticle(world.dimension() == Level.NETHER ? ParticleTypes.SOUL_FIRE_FLAME : ParticleTypes.FLAME,
                 player.getX() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
                 player.getY() + MathUtils.randomFloat(world.getRandom()) * 0.5F,
                 player.getZ() + MathUtils.randomFloat(world.getRandom()) * 0.5F, 0, -0.25F, 0);
@@ -149,22 +148,22 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
         }
     }
 
-    protected void handleLevitation(PlayerEntity player, ItemStack stack) {
+    protected void handleLevitation(Player player, ItemStack stack) {
         int fire = NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0);
         double riseVelocity = 0.0D;
 
-        player.abilities.flying = fire > 0;
+        player.getAbilities().flying = fire > 0;
 
         player.setDeltaMovement(player.getDeltaMovement().multiply(stats.levitationSpeed, stats.levitationSpeed, stats.levitationSpeed));
 
-        Vector3d motion = player.getDeltaMovement();
+        Vec3 motion = player.getDeltaMovement();
 
         if (player.zza > 0)
-            player.setDeltaMovement(motion.x() + new Vector3d(player.getLookAngle().x,
+            player.setDeltaMovement(motion.x() + new Vec3(player.getLookAngle().x,
                             0, player.getLookAngle().z).normalize().x() * 0.025F, motion.y(),
-                    motion.z() + new Vector3d(player.getLookAngle().x, 0, player.getLookAngle().z).normalize().z() * 0.025F);
+                    motion.z() + new Vec3(player.getLookAngle().x, 0, player.getLookAngle().z).normalize().z() * 0.025F);
 
-        if (player.getCommandSenderWorld().isClientSide() && player instanceof ClientPlayerEntity && ((ClientPlayerEntity) player).input.jumping)
+        if (player.getCommandSenderWorld().isClientSide() && ((LocalPlayer) player).input.jumping)
             riseVelocity = 0.04D;
 
         if (!player.isShiftKeyDown())
@@ -183,27 +182,27 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
             NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, fire - 1);
     }
 
-    protected void collectFire(PlayerEntity player, ItemStack stack) {
-        World world = player.getCommandSenderWorld();
+    protected void collectFire(Player player, ItemStack stack) {
+        Level world = player.getCommandSenderWorld();
         int fire = NBTUtils.getInt(stack, TAG_FIRE_AMOUNT, 0);
 
         if (player.isSpectator() || fire >= stats.capacity)
             return;
 
         List<BlockPos> positions = WorldUtils.getBlockSphere(player.blockPosition(), stats.consumptionRadius).stream()
-                .filter(pos -> (world.getBlockState(pos).getBlock() instanceof AbstractFireBlock)).collect(Collectors.toList());
+                .filter(pos -> (world.getBlockState(pos).getBlock() instanceof BaseFireBlock)).collect(Collectors.toList());
 
         for (BlockPos pos : positions) {
-            Vector3d blockVec = new Vector3d(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
+            Vec3 blockVec = new Vec3(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
             double distance = player.position().add(0, 1, 0).distanceTo(blockVec);
-            Vector3d direction = player.position().add(0, 1, 0).subtract(blockVec).normalize();
+            Vec3 direction = player.position().add(0, 1, 0).subtract(blockVec).normalize();
 
             world.addParticle(new CircleTintData((world.getBlockState(pos).getBlock() instanceof SoulFireBlock) ? new Color(0, 200, 255)
                             : new Color(255, 122, 0), (float) (distance * 0.075F), (int) distance * 5, 0.95F, false),
                     blockVec.x(), blockVec.y(), blockVec.z(), direction.x * 0.2F, direction.y * 0.2F, direction.z * 0.2F);
 
             if (player.tickCount % stats.consumptionCooldown == 0) {
-                world.playSound(null, pos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                world.playSound(null, pos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
                 NBTUtils.setInt(stack, TAG_FIRE_AMOUNT, Math.min(stats.capacity, fire + positions.size()));
             }
@@ -212,16 +211,14 @@ public class BlazingFlaskItem extends RelicItem<BlazingFlaskItem.Stats> {
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (!(slotContext.getWearer() instanceof PlayerEntity) || NBTUtils.getInt(newStack, TAG_FIRE_AMOUNT, 0) > 0)
+        if (!(slotContext.getWearer() instanceof Player player) || NBTUtils.getInt(newStack, TAG_FIRE_AMOUNT, 0) > 0)
             return;
-
-        PlayerEntity player = (PlayerEntity) slotContext.getWearer();
 
         if (player.isCreative() || player.isSpectator())
             return;
 
-        player.abilities.mayfly = false;
-        player.abilities.flying = false;
+        player.getAbilities().mayfly = false;
+        player.getAbilities().flying = false;
 
         player.onUpdateAbilities();
     }

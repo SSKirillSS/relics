@@ -4,25 +4,23 @@ import it.hurts.sskirillss.relics.blocks.PedestalBlock;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.awt.*;
 import java.util.Random;
 
-public class PedestalTile extends TileBase implements ITickableTileEntity {
+public class PedestalTile extends TileBase {
     private ItemStack stack = ItemStack.EMPTY;
     public int ticksExisted;
 
-    public PedestalTile() {
-        super(TileRegistry.PEDESTAL_TILE.get());
+    public PedestalTile(BlockPos pos, BlockState state){
+        super(TileRegistry.PEDESTAL_TILE.get(), pos, state);
     }
 
     public void setStack(ItemStack stack) {
@@ -33,82 +31,83 @@ public class PedestalTile extends TileBase implements ITickableTileEntity {
         return stack;
     }
 
-    @Override
-    public void tick() {
-        if (level == null) return;
-        ticksExisted++;
-        if (stack != null && !stack.isEmpty() && this.ticksExisted % 3 == 0) {
+    public static void tick(Level level, BlockPos pos, BlockState state, PedestalTile tile) {
+        if (level == null)
+            return;
+
+        tile.ticksExisted++;
+
+        if (tile.stack != null && !tile.stack.isEmpty() && tile.ticksExisted % 3 == 0) {
             Random random = level.getRandom();
-            CircleTintData particle = new CircleTintData(stack.getRarity().color.getColor() != null ? new Color(stack.getRarity().color.getColor(),
+
+            CircleTintData particle = new CircleTintData(tile.stack.getRarity().color.getColor() != null ? new Color(tile.stack.getRarity().color.getColor(),
                     false) : new Color(255, 255, 255), random.nextFloat() * 0.025F + 0.04F, 20, 0.94F, true);
-            BlockPos blockPos = this.getBlockPos();
-            Vector3d pos = new Vector3d(blockPos.getX() + 0.5D, blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D);
-            Direction direction = this.getBlockState().getValue(PedestalBlock.DIRECTION);
+
+            Vec3 vec = new Vec3(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
+            Direction direction = tile.getBlockState().getValue(PedestalBlock.DIRECTION);
+
             double motionX = 0.0D, motionY = 0.0D, motionZ = 0.0D;
-            double x = pos.x(), y = pos.y(), z = pos.z();
+            double x = vec.x(), y = vec.y(), z = vec.z();
+
             if (direction == Direction.UP) {
-                x = pos.x() + MathUtils.randomFloat(random) * 0.175F;
-                y = pos.y() - 0.25D;
-                z = pos.z() + MathUtils.randomFloat(random) * 0.175F;
+                x = vec.x() + MathUtils.randomFloat(random) * 0.175F;
+                y = vec.y() - 0.25D;
+                z = vec.z() + MathUtils.randomFloat(random) * 0.175F;
+
                 motionY = random.nextFloat() * 0.05D;
             } else if (direction == Direction.DOWN) {
-                x = pos.x() + MathUtils.randomFloat(random) * 0.175F;
-                y = pos.y() + 0.25D;
-                z = pos.z() + MathUtils.randomFloat(random) * 0.175F;
+                x = vec.x() + MathUtils.randomFloat(random) * 0.175F;
+                y = vec.y() + 0.25D;
+                z = vec.z() + MathUtils.randomFloat(random) * 0.175F;
+
                 motionY = -random.nextFloat() * 0.05D;
             } else if (direction == Direction.NORTH) {
-                x = pos.x() + MathUtils.randomFloat(random) * 0.175F;
-                y = pos.y() + MathUtils.randomFloat(random) * 0.175F;
-                z = pos.z() + 0.25D;
+                x = vec.x() + MathUtils.randomFloat(random) * 0.175F;
+                y = vec.y() + MathUtils.randomFloat(random) * 0.175F;
+                z = vec.z() + 0.25D;
+
                 motionZ = -random.nextFloat() * 0.05D;
             } else if (direction == Direction.SOUTH) {
-                x = pos.x() + MathUtils.randomFloat(random) * 0.175F;
-                y = pos.y() + MathUtils.randomFloat(random) * 0.175F;
-                z = pos.z() - 0.25D;
+                x = vec.x() + MathUtils.randomFloat(random) * 0.175F;
+                y = vec.y() + MathUtils.randomFloat(random) * 0.175F;
+                z = vec.z() - 0.25D;
+
                 motionZ = random.nextFloat() * 0.05D;
             } else if (direction == Direction.EAST) {
-                x = pos.x() - 0.25D;
-                y = pos.y() + MathUtils.randomFloat(random) * 0.175F;
-                z = pos.z() + MathUtils.randomFloat(random) * 0.175F;
+                x = vec.x() - 0.25D;
+                y = vec.y() + MathUtils.randomFloat(random) * 0.175F;
+                z = vec.z() + MathUtils.randomFloat(random) * 0.175F;
+
                 motionX = random.nextFloat() * 0.05D;
             } else if (direction == Direction.WEST) {
-                x = pos.x() + 0.25D;
-                y = pos.y() + MathUtils.randomFloat(random) * 0.175F;
-                z = pos.z() + MathUtils.randomFloat(random) * 0.175F;
+                x = vec.x() + 0.25D;
+                y = vec.y() + MathUtils.randomFloat(random) * 0.175F;
+                z = vec.z() + MathUtils.randomFloat(random) * 0.175F;
+
                 motionX = -random.nextFloat() * 0.05D;
             }
+
             level.addParticle(particle, x, y, z, motionX, motionY, motionZ);
         }
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
-        stack = ItemStack.of((CompoundNBT) compound.get("itemStack"));
-        super.load(state, compound);
+    public void load(CompoundTag compound) {
+        stack = ItemStack.of((CompoundTag) compound.get("itemStack"));
+
+        super.load(compound);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    protected void saveAdditional(CompoundTag compound) {
         if (stack != null) {
-            CompoundNBT itemStack = new CompoundNBT();
+            CompoundTag itemStack = new CompoundTag();
+
             stack.save(itemStack);
+
             compound.put("itemStack", itemStack);
         }
-        return super.save(compound);
-    }
 
-    @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
-    }
-
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.getBlockPos(), -1, this.getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        this.load(getBlockState(), packet.getTag());
+        super.saveAdditional(compound);
     }
 }

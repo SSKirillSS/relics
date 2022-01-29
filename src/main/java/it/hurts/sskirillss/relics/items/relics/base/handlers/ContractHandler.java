@@ -6,16 +6,16 @@ import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,8 +26,8 @@ public class ContractHandler {
     public static void onItemPickup(EntityItemPickupEvent event) {
         ItemEntity drop = event.getItem();
         ItemStack stack = drop.getItem();
-        PlayerEntity player = event.getPlayer();
-        ServerWorld world = (ServerWorld) player.getCommandSenderWorld();
+        Player player = event.getPlayer();
+        ServerLevel world = (ServerLevel) player.getCommandSenderWorld();
         long time = NBTUtils.getLong(stack, RelicContractItem.TAG_DATE, -1);
 
         if (world.getGameTime() - time >= (3600 * 20) || time <= -1)
@@ -40,19 +40,19 @@ public class ContractHandler {
 
         drop.setPickUpDelay(20);
 
-        Vector3d motion = player.position().subtract(drop.position()).normalize();
+        Vec3 motion = player.position().subtract(drop.position()).normalize();
 
-        NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x(), motion.y(), motion.z()), (ServerPlayerEntity) player);
+        NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x(), motion.y(), motion.z()), (ServerPlayer) player);
 
         world.sendParticles(ParticleTypes.EXPLOSION, drop.getX(), drop.getY() + 0.5F, drop.getZ(), 1, 0, 0, 0, 0);
-        world.playSound(null, drop.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
+        world.playSound(null, drop.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1F, 1F);
 
         event.setCanceled(true);
     }
 
-    public static void handleOwner(PlayerEntity player, ItemStack stack) {
-        World world = player.getCommandSenderWorld();
-        PlayerEntity owner = RelicUtils.Owner.getOwner(stack, world);
+    public static void handleOwner(Player player, ItemStack stack) {
+        Level world = player.getCommandSenderWorld();
+        Player owner = RelicUtils.Owner.getOwner(stack, world);
         long time = NBTUtils.getLong(stack, RelicContractItem.TAG_DATE, -1);
 
         if (owner == null || time <= -1)
@@ -75,7 +75,7 @@ public class ContractHandler {
             player.setDeltaMovement(player.getViewVector(0F).multiply(-1F, -1F, -1F).normalize());
 
             world.addParticle(ParticleTypes.EXPLOSION, player.getX(), player.getY() + 1, player.getZ(), 0, 0, 0);
-            world.playSound(null, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1F, 1F);
+            world.playSound(null, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1F, 1F);
         }
     }
 }

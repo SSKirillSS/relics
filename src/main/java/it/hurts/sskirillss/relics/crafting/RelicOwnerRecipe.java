@@ -5,27 +5,27 @@ import it.hurts.sskirillss.relics.init.RecipeRegistry;
 import it.hurts.sskirillss.relics.items.RelicContractItem;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
-public class RelicOwnerRecipe extends SpecialRecipe {
+public class RelicOwnerRecipe extends CustomRecipe {
     public RelicOwnerRecipe(ResourceLocation location) {
         super(location);
     }
 
     @Override
-    public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world) {
+    public boolean matches(CraftingContainer container, Level level) {
         boolean foundContract = false;
         boolean foundItem = false;
 
-        for (int i = 0; i < inv.getContainerSize(); i++) {
-            ItemStack stack = inv.getItem(i);
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack stack = container.getItem(i);
 
             if (stack.isEmpty())
                 continue;
@@ -42,14 +42,13 @@ public class RelicOwnerRecipe extends SpecialRecipe {
         return foundItem && foundContract;
     }
 
-    @Nonnull
     @Override
-    public ItemStack assemble(@Nonnull CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer container) {
         ItemStack item = ItemStack.EMPTY;
         ItemStack contract = ItemStack.EMPTY;
 
-        for (int i = 0; i < inv.getContainerSize(); i++) {
-            ItemStack stack = inv.getItem(i);
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack stack = container.getItem(i);
 
             if (stack.isEmpty())
                 continue;
@@ -78,7 +77,7 @@ public class RelicOwnerRecipe extends SpecialRecipe {
 
     @Nonnull
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return RecipeRegistry.RELIC_OWNER.get();
     }
 }

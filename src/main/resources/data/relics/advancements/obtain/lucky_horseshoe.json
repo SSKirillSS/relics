@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:lucky_horseshoe"
+            "items": [
+              "relics:lucky_horseshoe"
+            ]
           }
         ]
       }

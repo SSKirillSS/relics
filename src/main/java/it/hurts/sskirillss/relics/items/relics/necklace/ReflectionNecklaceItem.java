@@ -1,8 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.necklace;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import it.hurts.sskirillss.relics.client.renderer.items.models.ReflectionNecklaceModel;
-import it.hurts.sskirillss.relics.client.renderer.items.models.ReflectionNecklaceShieldModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -16,27 +13,18 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.DamagingProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -92,40 +80,8 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
             NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, charges + 1);
 
             livingEntity.getCommandSenderWorld().playSound(null, livingEntity.blockPosition(),
-                    SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundCategory.PLAYERS, 0.5F, 0.75F);
+                    SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.PLAYERS, 0.5F, 0.75F);
         }
-    }
-
-    private final ResourceLocation SHIELD_TEXTURE = new ResourceLocation(Reference.MODID, "textures/items/models/reflection_necklace_shield.png");
-
-    @Override
-    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing,
-                       float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, ItemStack stack) {
-        super.render(identifier, index, matrixStack, renderTypeBuffer, light, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, stack);
-
-        int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
-        ReflectionNecklaceShieldModel shieldModel = new ReflectionNecklaceShieldModel();
-
-        if (charges > 0)
-            for (int i = 0; i < charges; i++) {
-                matrixStack.pushPose();
-
-                matrixStack.scale(0.5F, 0.5F, 0.5F);
-                matrixStack.mulPose(Vector3f.ZP.rotationDegrees((MathHelper.cos(livingEntity.tickCount / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
-                matrixStack.mulPose(Vector3f.YP.rotationDegrees((livingEntity.tickCount / 10.0F) * (180F / (float) Math.PI) + (i * (360F / charges))));
-                matrixStack.mulPose(Vector3f.XP.rotationDegrees((MathHelper.sin(livingEntity.tickCount / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
-                matrixStack.translate(0.0F, 1.5F, 1F + charges * 0.3F);
-                shieldModel.renderToBuffer(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityTranslucent(SHIELD_TEXTURE)),
-                        light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-                matrixStack.popPose();
-            }
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new ReflectionNecklaceModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
@@ -134,10 +90,9 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
         public static void onEntityHurt(LivingHurtEvent event) {
             Stats stats = INSTANCE.stats;
 
-            if (!(event.getEntityLiving() instanceof PlayerEntity))
+            if (!(event.getEntityLiving() instanceof Player player))
                 return;
 
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.REFLECTION_NECKLACE.get());
 
             if (stack.isEmpty())
@@ -145,24 +100,22 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
             int charges = NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0);
 
-            if (charges <= 0 || !(event.getSource().getEntity() instanceof LivingEntity))
+            if (charges <= 0 || !(event.getSource().getEntity() instanceof LivingEntity attacker))
                 return;
 
-            LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
-
-            if (attacker == null || attacker == player)
+            if (attacker == player)
                 return;
 
             if (player.position().distanceTo(attacker.position()) < 10) {
-                Vector3d motion = attacker.position().subtract(player.position()).normalize().multiply(2F, 1.5F, 2F);
+                Vec3 motion = attacker.position().subtract(player.position()).normalize().multiply(2F, 1.5F, 2F);
 
-                if (attacker instanceof PlayerEntity)
-                    NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) attacker);
+                if (attacker instanceof Player)
+                    NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) attacker);
                 else
                     attacker.setDeltaMovement(motion);
 
                 player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 0.5F, 1.0F);
+                        SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 0.5F, 1.0F);
             }
 
             NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, charges - 1);
@@ -174,16 +127,14 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
         @SubscribeEvent
         public static void onProjectileImpact(ProjectileImpactEvent event) {
-            if (!(event.getRayTraceResult() instanceof EntityRayTraceResult))
+            if (!(event.getRayTraceResult() instanceof EntityHitResult))
                 return;
 
             Entity undefinedProjectile = event.getEntity();
-            Entity target = ((EntityRayTraceResult) event.getRayTraceResult()).getEntity();
+            Entity target = ((EntityHitResult) event.getRayTraceResult()).getEntity();
 
-            if (!(target instanceof PlayerEntity))
+            if (!(target instanceof Player player))
                 return;
-
-            PlayerEntity player = (PlayerEntity) target;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.REFLECTION_NECKLACE.get());
 
@@ -192,9 +143,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
 
             undefinedProjectile.setDeltaMovement(undefinedProjectile.getDeltaMovement().reverse());
 
-            if (undefinedProjectile instanceof DamagingProjectileEntity) {
-                DamagingProjectileEntity projectile = (DamagingProjectileEntity) undefinedProjectile;
-
+            if (undefinedProjectile instanceof AbstractHurtingProjectile projectile) {
                 projectile.setOwner(player);
 
                 projectile.xPower *= -1;
@@ -209,7 +158,7 @@ public class ReflectionNecklaceItem extends RelicItem<ReflectionNecklaceItem.Sta
             NBTUtils.setInt(stack, TAG_CHARGE_AMOUNT, NBTUtils.getInt(stack, TAG_CHARGE_AMOUNT, 0) - 1);
 
             player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.WITHER_BREAK_BLOCK, SoundCategory.PLAYERS, 0.5F, 1.0F);
+                    SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 0.5F, 1.0F);
         }
     }
 

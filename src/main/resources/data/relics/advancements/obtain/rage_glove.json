@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:rage_glove"
+            "items": [
+              "relics:rage_glove"
+            ]
           }
         ]
       }

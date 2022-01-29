@@ -1,19 +1,18 @@
 package it.hurts.sskirillss.relics.utils;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.Mth;
 
 import java.awt.*;
 import java.util.Random;
 
 public class RenderUtils {
-    public static void renderBeams(MatrixStack matrixStack, IRenderTypeBuffer bufferIn, float partialTicks, int amount, float size, Color color) {
+    public static void renderBeams(PoseStack matrixStack, MultiBufferSource bufferIn, float partialTicks, int amount, float size, Color color) {
         matrixStack.pushPose();
 
         Random random = new Random(1488);
@@ -29,15 +28,15 @@ public class RenderUtils {
         matrixStack.popPose();
     }
 
-    public static void renderBeam(MatrixStack matrixStack, IRenderTypeBuffer bufferIn, float partialTicks, float size, Color color) {
-        IVertexBuilder builder = bufferIn.getBuffer(RenderType.lightning());
+    public static void renderBeam(PoseStack matrixStack, MultiBufferSource bufferIn, float partialTicks, float size, Color color) {
+        VertexConsumer builder = bufferIn.getBuffer(RenderType.lightning());
         Matrix4f matrix4f = matrixStack.last().pose();
 
         float length = size * 0.2F;
 
-        int red = MathHelper.clamp(color.getRed(), 0, 255);
-        int green = MathHelper.clamp(color.getGreen(), 0, 255);
-        int blue = MathHelper.clamp(color.getBlue(), 0, 255);
+        int red = Mth.clamp(color.getRed(), 0, 255);
+        int green = Mth.clamp(color.getGreen(), 0, 255);
+        int blue = Mth.clamp(color.getBlue(), 0, 255);
         int alpha = (int) (255.0F * (1.0F - partialTicks / 200.0F));
 
         builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(255, 255, 255, alpha).endVertex();
@@ -54,9 +53,9 @@ public class RenderUtils {
         builder.vertex(matrix4f, -(float) (Math.sqrt(3.0D) / 2.0D) * length, size, -0.5F * length).color(red, green, blue, 0).endVertex();
     }
 
-    public static void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.xRot = x;
-        modelRenderer.yRot = y;
-        modelRenderer.zRot = z;
-    }
+//    public static void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
+//        modelRenderer.getXRot() = x;
+//        modelRenderer.getYRot() = y;
+//        modelRenderer.zRot = z;
+//    }
 }

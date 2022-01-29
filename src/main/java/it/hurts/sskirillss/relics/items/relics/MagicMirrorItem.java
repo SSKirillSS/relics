@@ -11,19 +11,19 @@ import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketItemActivation;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Optional;
@@ -53,26 +53,26 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
         if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get())
                 || DurabilityUtils.isBroken(stack) || worldIn.isClientSide())
-            return ActionResult.fail(stack);
+            return InteractionResultHolder.fail(stack);
 
-        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;
+        ServerPlayer serverPlayer = (ServerPlayer) playerIn;
         BlockPos pos = serverPlayer.getRespawnPosition();
         float angle = serverPlayer.getRespawnAngle();
-        ServerWorld world = serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
-        TranslationTextComponent message = new TranslationTextComponent("tooltip.relics.magic_mirror.invalid_location");
+        ServerLevel world = serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
+        TranslatableComponent message = new TranslatableComponent("tooltip.relics.magic_mirror.invalid_location");
 
         if (pos == null || world == null) {
             playerIn.displayClientMessage(message, true);
 
-            return ActionResult.fail(stack);
+            return InteractionResultHolder.fail(stack);
         }
 
-        Optional<Vector3d> optional = PlayerEntity.findRespawnPositionAndUseSpawnBlock(world, pos, angle, true, false);
+        Optional<Vec3> optional = Player.findRespawnPositionAndUseSpawnBlock(world, pos, angle, true, false);
 
         if (optional.isPresent()) {
             pos = new BlockPos(optional.get());
@@ -80,11 +80,11 @@ public class MagicMirrorItem extends RelicItem<MagicMirrorItem.Stats> {
             if (playerIn.getVehicle() != null)
                 playerIn.stopRiding();
 
-            serverPlayer.teleportTo(world, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, playerIn.yRot, playerIn.xRot);
-            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            serverPlayer.teleportTo(world, pos.getX() + 0.5F, pos.getY() + 1.0F, pos.getZ() + 0.5F, playerIn.getYRot(), playerIn.getXRot());
+            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
             NetworkHandler.sendToClient(new PacketItemActivation(stack), serverPlayer);
 
-            if (!playerIn.abilities.instabuild)
+            if (!playerIn.getAbilities().instabuild)
                 playerIn.getCooldowns().addCooldown(ItemRegistry.MAGIC_MIRROR.get(), stats.cooldown * 20);
         } else
             playerIn.displayClientMessage(message, true);

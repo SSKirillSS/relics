@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:chorus_inhibitor"
+            "items": [
+              "relics:chorus_inhibitor"
+            ]
           }
         ]
       }

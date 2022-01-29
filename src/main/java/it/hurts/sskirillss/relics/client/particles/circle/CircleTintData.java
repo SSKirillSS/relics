@@ -5,16 +5,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.hurts.sskirillss.relics.init.ParticleRegistry;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.Locale;
 
-public class CircleTintData implements IParticleData {
+public class CircleTintData implements ParticleOptions {
     private final Color tint;
     private final float diameter;
     private final int lifeTime;
@@ -56,7 +56,7 @@ public class CircleTintData implements IParticleData {
     }
 
     @Override
-    public void writeToNetwork(PacketBuffer buf) {
+    public void writeToNetwork(FriendlyByteBuf buf) {
         buf.writeInt(tint.getRed());
         buf.writeInt(tint.getGreen());
         buf.writeInt(tint.getBlue());
@@ -74,7 +74,7 @@ public class CircleTintData implements IParticleData {
     }
 
     private static float validateDiameter(float diameter) {
-        return (float) MathHelper.clamp(diameter, 0.05, 5.0);
+        return (float) Mth.clamp(diameter, 0.05, 5.0);
     }
 
     public static final Codec<CircleTintData> CODEC = RecordCodecBuilder.create(
@@ -96,16 +96,16 @@ public class CircleTintData implements IParticleData {
 
     }
 
-    public static final IDeserializer<CircleTintData> DESERIALIZER = new IDeserializer<CircleTintData>() {
+    public static final ParticleOptions.Deserializer<CircleTintData> DESERIALIZER = new ParticleOptions.Deserializer<CircleTintData>() {
         @Nonnull
         @Override
         public CircleTintData fromCommand(@Nonnull ParticleType<CircleTintData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
-            int red = MathHelper.clamp(reader.readInt(), 0, 255);
+            int red = Mth.clamp(reader.readInt(), 0, 255);
             reader.expect(' ');
-            int green = MathHelper.clamp(reader.readInt(), 0, 255);
+            int green = Mth.clamp(reader.readInt(), 0, 255);
             reader.expect(' ');
-            int blue = MathHelper.clamp(reader.readInt(), 0, 255);
+            int blue = Mth.clamp(reader.readInt(), 0, 255);
 
             reader.expect(' ');
             float diameter = validateDiameter(reader.readFloat());
@@ -123,10 +123,10 @@ public class CircleTintData implements IParticleData {
         }
 
         @Override
-        public CircleTintData fromNetwork(@Nonnull ParticleType<CircleTintData> type, PacketBuffer buf) {
-            int red = MathHelper.clamp(buf.readInt(), 0, 255);
-            int green = MathHelper.clamp(buf.readInt(), 0, 255);
-            int blue = MathHelper.clamp(buf.readInt(), 0, 255);
+        public CircleTintData fromNetwork(@Nonnull ParticleType<CircleTintData> type, FriendlyByteBuf buf) {
+            int red = Mth.clamp(buf.readInt(), 0, 255);
+            int green = Mth.clamp(buf.readInt(), 0, 255);
+            int blue = Mth.clamp(buf.readInt(), 0, 255);
             Color color = new Color(red, green, blue);
 
             float diameter = validateDiameter(buf.readFloat());

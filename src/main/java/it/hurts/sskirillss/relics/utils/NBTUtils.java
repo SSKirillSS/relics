@@ -1,12 +1,12 @@
 package it.hurts.sskirillss.relics.utils;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
@@ -63,21 +63,21 @@ public class NBTUtils {
         return !stack.isEmpty() && stack.getTag() != null && stack.getTag().contains(tag);
     }
 
-    public static String writePosition(Vector3d vec) {
+    public static String writePosition(Vec3 vec) {
         return (Math.round(vec.x() * 10F) / 10F) + "," + (Math.round(vec.y() * 10F) / 10F) + "," + (Math.round(vec.z() * 10F) / 10F);
     }
 
     @Nullable
-    public static Vector3d parsePosition(String value) {
+    public static Vec3 parsePosition(String value) {
         if (value != null && !value.equals("")) {
             String[] pos = value.split(",");
-            return new Vector3d(Double.parseDouble(pos[0]), Double.parseDouble(pos[1]), Double.parseDouble(pos[2]));
+            return new Vec3(Double.parseDouble(pos[0]), Double.parseDouble(pos[1]), Double.parseDouble(pos[2]));
         }
         return null;
     }
 
     @Nullable
-    public static ServerWorld parseWorld(World world, String value) {
-        return world.getServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(value)));
+    public static ServerLevel parseLevel(Level world, String value) {
+        return world.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(value)));
     }
 }

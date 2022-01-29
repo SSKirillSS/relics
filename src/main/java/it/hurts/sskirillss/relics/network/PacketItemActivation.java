@@ -1,16 +1,16 @@
 package it.hurts.sskirillss.relics.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class PacketItemActivation {
     private final ItemStack stack;
 
-    public PacketItemActivation(PacketBuffer buf) {
+    public PacketItemActivation(FriendlyByteBuf buf) {
         stack = buf.readItem();
     }
 
@@ -18,7 +18,7 @@ public class PacketItemActivation {
         this.stack = stack;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeItem(stack);
     }
 

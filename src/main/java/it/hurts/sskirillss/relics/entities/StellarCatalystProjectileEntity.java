@@ -1,37 +1,38 @@
 package it.hurts.sskirillss.relics.entities;
 
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.items.relics.talisman.StellarCatalystItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.IndirectEntityDamageSource;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.Random;
 
-public class StellarCatalystProjectileEntity extends ThrowableEntity {
+public class StellarCatalystProjectileEntity extends ThrowableProjectile {
     public static final String TAG_DAMAGE = "damage";
 
     private float damage;
-    public PlayerEntity owner;
+    public Player owner;
 
-    public StellarCatalystProjectileEntity(EntityType<? extends StellarCatalystProjectileEntity> type, World worldIn) {
+    public StellarCatalystProjectileEntity(EntityType<? extends StellarCatalystProjectileEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
@@ -40,8 +41,8 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
 
         this.damage = damage;
 
-        if (throwerIn instanceof PlayerEntity)
-            this.owner = (PlayerEntity) throwerIn;
+        if (throwerIn instanceof Player)
+            this.owner = (Player) throwerIn;
     }
 
     @Override
@@ -58,13 +59,13 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
                     MathUtils.randomFloat(random) * 0.2F, random.nextFloat() * 0.75F, MathUtils.randomFloat(random) * 0.2F);
 
         if (this.tickCount > 100)
-            this.remove();
+            this.remove(Entity.RemovalReason.KILLED);
 
         this.setDeltaMovement(0.0F, -config.projectileSpeed - this.tickCount * 0.01F, 0.0F);
     }
 
     @Override
-    protected void onHit(@NotNull RayTraceResult result) {
+    protected void onHit(@NotNull HitResult result) {
         StellarCatalystItem.Stats config = StellarCatalystItem.INSTANCE.getStats();
 
         Random random = this.getCommandSenderWorld().getRandom();
@@ -80,10 +81,10 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
         for (LivingEntity entity : this.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class,
                 this.getBoundingBox().inflate(config.explosionRadius))) {
             float multiplier = config.knockbackPower;
-            Vector3d motion = entity.position().subtract(this.position()).normalize().multiply(multiplier, multiplier, multiplier);
+            Vec3 motion = entity.position().subtract(this.position()).normalize().multiply(multiplier, multiplier, multiplier);
 
-            if (entity instanceof ServerPlayerEntity && entity != owner)
-                NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayerEntity) entity);
+            if (entity instanceof ServerPlayer && entity != owner)
+                NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) entity);
             else
                 entity.setDeltaMovement(motion);
 
@@ -95,12 +96,12 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(@Nonnull CompoundNBT compound) {
+    protected void addAdditionalSaveData(@Nonnull CompoundTag compound) {
         compound.putFloat(TAG_DAMAGE, damage);
     }
 
     @Override
-    protected void readAdditionalSaveData(@Nonnull CompoundNBT compound) {
+    protected void readAdditionalSaveData(@Nonnull CompoundTag compound) {
         damage = compound.getFloat(TAG_DAMAGE);
     }
 
@@ -110,7 +111,7 @@ public class StellarCatalystProjectileEntity extends ThrowableEntity {
     }
 
     @Override
-    public @NotNull IPacket<?> getAddEntityPacket() {
+    public @NotNull Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

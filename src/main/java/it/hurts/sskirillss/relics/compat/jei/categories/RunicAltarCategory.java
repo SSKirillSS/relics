@@ -10,8 +10,10 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -39,8 +41,8 @@ public class RunicAltarCategory implements IRecipeCategory<RunicAltarRecipe> {
     }
 
     @Override
-    public @NotNull String getTitle() {
-        return "Runic Infusion";
+    public Component getTitle() {
+        return new TextComponent("Runic Infusion");
     }
 
     @Override

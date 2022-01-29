@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:space_dissector"
+            "items": [
+              "relics:space_dissector"
+            ]
           }
         ]
       }

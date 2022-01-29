@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:reflection_necklace"
+            "items": [
+              "relics:reflection_necklace"
+            ]
           }
         ]
       }

@@ -3,8 +3,8 @@ package it.hurts.sskirillss.relics.items.relics.base.data;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 import java.util.List;
 

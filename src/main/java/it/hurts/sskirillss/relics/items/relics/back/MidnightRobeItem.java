@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.back;
 
-import it.hurts.sskirillss.relics.client.renderer.items.models.MidnightRobeModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -11,20 +10,18 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.LightType;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -71,15 +68,15 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        World world = livingEntity.getCommandSenderWorld();
+        Level world = livingEntity.getCommandSenderWorld();
 
         if (world.isClientSide() || DurabilityUtils.isBroken(stack) || livingEntity.tickCount % 20 != 0)
             return;
 
         if (canHide(livingEntity))
-            livingEntity.addEffect(new EffectInstance(Effects.INVISIBILITY, 30, 0, false, false));
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 0, false, false));
 
-        ModifiableAttributeInstance attribSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeInstance attribSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         AttributeModifier speedModifier = new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
                 stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
@@ -90,12 +87,12 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
     }
 
     private static boolean canHide(LivingEntity entity) {
-        World world = entity.getCommandSenderWorld();
+        Level world = entity.getCommandSenderWorld();
         BlockPos position = entity.blockPosition();
 
         return !EntityUtils.findEquippedCurio(entity, ItemRegistry.MIDNIGHT_ROBE.get()).isEmpty()
-                && world.getBrightness(LightType.BLOCK, position)
-                + world.getBrightness(LightType.SKY, position) <= INSTANCE.stats.minLightLevel;
+                && world.getBrightness(LightLayer.BLOCK, position)
+                + world.getBrightness(LightLayer.SKY, position) <= INSTANCE.stats.minLightLevel;
     }
 
     @Override
@@ -103,12 +100,6 @@ public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implemen
         EntityUtils.removeAttributeModifier(slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED),
                 new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
                         stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new MidnightRobeModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)

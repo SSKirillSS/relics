@@ -6,15 +6,15 @@ import it.hurts.sskirillss.relics.configs.data.runes.RuneLootData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootEntry;
-import net.minecraft.loot.LootSerializers;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.loot.functions.LootFunctionManager;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.Deserializers;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctions;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.event.RegistryEvent;
@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Random;
 
 public class RelicLootModifier extends LootModifier {
-    private static final Gson GSON = LootSerializers.createFunctionSerializer().create();
+    private static final Gson GSON = Deserializers.createFunctionSerializer().create();
 
-    private final LootEntry entry;
-    private final ILootFunction[] functions;
+    private final LootItem entry;
+    private final LootItemFunction[] functions;
 
-    public RelicLootModifier(ILootCondition[] conditionsIn, LootEntry entry, ILootFunction[] functions) {
+    public RelicLootModifier(LootItemCondition[] conditionsIn, LootItem entry, LootItemFunction[] functions) {
         super(conditionsIn);
 
         this.entry = entry;
@@ -41,8 +41,10 @@ public class RelicLootModifier extends LootModifier {
     @Nonnull
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
-        entry.expand(context, generator -> generator.createItemStack(ILootFunction.decorate(
-                LootFunctionManager.compose(this.functions), generatedLoot::add, context), context));
+        System.out.println(context.getQueriedLootTableId().getPath());
+
+        entry.expand(context, generator -> generator.createItemStack(LootItemFunction.decorate(
+                LootItemFunctions.compose(this.functions), generatedLoot::add, context), context));
 
         Random random = context.getRandom();
 
@@ -62,18 +64,18 @@ public class RelicLootModifier extends LootModifier {
 
     private static class Serializer extends GlobalLootModifierSerializer<RelicLootModifier> {
         @Override
-        public RelicLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] conditions) {
-            return new RelicLootModifier(conditions, GSON.fromJson(JSONUtils.getAsJsonObject(object, "entry"), LootEntry.class),
-                    object.has("functions") ? GSON.fromJson(JSONUtils.getAsJsonArray(object,
-                            "functions"), ILootFunction[].class) : new ILootFunction[0]);
+        public RelicLootModifier read(ResourceLocation location, JsonObject object, LootItemCondition[] conditions) {
+            return new RelicLootModifier(conditions, GSON.fromJson(GsonHelper.getAsJsonObject(object, "entry"), LootItem.class),
+                    object.has("functions") ? GSON.fromJson(GsonHelper.getAsJsonArray(object,
+                            "functions"), LootItemFunction[].class) : new LootItemFunction[0]);
         }
 
         @Override
         public JsonObject write(RelicLootModifier instance) {
             JsonObject object = makeConditions(instance.conditions);
 
-            object.add("entry", GSON.toJsonTree(instance.entry, LootEntry.class));
-            object.add("functions", GSON.toJsonTree(instance.functions, ILootFunction[].class));
+            object.add("entry", GSON.toJsonTree(instance.entry, LootItem.class));
+            object.add("functions", GSON.toJsonTree(instance.functions, LootItemFunction[].class));
 
             return object;
         }

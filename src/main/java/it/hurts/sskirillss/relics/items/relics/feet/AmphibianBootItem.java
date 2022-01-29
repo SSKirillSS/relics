@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.client.renderer.items.models.AmphibianBootModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -8,12 +7,8 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeMod;
 
 public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> {
@@ -52,12 +47,6 @@ public class AmphibianBootItem extends RelicItem<AmphibianBootItem.Stats> {
         return RelicAttributeModifier.builder()
                 .attribute(new RelicAttributeModifier.Modifier(ForgeMod.SWIM_SPEED.get(), stats.swimSpeedModifier))
                 .build();
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new AmphibianBootModel();
     }
 
     public static class Stats extends RelicStats {

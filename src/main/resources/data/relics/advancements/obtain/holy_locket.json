@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:holy_locket"
+            "items": [
+              "relics:holy_locket"
+            ]
           }
         ]
       }

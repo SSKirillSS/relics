@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:out_runner"
+            "items": [
+              "relics:out_runner"
+            ]
           }
         ]
       }

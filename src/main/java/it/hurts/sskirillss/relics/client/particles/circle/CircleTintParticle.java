@@ -1,30 +1,31 @@
 package it.hurts.sskirillss.relics.client.particles.circle;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.world.ClientWorld;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
 
-public class CircleTintParticle extends SpriteTexturedParticle {
-    private final IAnimatedSprite sprites;
+public class CircleTintParticle extends TextureSheetParticle {
+    private final SpriteSet sprites;
     float resizeSpeed;
 
-    public CircleTintParticle(ClientWorld world, double x, double y, double z, double velocityX,
+    public CircleTintParticle(ClientLevel world, double x, double y, double z, double velocityX,
                               double velocityY, double velocityZ, Color spark, float diameter,
-                              int lifeTime, float resizeSpeed, boolean shouldCollide, IAnimatedSprite sprites) {
+                              int lifeTime, float resizeSpeed, boolean shouldCollide, SpriteSet sprites) {
         super(world, x, y, z, velocityX, velocityY, velocityZ);
         this.sprites = sprites;
         this.resizeSpeed = resizeSpeed;
@@ -55,7 +56,7 @@ public class CircleTintParticle extends SpriteTexturedParticle {
 
     @Nonnull
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return RENDERER;
     }
 
@@ -82,26 +83,28 @@ public class CircleTintParticle extends SpriteTexturedParticle {
         }
     }
 
-    private static final IParticleRenderType RENDERER = new IParticleRenderType() {
+    private static final ParticleRenderType RENDERER = new ParticleRenderType() {
         @Override
         public void begin(BufferBuilder bufferBuilder, TextureManager textureManager) {
-            RenderSystem.depthMask(false);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.001F);
-            RenderSystem.disableLighting();
+            RenderSystem.setShader(GameRenderer::getParticleShader);
 
-            textureManager.bind(AtlasTexture.LOCATION_PARTICLES);
-            textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES).setBlurMipmap(true, false);
-            bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE);
+            RenderSystem.depthMask(true);
+
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
+
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
         @Override
-        public void end(Tessellator tessellator) {
+        public void end(Tesselator tessellator) {
             tessellator.end();
+
             RenderSystem.enableDepthTest();
-            Minecraft.getInstance().textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES).restoreLastBlurMipmap();
-            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+
             RenderSystem.disableBlend();
             RenderSystem.depthMask(true);
         }

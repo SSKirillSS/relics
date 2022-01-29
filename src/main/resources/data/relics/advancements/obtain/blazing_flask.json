@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:blazing_flask"
+            "items": [
+              "relics:blazing_flask"
+            ]
           }
         ]
       }

@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:enders_hand"
+            "items": [
+              "relics:enders_hand"
+            ]
           }
         ]
       }

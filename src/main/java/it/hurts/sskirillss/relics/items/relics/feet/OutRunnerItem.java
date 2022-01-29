@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.client.renderer.items.models.OutRunnerModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -11,18 +10,15 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.MutablePair;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -60,12 +56,11 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
+        if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        PlayerEntity player = (PlayerEntity) livingEntity;
-        World world = player.getCommandSenderWorld();
-        ModifiableAttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        Level world = player.getCommandSenderWorld();
+        AttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
         int duration = NBTUtils.getInt(stack, TAG_RUN_DURATION, 0);
 
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
@@ -105,12 +100,6 @@ public class OutRunnerItem extends RelicItem<OutRunnerItem.Stats> {
                 SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         entity.maxUpStep = 0.6F;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new OutRunnerModel();
     }
 
     public static class Stats extends RelicStats {

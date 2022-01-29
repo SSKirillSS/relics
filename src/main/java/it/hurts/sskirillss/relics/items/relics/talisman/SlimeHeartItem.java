@@ -10,12 +10,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -122,7 +122,7 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
                 return;
 
             if (this.entity.tickCount == this.tick) {
-                Vector3d motion = this.entity.getDeltaMovement();
+                Vec3 motion = this.entity.getDeltaMovement();
 
                 this.entity.setDeltaMovement(motion.x, this.delta, motion.z);
                 this.tick = 0;

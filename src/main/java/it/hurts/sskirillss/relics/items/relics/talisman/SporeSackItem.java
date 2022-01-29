@@ -9,18 +9,16 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -60,16 +58,13 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> {
         public static void onProjectileImpact(ProjectileImpactEvent event) {
             Stats stats = INSTANCE.stats;
 
-            if (!(event.getEntity() instanceof ProjectileEntity))
+            if (!(event.getEntity() instanceof Projectile projectile))
                 return;
 
-            ProjectileEntity projectile = (ProjectileEntity) event.getEntity();
-
-            if (projectile.getOwner() == null || !(projectile.getOwner() instanceof PlayerEntity))
+            if (projectile.getOwner() == null || !(projectile.getOwner() instanceof Player player))
                 return;
 
-            PlayerEntity player = (PlayerEntity) projectile.getOwner();
-            World world = projectile.getCommandSenderWorld();
+            Level world = projectile.getCommandSenderWorld();
 
             if (world.isClientSide())
                 return;
@@ -78,18 +73,16 @@ public class SporeSackItem extends RelicItem<SporeSackItem.Stats> {
                     || world.getRandom().nextFloat() > stats.chance)
                 return;
 
-            ((ServerWorld) world).sendParticles(new RedstoneParticleData(0, 255, 0, 1),
-                    projectile.getX(), projectile.getY(), projectile.getZ(), 100, 1, 1, 1, 0.5);
             world.playSound(null, projectile.blockPosition(), SoundEvents.FIRE_EXTINGUISH,
-                    SoundCategory.PLAYERS, 1.0F, 0.5F);
+                    SoundSource.PLAYERS, 1.0F, 0.5F);
             player.getCooldowns().addCooldown(ItemRegistry.SPORE_SACK.get(), stats.cooldown * 20);
 
             for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(stats.radius))) {
                 if (entity == player)
                     continue;
 
-                entity.addEffect(new EffectInstance(Effects.POISON, stats.poisonDuration * 20, stats.poisonAmplifier));
-                entity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, stats.slownessDuration * 20, stats.slownessAmplifier));
+                entity.addEffect(new MobEffectInstance(MobEffects.POISON, stats.poisonDuration * 20, stats.poisonAmplifier));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, stats.slownessDuration * 20, stats.slownessAmplifier));
             }
         }
     }

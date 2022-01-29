@@ -1,25 +1,26 @@
 package it.hurts.sskirillss.relics.entities;
 
+import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
-import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -28,11 +29,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ShadowGlaiveEntity extends ThrowableEntity {
-    private static final DataParameter<Integer> BOUNCES = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.INT);
-    private static final DataParameter<String> OWNER = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> TARGET = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.STRING);
-    private static final DataParameter<String> BOUNCED_ENTITIES = EntityDataManager.defineId(ShadowGlaiveEntity.class, DataSerializers.STRING);
+public class ShadowGlaiveEntity extends ThrowableProjectile {
+    private static final EntityDataAccessor<Integer> BOUNCES = SynchedEntityData.defineId(ShadowGlaiveEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<String> OWNER = SynchedEntityData.defineId(ShadowGlaiveEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> TARGET = SynchedEntityData.defineId(ShadowGlaiveEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> BOUNCED_ENTITIES = SynchedEntityData.defineId(ShadowGlaiveEntity.class, EntityDataSerializers.STRING);
 
     private static final String TAG_BOUNCES_AMOUNT = "bounces";
     private static final String TAG_OWNER_UUID = "owner";
@@ -40,18 +41,18 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     private static final String TAG_BOUNCED_ENTITIES = "entities";
 
     private boolean isBounced = false;
-    private PlayerEntity owner;
+    private Player owner;
     private LivingEntity target;
 
-    public ShadowGlaiveEntity(EntityType<? extends ShadowGlaiveEntity> type, World worldIn) {
+    public ShadowGlaiveEntity(EntityType<? extends ShadowGlaiveEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public ShadowGlaiveEntity(World world, LivingEntity throwerIn) {
+    public ShadowGlaiveEntity(Level world, LivingEntity throwerIn) {
         super(EntityRegistry.SHADOW_GLAIVE.get(), throwerIn, world);
     }
 
-    public void setOwner(PlayerEntity playerIn) {
+    public void setOwner(Player playerIn) {
         this.owner = playerIn;
 
         if (playerIn != null)
@@ -70,7 +71,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
         int bounces = entityData.get(BOUNCES);
 
         if (level.getRandom().nextFloat() > 1.0F - (bounces * config.bounceChanceMultiplier)) {
-            this.remove();
+            this.remove(Entity.RemovalReason.KILLED);
 
             return;
         }
@@ -81,14 +82,14 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
 
         entitiesAround = entitiesAround.stream()
                 .filter(entity -> !bouncedEntities.contains(entity.getUUID().toString()))
-                .filter(EntityPredicates.NO_CREATIVE_OR_SPECTATOR)
+                .filter(EntitySelector.NO_CREATIVE_OR_SPECTATOR)
                 .filter(entity -> entity != owner)
                 .sorted(Comparator.comparing(entity -> entity.position().distanceTo(this.position())))
                 .collect(Collectors.toList());
 
         if (entitiesAround.isEmpty()) {
             if (isBounced)
-                this.remove();
+                this.remove(Entity.RemovalReason.KILLED);
 
             return;
         }
@@ -105,7 +106,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
         }
 
         if (target == null || !target.isAlive()) {
-            this.remove();
+            this.remove(Entity.RemovalReason.KILLED);
 
             return;
         }
@@ -127,10 +128,10 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
             return;
 
         if (!isBounced && target == null && this.tickCount > 30)
-            this.remove();
+            this.remove(Entity.RemovalReason.KILLED);
 
         if (this.tickCount > 300)
-            this.remove();
+            this.remove(Entity.RemovalReason.KILLED);
 
         if (target == null && this.tickCount > 10 && this.tickCount % 2 == 0) {
             this.locateNearestTarget();
@@ -150,7 +151,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
                 int bounces = entityData.get(BOUNCES);
 
                 if (bounces > config.maxBounces)
-                    this.remove();
+                    this.remove(Entity.RemovalReason.KILLED);
 
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
@@ -173,13 +174,13 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     }
 
     @Override
-    protected void onHit(@Nonnull RayTraceResult rayTraceResult) {
+    protected void onHit(@Nonnull HitResult rayTraceResult) {
         if (level.isClientSide())
             return;
 
-        if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK
-                && level.getBlockState(((BlockRayTraceResult) rayTraceResult).getBlockPos()).getMaterial().blocksMotion())
-            this.remove();
+        if (rayTraceResult.getType() == HitResult.Type.BLOCK
+                && level.getBlockState(((BlockHitResult) rayTraceResult).getBlockPos()).getMaterial().blocksMotion())
+            this.remove(Entity.RemovalReason.KILLED);
     }
 
     @Override
@@ -191,7 +192,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT tag) {
+    public void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt(TAG_BOUNCES_AMOUNT, entityData.get(BOUNCES));
         tag.putString(TAG_OWNER_UUID, entityData.get(OWNER));
         tag.putString(TAG_TARGET_UUID, entityData.get(TARGET));
@@ -201,7 +202,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT tag) {
+    public void readAdditionalSaveData(CompoundTag tag) {
         entityData.set(BOUNCES, tag.getInt(TAG_BOUNCES_AMOUNT));
         entityData.set(OWNER, tag.getString(TAG_OWNER_UUID));
         entityData.set(TARGET, tag.getString(TAG_TARGET_UUID));
@@ -222,7 +223,7 @@ public class ShadowGlaiveEntity extends ThrowableEntity {
 
     @Nonnull
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

@@ -11,14 +11,14 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -60,18 +60,17 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
-        tooltip.add(new TranslationTextComponent("tooltip.relics.soul_devourer.tooltip_1", NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0)));
+        tooltip.add(new TranslatableComponent("tooltip.relics.soul_devourer.tooltip_1", NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0)));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (DurabilityUtils.isBroken(stack) || !(livingEntity instanceof PlayerEntity))
+        if (DurabilityUtils.isBroken(stack) || !(livingEntity instanceof Player player))
             return;
 
-        PlayerEntity player = (PlayerEntity) livingEntity;
         int soul = NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0);
 
@@ -92,10 +91,9 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
         public static void onEntityDeath(LivingDeathEvent event) {
             Stats stats = INSTANCE.stats;
 
-            if (!(event.getSource().getEntity() instanceof PlayerEntity))
+            if (!(event.getSource().getEntity() instanceof Player player))
                 return;
 
-            PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
             LivingEntity target = event.getEntityLiving();
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.SOUL_DEVOURER.get());
@@ -115,10 +113,8 @@ public class SoulDevourerItem extends RelicItem<SoulDevourerItem.Stats> {
         public static void onEntityHurt(LivingHurtEvent event) {
             Stats stats = INSTANCE.stats;
 
-            if (!(event.getSource().getEntity() instanceof PlayerEntity))
+            if (!(event.getSource().getEntity() instanceof Player player))
                 return;
-
-            PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.SOUL_DEVOURER.get());
 

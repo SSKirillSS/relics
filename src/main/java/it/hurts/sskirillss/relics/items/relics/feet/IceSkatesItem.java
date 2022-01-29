@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.client.renderer.items.models.IceSkatesModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -12,23 +11,20 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.WorldUtils;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -73,8 +69,8 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        ModifiableAttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        World world = livingEntity.getCommandSenderWorld();
+        AttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
+        Level world = livingEntity.getCommandSenderWorld();
         BlockPos pos = WorldUtils.getSolidBlockUnderFeet(world, livingEntity.blockPosition());
 
         if (pos == null || DurabilityUtils.isBroken(stack))
@@ -95,7 +91,7 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
 
                     entity.setDeltaMovement(entity.position().subtract(livingEntity.position()).normalize().multiply(0.25F, 0.1F, 0.25F));
                     world.playSound(null, entity.blockPosition(), SoundEvents.AXE_STRIP,
-                            SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            SoundSource.PLAYERS, 1.0F, 1.0F);
                     entity.hurt(DamageSource.FLY_INTO_WALL, stats.ramDamage);
                 }
             }
@@ -110,22 +106,14 @@ public class IceSkatesItem extends RelicItem<IceSkatesItem.Stats> {
                 new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new IceSkatesModel();
-    }
-
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class IceSkatesEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
             Stats stats = INSTANCE.stats;
 
-            if (!(event.getEntityLiving() instanceof PlayerEntity))
+            if (!(event.getEntityLiving() instanceof Player player))
                 return;
-
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             if (!EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_SKATES.get()).isEmpty()
                     && player.getCommandSenderWorld().getBlockState(player.blockPosition().below()).is(BlockTags.ICE)

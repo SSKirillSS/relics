@@ -1,22 +1,20 @@
 package it.hurts.sskirillss.relics.crafting;
 
-import com.google.common.collect.Lists;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RunicAltarContext extends ItemHandlerWrapper {
-    protected final PlayerEntity player;
+    protected final Player player;
     protected final List<ItemStack> runes;
     protected final ItemStack relic;
     protected final List<ItemStack> inputs;
 
-    public RunicAltarContext(IItemHandlerModifiable inner, PlayerEntity player, List<ItemStack> runes, ItemStack relic) {
+    public RunicAltarContext(IItemHandlerModifiable inner, Player player, List<ItemStack> runes, ItemStack relic) {
         super(inner);
         this.player = player;
         this.runes = runes;
@@ -28,7 +26,7 @@ public class RunicAltarContext extends ItemHandlerWrapper {
     }
 
     @Nullable
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return player;
     }
 

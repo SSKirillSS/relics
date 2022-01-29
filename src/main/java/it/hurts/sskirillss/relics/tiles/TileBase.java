@@ -1,21 +1,35 @@
 package it.hurts.sskirillss.relics.tiles;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileBase extends TileEntity {
-    public TileBase(TileEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+public abstract class TileBase extends BlockEntity {
+    public TileBase(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
-    public CompoundNBT getUpdateTag() {
-        return save(new CompoundNBT());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public abstract SUpdateTileEntityPacket getUpdatePacket();
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        if (pkt.getTag() != null)
+            load(pkt.getTag());
+    }
 
-    public abstract void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt);
+    public double getX() {
+        return this.getBlockPos().getX();
+    }
+
+    public double getY() {
+        return this.getBlockPos().getY();
+    }
+
+    public double getZ() {
+        return this.getBlockPos().getZ();
+    }
 }

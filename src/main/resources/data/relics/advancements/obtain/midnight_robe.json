@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:midnight_robe"
+            "items": [
+              "relics:midnight_robe"
+            ]
           }
         ]
       }

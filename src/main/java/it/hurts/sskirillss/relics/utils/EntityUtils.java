@@ -1,18 +1,18 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -23,49 +23,49 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class EntityUtils {
-    public static void moveTowardsPosition(Entity entity, Vector3d targetPos, double speed) {
-        Vector3d motion = targetPos.subtract(entity.position()).normalize().scale(speed);
+    public static void moveTowardsPosition(Entity entity, Vec3 targetPos, double speed) {
+        Vec3 motion = targetPos.subtract(entity.position()).normalize().scale(speed);
 
         entity.setDeltaMovement(motion.x, motion.y, motion.z);
     }
 
-    public static int getSlotWithItem(PlayerEntity player, Item item) {
-        for (int i = 0; i < player.inventory.getContainerSize(); ++i)
-            if (player.inventory.getItem(i).getItem() == item)
+    public static int getSlotWithItem(Player player, Item item) {
+        for (int i = 0; i < player.getInventory().getContainerSize(); ++i)
+            if (player.getInventory().getItem(i).getItem() == item)
                 return i;
 
         return -1;
     }
 
-    public static List<Integer> getSlotsWithItem(PlayerEntity player, Item item) {
+    public static List<Integer> getSlotsWithItem(Player player, Item item) {
         List<Integer> list = Lists.newArrayList();
 
-        for (int i = 0; i < player.inventory.getContainerSize(); ++i)
-            if (player.inventory.getItem(i).getItem() == item) {
+        for (int i = 0; i < player.getInventory().getContainerSize(); ++i)
+            if (player.getInventory().getItem(i).getItem() == item) {
                 list.add(i);
 
-                if (i == player.inventory.getContainerSize())
+                if (i == player.getInventory().getContainerSize())
                     return list;
             }
 
         return list;
     }
 
-    public static EntityRayTraceResult rayTraceEntity(Entity shooter, Predicate<Entity> filter, double distance) {
-        World world = shooter.level;
+    public static EntityHitResult rayTraceEntity(Entity shooter, Predicate<Entity> filter, double distance) {
+        Level world = shooter.level;
 
-        Vector3d startVec = shooter.getEyePosition(1.0F);
-        Vector3d endVec = shooter.getEyePosition(1.0F).add(shooter.getViewVector(1.0F).scale(distance));
+        Vec3 startVec = shooter.getEyePosition(1.0F);
+        Vec3 endVec = shooter.getEyePosition(1.0F).add(shooter.getViewVector(1.0F).scale(distance));
 
         double d0 = distance * distance;
 
         Entity entity = null;
-        Vector3d vector3d = null;
+        Vec3 vector3d = null;
 
         for (Entity entity1 : world.getEntities(shooter, shooter.getBoundingBox()
                 .expandTowards(shooter.getViewVector(1.0F).scale(distance * distance)).inflate(1.0D), filter)) {
-            AxisAlignedBB axisalignedbb = entity1.getBoundingBox().inflate(entity1.getPickRadius());
-            Optional<Vector3d> optional = axisalignedbb.clip(startVec, endVec);
+            AABB axisalignedbb = entity1.getBoundingBox().inflate(entity1.getPickRadius());
+            Optional<Vec3> optional = axisalignedbb.clip(startVec, endVec);
 
             if (axisalignedbb.contains(startVec)) {
                 if (d0 >= 0.0D) {
@@ -75,7 +75,7 @@ public class EntityUtils {
                     d0 = 0.0D;
                 }
             } else if (optional.isPresent()) {
-                Vector3d vector3d1 = optional.get();
+                Vec3 vector3d1 = optional.get();
 
                 double d1 = startVec.distanceToSqr(vector3d1);
 
@@ -95,7 +95,7 @@ public class EntityUtils {
             }
         }
 
-        return entity == null ? null : new EntityRayTraceResult(entity, vector3d);
+        return entity == null ? null : new EntityHitResult(entity, vector3d);
     }
 
     private static String getAttributeName(ItemStack stack, Attribute attribute) {
@@ -110,7 +110,7 @@ public class EntityUtils {
 
         UUID uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
 
-        ModifiableAttributeInstance instance = entity.getAttribute(attribute);
+        AttributeInstance instance = entity.getAttribute(attribute);
         AttributeModifier modifier = new AttributeModifier(uuid, name, value, operation);
 
         if (instance == null || instance.hasModifier(modifier))
@@ -129,7 +129,7 @@ public class EntityUtils {
 
         UUID uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
 
-        ModifiableAttributeInstance instance = entity.getAttribute(attribute);
+        AttributeInstance instance = entity.getAttribute(attribute);
         AttributeModifier modifier = new AttributeModifier(uuid, name, value, operation);
 
         if (instance == null || !instance.hasModifier(modifier))
@@ -140,21 +140,19 @@ public class EntityUtils {
         return true;
     }
 
-    public static void applyAttributeModifier(ModifiableAttributeInstance instance, AttributeModifier modifier) {
+    public static void applyAttributeModifier(AttributeInstance instance, AttributeModifier modifier) {
         if (!instance.hasModifier(modifier))
             instance.addTransientModifier(modifier);
     }
 
-    public static void removeAttributeModifier(ModifiableAttributeInstance instance, AttributeModifier modifier) {
+    public static void removeAttributeModifier(AttributeInstance instance, AttributeModifier modifier) {
         if (instance.hasModifier(modifier))
             instance.removeModifier(modifier);
     }
 
     public static ItemStack findEquippedCurio(Entity entity, Item item) {
-        if (!(entity instanceof PlayerEntity))
+        if (!(entity instanceof Player player))
             return ItemStack.EMPTY;
-
-        PlayerEntity player = (PlayerEntity) entity;
 
         Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(item, player);
 

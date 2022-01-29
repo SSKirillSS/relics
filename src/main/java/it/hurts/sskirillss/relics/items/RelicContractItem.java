@@ -3,14 +3,14 @@ package it.hurts.sskirillss.relics.items;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -27,12 +27,14 @@ public class RelicContractItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        PlayerEntity owner = RelicUtils.Owner.getOwner(stack, worldIn);
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        Player owner = RelicUtils.Owner.getOwner(stack, worldIn);
+
         if (owner != null) {
-            tooltip.add(new TranslationTextComponent("tooltip.relics.relic_contract.tooltip_1", owner.getDisplayName()));
-            tooltip.add(new TranslationTextComponent("tooltip.relics.relic_contract.tooltip_2", NBTUtils.getInt(stack, TAG_BLOOD, 0) + 1));
+            tooltip.add(new TranslatableComponent("tooltip.relics.relic_contract.tooltip_1", owner.getDisplayName()));
+            tooltip.add(new TranslatableComponent("tooltip.relics.relic_contract.tooltip_2", NBTUtils.getInt(stack, TAG_BLOOD, 0) + 1));
         }
+
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 }

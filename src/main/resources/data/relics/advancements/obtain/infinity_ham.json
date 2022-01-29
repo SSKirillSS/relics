@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:infinity_ham"
+            "items": [
+              "relics:infinity_ham"
+            ]
           }
         ]
       }

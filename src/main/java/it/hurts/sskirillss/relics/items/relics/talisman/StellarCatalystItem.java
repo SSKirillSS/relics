@@ -10,16 +10,18 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.IndirectEntityDamageSource;
-import net.minecraft.world.World;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Random;
 
 public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> {
     public static StellarCatalystItem INSTANCE;
@@ -58,17 +60,18 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> {
 
             DamageSource source = event.getSource();
 
-            if (!(source.getEntity() instanceof PlayerEntity) || (source instanceof IndirectEntityDamageSource
+            if (!(source.getEntity() instanceof Player) || (source instanceof IndirectEntityDamageSource
                     && source.getDirectEntity() instanceof StellarCatalystProjectileEntity))
                 return;
 
-            PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
+            Player player = (Player) event.getSource().getEntity();
 
             if (EntityUtils.findEquippedCurio(player, ItemRegistry.STELLAR_CATALYST.get()).isEmpty())
                 return;
 
             LivingEntity target = event.getEntityLiving();
-            World world = target.getCommandSenderWorld();
+            Level world = target.getCommandSenderWorld();
+            Random random = world.getRandom();
 
             if (world.isNight() && world.canSeeSky(target.blockPosition())
                     && random.nextFloat() <= stats.chance) {

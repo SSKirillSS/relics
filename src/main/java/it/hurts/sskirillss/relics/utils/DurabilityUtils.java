@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.utils;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class DurabilityUtils {
     public static boolean isBroken(ItemStack stack) {

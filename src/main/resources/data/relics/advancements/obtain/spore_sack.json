@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:spore_sack"
+            "items": [
+              "relics:spore_sack"
+            ]
           }
         ]
       }

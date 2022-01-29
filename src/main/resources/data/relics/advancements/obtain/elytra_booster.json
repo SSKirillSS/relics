@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:elytra_booster"
+            "items": [
+              "relics:elytra_booster"
+            ]
           }
         ]
       }

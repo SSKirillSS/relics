@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.client.renderer.items.models.IceBreakerModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
 import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
@@ -13,20 +12,17 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -78,24 +74,17 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
+        if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        PlayerEntity player = (PlayerEntity) livingEntity;
-        Vector3d motion = player.getDeltaMovement();
+        Vec3 motion = player.getDeltaMovement();
 
-        if (player.isOnGround() || player.abilities.flying || motion.y() > 0
+        if (player.isOnGround() || player.getAbilities().flying || motion.y() > 0
                 || player.isFallFlying() || player.isSpectator())
             return;
 
         player.setDeltaMovement(motion.x(), motion.y() * stats.fallMotionMultiplier, motion.z());
         player.getCommandSenderWorld().addParticle(ParticleTypes.SMOKE, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public BipedModel<LivingEntity> getModel() {
-        return new IceBreakerModel();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
@@ -104,22 +93,20 @@ public class IceBreakerItem extends RelicItem<IceBreakerItem.Stats> {
         public static void onEntityFall(LivingFallEvent event) {
             Stats stats = INSTANCE.stats;
 
-            if (!(event.getEntityLiving() instanceof PlayerEntity))
+            if (!(event.getEntityLiving() instanceof Player player))
                 return;
-
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             if (EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_BREAKER.get()).isEmpty())
                 return;
 
             float distance = event.getDistance();
-            World world = player.getCommandSenderWorld();
+            Level world = player.getCommandSenderWorld();
 
             if (distance < 2 || !player.isShiftKeyDown())
                 return;
 
             world.playSound(null, player.blockPosition(), SoundEvents.WITHER_BREAK_BLOCK,
-                    SoundCategory.PLAYERS, 0.75F, 1.0F);
+                    SoundSource.PLAYERS, 0.75F, 1.0F);
             world.addParticle(ParticleTypes.EXPLOSION_EMITTER, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
 
             player.getCooldowns().addCooldown(ItemRegistry.ICE_BREAKER.get(), Math.round(distance * stats.stompCooldownMultiplier * 20));

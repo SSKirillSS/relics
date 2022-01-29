@@ -4,8 +4,8 @@ import it.hurts.sskirillss.relics.utils.RelicsTab;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import net.minecraft.item.Item;
-import net.minecraft.item.Rarity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 
 @Data
 @Builder

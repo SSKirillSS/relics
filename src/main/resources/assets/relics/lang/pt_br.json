@@ -157,7 +157,7 @@
 
   "item.relics.enders_hand": "Mão de Ender",
   "tooltip.relics.enders_hand.ability.1.name": "Contrato do End",
-  "tooltip.relics.enders_hand.ability.1.description": "Endermans serão neutros para o usuário",
+  "tooltip.relics.enders_hand.ability.1.description": "EnderMans serão neutros para o usuário",
   "tooltip.relics.enders_hand.ability.2.name": "Troca Equivalente",
   "tooltip.relics.enders_hand.ability.2.description": "Troca as posição do usuario e do enderman para qual ele está olhando",
   "tooltip.relics.enders_hand.ability.3.name": "Baú de Ender",

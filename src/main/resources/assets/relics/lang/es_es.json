@@ -157,9 +157,9 @@
 
   "item.relics.enders_hand": "Mano de Ender",
   "tooltip.relics.enders_hand.ability.1.name": "Contrato del End",
-  "tooltip.relics.enders_hand.ability.1.description": "Los Endermans permanecerán neutrales ante el portador",
+  "tooltip.relics.enders_hand.ability.1.description": "Los EnderMans permanecerán neutrales ante el portador",
   "tooltip.relics.enders_hand.ability.2.name": "Intercambio equivalente",
-  "tooltip.relics.enders_hand.ability.2.description": "Cambia la posición entre un Enderman y el portador mientras se puedan mirar",
+  "tooltip.relics.enders_hand.ability.2.description": "Cambia la posición entre un EnderMan y el portador mientras se puedan mirar",
   "tooltip.relics.enders_hand.ability.3.name": "Cofre de ender",
   "tooltip.relics.enders_hand.ability.3.description": "Invoca un cofre de ender portátil",
 

@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:old_boot"
+            "items": [
+              "relics:old_boot"
+            ]
           }
         ]
       }

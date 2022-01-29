@@ -2,10 +2,10 @@ package it.hurts.sskirillss.relics.items;
 
 import it.hurts.sskirillss.relics.init.BlockRegistry;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
-import net.minecraft.block.*;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Blocks;
 
 public class ChalkItem extends Item {
     public ChalkItem() {
@@ -16,13 +16,18 @@ public class ChalkItem extends Item {
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         if (context.getLevel().getBlockState(context.getClickedPos()).canOcclude()
                 && context.getLevel().getBlockState(context.getClickedPos().above()).getBlock() == Blocks.AIR) {
+
             context.getLevel().setBlockAndUpdate(context.getClickedPos().above(), BlockRegistry.CHALK_BLOCK.get().defaultBlockState());
-            if (!context.getPlayer().isCreative()) context.getItemInHand().hurtAndBreak(1, context.getPlayer(), (player) -> context.getPlayer().broadcastBreakEvent(context.getHand()));
-            return ActionResultType.SUCCESS;
+
+            if (!context.getPlayer().isCreative())
+                context.getItemInHand().hurtAndBreak(1, context.getPlayer(), (player) -> context.getPlayer().broadcastBreakEvent(context.getHand()));
+
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+
+        return InteractionResult.PASS;
     }
 }

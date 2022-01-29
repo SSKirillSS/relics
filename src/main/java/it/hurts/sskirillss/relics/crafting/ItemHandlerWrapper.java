@@ -1,28 +1,28 @@
 package it.hurts.sskirillss.relics.crafting;
 
 import com.google.common.collect.AbstractIterator;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
-public class ItemHandlerWrapper implements IInventory, Iterable<ItemStack> {
+public class ItemHandlerWrapper implements Container, Iterable<ItemStack> {
     protected final IItemHandlerModifiable inner;
 
     @Nullable
-    protected final Supplier<Vector3d> location;
+    protected final Supplier<Vec3> location;
     protected final int distance;
 
     public ItemHandlerWrapper(IItemHandlerModifiable inner) {
         this(inner, null, 0);
     }
 
-    public ItemHandlerWrapper(IItemHandlerModifiable inner, @Nullable Supplier<Vector3d> location, int distance) {
+    public ItemHandlerWrapper(IItemHandlerModifiable inner, @Nullable Supplier<Vec3> location, int distance) {
         this.inner = inner;
         this.distance = distance;
         this.location = location;
@@ -65,7 +65,7 @@ public class ItemHandlerWrapper implements IInventory, Iterable<ItemStack> {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         if (location == null) return true;
         return player.position().distanceTo(location.get()) <= distance;
     }

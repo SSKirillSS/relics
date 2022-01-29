@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.data.runes.RuneConfigData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.RuneItem;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Items;
 
 import java.awt.*;
 

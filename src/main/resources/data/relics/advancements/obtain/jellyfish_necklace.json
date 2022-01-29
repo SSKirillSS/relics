@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "relics:jellyfish_necklace"
+            "items": [
+              "relics:jellyfish_necklace"
+            ]
           }
         ]
       }

@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.configs.data.runes;
 
 import lombok.*;
-import net.minecraft.loot.LootTables;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,21 +11,21 @@ import java.util.List;
 @AllArgsConstructor
 public class RuneLootData {
     private List<String> table = Arrays.asList(
-            LootTables.UNDERWATER_RUIN_BIG.toString(),
-            LootTables.UNDERWATER_RUIN_SMALL.toString(),
-            LootTables.SHIPWRECK_TREASURE.toString(),
-            LootTables.NETHER_BRIDGE.toString(),
-            LootTables.BASTION_BRIDGE.toString(),
-            LootTables.BASTION_OTHER.toString(),
-            LootTables.BASTION_TREASURE.toString(),
-            LootTables.BASTION_HOGLIN_STABLE.toString(),
-            LootTables.RUINED_PORTAL.toString(),
-            LootTables.IGLOO_CHEST.toString(),
-            LootTables.DESERT_PYRAMID.toString(),
-            LootTables.STRONGHOLD_CORRIDOR.toString(),
-            LootTables.STRONGHOLD_CROSSING.toString(),
-            LootTables.STRONGHOLD_LIBRARY.toString(),
-            LootTables.ABANDONED_MINESHAFT.toString()
+            BuiltInLootTables.UNDERWATER_RUIN_BIG.toString(),
+            BuiltInLootTables.UNDERWATER_RUIN_SMALL.toString(),
+            BuiltInLootTables.SHIPWRECK_TREASURE.toString(),
+            BuiltInLootTables.NETHER_BRIDGE.toString(),
+            BuiltInLootTables.BASTION_BRIDGE.toString(),
+            BuiltInLootTables.BASTION_OTHER.toString(),
+            BuiltInLootTables.BASTION_TREASURE.toString(),
+            BuiltInLootTables.BASTION_HOGLIN_STABLE.toString(),
+            BuiltInLootTables.RUINED_PORTAL.toString(),
+            BuiltInLootTables.IGLOO_CHEST.toString(),
+            BuiltInLootTables.DESERT_PYRAMID.toString(),
+            BuiltInLootTables.STRONGHOLD_CORRIDOR.toString(),
+            BuiltInLootTables.STRONGHOLD_CROSSING.toString(),
+            BuiltInLootTables.STRONGHOLD_LIBRARY.toString(),
+            BuiltInLootTables.ABANDONED_MINESHAFT.toString()
     );
     
     private double chance = 0.05D;

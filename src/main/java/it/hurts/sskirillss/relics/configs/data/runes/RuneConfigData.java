@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 import java.util.List;
 import java.util.stream.Collectors;

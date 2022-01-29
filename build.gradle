@@ -4,14 +4,18 @@ buildscript {
 
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'io.freefair.gradle:lombok-plugin:6.3.0'
+        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: "io.freefair.lombok"
 apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
 apply plugin: 'java'
@@ -22,7 +26,7 @@ version = '0.3.4'
 group = 'it.hurts.sskirillss'
 archivesBaseName = 'relics'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 mixin {
@@ -30,7 +34,7 @@ mixin {
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'official', version: '1.18.1'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -72,22 +76,17 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+    annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.13'
+    minecraft 'net.minecraftforge:forge:1.18.1-39.0.59'
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.6.8")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.6.8:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.1-5.0.4.2")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.1-5.0.4.2:api")
 
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75")
-    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
-
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
-    testCompileOnly 'org.projectlombok:lombok:1.18.20'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.1:9.1.2.54")
+    compileOnly fg.deobf("mezz.jei:jei-1.18.1:9.1.2.54:api")
 }
 
 jar {

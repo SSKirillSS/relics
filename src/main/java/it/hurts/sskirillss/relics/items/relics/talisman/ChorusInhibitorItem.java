@@ -10,17 +10,17 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.event.entity.living.EntityTeleportEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -59,19 +59,17 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> {
         public static void onChorusTeleport(EntityTeleportEvent.ChorusFruit event) {
             Stats stats = INSTANCE.stats;
 
-            if (!(event.getEntityLiving() instanceof PlayerEntity))
+            if (!(event.getEntityLiving() instanceof Player player))
                 return;
-
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             if (EntityUtils.findEquippedCurio(player, ItemRegistry.CHORUS_INHIBITOR.get()).isEmpty())
                 return;
 
-            World world = player.getCommandSenderWorld();
-            Vector3d view = player.getViewVector(0);
-            Vector3d eyeVec = player.getEyePosition(0);
-            BlockRayTraceResult ray = world.clip(new RayTraceContext(eyeVec, eyeVec.add(view.x * stats.maxDistance, view.y * stats.maxDistance,
-                    view.z * stats.maxDistance), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
+            Level world = player.getCommandSenderWorld();
+            Vec3 view = player.getViewVector(0);
+            Vec3 eyeVec = player.getEyePosition(0);
+            BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * stats.maxDistance, view.y * stats.maxDistance,
+                    view.z * stats.maxDistance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
             BlockPos pos = ray.getBlockPos();
 
             if (!world.getBlockState(pos).getMaterial().isSolid())
@@ -89,7 +87,7 @@ public class ChorusInhibitorItem extends RelicItem<ChorusInhibitorItem.Stats> {
                 event.setCanceled(true);
 
                 player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
-                world.playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                world.playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
 
                 break;
             }

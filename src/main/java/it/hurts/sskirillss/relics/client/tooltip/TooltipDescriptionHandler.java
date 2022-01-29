@@ -8,15 +8,15 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,18 +35,18 @@ import java.util.Objects;
 public class TooltipDescriptionHandler {
     @SubscribeEvent
     public static void onTooltipRender(ItemTooltipEvent event) {
-        PlayerEntity player = event.getPlayer();
-        List<ITextComponent> original = event.getToolTip();
+        Player player = event.getPlayer();
+        List<Component> original = event.getToolTip();
         ItemStack stack = event.getItemStack();
 
-        List<ITextComponent> tooltip = new ArrayList<>();
+        List<Component> tooltip = new ArrayList<>();
 
         renderState(stack, tooltip, player);
         renderShift(stack, tooltip);
 
         try {
-            if (event.getFlags() == ITooltipFlag.TooltipFlags.ADVANCED)
-                original.remove(new TranslationTextComponent("item.durability",
+            if (event.getFlags() == TooltipFlag.Default.ADVANCED)
+                original.remove(new TranslatableComponent("item.durability",
                         stack.getMaxDamage() - stack.getDamageValue(), stack.getMaxDamage()));
         } catch (Exception ignored) {
 
@@ -55,7 +55,7 @@ public class TooltipDescriptionHandler {
         original.addAll(1, tooltip);
     }
 
-    private static void renderState(ItemStack stack, List<ITextComponent> tooltip, PlayerEntity player) {
+    private static void renderState(ItemStack stack, List<Component> tooltip, Player player) {
         if (player == null || stack == null)
             return;
 
@@ -63,15 +63,15 @@ public class TooltipDescriptionHandler {
 
         if (item instanceof IRepairableItem) {
             if (DurabilityUtils.isBroken(stack))
-                tooltip.add((new StringTextComponent("▶ ")
-                        .withStyle(TextFormatting.GOLD))
-                        .append((new TranslationTextComponent("tooltip.relics.relic.broken"))
-                                .withStyle(TextFormatting.YELLOW)));
+                tooltip.add((new TextComponent("▶ ")
+                        .withStyle(ChatFormatting.GOLD))
+                        .append((new TranslatableComponent("tooltip.relics.relic.broken"))
+                                .withStyle(ChatFormatting.YELLOW)));
             else if (stack.getDamageValue() >= stack.getMaxDamage() * 0.1F)
-                tooltip.add((new StringTextComponent("▶ ")
-                        .withStyle(TextFormatting.GOLD))
-                        .append((new TranslationTextComponent("tooltip.relics.relic.damaged"))
-                                .withStyle(TextFormatting.YELLOW)));
+                tooltip.add((new TextComponent("▶ ")
+                        .withStyle(ChatFormatting.GOLD))
+                        .append((new TranslatableComponent("tooltip.relics.relic.damaged"))
+                                .withStyle(ChatFormatting.YELLOW)));
         }
 
         for (String tag : CuriosApi.getCuriosHelper().getCurioTags(item)) {
@@ -81,7 +81,7 @@ public class TooltipDescriptionHandler {
                 if (curios.size() == 0)
                     return;
 
-                List<ITextComponent> list = new ArrayList<>();
+                List<Component> list = new ArrayList<>();
 
                 if (curios.get(tag) == null || curios.get(tag).getSlots() > 0)
                     return;
@@ -94,30 +94,30 @@ public class TooltipDescriptionHandler {
                         int amount = pair.getRight();
 
                         if (identifier.equals(tag) && amount > 0)
-                            list.add((new StringTextComponent("   ◆ ")
-                                    .withStyle(TextFormatting.YELLOW))
-                                    .append(new StringTextComponent(new ItemStack(curio).getHoverName().getString())
-                                            .withStyle(TextFormatting.GREEN))
-                                    .append((new StringTextComponent(String.format(" [+%d]", amount))
-                                            .withStyle(TextFormatting.WHITE))));
+                            list.add((new TextComponent("   ◆ ")
+                                    .withStyle(ChatFormatting.YELLOW))
+                                    .append(new TextComponent(new ItemStack(curio).getHoverName().getString())
+                                            .withStyle(ChatFormatting.GREEN))
+                                    .append((new TextComponent(String.format(" [+%d]", amount))
+                                            .withStyle(ChatFormatting.WHITE))));
                     }
                 }
 
-                StringTextComponent info = new StringTextComponent("");
+                TextComponent info = new TextComponent("");
 
-                info.append((new StringTextComponent("▶ ")
-                        .withStyle(TextFormatting.GOLD))
-                        .append((new TranslationTextComponent("tooltip.relics.relic.requires_slot"))
-                                .withStyle(TextFormatting.YELLOW))
+                info.append((new TextComponent("▶ ")
+                        .withStyle(ChatFormatting.GOLD))
+                        .append((new TranslatableComponent("tooltip.relics.relic.requires_slot"))
+                                .withStyle(ChatFormatting.YELLOW))
                         .append(" ")
-                        .append((new TranslationTextComponent("curios.identifier." + tag)
-                                .withStyle(TextFormatting.GREEN))));
+                        .append((new TranslatableComponent("curios.identifier." + tag)
+                                .withStyle(ChatFormatting.GREEN))));
 
                 if (!list.isEmpty())
                     info.append(". ")
-                            .withStyle(TextFormatting.YELLOW)
-                            .append(new TranslationTextComponent("tooltip.relics.relic.allowed_modifiers")
-                                    .withStyle(TextFormatting.YELLOW));
+                            .withStyle(ChatFormatting.YELLOW)
+                            .append(new TranslatableComponent("tooltip.relics.relic.allowed_modifiers")
+                                    .withStyle(ChatFormatting.YELLOW));
 
                 tooltip.add(info);
 
@@ -127,28 +127,28 @@ public class TooltipDescriptionHandler {
         }
     }
 
-    private static List<ITextComponent> getSlotTooltip(ItemStack stack) {
+    private static List<Component> getSlotTooltip(ItemStack stack) {
         List<String> tags = new ArrayList<>(CuriosApi.getCuriosHelper().getCurioTags(stack.getItem()));
-        List<ITextComponent> tooltip = new ArrayList<>();
+        List<Component> tooltip = new ArrayList<>();
 
         if (!(stack.getItem() instanceof ICurioItem) || tags.isEmpty())
             return tooltip;
 
-        StringTextComponent component = new StringTextComponent("");
+        TextComponent component = new TextComponent("");
 
-        component.append((new StringTextComponent("   ◆ ")
-                .withStyle(TextFormatting.GREEN))
-                .append((new TranslationTextComponent("tooltip.relics.shift.stats.slot"))
-                        .withStyle(TextFormatting.YELLOW))
+        component.append((new TextComponent("   ◆ ")
+                .withStyle(ChatFormatting.GREEN))
+                .append((new TranslatableComponent("tooltip.relics.shift.stats.slot"))
+                        .withStyle(ChatFormatting.YELLOW))
                 .append(" "));
 
         for (int i = 0; i < tags.size(); i++) {
             String tag = tags.get(i);
 
-            component.append((new TranslationTextComponent("curios.identifier." + tag)
-                    .withStyle(TextFormatting.WHITE))
-                    .append((new StringTextComponent(i + 1 < tags.size() ? ", " : "")
-                            .withStyle(TextFormatting.GRAY))));
+            component.append((new TranslatableComponent("curios.identifier." + tag)
+                    .withStyle(ChatFormatting.WHITE))
+                    .append((new TextComponent(i + 1 < tags.size() ? ", " : "")
+                            .withStyle(ChatFormatting.GRAY))));
         }
 
         tooltip.add(component);
@@ -156,13 +156,11 @@ public class TooltipDescriptionHandler {
         return tooltip;
     }
 
-    private static List<ITextComponent> getLevelingTooltip(ItemStack stack) {
-        List<ITextComponent> tooltip = new ArrayList<>();
+    private static List<Component> getLevelingTooltip(ItemStack stack) {
+        List<Component> tooltip = new ArrayList<>();
 
-        if (!(stack.getItem() instanceof ILeveledItem))
+        if (!(stack.getItem() instanceof ILeveledItem item))
             return tooltip;
-
-        ILeveledItem item = (ILeveledItem) stack.getItem();
 
         int level = item.getLevel(stack);
 
@@ -170,39 +168,38 @@ public class TooltipDescriptionHandler {
         int prevExp = item.getTotalExperienceForLevel(Math.max(level, level - 1));
         int nextExp = item.getTotalExperienceForLevel(item.getLevel(stack) + 1);
 
-        tooltip.add((new StringTextComponent("   ◆ ")
-                .withStyle(TextFormatting.GREEN))
-                .append((new TranslationTextComponent("tooltip.relics.shift.stats.level"))
-                        .withStyle(TextFormatting.YELLOW))
-                .append((new StringTextComponent(String.format("%d [%d/%d]", level, (currExp - prevExp), (nextExp - prevExp)))
-                        .withStyle(TextFormatting.WHITE))));
+        tooltip.add((new TextComponent("   ◆ ")
+                .withStyle(ChatFormatting.GREEN))
+                .append((new TranslatableComponent("tooltip.relics.shift.stats.level"))
+                        .withStyle(ChatFormatting.YELLOW))
+                .append((new TextComponent(String.format("%d [%d/%d]", level, (currExp - prevExp), (nextExp - prevExp)))
+                        .withStyle(ChatFormatting.WHITE))));
 
         return tooltip;
     }
 
-    private static List<ITextComponent> getDurabilityTooltip(ItemStack stack) {
-        List<ITextComponent> tooltip = new ArrayList<>();
+    private static List<Component> getDurabilityTooltip(ItemStack stack) {
+        List<Component> tooltip = new ArrayList<>();
 
         if (!(stack.getItem() instanceof IRepairableItem) || DurabilityUtils.isBroken(stack))
             return tooltip;
 
-        tooltip.add((new StringTextComponent("   ◆ ")
-                .withStyle(TextFormatting.GREEN))
-                .append((new TranslationTextComponent("tooltip.relics.shift.stats.durability"))
-                        .withStyle(TextFormatting.YELLOW))
-                .append((new StringTextComponent(String.format(" %d/%d", DurabilityUtils.getDurability(stack), stack.getMaxDamage())))
-                        .withStyle(TextFormatting.WHITE)));
+        tooltip.add((new TextComponent("   ◆ ")
+                .withStyle(ChatFormatting.GREEN))
+                .append((new TranslatableComponent("tooltip.relics.shift.stats.durability"))
+                        .withStyle(ChatFormatting.YELLOW))
+                .append((new TextComponent(String.format(" %d/%d", DurabilityUtils.getDurability(stack), stack.getMaxDamage())))
+                        .withStyle(ChatFormatting.WHITE)));
 
         return tooltip;
     }
 
-    private static List<ITextComponent> getAbilitiesTooltip(ItemStack stack) {
-        List<ITextComponent> tooltip = new ArrayList<>();
+    private static List<Component> getAbilitiesTooltip(ItemStack stack) {
+        List<Component> tooltip = new ArrayList<>();
 
-        if (!(stack.getItem() instanceof RelicItem))
+        if (!(stack.getItem() instanceof RelicItem<?> relic))
             return tooltip;
 
-        RelicItem<?> relic = (RelicItem<?>) stack.getItem();
         RelicTooltip data = relic.getTooltip(stack);
 
         if (data == null)
@@ -218,98 +215,94 @@ public class TooltipDescriptionHandler {
             String path = "tooltip." + Reference.MODID + "." + Objects.requireNonNull(relic.getRegistryName()).getPath() + ".ability." + (i + 1) + ".";
             String key = ability.getKeybinding();
 
-            tooltip.add((new StringTextComponent("   ◆ ")
-                    .withStyle(ability.isNegative() ? TextFormatting.RED : TextFormatting.GREEN))
-                    .append((new TranslationTextComponent(path + "name"))
-                            .withStyle(TextFormatting.YELLOW))
-                    .append((new StringTextComponent(key == null ? "" : String.format(" [%s]", key))
-                            .withStyle(TextFormatting.DARK_GRAY)))
-                    .append((new StringTextComponent(" - ")
-                            .withStyle(TextFormatting.WHITE)))
-                    .append(new TranslationTextComponent(path + "description", ability.getArgs().toArray(new Object[0]))
-                            .withStyle(TextFormatting.GRAY)));
+            tooltip.add((new TextComponent("   ◆ ")
+                    .withStyle(ability.isNegative() ? ChatFormatting.RED : ChatFormatting.GREEN))
+                    .append((new TranslatableComponent(path + "name"))
+                            .withStyle(ChatFormatting.YELLOW))
+                    .append((new TextComponent(key == null ? "" : String.format(" [%s]", key))
+                            .withStyle(ChatFormatting.DARK_GRAY)))
+                    .append((new TextComponent(" - ")
+                            .withStyle(ChatFormatting.WHITE)))
+                    .append(new TranslatableComponent(path + "description", ability.getArgs().toArray(new Object[0]))
+                            .withStyle(ChatFormatting.GRAY)));
         }
 
         return tooltip;
     }
 
-    private static List<ITextComponent> getModifiersTooltip(ItemStack stack) {
-        List<ITextComponent> tooltip = new ArrayList<>();
+    private static List<Component> getModifiersTooltip(ItemStack stack) {
+        List<Component> tooltip = new ArrayList<>();
 
-        if (!(stack.getItem() instanceof RelicItem<?>))
-            return tooltip;
-
-        RelicItem<?> relic = (RelicItem<?>) stack.getItem();
-
-        if (relic.getSlotModifiers(stack) == null)
+        if (!(stack.getItem() instanceof RelicItem<?> relic)
+                || relic.getSlotModifiers(stack) == null)
             return tooltip;
 
         for (Pair<String, Integer> pair : relic.getSlotModifiers(stack).getModifiers()) {
             String identifier = pair.getLeft();
             int amount = pair.getRight();
 
-            tooltip.add((new StringTextComponent("   ◆ ")
-                    .withStyle(amount > 0 ? TextFormatting.GREEN : TextFormatting.RED))
-                    .append((new TranslationTextComponent("curios.identifier." + identifier)
-                            .withStyle(TextFormatting.YELLOW)))
-                    .append((new StringTextComponent(String.format(" [%s%s]", (amount > 0 ? "+" : "-"), amount))
-                            .withStyle(TextFormatting.GRAY))));
+            tooltip.add((new TextComponent("   ◆ ")
+                    .withStyle(amount > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))
+                    .append((new TranslatableComponent("curios.identifier." + identifier)
+                            .withStyle(ChatFormatting.YELLOW)))
+                    .append((new TextComponent(String.format(" [%s%s]", (amount > 0 ? "+" : "-"), amount))
+                            .withStyle(ChatFormatting.GRAY))));
         }
 
         return tooltip;
     }
 
-    private static void renderShift(ItemStack stack, List<ITextComponent> tooltip) {
-        List<ITextComponent> slot = getSlotTooltip(stack);
-        List<ITextComponent> leveling = getLevelingTooltip(stack);
-        List<ITextComponent> abilities = getAbilitiesTooltip(stack);
-        List<ITextComponent> modifiers = getModifiersTooltip(stack);
-        List<ITextComponent> durability = getDurabilityTooltip(stack);
+    private static void renderShift(ItemStack stack, List<Component> tooltip) {
+        List<Component> slot = getSlotTooltip(stack);
+        List<Component> leveling = getLevelingTooltip(stack);
+        List<Component> abilities = getAbilitiesTooltip(stack);
+        List<Component> modifiers = getModifiersTooltip(stack);
+        List<Component> durability = getDurabilityTooltip(stack);
 
         boolean hasStats = !leveling.isEmpty() || !durability.isEmpty() || !slot.isEmpty();
 
         if (hasStats || !abilities.isEmpty() || !modifiers.isEmpty()) {
             if (Screen.hasShiftDown()) {
-                tooltip.add(new StringTextComponent(" "));
+                tooltip.add(new TextComponent(" "));
 
                 if (!abilities.isEmpty()) {
-                    tooltip.add((new StringTextComponent("▶ ")
-                            .withStyle(TextFormatting.DARK_GREEN))
-                            .append((new TranslationTextComponent("tooltip.relics.shift.abilities"))
-                                    .withStyle(TextFormatting.GREEN)));
+                    tooltip.add((new TextComponent("▶ ")
+                            .withStyle(ChatFormatting.DARK_GREEN))
+                            .append((new TranslatableComponent("tooltip.relics.shift.abilities"))
+                                    .withStyle(ChatFormatting.GREEN)));
 
                     tooltip.addAll(abilities);
 
                     if (hasStats)
-                        tooltip.add(new StringTextComponent(" "));
+                        tooltip.add(new TextComponent(" "));
                 }
 
                 if (hasStats) {
-                    tooltip.add((new StringTextComponent("▶ ")
-                            .withStyle(TextFormatting.DARK_GREEN))
-                            .append((new TranslationTextComponent("tooltip.relics.shift.stats"))
-                                    .withStyle(TextFormatting.GREEN)));
+                    tooltip.add((new TextComponent("▶ ")
+                            .withStyle(ChatFormatting.DARK_GREEN))
+                            .append((new TranslatableComponent("tooltip.relics.shift.stats"))
+                                    .withStyle(ChatFormatting.GREEN)));
 
                     tooltip.addAll(slot);
                     tooltip.addAll(leveling);
                     tooltip.addAll(durability);
 
                     if (!modifiers.isEmpty())
-                        tooltip.add(new StringTextComponent(" "));
+                        tooltip.add(new TextComponent(" "));
                 }
 
                 if (!modifiers.isEmpty()) {
-                    tooltip.add((new StringTextComponent("▶ ")
-                            .withStyle(TextFormatting.DARK_GREEN))
-                            .append((new TranslationTextComponent("tooltip.relics.shift.slots"))
-                                    .withStyle(TextFormatting.GREEN)));
+                    tooltip.add((new TextComponent("▶ ")
+                            .withStyle(ChatFormatting.DARK_GREEN))
+                            .append((new TranslatableComponent("tooltip.relics.shift.slots"))
+                                    .withStyle(ChatFormatting.GREEN)));
 
                     tooltip.addAll(modifiers);
                 }
             } else {
-                tooltip.add(new StringTextComponent(" "));
+                tooltip.add(new TextComponent(" "));
 
-                tooltip.add(new TranslationTextComponent("tooltip.relics.shift.title"));
+                tooltip.add(new TranslatableComponent("tooltip.relics.shift.title"));
             }
         }
     }

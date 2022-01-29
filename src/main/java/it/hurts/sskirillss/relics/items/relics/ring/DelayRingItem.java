@@ -8,19 +8,19 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.*;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -66,22 +66,21 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
         if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) > 0) {
-            tooltip.add(new TranslationTextComponent("tooltip.relics.delay_ring.tooltip_1", NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0)));
-            tooltip.add(new TranslationTextComponent("tooltip.relics.delay_ring.tooltip_2", NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)));
+            tooltip.add(new TranslatableComponent("tooltip.relics.delay_ring.tooltip_1", NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0)));
+            tooltip.add(new TranslatableComponent("tooltip.relics.delay_ring.tooltip_2", NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)));
         }
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
+        if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        PlayerEntity player = (PlayerEntity) livingEntity;
-        World world = player.getCommandSenderWorld();
+        Level world = player.getCommandSenderWorld();
         int points = NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0);
         int time = NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1);
 
@@ -101,23 +100,22 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
                 NBTUtils.setInt(stack, TAG_UPDATE_TIME, --time);
 
                 world.playSound(null, player.blockPosition(), SoundEvents.UI_BUTTON_CLICK,
-                        SoundCategory.MASTER, 0.75F, 1.0F + time * 0.1F);
+                        SoundSource.MASTER, 0.75F, 1.0F + time * 0.1F);
             }
         } else if (time == 0)
             delay(player, stack);
     }
 
     private void delay(LivingEntity entity, ItemStack stack) {
-        if (!(entity instanceof PlayerEntity) || DurabilityUtils.isBroken(stack))
+        if (!(entity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
         NBTUtils.setInt(stack, TAG_UPDATE_TIME, -1);
 
-        PlayerEntity player = (PlayerEntity) entity;
-        World world = player.getCommandSenderWorld();
+        Level world = player.getCommandSenderWorld();
         int points = NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0);
 
-        world.playSound(null, player.blockPosition(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundCategory.MASTER, 1.0F, 1.0F);
+        world.playSound(null, player.blockPosition(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundSource.MASTER, 1.0F, 1.0F);
         player.getCooldowns().addCooldown(stack.getItem(), stats.useCooldown * 20);
 
         if (points > 0)
@@ -127,7 +125,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
             DamageSource source = DamageSource.GENERIC;
 
             if (!uuidString.equals("")) {
-                PlayerEntity killer = world.getPlayerByUUID(UUID.fromString(uuidString));
+                Player killer = world.getPlayerByUUID(UUID.fromString(uuidString));
 
                 if (killer != null)
                     source = DamageSource.playerAttack(killer);
@@ -153,10 +151,8 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
         public static void onEntityDeath(LivingDeathEvent event) {
             Stats stats = INSTANCE.stats;
 
-            if (!(event.getEntityLiving() instanceof PlayerEntity))
+            if (!(event.getEntityLiving() instanceof Player player))
                 return;
-
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DELAY_RING.get());
 
@@ -165,7 +161,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
 
             Entity source = event.getSource().getEntity();
 
-            if (source instanceof PlayerEntity)
+            if (source instanceof Player)
                 NBTUtils.setString(stack, TAG_KILLER_UUID, source.getUUID().toString());
 
             NBTUtils.setInt(stack, TAG_UPDATE_TIME, stats.delayDuration);

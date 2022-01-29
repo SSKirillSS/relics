@@ -3,7 +3,7 @@ package it.hurts.sskirillss.relics.items.runes;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.configs.data.runes.RuneConfigData;
 import it.hurts.sskirillss.relics.items.RuneItem;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Items;
 
 import java.awt.*;
 

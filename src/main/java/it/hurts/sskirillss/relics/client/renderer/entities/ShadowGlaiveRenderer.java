@@ -1,33 +1,33 @@
 package it.hurts.sskirillss.relics.client.renderer.entities;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 @OnlyIn(Dist.CLIENT)
 public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
-    protected ShadowGlaiveRenderer(EntityRendererManager renderManager) {
+    protected ShadowGlaiveRenderer(Context renderManager) {
         super(renderManager);
     }
 
     @Override
-    public void render(ShadowGlaiveEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(ShadowGlaiveEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         float time = entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks);
         ItemStack stack = new ItemStack(ItemRegistry.SHADOW_GLAIVE.get());
 
@@ -35,14 +35,14 @@ public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
 
         matrixStackIn.pushPose();
 
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 90.0F));
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)));
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.getYRot(), entityIn.getYRot()) - 90.0F));
+        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entityIn.getXRot(), entityIn.getXRot())));
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(90F));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(time * 40F));
         matrixStackIn.scale(0.75F, 0.75F, 0.75F);
 
-        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemCameraTransforms.TransformType.FIXED,
-                packedLightIn, OverlayTexture.NO_OVERLAY, matrixStackIn, bufferIn);
+        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
+                packedLightIn, OverlayTexture.NO_OVERLAY, matrixStackIn, bufferIn, 0);
 
         matrixStackIn.popPose();
     }
@@ -52,9 +52,9 @@ public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
         return new ResourceLocation(Reference.MODID, "textures/item/shadow_glaive.png");
     }
 
-    public static class RenderFactory implements IRenderFactory {
+    public static class RenderFactory implements EntityRendererProvider {
         @Override
-        public EntityRenderer<? super ShadowGlaiveEntity> createRenderFor(EntityRendererManager manager) {
+        public EntityRenderer<? super ShadowGlaiveEntity> create(Context manager) {
             return new ShadowGlaiveRenderer(manager);
         }
     }

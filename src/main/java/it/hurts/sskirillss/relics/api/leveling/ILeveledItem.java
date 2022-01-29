@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.api.leveling;
 
 import it.hurts.sskirillss.relics.configs.data.relics.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public interface ILeveledItem {
     String TAG_EXPERIENCE = "experience";

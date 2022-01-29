@@ -1,40 +1,41 @@
 package it.hurts.sskirillss.relics.entities;
 
+import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.SpaceDissectorItem;
-import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
 
-public class SpaceDissectorEntity extends ThrowableEntity {
-    private static final DataParameter<Integer> UPDATE_TIME = EntityDataManager.defineId(SpaceDissectorEntity.class, DataSerializers.INT);
-    public static final DataParameter<Boolean> IS_RETURNING = EntityDataManager.defineId(SpaceDissectorEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> BOUNCES = EntityDataManager.defineId(SpaceDissectorEntity.class, DataSerializers.INT);
-    private static final DataParameter<String> OWNER = EntityDataManager.defineId(SpaceDissectorEntity.class, DataSerializers.STRING);
+public class SpaceDissectorEntity extends ThrowableProjectile {
+    private static final EntityDataAccessor<Integer> UPDATE_TIME = SynchedEntityData.defineId(SpaceDissectorEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Boolean> IS_RETURNING = SynchedEntityData.defineId(SpaceDissectorEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> BOUNCES = SynchedEntityData.defineId(SpaceDissectorEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<String> OWNER = SynchedEntityData.defineId(SpaceDissectorEntity.class, EntityDataSerializers.STRING);
 
     private static final String TAG_UPDATE_TIME = "time";
     private static final String TAG_IS_RETURNING = "returning";
@@ -43,18 +44,18 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
     private static boolean bounced = false;
     public ItemStack stack = ItemStack.EMPTY;
-    private PlayerEntity owner;
+    private Player owner;
     private static int time;
 
-    public SpaceDissectorEntity(EntityType<? extends SpaceDissectorEntity> type, World worldIn) {
+    public SpaceDissectorEntity(EntityType<? extends SpaceDissectorEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public SpaceDissectorEntity(World world, LivingEntity throwerIn) {
+    public SpaceDissectorEntity(Level world, LivingEntity throwerIn) {
         super(EntityRegistry.SPACE_DISSECTOR.get(), throwerIn, world);
     }
 
-    public void setOwner(PlayerEntity playerIn) {
+    public void setOwner(Player playerIn) {
         this.owner = playerIn;
 
         if (playerIn != null)
@@ -63,7 +64,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
     @Override
     public void tick() {
-        Vector3d defaultMotion = getDeltaMovement();
+        Vec3 defaultMotion = getDeltaMovement();
 
         super.tick();
 
@@ -78,7 +79,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                 if (owner != null && stack != null && !stack.isEmpty())
                     NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
 
-                this.remove();
+                this.remove(Entity.RemovalReason.KILLED);
             }
 
             if (!entityData.get(IS_RETURNING)) {
@@ -94,12 +95,12 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                 setDeltaMovement(defaultMotion);
         } else if (!level.isClientSide()){
             if (owner != null) {
-                EntityUtils.moveTowardsPosition(this, new Vector3d(owner.getX(),
+                EntityUtils.moveTowardsPosition(this, new Vec3(owner.getX(),
                         owner.getY() + 1.0F, owner.getZ()), config.projectileSpeed);
 
-                for (PlayerEntity player : level.getEntitiesOfClass(PlayerEntity.class, this.getBoundingBox().inflate(2.0F))) {
+                for (Player player : level.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(2.0F))) {
                     if (owner.getUUID().equals(player.getUUID()) && stack != null && !stack.isEmpty()) {
-                        this.remove();
+                        this.remove(Entity.RemovalReason.KILLED);
 
                         NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
                     }
@@ -107,7 +108,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
             } else {
                 if (stack != null && stack != ItemStack.EMPTY)
                     NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
-                this.remove();
+                this.remove(Entity.RemovalReason.KILLED);
             }
         }
 
@@ -119,12 +120,12 @@ public class SpaceDissectorEntity extends ThrowableEntity {
     }
 
     @Override
-    protected void onHit(@Nonnull RayTraceResult rayTraceResult) {
+    protected void onHit(@Nonnull HitResult rayTraceResult) {
         SpaceDissectorItem.Stats config = SpaceDissectorItem.INSTANCE.getStats();
 
         switch (rayTraceResult.getType()) {
             case BLOCK: {
-                BlockRayTraceResult result = (BlockRayTraceResult) rayTraceResult;
+                BlockHitResult result = (BlockHitResult) rayTraceResult;
 
                 if (!level.getBlockState(result.getBlockPos()).getMaterial().blocksMotion())
                     return;
@@ -134,7 +135,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                         return;
 
                     Direction dir = result.getDirection();
-                    Vector3d normalVector = new Vector3d(-2 * dir.getStepX(), -2 * dir.getStepY(), -2 * dir.getStepZ()).normalize();
+                    Vec3 normalVector = new Vec3(-2 * dir.getStepX(), -2 * dir.getStepY(), -2 * dir.getStepZ()).normalize();
                     double delta = -1.91 * this.getDeltaMovement().dot(normalVector);
 
                     setDeltaMovement(normalVector.multiply(delta, delta, delta).add(this.getDeltaMovement()));
@@ -147,7 +148,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                                 this.getDeltaMovement().z * 1.25F + MathUtils.randomFloat(random) * 0.35F);
 
                     if (time > 2) {
-                        level.playSound(null, getX(), getY(), getZ(), SoundRegistry.RICOCHET, SoundCategory.MASTER,
+                        level.playSound(null, getX(), getY(), getZ(), SoundRegistry.RICOCHET, SoundSource.MASTER,
                                 0.5F, 0.75F + (random.nextFloat() * 0.5F));
 
                         time = 0;
@@ -163,7 +164,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                 break;
             }
             case ENTITY: {
-                EntityRayTraceResult result = (EntityRayTraceResult) rayTraceResult;
+                EntityHitResult result = (EntityHitResult) rayTraceResult;
 
                 if (!(result.getEntity() instanceof LivingEntity))
                     return;
@@ -174,7 +175,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
                     if (stack != null && stack != ItemStack.EMPTY)
                         NBTUtils.setBoolean(stack, SpaceDissectorItem.TAG_IS_THROWN, false);
 
-                    this.remove();
+                    this.remove(Entity.RemovalReason.KILLED);
                 } else
                     entity.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC,
                             config.baseDamage + (entityData.get(BOUNCES) * config.damageMultiplierPerBounce));
@@ -193,7 +194,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT tag) {
+    public void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt(TAG_UPDATE_TIME, entityData.get(UPDATE_TIME));
         tag.putString(TAG_OWNER_UUID, entityData.get(OWNER));
         tag.putBoolean(TAG_IS_RETURNING, entityData.get(IS_RETURNING));
@@ -205,7 +206,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT tag) {
+    public void readAdditionalSaveData(CompoundTag tag) {
         entityData.set(UPDATE_TIME, tag.getInt(TAG_UPDATE_TIME));
         entityData.set(OWNER, tag.getString(TAG_OWNER_UUID));
         entityData.set(IS_RETURNING, tag.getBoolean(TAG_IS_RETURNING));
@@ -228,7 +229,7 @@ public class SpaceDissectorEntity extends ThrowableEntity {
 
     @Nonnull
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }
