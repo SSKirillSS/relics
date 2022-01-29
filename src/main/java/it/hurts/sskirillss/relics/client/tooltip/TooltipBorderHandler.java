@@ -55,7 +55,7 @@ public class TooltipBorderHandler {
         Minecraft.getInstance().getTextureManager().bind(new ResourceLocation(Reference.MODID, "textures/gui/tooltip/" + stack.getItem().getRegistryName().getPath() + ".png"));
 
         int texWidth = GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
-        int texHeight = GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
+        int texHeight = GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
 
         if (texHeight == 0 || texWidth == 0)
             return;
@@ -63,18 +63,19 @@ public class TooltipBorderHandler {
         matrix.pushPose();
 
         RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
 
         matrix.translate(0, 0, 410.0);
 
-        AbstractGui.blit(matrix, x - 8 - 6, y - 8 - 6, 1, 1 % texHeight, 16, 16, texWidth, texHeight);
-        AbstractGui.blit(matrix, x + width - 8 + 6, y - 8 - 6, texWidth - 16 - 1, 1 % texHeight, 16, 16, texWidth, texHeight);
+        AbstractGui.blit(matrix, x - 14, y - 14, 16, 16, 1, texHeight, 16, 16, texWidth, texHeight);
+        AbstractGui.blit(matrix, x + width - 2, y - 14, 16, 16, texWidth - 16 - 1, texHeight, 16, 16, texWidth, texHeight);
 
-        AbstractGui.blit(matrix, x - 8 - 6, y + height - 8 + 6, 1, 1 % texHeight + 16, 16, 16, texWidth, texHeight);
-        AbstractGui.blit(matrix, x + width - 8 + 6, y + height - 8 + 6, texWidth - 16 - 1, 1 % texHeight + 16, 16, 16, texWidth, texHeight);
+        AbstractGui.blit(matrix, x - 14, y + height - 4, 16, 16, 1, texHeight + 16, 16, 16, texWidth, texHeight);
+        AbstractGui.blit(matrix, x + width - 2, y + height - 4, 16, 16, texWidth - 16 - 1, texHeight + 16, 16, 16, texWidth, texHeight);
 
         if (width >= 94) {
-            AbstractGui.blit(matrix, x + (width / 2) - 47, y - 16, 16 + 2 * texWidth + 1, 1 % texHeight, 94, 16, texWidth, texHeight);
-            AbstractGui.blit(matrix, x + (width / 2) - 47, y + height, 16 + 2 * texWidth + 1, 1 % texHeight + 16, 94, 16, texWidth, texHeight);
+            AbstractGui.blit(matrix, x + (width / 2) - 47, y - 16, 94, 16, 16 + 2 * texWidth + 1, texHeight, 94, 16, texWidth, texHeight);
+            AbstractGui.blit(matrix, x + (width / 2) - 47, y + height, 94, 16, 16 + 2 * texWidth + 1, texHeight + 16, 94, 16, texWidth, texHeight);
         }
 
         RenderSystem.disableBlend();
