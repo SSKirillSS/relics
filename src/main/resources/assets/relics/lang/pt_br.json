@@ -9,6 +9,7 @@
   "key.relics.hud_fourth": "Lançar Habilidade 4",
   "key.relics.hud_fifth": "Lançar Habilidade 5",
 
+  "tooltip.relics.shift.title": "§7Удерживай §8[Shift] §7для подробной информации",
   "tooltip.relics.shift.tooltip": "§7Segure §8[Shift] §7para mais informações",
   "tooltip.relics.relic.broken": "Relíquia foi quebrada!",
   "tooltip.relics.relic.damaged": "Relíquia vai quebrar em breve!",
@@ -370,4 +371,9 @@
   "advancements.relics.stellar_catalyst.description": "Obtenha o Catalisador Estelar",
   "advancements.relics.wool_mitten.title" :  "Tempestade de neve",
   "advancements.relics.wool_mitten.description": "Obtenha a Luva de Lã"
-}
+  
+  "advancements.relics.wool_mitten.description": "Pegue uma luva de lã",
+  "advancements.relics.ghost_skin_talisman.title": "SEsqueletos assustadores assombrados",
+  "advancements.relics.ghost_skin_talisman.description": "Pegue o Talismã de Pele de Fantasma",
+  "advancements.relics.squire_bag.title": "Saco sem fundo",
+  "advancements.relics.squire_bag.description": "Meia dúzia de pistoleiros"
