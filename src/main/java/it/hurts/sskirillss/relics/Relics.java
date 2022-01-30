@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.configs.RelicsConfig;
 import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -50,12 +51,12 @@ public class Relics {
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> SlotTypePreset.RING.getMessageBuilder().size(2).build());
 
-        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> new SlotTypeMessage.Builder("talisman").priority(220)
-                        .icon(RemoteRegistry.TALISMAN_ICON).size(0).build());
-        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+                        .icon(new ResourceLocation(Reference.MODID, "gui/curios/empty_talisman_slot")).size(0).build());
+        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> new SlotTypeMessage.Builder("feet").priority(240)
-                        .icon(RemoteRegistry.FEET_ICON).build());
+                        .icon(new ResourceLocation(Reference.MODID, "gui/curios/empty_feet_slot")).build());
     }
 
     private void setupCommon(final FMLCommonSetupEvent event) {

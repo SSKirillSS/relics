@@ -28,9 +28,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class RemoteRegistry {
-    public static final ResourceLocation TALISMAN_ICON = new ResourceLocation(Reference.MODID, "gui/curios/empty_talisman_slot");
-    public static final ResourceLocation FEET_ICON = new ResourceLocation(Reference.MODID, "gui/curios/empty_feet_slot");
-
     public static final ResourceLocation CIRCLE = new ResourceLocation(Reference.MODID, "particle/circle_tint");
     public static final ResourceLocation SPARK = new ResourceLocation(Reference.MODID, "particle/spark_tint");
 
@@ -39,8 +36,8 @@ public class RemoteRegistry {
         ResourceLocation location = event.getAtlas().location();
 
         if (location.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            event.addSprite(TALISMAN_ICON);
-            event.addSprite(FEET_ICON);
+            event.addSprite(new ResourceLocation(Reference.MODID, "gui/curios/empty_talisman_slot"));
+            event.addSprite(new ResourceLocation(Reference.MODID, "gui/curios/empty_feet_slot"));
         }
 
         if (location.equals(TextureAtlas.LOCATION_PARTICLES)) {
