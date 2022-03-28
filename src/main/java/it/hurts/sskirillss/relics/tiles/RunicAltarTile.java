@@ -173,7 +173,7 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
 
                 if (runes.isEmpty()) {
                     if (!world.isClientSide() && ticksExisted % 20 == 0)
-                        addCraftingProgress(random.nextInt(10) + 1);
+                        addCraftingProgress(random.nextInt(20) + 1);
 
                     return;
                 }
@@ -192,7 +192,7 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
                         pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1)).stream().map(ItemEntity::getItem)
                         .filter(stack -> ingredient.getItem().equals(stack.getItem())).findFirst().ifPresent(item -> {
                     if (!world.isClientSide())
-                        addCraftingProgress(random.nextInt(10) + 1);
+                        addCraftingProgress(random.nextInt(20) + 1);
 
                     setIngredient(ItemStack.EMPTY);
                     item.shrink(1);
