@@ -16,6 +16,7 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -65,7 +66,7 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> {
         BlockState state = world.getBlockState(pos.below());
         FluidState fluid = state.getFluidState();
 
-        if (DurabilityUtils.isBroken(stack))
+        if (DurabilityUtils.isBroken(stack) || livingEntity.isSpectator())
             return;
 
         if (fluid.getType() == Fluids.LAVA || fluid.getType() == Fluids.FLOWING_LAVA) {
