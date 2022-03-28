@@ -63,7 +63,7 @@ public class RelicOwnerRecipe extends SpecialRecipe {
         if (item.isEmpty() || contract.isEmpty())
             return ItemStack.EMPTY;
 
-        ItemStack result = item.copy();
+        ItemStack result = item.copy().split(1);
 
         RelicUtils.Owner.setOwnerUUID(result, RelicUtils.Owner.getOwnerUUID(contract));
         NBTUtils.setLong(result, RelicContractItem.TAG_DATE, 0);
