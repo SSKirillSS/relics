@@ -39,6 +39,9 @@ public class TooltipDescriptionHandler {
         List<ITextComponent> original = event.getToolTip();
         ItemStack stack = event.getItemStack();
 
+        if (!(stack.getItem() instanceof RelicItem<?>))
+            return;
+
         List<ITextComponent> tooltip = new ArrayList<>();
 
         renderState(stack, tooltip, player);
