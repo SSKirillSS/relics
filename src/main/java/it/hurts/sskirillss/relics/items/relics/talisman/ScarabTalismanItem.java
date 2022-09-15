@@ -93,7 +93,7 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
             return;
 
         if (stats.allowedBiomes.stream().map(Biome.BiomeCategory::byName).collect(Collectors.toList())
-                .contains(world.getBiome(livingEntity.blockPosition()).getBiomeCategory()))
+                .contains(world.getBiome(livingEntity.blockPosition())))
             EntityUtils.applyAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
                     SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
         else

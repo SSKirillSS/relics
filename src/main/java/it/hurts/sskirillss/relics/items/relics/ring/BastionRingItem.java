@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
+import com.mojang.datafixers.util.Pair;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
@@ -8,7 +9,10 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import lombok.SneakyThrows;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,6 +23,7 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
 
@@ -49,6 +54,7 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
                 .build();
     }
 
+    @SneakyThrows
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         Level world = livingEntity.getCommandSenderWorld();
@@ -63,8 +69,7 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
             return;
 
         ServerLevel serverLevel = (ServerLevel) world;
-        BlockPos bastionPos = serverLevel.getChunkSource().getGenerator().findNearestMapFeature(serverLevel,
-                StructureFeature.BASTION_REMNANT, livingEntity.blockPosition(), 100, false);
+        Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>> bastionPos = serverLevel.getChunkSource().getGenerator().findNearestMapFeature(serverLevel, (HolderSet<ConfiguredStructureFeature<?, ?>>) StructureFeature.BASTION_REMNANT, livingEntity.blockPosition(), 100, false);
 
         if (bastionPos == null)
             return;
@@ -72,8 +77,8 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
         piglin.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 255, false, false));
 
         Vec3 currentVec = piglin.position();
-        Vec3 finalVec = currentVec.add(new Vec3(bastionPos.getX(), piglin.getY(),
-                bastionPos.getZ()).subtract(currentVec).normalize().multiply(2, 2, 2));
+        Vec3 finalVec = currentVec.add(new Vec3(piglin.getX(), piglin.getY(),
+                piglin.getZ()).subtract(currentVec).normalize().multiply(2, 2, 2));
         int distance = (int) Math.round(currentVec.distanceTo(finalVec)) * 20;
 
         for (int i = 0; i < distance; i++) {

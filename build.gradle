@@ -25,7 +25,7 @@ apply plugin: 'java'
 
 compileJava.options.encoding = 'UTF-8'
 
-version = '0.3.4.1'
+version = '0.3.5'
 group = 'it.hurts.sskirillss'
 archivesBaseName = 'relics'
 
@@ -37,7 +37,7 @@ mixin {
 }
 
 minecraft {
-    mappings channel: 'parchment', version: '2022.01.23-1.18.1'
+    mappings channel: 'parchment', version: '2022.08.07-1.18.2'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -81,15 +81,15 @@ repositories {
 dependencies {
     annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
 
-    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'org.jetbrains:annotations:23.0.0'
 
-    minecraft 'net.minecraftforge:forge:1.18.1-39.0.59'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.80'
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.1-5.0.4.2")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.1-5.0.4.2:api")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.6.3:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.6.3")
 
-    runtimeOnly fg.deobf("mezz.jei:jei-1.18.1:9.1.2.54")
-    compileOnly fg.deobf("mezz.jei:jei-1.18.1:9.1.2.54:api")
+    compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.4.1.116:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.4.1.116")
 }
 
 jar {
