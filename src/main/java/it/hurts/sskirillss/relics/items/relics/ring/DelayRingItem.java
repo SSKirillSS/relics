@@ -156,7 +156,7 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DELAY_RING.get());
 
-            if (stack.isEmpty())
+            if (stack.isEmpty() || player.getCooldowns().isOnCooldown(stack.getItem()))
                 return;
 
             Entity source = event.getSource().getEntity();
@@ -176,9 +176,16 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
         public static void onEntityHurt(LivingHurtEvent event) {
             Stats stats = INSTANCE.stats;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.DELAY_RING.get());
+            LivingEntity entity = event.getEntityLiving();
 
-            if (stack.isEmpty() || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
+            if (!(entity instanceof PlayerEntity))
+                return;
+
+            PlayerEntity player = (PlayerEntity) entity;
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DELAY_RING.get());
+
+            if (stack.isEmpty() || player.getCooldowns().isOnCooldown(stack.getItem())
+                    || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
                 return;
 
             NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)
@@ -191,9 +198,16 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
         public static void onEntityHeal(LivingHealEvent event) {
             Stats stats = INSTANCE.stats;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.DELAY_RING.get());
+            LivingEntity entity = event.getEntityLiving();
 
-            if (stack.isEmpty() || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
+            if (!(entity instanceof PlayerEntity))
+                return;
+
+            PlayerEntity player = (PlayerEntity) entity;
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DELAY_RING.get());
+
+            if (stack.isEmpty() || player.getCooldowns().isOnCooldown(stack.getItem())
+                    || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
                 return;
 
             NBTUtils.setInt(stack, TAG_STORED_AMOUNT, NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)

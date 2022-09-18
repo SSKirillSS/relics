@@ -61,7 +61,7 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> {
         BlockState state = world.getBlockState(pos.below());
         FluidState fluid = state.getFluidState();
 
-        if (DurabilityUtils.isBroken(stack))
+        if (DurabilityUtils.isBroken(stack) || livingEntity.isSpectator())
             return;
 
         if (fluid.getType() == Fluids.LAVA || fluid.getType() == Fluids.FLOWING_LAVA) {

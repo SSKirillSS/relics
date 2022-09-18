@@ -126,10 +126,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     @Override
     public int getMaxDamage(ItemStack stack) {
         return switch (stack.getRarity()) {
-            case COMMON -> 100;
-            case UNCOMMON -> 150;
-            case RARE -> 200;
-            case EPIC -> 250;
+            case COMMON -> 250;
+            case UNCOMMON -> 500;
+            case RARE -> 750;
+            case EPIC -> 1000;
         };
     }
 

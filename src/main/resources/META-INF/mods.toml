@@ -5,7 +5,7 @@ issueTrackerURL="https://discord.gg/pHren9yxzW"
 logoFile="logo.png"
 [[mods]]
 modId="relics"
-version="0.3.4.1"
+version="0.3.4.3"
 displayName="Relics"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/relics-mod"
 authors="SSKirillSS"
@@ -13,12 +13,12 @@ description="Just a mod about useful relics with unique mechanics ;)"
 [[dependencies.relics]]
     modId="forge"
     mandatory=true
-    versionRange="[39.0.5,)"
+    versionRange="[40.0.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.relics]]
     modId="curios"
     mandatory=true
-    versionRange="[1.18.1-5.0.4.2,)"
+    versionRange="[1.18.2-5.0.7.0,)"
     ordering="AFTER"
     side="BOTH"

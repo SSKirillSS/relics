@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class RelicUtils {
     public static class Owner {
-        private static final String TAG_OWNER = "owner";
+        private static final String TAG_OWNER = "relics_owner";
 
         public static String getOwnerUUID(ItemStack stack) {
             return NBTUtils.getString(stack, TAG_OWNER, "");
@@ -22,11 +22,7 @@ public class RelicUtils {
         public static Player getOwner(ItemStack stack, Level world) {
             String uuid = getOwnerUUID(stack);
 
-            try {
-                return world.getPlayerByUUID(UUID.fromString(uuid));
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
+            return uuid.isEmpty() ? null : world.getPlayerByUUID(UUID.fromString(uuid));
         }
 
         public static void setOwnerUUID(ItemStack stack, String uuid) {

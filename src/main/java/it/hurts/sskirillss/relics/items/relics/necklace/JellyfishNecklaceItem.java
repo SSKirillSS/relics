@@ -116,7 +116,7 @@ public class JellyfishNecklaceItem extends RelicItem<JellyfishNecklaceItem.Stats
                     || event.getSource() != DamageSource.MAGIC)
                 return;
 
-            event.setAmount(event.getAmount() * stats.magicResistance);
+            event.setAmount(event.getAmount() * (1 - stats.magicResistance));
         }
     }
 
