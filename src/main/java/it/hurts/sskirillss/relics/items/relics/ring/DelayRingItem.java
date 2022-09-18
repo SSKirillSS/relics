@@ -178,10 +178,10 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
 
             LivingEntity entity = event.getEntityLiving();
 
-            if (!(entity instanceof PlayerEntity))
+            if (!(entity instanceof Player))
                 return;
 
-            PlayerEntity player = (PlayerEntity) entity;
+            Player player = (Player) entity;
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DELAY_RING.get());
 
             if (stack.isEmpty() || player.getCooldowns().isOnCooldown(stack.getItem())
@@ -200,10 +200,10 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
 
             LivingEntity entity = event.getEntityLiving();
 
-            if (!(entity instanceof PlayerEntity))
+            if (!(entity instanceof Player))
                 return;
 
-            PlayerEntity player = (PlayerEntity) entity;
+            Player player = (Player) entity;
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DELAY_RING.get());
 
             if (stack.isEmpty() || player.getCooldowns().isOnCooldown(stack.getItem())

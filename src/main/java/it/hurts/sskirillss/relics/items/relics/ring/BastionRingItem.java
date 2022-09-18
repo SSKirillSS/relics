@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
+import com.mojang.datafixers.util.Pair;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
@@ -9,6 +10,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,10 +23,13 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.phys.Vec3;
 
 import java.awt.*;
+import java.util.List;
+import java.util.Optional;
 
 public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
     public BastionRingItem() {
@@ -63,11 +70,17 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
             return;
 
         ServerLevel serverLevel = (ServerLevel) world;
-        BlockPos bastionPos = serverLevel.getChunkSource().getGenerator().findNearestMapFeature(serverLevel,
-                StructureFeature.BASTION_REMNANT, livingEntity.blockPosition(), 100, false);
+        Registry<ConfiguredStructureFeature<?, ?>> registry = serverLevel.getLevel().registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
+        HolderSet<ConfiguredStructureFeature<?, ?>> holderset =  registry.getHolder(BuiltinStructures.BASTION_REMNANT).map((p_207529_) -> {
+                return HolderSet.direct(p_207529_);
+            }).get();
 
-        if (bastionPos == null)
+        Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>> bastionPosPair = serverLevel.getChunkSource().getGenerator().findNearestMapFeature(serverLevel,
+                holderset, livingEntity.blockPosition(), 100, false);
+
+        if (bastionPosPair == null)
             return;
+        BlockPos bastionPos = bastionPosPair.getFirst();
 
         piglin.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 255, false, false));
 

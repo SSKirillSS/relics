@@ -42,7 +42,7 @@ public class TooltipDescriptionHandler {
         if (!(stack.getItem() instanceof RelicItem<?>))
             return;
 
-        List<ITextComponent> tooltip = new ArrayList<>();
+        List<Component> tooltip = new ArrayList<>();
 
         renderState(stack, tooltip, player);
         renderShift(stack, tooltip);
