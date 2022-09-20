@@ -60,7 +60,7 @@ public class PoisonedPuddleEntity extends ThrowableProjectile {
         super.tick();
 
         if (this.getSize() > 0.5F)
-            this.addSize((float) -RelicItem.getAbilityValue(stack, "puddle", "resize"));
+            this.addSize((float) -Math.max(RelicItem.getAbilityValue(stack, "puddle", "resize"), 0.01D));
         else
             this.discard();
 
@@ -73,7 +73,7 @@ public class PoisonedPuddleEntity extends ThrowableProjectile {
             double extraZ = Math.min(1D, random.nextDouble() * 1.75D) * (size * Math.cos(angle + this.tickCount)) + this.getZ();
 
             level.addParticle(new CircleTintData(
-                    new Color(25 + random.nextInt(50), 175 + random.nextInt(75), 0), 0.1F + (size * 0.05F),
+                    new Color(25 + random.nextInt(50), 175 + random.nextInt(75), 0), 0.15F + (size * 0.035F),
                     Math.round(size * 10), Math.min(0.99F, 0.95F + size * 0.005F), false), extraX, this.getY(), extraZ, 0, random.nextFloat() * 0.015F, 0);
         }
 

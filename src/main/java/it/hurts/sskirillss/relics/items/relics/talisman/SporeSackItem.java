@@ -83,8 +83,9 @@ public class SporeSackItem extends RelicItem {
 
                 SporeEntity spore = new SporeEntity(level);
 
-                spore.setOwner(player);
                 spore.setPos(pos);
+                spore.setStack(stack);
+                spore.setOwner(player);
                 spore.setDeltaMovement(motion);
 
                 level.addFreshEntity(spore);
