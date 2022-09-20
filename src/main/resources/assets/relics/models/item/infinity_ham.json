@@ -8,6 +8,12 @@
         { "predicate": { "relics:pieces": 0 }, "model": "relics:item/infinity_ham_0" },
         { "predicate": { "relics:pieces": 1 }, "model": "relics:item/infinity_ham_1" },
         { "predicate": { "relics:pieces": 2 }, "model": "relics:item/infinity_ham_2" },
-        { "predicate": { "relics:pieces": 3 }, "model": "relics:item/infinity_ham_3" }
+        { "predicate": { "relics:pieces": 3 }, "model": "relics:item/infinity_ham_3" },
+        { "predicate": { "relics:pieces": 4 }, "model": "relics:item/infinity_ham_4" },
+        { "predicate": { "relics:pieces": 5 }, "model": "relics:item/infinity_ham_5" },
+        { "predicate": { "relics:pieces": 6 }, "model": "relics:item/infinity_ham_6" },
+        { "predicate": { "relics:pieces": 7 }, "model": "relics:item/infinity_ham_7" },
+        { "predicate": { "relics:pieces": 8 }, "model": "relics:item/infinity_ham_8" },
+        { "predicate": { "relics:pieces": 9 }, "model": "relics:item/infinity_ham_9" }
     ]
 }

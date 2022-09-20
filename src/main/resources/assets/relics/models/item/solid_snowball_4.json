@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+    "textures": {
+        "layer0": "relics:items/solid_snowball_4"
+    }
+}
+

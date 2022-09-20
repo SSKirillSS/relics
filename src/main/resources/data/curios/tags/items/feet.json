@@ -3,9 +3,10 @@
   "values": [
     "relics:old_boot",
     "relics:magma_walker",
+    "relics:aqua_walker",
     "relics:ice_skates",
     "relics:ice_breaker",
-    "relics:out_runner",
+    "relics:roller_skates",
     "relics:amphibian_boot"
   ]
 }

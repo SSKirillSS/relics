@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "": { "model": "relics:block/researching_table" }
+    }
+}

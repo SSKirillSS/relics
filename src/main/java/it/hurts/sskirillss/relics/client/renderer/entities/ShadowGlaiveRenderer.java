@@ -2,21 +2,18 @@ package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
+import it.hurts.sskirillss.relics.client.models.ShadowGlaiveModel;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,27 +26,24 @@ public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
     @Override
     public void render(ShadowGlaiveEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         float time = entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks);
-        ItemStack stack = new ItemStack(ItemRegistry.SHADOW_GLAIVE.get());
-
-        NBTUtils.setInt(stack, ShadowGlaiveItem.TAG_CHARGES, 8);
 
         matrixStackIn.pushPose();
 
+        matrixStackIn.translate(0, -0.2F, 0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.getYRot(), entityIn.getYRot()) - 90.0F));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entityIn.getXRot(), entityIn.getXRot())));
-        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(90F));
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(time * 40F));
-        matrixStackIn.scale(0.75F, 0.75F, 0.75F);
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(time * 40F));
+        matrixStackIn.scale(0.35F, 0.35F, 0.35F);
 
-        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
-                packedLightIn, OverlayTexture.NO_OVERLAY, matrixStackIn, bufferIn, 0);
+        new ShadowGlaiveModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Reference.MODID,
+                "textures/entities/shadow_glaive.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 
         matrixStackIn.popPose();
     }
 
     @Override
     public ResourceLocation getTextureLocation(ShadowGlaiveEntity entity) {
-        return new ResourceLocation(Reference.MODID, "textures/item/shadow_glaive.png");
+        return new ResourceLocation(Reference.MODID, "textures/entities/shadow_glaive.png");
     }
 
     public static class RenderFactory implements EntityRendererProvider {

@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics;
 
-import it.hurts.sskirillss.relics.configs.ExtendedRelicsConfig;
 import it.hurts.sskirillss.relics.configs.RelicsConfig;
 import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
@@ -31,6 +30,7 @@ public class Relics {
         TileRegistry.registerTiles();
         EntityRegistry.registerEntities();
         RecipeRegistry.registerRecipes();
+        EffectRegistry.registerEffects();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RelicsConfig.getConfig());
     }
@@ -62,6 +62,5 @@ public class Relics {
     private void setupCommon(final FMLCommonSetupEvent event) {
         NetworkHandler.registerMessages();
         ItemRegistry.syncItemLists();
-        ExtendedRelicsConfig.setupExtendedConfigs();
     }
 }

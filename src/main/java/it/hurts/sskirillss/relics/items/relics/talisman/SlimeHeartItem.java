@@ -1,8 +1,9 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigDataOld;
+import it.hurts.sskirillss.relics.entities.ShockwaveEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -10,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,8 +41,8 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
+    public RelicStyleData getStyle(ItemStack stack) {
+        return RelicStyleData.builder()
                 .borders("#73c262", "#40a31c")
                 .ability(AbilityTooltip.builder()
                         .arg((int) (stats.healingMultiplier * 100 - 100) + "%")
@@ -53,8 +55,8 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
     }
 
     @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
+    public RelicConfigDataOld<Stats> getConfigData() {
+        return RelicConfigDataOld.<Stats>builder()
                 .stats(new Stats())
                 .build();
     }
@@ -89,7 +91,7 @@ public class SlimeHeartItem extends RelicItem<SlimeHeartItem.Stats> {
 
             entity.playSound(SoundEvents.SLIME_SQUISH, 1F, 1F);
 
-            BounceHandler.addBounceHandler(entity, -entity.getDeltaMovement().y() * stats.motionMultiplier);
+            BounceHandler.addBounceHandler(entity, -entity.getDeltaMovement().y());
         }
     }
 

@@ -1,118 +1,208 @@
 package it.hurts.sskirillss.relics.items.relics.back;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.indev.*;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.commons.lang3.tuple.MutablePair;
 import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.UUID;
 
-public class MidnightRobeItem extends RelicItem<MidnightRobeItem.Stats> implements ICurioItem {
-
-    public static MidnightRobeItem INSTANCE;
-
-    private final MutablePair<String, UUID> SPEED_INFO = new MutablePair<>(Reference.MODID
-            + ":" + "midnight_robe_movement_speed", UUID.fromString("21a949be-67d9-43bb-96b8-496782d60933"));
+public class MidnightRobeItem extends RelicItem {
+    private static final String TAG_TARGET = "target";
 
     public MidnightRobeItem() {
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
                 .build());
-
-        INSTANCE = this;
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
-                .borders("#00071f", "#001974")
-                .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (stats.speedModifier * 100) + "%")
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("vanish", RelicAbilityEntry.builder()
+                                .requiredPoints(2)
+                                .stat("light", RelicAbilityStat.builder()
+                                        .initialValue(1D, 2D)
+                                        .upgradeModifier("add", 1D)
+                                        .build())
+                                .build())
+                        .ability("backstab", RelicAbilityEntry.builder()
+                                .stat("damage", RelicAbilityStat.builder()
+                                        .initialValue(1.5D, 2D)
+                                        .upgradeModifier("add", 0.1D)
+                                        .build())
+                                .stat("distance", RelicAbilityStat.builder()
+                                        .initialValue(15D, 20D)
+                                        .upgradeModifier("add", -1D)
+                                        .build())
+                                .build())
                         .build())
-                .ability(AbilityTooltip.builder()
-                        .arg(stats.minLightLevel)
+                .levelingData(new RelicLevelingData(100, 20, 100))
+                .styleData(RelicStyleData.builder()
+                        .borders("#00071f", "#001974")
                         .build())
                 .build();
     }
 
     @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
-                .stats(new Stats())
-                .build();
-    }
+    public void curioTick(String identifier, int index, LivingEntity entity, ItemStack stack) {
+        Level level = entity.getCommandSenderWorld();
 
-    @Override
-    public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        Level world = livingEntity.getCommandSenderWorld();
-
-        if (world.isClientSide() || DurabilityUtils.isBroken(stack) || livingEntity.tickCount % 20 != 0)
+        if (DurabilityUtils.isBroken(stack) || level.isClientSide())
             return;
 
-        if (canHide(livingEntity))
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 0, false, false));
+        ServerLevel serverLevel = (ServerLevel) level;
+        LivingEntity target = getTarget(serverLevel, stack);
 
-        AttributeInstance attribSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        AttributeModifier speedModifier = new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
-                stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        if (target != null) {
+            double radius = getAbilityValue(stack, "backstab", "distance");
+            double step = 0.25D;
+            int offset = 16;
 
-        if (world.isNight())
-            EntityUtils.applyAttributeModifier(attribSpeed, speedModifier);
-        else
-            EntityUtils.removeAttributeModifier(attribSpeed, speedModifier);
+            double len = (float) (2 * Math.PI * radius);
+            int num = (int) (len / step);
+
+            for (int i = 0; i < num; i++) {
+                double angle = Math.toRadians(((360F / num) * i) + (360F * ((((len / step) - num) / num) / len)));
+
+                double extraX = (radius * Math.sin(angle)) + target.getX();
+                double extraZ = (radius * Math.cos(angle)) + target.getZ();
+                double extraY = target.getY() + target.getBbHeight() * 0.5F;
+
+                boolean foundPos = false;
+
+                int tries;
+
+                for (tries = 0; tries < offset * 2; tries++) {
+                    Vec3 vec = new Vec3(extraX, extraY, extraZ);
+                    BlockPos pos = new BlockPos(vec);
+
+                    BlockState state = serverLevel.getBlockState(pos);
+                    VoxelShape shape = state.getCollisionShape(serverLevel, pos);
+
+                    if (shape.isEmpty()) {
+                        if (!foundPos) {
+                            extraY -= 1;
+
+                            continue;
+                        }
+                    } else
+                        foundPos = true;
+
+                    if (shape.isEmpty())
+                        break;
+
+                    AABB aabb = shape.bounds();
+
+                    if (!aabb.move(pos).contains(vec)) {
+                        if (aabb.maxY >= 1F) {
+                            extraY += 1;
+
+                            continue;
+                        }
+
+                        break;
+                    }
+
+                    extraY += step;
+                }
+
+                if (tries < offset * 2)
+                    serverLevel.sendParticles(new CircleTintData(new Color(50 + serverLevel.getRandom().nextInt(50), 0, 255), 0.2F, 3, 0.75F, true),
+                            extraX, extraY + 0.1F, extraZ, 1, 0.05, 0.05, 0.05, 0.025);
+            }
+        }
+
+        if (!canHide(entity)) {
+            EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(entity.position()) >= getAbilityValue(stack, "backstab", "distance")))
+                NBTUtils.clearTag(stack, TAG_TARGET);
+        } else {
+            entity.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
+
+            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, 0.2F, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        }
+    }
+
+    @Nullable
+    private static LivingEntity getTarget(Level level, ItemStack stack) {
+        if (level.isClientSide())
+            return null;
+
+        ServerLevel serverLevel = (ServerLevel) level;
+
+        String string = NBTUtils.getString(stack, TAG_TARGET, "");
+
+        if (string.isEmpty() || !(serverLevel.getEntity(UUID.fromString(string)) instanceof LivingEntity target))
+            return null;
+
+        return target;
     }
 
     private static boolean canHide(LivingEntity entity) {
+        ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.MIDNIGHT_ROBE.get());
         Level world = entity.getCommandSenderWorld();
-        BlockPos position = entity.blockPosition();
+        BlockPos position = entity.blockPosition().above();
 
-        return !EntityUtils.findEquippedCurio(entity, ItemRegistry.MIDNIGHT_ROBE.get()).isEmpty()
-                && world.getBrightness(LightLayer.BLOCK, position)
-                + world.getBrightness(LightLayer.SKY, position) <= INSTANCE.stats.minLightLevel;
+        double light = getAbilityValue(stack, "vanish", "light");
+
+        return !stack.isEmpty() && !DurabilityUtils.isBroken(stack) && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
+                && world.getBrightness(LightLayer.BLOCK, position) + world.getBrightness(LightLayer.SKY, position) / 2D <= (world.isNight() ? light * 1.5D : light);
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        EntityUtils.removeAttributeModifier(slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED),
-                new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
-                        stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
-    public static class CamouflageRingClientEvents {
+    @Mod.EventBusSubscriber
+    public static class ServerEvents {
         @SubscribeEvent
-        public static void onEntityRender(RenderPlayerEvent.Pre event) {
-            if (canHide(event.getPlayer()))
-                event.setCanceled(true);
-        }
-    }
+        public static void onLivingHurt(LivingHurtEvent event) {
+            LivingEntity target = event.getEntityLiving();
+            Level level = target.getCommandSenderWorld();
 
-    public static class Stats extends RelicStats {
-        public float speedModifier = 0.15F;
-        public int minLightLevel = 2;
+            if (!(event.getSource().getEntity() instanceof Player player)
+                    || level.isClientSide())
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.MIDNIGHT_ROBE.get());
+
+            if (stack.isEmpty() || !canHide(player))
+                return;
+
+            event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "backstab", "damage")));
+
+            NBTUtils.setString(stack, TAG_TARGET, event.getEntityLiving().getStringUUID());
+        }
     }
 }

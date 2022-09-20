@@ -1,0 +1,25 @@
+package it.hurts.sskirillss.relics.effects;
+
+import it.hurts.sskirillss.relics.init.EffectRegistry;
+import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+
+public class VanishingEffect extends MobEffect {
+    public VanishingEffect() {
+        super(MobEffectCategory.BENEFICIAL, 0X6836AA);
+    }
+
+    @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
+    public static class ClientEvents {
+        @SubscribeEvent
+        public static void onEntityRender(RenderPlayerEvent.Pre event) {
+            if (event.getPlayer().hasEffect(EffectRegistry.VANISHING.get()))
+                event.setCanceled(true);
+        }
+    }
+}

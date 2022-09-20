@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "relics:amphibian_boot",
     "relics:arrow_quiver",
     "relics:bastion_ring",
     "relics:blazing_flask",
@@ -38,7 +37,6 @@
     "relics:leather_belt",
     "relics:horse_flute",
     "relics:wool_mitten",
-    "relics:ghost_skin_talisman",
-    "relics:squire_bag"
+    "relics:ghost_skin_talisman"
   ]
 }

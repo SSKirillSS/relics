@@ -1,118 +1,75 @@
 package it.hurts.sskirillss.relics.items.relics.necklace;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
+import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.Random;
-
-public class HolyLocketItem extends RelicItem<HolyLocketItem.Stats> {
-    private static final String TAG_IS_ACTIVE = "active";
-
-    public static HolyLocketItem INSTANCE;
-
+public class HolyLocketItem extends RelicItem {
     public HolyLocketItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
                 .build());
-
-        INSTANCE = this;
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
-                .borders("#ff6800", "#0087ff")
-                .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (stats.damageMultiplier * 100 - 100) + "%")
-                        .arg((int) (stats.igniteChance * 100) + "%")
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("steal", RelicAbilityEntry.builder()
+                                .stat("radius", RelicAbilityStat.builder()
+                                        .initialValue(4D, 8D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 2D)
+                                        .build())
+                                .stat("amount", RelicAbilityStat.builder()
+                                        .initialValue(0.1D, 0.25D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.1D)
+                                        .build())
+                                .build())
                         .build())
-                .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (stats.healMultiplier * 100 - 100) + "%")
-                        .build())
-                .ability(AbilityTooltip.builder()
-                        .arg(stats.invulnerabilityTime / 20.0F)
+                .levelingData(new RelicLevelingData(100, 10, 200))
+                .styleData(RelicStyleData.builder()
+                        .borders("#dc41ff", "#832698")
                         .build())
                 .build();
-    }
-
-    @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
-                .stats(new Stats())
-                .build();
-    }
-
-    @Override
-    public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (DurabilityUtils.isBroken(stack))
-            return;
-
-        if (livingEntity.invulnerableTime <= 10)
-            NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, true);
-        else if (NBTUtils.getBoolean(stack, TAG_IS_ACTIVE, false)) {
-            livingEntity.invulnerableTime += stats.invulnerabilityTime;
-
-            NBTUtils.setBoolean(stack, TAG_IS_ACTIVE, false);
-        }
     }
 
     @Mod.EventBusSubscriber
-    static class HolyLocketEvents {
+    static class Events {
         @SubscribeEvent
-        public static void onLivingHurt(LivingHurtEvent event) {
-            Stats stats = INSTANCE.stats;
-            Entity source = event.getSource().getEntity();
-
-            if (!(source instanceof Player))
-                return;
-
+        public static void onLivingHurt(LivingHealEvent event) {
             LivingEntity entity = event.getEntityLiving();
-            Random random = entity.getRandom();
+            Level level = entity.getCommandSenderWorld();
 
-            if (!entity.isInvertedHealAndHarm())
-                return;
+            for (Player player : level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(16))) {
+                ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
 
-            if (EntityUtils.findEquippedCurio(source, ItemRegistry.HOLY_LOCKET.get()).isEmpty())
-                return;
+                if (stack.isEmpty() || getAbilityValue(stack, "steal", "radius") < player.position().distanceTo(entity.position())
+                        || entity.getStringUUID().equals(player.getStringUUID()))
+                    return;
 
-            if (random.nextFloat() <= stats.igniteChance)
-                entity.setSecondsOnFire(4);
+                float amount = (float) (event.getAmount() * getAbilityValue(stack, "steal", "amount"));
 
-            event.setAmount(event.getAmount() * stats.damageMultiplier);
+                LifeEssenceEntity essence = new LifeEssenceEntity(player, amount);
+
+                essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
+                essence.setOwner(player);
+
+                level.addFreshEntity(essence);
+
+                event.setAmount(event.getAmount() - amount);
+            }
         }
-
-        @SubscribeEvent
-        public static void onLivingHeal(LivingHealEvent event) {
-            Stats stats = INSTANCE.stats;
-
-            if (EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.HOLY_LOCKET.get()).isEmpty())
-                return;
-
-            event.setAmount(event.getAmount() * stats.healMultiplier);
-        }
-    }
-
-    public static class Stats extends RelicStats {
-        public float damageMultiplier = 1.5F;
-        public float healMultiplier = 1.25F;
-        public float igniteChance = 0.25F;
-        public int invulnerabilityTime = 10;
     }
 }

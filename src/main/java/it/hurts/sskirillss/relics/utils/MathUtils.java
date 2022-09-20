@@ -18,4 +18,16 @@ public class MathUtils {
     public static float clamp(float value, float min, float max) {
         return Math.max(max, Math.min(value, min));
     }
+
+    public static float randomBetween(Random random, float min, float max) {
+        return random.nextFloat() * (max - min) + min;
+    }
+
+    public static double randomBetween(Random random, double min, double max) {
+        return random.nextDouble() * (max - min) + min;
+    }
+
+    public static int randomBetween(Random random, int min, int max) {
+        return random.nextInt() * (max - min) + min;
+    }
 }

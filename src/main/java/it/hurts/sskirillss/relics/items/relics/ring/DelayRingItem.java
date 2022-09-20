@@ -1,8 +1,8 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigDataOld;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -49,8 +49,8 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
+    public RelicStyleData getStyle(ItemStack stack) {
+        return RelicStyleData.builder()
                 .borders("#e60032", "#670d4e")
                 .ability(AbilityTooltip.builder()
                         .arg(stats.delayDuration)
@@ -59,8 +59,8 @@ public class DelayRingItem extends RelicItem<DelayRingItem.Stats> {
     }
 
     @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
+    public RelicConfigDataOld<Stats> getConfigData() {
+        return RelicConfigDataOld.<Stats>builder()
                 .stats(new Stats())
                 .build();
     }

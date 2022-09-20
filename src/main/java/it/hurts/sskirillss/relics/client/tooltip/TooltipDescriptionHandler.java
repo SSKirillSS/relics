@@ -3,7 +3,7 @@ package it.hurts.sskirillss.relics.client.tooltip;
 import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.api.leveling.ILeveledItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
@@ -200,7 +200,7 @@ public class TooltipDescriptionHandler {
         if (!(stack.getItem() instanceof RelicItem<?> relic))
             return tooltip;
 
-        RelicTooltip data = relic.getTooltip(stack);
+        RelicStyleData data = relic.getStyle(stack);
 
         if (data == null)
             return tooltip;

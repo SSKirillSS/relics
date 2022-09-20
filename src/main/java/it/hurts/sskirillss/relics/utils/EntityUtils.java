@@ -51,7 +51,7 @@ public class EntityUtils {
         return list;
     }
 
-    public static EntityHitResult rayTraceEntity(Entity shooter, Predicate<Entity> filter, double distance) {
+    public static EntityHitResult rayTraceEntity(Entity shooter, Predicate<? super Entity> filter, double distance) {
         Level world = shooter.level;
 
         Vec3 startVec = shooter.getEyePosition(1.0F);
@@ -102,11 +102,11 @@ public class EntityUtils {
         return stack.getItem().getRegistryName().getPath() + "_" + attribute.getRegistryName().getPath();
     }
 
-    public static boolean applyAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
+    public static void applyAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
         String name = getAttributeName(stack, attribute);
 
         if (name.equals(""))
-            return false;
+            return;
 
         UUID uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
 
@@ -114,40 +114,35 @@ public class EntityUtils {
         AttributeModifier modifier = new AttributeModifier(uuid, name, value, operation);
 
         if (instance == null || instance.hasModifier(modifier))
-            return false;
+            return;
 
         instance.addTransientModifier(modifier);
-
-        return true;
     }
 
-    public static boolean removeAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
+    public static void removeAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, AttributeModifier.Operation operation) {
         String name = getAttributeName(stack, attribute);
 
         if (name.equals(""))
-            return false;
+            return;
 
         UUID uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
 
         AttributeInstance instance = entity.getAttribute(attribute);
-        AttributeModifier modifier = new AttributeModifier(uuid, name, value, operation);
 
-        if (instance == null || !instance.hasModifier(modifier))
-            return false;
+        if (instance == null)
+            return;
+
+        AttributeModifier modifier = new AttributeModifier(uuid, name, instance.getValue(), operation);
+
+        if (!instance.hasModifier(modifier))
+            return;
 
         instance.removeModifier(modifier);
-
-        return true;
     }
 
-    public static void applyAttributeModifier(AttributeInstance instance, AttributeModifier modifier) {
-        if (!instance.hasModifier(modifier))
-            instance.addTransientModifier(modifier);
-    }
-
-    public static void removeAttributeModifier(AttributeInstance instance, AttributeModifier modifier) {
-        if (instance.hasModifier(modifier))
-            instance.removeModifier(modifier);
+    public static void resetAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
+        removeAttribute(entity, stack, attribute, operation);
+        applyAttribute(entity, stack, attribute, value, operation);
     }
 
     public static ItemStack findEquippedCurio(Entity entity, Item item) {
@@ -156,7 +151,7 @@ public class EntityUtils {
 
         Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(item, player);
 
-        if (!optional.isPresent())
+        if (optional.isEmpty())
             return ItemStack.EMPTY;
 
         ItemStack stack = optional.get().getRight();

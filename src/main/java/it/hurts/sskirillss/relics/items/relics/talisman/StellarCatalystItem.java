@@ -1,9 +1,9 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
-import it.hurts.sskirillss.relics.entities.StellarCatalystProjectileEntity;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigDataOld;
+import it.hurts.sskirillss.relics.entities.FallingStarEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -35,8 +35,8 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> {
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
+    public RelicStyleData getStyle(ItemStack stack) {
+        return RelicStyleData.builder()
                 .borders("#0f4ca0", "#2f1d69")
                 .ability(AbilityTooltip.builder()
                         .arg((int) (stats.chance * 100) + "%")
@@ -46,8 +46,8 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> {
     }
 
     @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
+    public RelicConfigDataOld<Stats> getConfigData() {
+        return RelicConfigDataOld.<Stats>builder()
                 .stats(new Stats())
                 .build();
     }
@@ -61,7 +61,7 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> {
             DamageSource source = event.getSource();
 
             if (!(source.getEntity() instanceof Player) || (source instanceof IndirectEntityDamageSource
-                    && source.getDirectEntity() instanceof StellarCatalystProjectileEntity))
+                    && source.getDirectEntity() instanceof FallingStarEntity))
                 return;
 
             Player player = (Player) event.getSource().getEntity();
@@ -75,7 +75,7 @@ public class StellarCatalystItem extends RelicItem<StellarCatalystItem.Stats> {
 
             if (world.isNight() && world.canSeeSky(target.blockPosition())
                     && random.nextFloat() <= stats.chance) {
-                StellarCatalystProjectileEntity projectile = new StellarCatalystProjectileEntity((LivingEntity) event.getSource().getEntity(),
+                FallingStarEntity projectile = new FallingStarEntity((LivingEntity) event.getSource().getEntity(),
                         event.getEntityLiving(), event.getAmount() * stats.damageMultiplier);
 
                 projectile.setPos(target.getX(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(),

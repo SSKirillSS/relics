@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.items.relics.base.handlers;
 
 import it.hurts.sskirillss.relics.items.RelicContractItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
-import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
+import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RelicUtils;

@@ -1,30 +1,36 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
+import com.mojang.datafixers.util.Pair;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.phys.Vec3;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
+import java.util.Optional;
 
-public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
+public class BastionRingItem extends RelicItem {
     public BastionRingItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
@@ -32,42 +38,61 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
-                .borders("#d68600", "#341e00")
-                .ability(AbilityTooltip.builder()
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("compass", RelicAbilityEntry.builder()
+                                .build())
+                        .ability("trade", RelicAbilityEntry.builder()
+                                .requiredLevel(5)
+                                .requiredPoints(2)
+                                .stat("rolls", RelicAbilityStat.builder()
+                                        .initialValue(1F, 2F)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1F)
+                                        .build())
+                                .build())
                         .build())
-                .ability(AbilityTooltip.builder()
+                .levelingData(new RelicLevelingData(100, 10, 200))
+                .styleData(RelicStyleData.builder()
+                        .borders("#008cd7", "#0a3484")
                         .build())
                 .build();
     }
 
     @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
-                .stats(new Stats())
-                .build();
-    }
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player))
+            return;
 
-    @Override
-    public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        Level world = livingEntity.getCommandSenderWorld();
+        Level world = player.getCommandSenderWorld();
 
         if (world.isClientSide() || world.dimension() != Level.NETHER || DurabilityUtils.isBroken(stack))
             return;
 
-        Piglin piglin = world.getNearestEntity(Piglin.class, TargetingConditions.DEFAULT, livingEntity,
-                livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), livingEntity.getBoundingBox().inflate(stats.locateRadius));
+        Piglin piglin = world.getNearestEntity(Piglin.class, TargetingConditions.DEFAULT, player,
+                player.getX(), player.getY(), player.getZ(), player.getBoundingBox().inflate(5));
 
-        if (piglin == null || piglin.getTarget() == livingEntity)
+        if (piglin == null || piglin.getTarget() == player)
             return;
 
         ServerLevel serverLevel = (ServerLevel) world;
-        BlockPos bastionPos = serverLevel.getChunkSource().getGenerator().findNearestMapFeature(serverLevel,
-                StructureFeature.BASTION_REMNANT, livingEntity.blockPosition(), 100, false);
 
-        if (bastionPos == null)
+        ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation("bastion_remnant"));
+
+        Optional<HolderSet<ConfiguredStructureFeature<?, ?>>> optional = serverLevel.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY)
+                .getHolder(ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation("bastion_remnant")))
+                .map(HolderSet::direct);
+
+        if (optional.isEmpty())
             return;
+
+        Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>> bastion = serverLevel.getChunkSource().getGenerator().findNearestMapFeature(serverLevel,
+                optional.get(), player.blockPosition(), 100, false);
+
+        if (bastion == null)
+            return;
+
+        BlockPos bastionPos = bastion.getFirst();
 
         piglin.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 255, false, false));
 
@@ -92,9 +117,5 @@ public class BastionRingItem extends RelicItem<BastionRingItem.Stats> {
             serverLevel.sendParticles(new CircleTintData(new Color(255, 240, 150), 0.2F, 30, 0.95F, false),
                     extraX, piglin.getY() + (piglin.getBbHeight() / 1.75F), extraZ, 1, 0F, 0F, 0F, 0);
         }
-    }
-
-    public static class Stats extends RelicStats {
-        public int locateRadius = 5;
     }
 }

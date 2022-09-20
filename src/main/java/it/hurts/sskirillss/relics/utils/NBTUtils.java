@@ -1,12 +1,14 @@
 package it.hurts.sskirillss.relics.utils;
 
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 
@@ -35,6 +37,10 @@ public class NBTUtils {
         stack.getOrCreateTag().putString(tag, value);
     }
 
+    public static void setCompound(ItemStack stack, String tag, CompoundTag value) {
+        stack.getOrCreateTag().put(tag, value);
+    }
+
     public static boolean getBoolean(ItemStack stack, String tag, boolean defaultValue) {
         return safeCheck(stack, tag) ? stack.getTag().getBoolean(tag) : defaultValue;
     }
@@ -52,28 +58,62 @@ public class NBTUtils {
     }
 
     public static double getDouble(ItemStack stack, String tag, double defaultValue) {
-        return safeCheck(stack, tag) ? stack.getTag().getInt(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getDouble(tag) : defaultValue;
     }
 
     public static String getString(ItemStack stack, String tag, String defaultValue) {
         return safeCheck(stack, tag) ? stack.getTag().getString(tag) : defaultValue;
     }
 
+    public static CompoundTag getCompound(ItemStack stack, String tag, CompoundTag defaultValue) {
+        return safeCheck(stack, tag) ? stack.getTag().getCompound(tag) : defaultValue;
+    }
+
     public static boolean safeCheck(ItemStack stack, String tag) {
         return !stack.isEmpty() && stack.getTag() != null && stack.getTag().contains(tag);
+    }
+
+    public static void clearTag(ItemStack stack, String tag) {
+        stack.getOrCreateTag().remove(tag);
     }
 
     public static String writePosition(Vec3 vec) {
         return (Math.round(vec.x() * 10F) / 10F) + "," + (Math.round(vec.y() * 10F) / 10F) + "," + (Math.round(vec.z() * 10F) / 10F);
     }
 
+    public static String writeLevel(Level level) {
+        return level.dimension().location().toString();
+    }
+
     @Nullable
     public static Vec3 parsePosition(String value) {
         if (value != null && !value.equals("")) {
             String[] pos = value.split(",");
+
             return new Vec3(Double.parseDouble(pos[0]), Double.parseDouble(pos[1]), Double.parseDouble(pos[2]));
         }
+
         return null;
+    }
+
+    public static CompoundTag packBundledPosition(Vec3 pos, Level level) {
+        CompoundTag tag = new CompoundTag();
+
+        tag.putString("pos", writePosition(pos));
+        tag.putString("level", writeLevel(level));
+
+        return tag;
+    }
+
+    @Nullable
+    public static Pair<ServerLevel, Vec3> parseBundledPosition(Level world, CompoundTag tag) {
+        ServerLevel level = parseLevel(world, tag.getString("level"));
+        Vec3 vec = parsePosition(tag.getString("pos"));
+
+        if (level == null || vec == null)
+            return null;
+        else
+            return Pair.of(level, vec);
     }
 
     @Nullable

@@ -1,8 +1,6 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
-import it.hurts.sskirillss.relics.entities.SpaceDissectorEntity;
-import it.hurts.sskirillss.relics.entities.StellarCatalystProjectileEntity;
+import it.hurts.sskirillss.relics.entities.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -14,22 +12,64 @@ import net.minecraftforge.registries.RegistryObject;
 public class EntityRegistry {
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MODID);
 
-    public static final RegistryObject<EntityType<StellarCatalystProjectileEntity>> STELLAR_CATALYST_PROJECTILE = ENTITIES.register("stellar_catalyst_projectile", () ->
-            EntityType.Builder.<StellarCatalystProjectileEntity>of(StellarCatalystProjectileEntity::new, MobCategory.MISC)
+    public static final RegistryObject<EntityType<FallingStarEntity>> STELLAR_CATALYST_PROJECTILE = ENTITIES.register("falling_star", () ->
+            EntityType.Builder.<FallingStarEntity>of(FallingStarEntity::new, MobCategory.MISC)
                     .sized(1.0F, 1.0F)
-                    .build("stellar_catalyst_projectile")
-    );
-
-    public static final RegistryObject<EntityType<SpaceDissectorEntity>> SPACE_DISSECTOR = ENTITIES.register("space_dissector", () ->
-            EntityType.Builder.<SpaceDissectorEntity>of(SpaceDissectorEntity::new, MobCategory.MISC)
-                    .sized(0.9F, 0.1F)
-                    .build("space_dissector")
+                    .build("falling_star")
     );
 
     public static final RegistryObject<EntityType<ShadowGlaiveEntity>> SHADOW_GLAIVE = ENTITIES.register("shadow_glaive", () ->
             EntityType.Builder.<ShadowGlaiveEntity>of(ShadowGlaiveEntity::new, MobCategory.MISC)
                     .sized(0.9F, 0.1F)
                     .build("shadow_glaive")
+    );
+
+    public static final RegistryObject<EntityType<BlockSimulationEntity>> BLOCK_SIMULATION = ENTITIES.register("block_simulation", () ->
+            EntityType.Builder.<BlockSimulationEntity>of(BlockSimulationEntity::new, MobCategory.MISC)
+                    .sized(1F, 1F)
+                    .build("block_simulation")
+    );
+
+    public static final RegistryObject<EntityType<ShockwaveEntity>> SHOCKWAVE = ENTITIES.register("shockwave", () ->
+            EntityType.Builder.<ShockwaveEntity>of(ShockwaveEntity::new, MobCategory.MISC)
+                    .sized(1F, 0.1F)
+                    .build("shockwave")
+    );
+
+    public static final RegistryObject<EntityType<LifeEssenceEntity>> LIFE_ESSENCE = ENTITIES.register("life_essence", () ->
+            EntityType.Builder.<LifeEssenceEntity>of(LifeEssenceEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .build("life_essence")
+    );
+
+    public static final RegistryObject<EntityType<StalactiteEntity>> STALACTITE = ENTITIES.register("stalactite", () ->
+            EntityType.Builder.<StalactiteEntity>of(StalactiteEntity::new, MobCategory.MISC)
+                    .sized(0.35F, 0.35F)
+                    .build("stalactite")
+    );
+
+    public static final RegistryObject<EntityType<DissectionEntity>> DISSECTION = ENTITIES.register("dissection", () ->
+            EntityType.Builder.<DissectionEntity>of(DissectionEntity::new, MobCategory.MISC)
+                    .sized(3F, 3F)
+                    .build("dissection")
+    );
+
+    public static final RegistryObject<EntityType<SporeEntity>> SPORE = ENTITIES.register("spore", () ->
+            EntityType.Builder.<SporeEntity>of(SporeEntity::new, MobCategory.MISC)
+                    .sized(0.1F, 0.1F)
+                    .build("spore")
+    );
+
+    public static final RegistryObject<EntityType<ShadowSawEntity>> SHADOW_SAW = ENTITIES.register("shadow_saw", () ->
+            EntityType.Builder.<ShadowSawEntity>of(ShadowSawEntity::new, MobCategory.MISC)
+                    .sized(2F, 0.5F)
+                    .build("shadow_saw")
+    );
+
+    public static final RegistryObject<EntityType<PoisonedPuddleEntity>> POISONED_PUDDLE = ENTITIES.register("poisoned_puddle", () ->
+            EntityType.Builder.<PoisonedPuddleEntity>of(PoisonedPuddleEntity::new, MobCategory.MISC)
+                    .sized(1F, 0.5F)
+                    .build("poisoned_puddle")
     );
 
     public static void registerEntities() {

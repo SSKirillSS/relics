@@ -1,10 +1,13 @@
 package it.hurts.sskirillss.relics.network;
 
+import it.hurts.sskirillss.relics.network.packets.*;
+import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class NetworkHandler {
@@ -41,6 +44,16 @@ public class NetworkHandler {
                 .decoder(PacketItemActivation::new)
                 .consumer(PacketItemActivation::handle)
                 .add();
+        INSTANCE.messageBuilder(PacketRelicTweak.class, nextID())
+                .encoder(PacketRelicTweak::toBytes)
+                .decoder(PacketRelicTweak::new)
+                .consumer(PacketRelicTweak::handle)
+                .add();
+        INSTANCE.messageBuilder(PacketSyncEntityEffects.class, nextID())
+                .encoder(PacketSyncEntityEffects::toBytes)
+                .decoder(PacketSyncEntityEffects::new)
+                .consumer(PacketSyncEntityEffects::handle)
+                .add();
     }
 
     public static void sendToClient(Object packet, ServerPlayer player) {
@@ -49,5 +62,9 @@ public class NetworkHandler {
 
     public static void sendToServer(Object packet) {
         INSTANCE.sendToServer(packet);
+    }
+
+    public static void sendToClients(PacketDistributor.PacketTarget target, Object packet) {
+        INSTANCE.send(target, packet);
     }
 }

@@ -1,17 +1,13 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,34 +17,28 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> {
-    public static HunterBeltItem INSTANCE;
-
+public class HunterBeltItem extends RelicItem {
     public HunterBeltItem() {
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
                 .build());
-
-        INSTANCE = this;
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
-                .borders("#32a167", "#16702e")
-                .ability(AbilityTooltip.builder()
-                        .arg(stats.additionalLooting)
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("training", RelicAbilityEntry.builder()
+                                .stat("damage", RelicAbilityStat.builder()
+                                        .initialValue(1.5D, 3D)
+                                        .upgradeModifier("add", 0.1F)
+                                        .build())
+                                .build())
                         .build())
-                .ability(AbilityTooltip.builder()
-                        .arg("+" + (int) (stats.petDamageMultiplier * 100 - 100) + "%")
+                .levelingData(new RelicLevelingData(100, 20, 100))
+                .styleData(RelicStyleData.builder()
+                        .borders("#32a167", "#16702e")
                         .build())
-                .build();
-    }
-
-    @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
-                .stats(new Stats())
                 .build();
     }
 
@@ -59,31 +49,20 @@ public class HunterBeltItem extends RelicItem<HunterBeltItem.Stats> {
                 .build();
     }
 
-    @Override
-    public int getLootingBonus(String identifier, LivingEntity livingEntity, ItemStack curio, int index) {
-        return stats.additionalLooting;
-    }
-
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class HunterBeltEvents {
         @SubscribeEvent
         public static void onLivingDamage(LivingHurtEvent event) {
-            Stats stats = INSTANCE.stats;
-            Entity entity = event.getSource().getEntity();
-
-            if (!(entity instanceof TamableAnimal pet))
+            if (!(event.getSource().getEntity() instanceof TamableAnimal pet)
+                    || !(pet.getOwner() instanceof Player player))
                 return;
 
-            if (!(pet.getOwner() instanceof Player)
-                    && EntityUtils.findEquippedCurio(pet.getOwner(), ItemRegistry.HUNTER_BELT.get()).isEmpty())
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HUNTER_BELT.get());
+
+            if (stack.isEmpty())
                 return;
 
-            event.setAmount(event.getAmount() * stats.petDamageMultiplier);
+            event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "training", "damage")));
         }
-    }
-
-    public static class Stats extends RelicStats {
-        public int additionalLooting = 1;
-        public float petDamageMultiplier = 3.0F;
     }
 }

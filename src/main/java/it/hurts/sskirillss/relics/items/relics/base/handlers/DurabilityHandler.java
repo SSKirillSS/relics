@@ -42,9 +42,9 @@ public class DurabilityHandler {
         relics.forEach(relic -> {
             int durability = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, relic) + 1;
 
-            if (entity.getRandom().nextFloat() <= 0.75F / durability
-                    && event.getAmount() >= 1F)
-                relic.setDamageValue(Math.min(relic.getMaxDamage(), relic.getDamageValue() + 1));
+//            if (entity.getRandom().nextFloat() <= 0.75F / durability
+//                    && event.getAmount() >= 1F)
+//                relic.setDamageValue(Math.min(relic.getMaxDamage(), relic.getDamageValue() + 1));
         });
     }
 }

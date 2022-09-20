@@ -1,13 +1,10 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -19,7 +16,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -28,10 +25,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.UUID;
 
-public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
-    private static final String TAG_ENTITY = "entity";
+public class HorseFluteItem extends RelicItem {
+    public static final String TAG_ENTITY = "entity";
     private static final String TAG_UUID = "uuid";
 
     public HorseFluteItem() {
@@ -41,28 +40,29 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
-                .borders("#eed551", "#dcbe1d")
-                .ability(AbilityTooltip.builder()
-                        .active(Minecraft.getInstance().options.keyUse)
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("paddock", RelicAbilityEntry.builder()
+                                .build())
+                        .ability("heal", RelicAbilityEntry.builder()
+                                .requiredLevel(5)
+                                .stat("amount", RelicAbilityStat.builder()
+                                        .initialValue(0.01, 0.1)
+                                        .upgradeModifier("add", 0.1)
+                                        .build())
+                                .build())
                         .build())
-                .ability(AbilityTooltip.builder()
-                        .arg(stats.teleportDistance)
+                .levelingData(new RelicLevelingData(100, 10, 100))
+                .styleData(RelicStyleData.builder()
+                        .borders("#eed551", "#dcbe1d")
                         .build())
-                .build();
-    }
-
-    @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
-                .stats(new Stats())
                 .build();
     }
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
-        if (!(entity instanceof Horse horse))
+        if (!(entity instanceof AbstractHorse horse))
             return InteractionResult.FAIL;
 
         CompoundTag nbt = stack.getTagElement(TAG_ENTITY);
@@ -90,7 +90,7 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
 
         if (nbt == null) {
             if (player.isShiftKeyDown())
-                NBTUtils.setString(stack, TAG_UUID, "");
+                NBTUtils.clearTag(stack, TAG_UUID);
             else
                 catchHorse(stack, player);
 
@@ -100,7 +100,7 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
         releaseHorse(stack, player);
 
         if (player.isShiftKeyDown())
-            NBTUtils.setString(stack, TAG_UUID, "");
+            NBTUtils.clearTag(stack, TAG_UUID);
 
         return InteractionResult.SUCCESS;
     }
@@ -112,7 +112,7 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
 
         if (nbt == null) {
             if (player.isShiftKeyDown())
-                NBTUtils.setString(stack, TAG_UUID, "");
+                NBTUtils.clearTag(stack, TAG_UUID);
             else
                 catchHorse(stack, player);
 
@@ -122,24 +122,36 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
         releaseHorse(stack, player);
 
         if (player.isShiftKeyDown())
-            NBTUtils.setString(stack, TAG_UUID, "");
+            NBTUtils.clearTag(stack, TAG_UUID);
 
         return InteractionResultHolder.success(stack);
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        Horse horse = findHorse(worldIn, stack);
+    public void inventoryTick(ItemStack stack, Level level, Entity entityIn, int itemSlot, boolean isSelected) {
+        if (entityIn.tickCount % 20 == 0) {
+            AbstractHorse horse = decodeHorseData(stack, level);
+            if (horse != null) {
+                if (canUseAbility(stack, "heal")) {
+                    horse.heal(1);
 
-        if (horse == null || entityIn.distanceTo(horse) < stats.teleportDistance)
-            return;
+                    CompoundTag nbt = new CompoundTag();
 
-        catchHorse(horse, entityIn, stack);
+                    horse.save(nbt);
 
-        super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+                    stack.addTagElement(TAG_ENTITY, nbt);
+                }
+            }
+        }
+
+        AbstractHorse horse = findHorse(level, stack);
+
+        if (horse != null && entityIn.distanceTo(horse) > 16)
+            catchHorse(horse, entityIn, stack);
     }
 
-    private Horse findHorse(Level world, ItemStack stack) {
+    @Nullable
+    private AbstractHorse findHorse(Level world, ItemStack stack) {
         if (world.isClientSide())
             return null;
 
@@ -151,59 +163,89 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
 
         Entity entity = serverLevel.getEntity(UUID.fromString(uuid));
 
-        return entity instanceof Horse ? (Horse) entity : null;
+        return entity instanceof AbstractHorse ? (AbstractHorse) entity : null;
     }
 
-    private void catchHorse(Horse horse, Entity player, ItemStack stack) {
-        if (horse.isDeadOrDying() || horse.getOwnerUUID() == null
-                || !horse.getOwnerUUID().equals(player.getUUID()))
+    public void catchHorse(AbstractHorse horse, Entity player, ItemStack stack) {
+        if (horse.isDeadOrDying() || (horse.getOwnerUUID() != null && !horse.getOwnerUUID().equals(player.getUUID()))
+                || (horse.getOwnerUUID() == null && !horse.isTamed()))
             return;
 
         Level world = horse.getCommandSenderWorld();
         CompoundTag nbt = new CompoundTag();
         Vec3 pos = horse.position();
 
-        horse.saveWithoutId(nbt);
+        if (NBTUtils.getString(stack, TAG_UUID, "").equals(horse.getUUID().toString()) && horse.walkDist > 25) {
+            addExperience(stack, Math.round(horse.walkDist / 25));
 
-        stack.addTagElement(TAG_ENTITY, nbt);
-        NBTUtils.setString(stack, TAG_UUID, "");
+            horse.walkDist = 0;
+        }
+
+        horse.save(nbt);
+
+        NBTUtils.setCompound(stack, TAG_ENTITY, nbt);
+        NBTUtils.clearTag(stack, TAG_UUID);
 
         horse.remove(Entity.RemovalReason.KILLED);
 
         if (!world.isClientSide())
             ((ServerLevel) world).sendParticles(ParticleTypes.EXPLOSION, pos.x(), pos.y(), pos.z(), 1, 0F, 0F, 0F, 0F);
+
         world.playSound(null, horse.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     private void catchHorse(ItemStack stack, Entity player) {
         Level world = player.getCommandSenderWorld();
 
-        Horse horse = findHorse(world, stack);
+        AbstractHorse horse = findHorse(world, stack);
 
         if (horse != null)
             catchHorse(horse, player, stack);
     }
 
-    private void releaseHorse(ItemStack stack, Entity player) {
+    public void releaseHorse(ItemStack stack, Entity player) {
         Level world = player.getCommandSenderWorld();
-        Horse horse = new Horse(EntityType.HORSE, world);
         Vec3 pos = player.position();
-        CompoundTag data = stack.getTagElement(TAG_ENTITY);
 
-        if (data != null)
-            horse.load(data);
+        AbstractHorse horse = decodeHorseData(stack, world);
+
+        if (horse == null)
+            return;
 
         horse.setPos(pos.x(), pos.y(), pos.z());
         world.addFreshEntity(horse);
         horse.setDeltaMovement(player.getViewVector(1.0F).normalize());
         horse.fallDistance = 0F;
 
-        stack.setTag(new CompoundTag());
+        NBTUtils.clearTag(stack, TAG_ENTITY);
         NBTUtils.setString(stack, TAG_UUID, horse.getUUID().toString());
 
         if (!world.isClientSide())
             ((ServerLevel) world).sendParticles(ParticleTypes.EXPLOSION, pos.x(), pos.y(), pos.z(), 1, 0F, 0F, 0F, 0F);
+
         world.playSound(null, horse.blockPosition(), SoundEvents.BEEHIVE_EXIT, SoundSource.PLAYERS, 1.0F, 1.0F);
+    }
+
+    @Nullable
+    private AbstractHorse decodeHorseData(ItemStack stack, Level level) {
+        CompoundTag data = stack.getTag();
+
+        if (data == null)
+            return null;
+
+        Optional<EntityType<?>> type = EntityType.by(data.getCompound(TAG_ENTITY));
+
+        if (type.isEmpty())
+            return null;
+
+        Entity entity = type.get().create(level);
+
+        if (!(entity instanceof AbstractHorse horse))
+            return null;
+
+        horse.load(data.getCompound(TAG_ENTITY));
+
+        return horse;
     }
 
     @Override
@@ -219,9 +261,5 @@ public class HorseFluteItem extends RelicItem<HorseFluteItem.Stats> {
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
         return false;
-    }
-
-    public static class Stats extends RelicStats {
-        public int teleportDistance = 16;
     }
 }

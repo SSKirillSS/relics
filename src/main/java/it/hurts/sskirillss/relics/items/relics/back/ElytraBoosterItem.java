@@ -1,38 +1,32 @@
 package it.hurts.sskirillss.relics.items.relics.back;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.api.events.ContainerSlotClickEvent;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.util.List;
 import java.util.Random;
 
-public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implements ICurioItem {
-    public static final String TAG_BREATH_AMOUNT = "breath";
+public class ElytraBoosterItem extends RelicItem {
+    public static final String TAG_FUEL = "fuel";
+    public static final String TAG_SPEED = "speed";
 
     public ElytraBoosterItem() {
         super(RelicData.builder()
@@ -41,30 +35,29 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
-                .borders("#b8b8d6", "#6e6e8f")
-                .ability(AbilityTooltip.builder()
-                        .active(Minecraft.getInstance().options.keyShift)
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("boost", RelicAbilityEntry.builder()
+                                .stat("capacity", RelicAbilityStat.builder()
+                                        .initialValue(50, 100)
+                                        .upgradeModifier("add", 10)
+                                        .build())
+                                .stat("speed", RelicAbilityStat.builder()
+                                        .initialValue(1.1D, 1.5D)
+                                        .upgradeModifier("add", 0.1D)
+                                        .build())
+                                .build())
+                        .build())
+                .levelingData(new RelicLevelingData(100, 20, 100))
+                .styleData(RelicStyleData.builder()
+                        .borders("#b8b8d6", "#6e6e8f")
                         .build())
                 .build();
     }
 
-    @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
-                .stats(new Stats())
-                .build();
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-
-        int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
-
-        if (breath > 0)
-            tooltip.add(new TranslatableComponent("tooltip.relics.elytra_booster.tooltip_1", breath));
+    public int getBreathCapacity(ItemStack stack) {
+        return (int) Math.round(getAbilityValue(stack, "boost", "capacity"));
     }
 
     @Override
@@ -72,75 +65,84 @@ public class ElytraBoosterItem extends RelicItem<ElytraBoosterItem.Stats> implem
         if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        if (player.isFallFlying())
-            accelerate(player, stack);
-        else
-            collectBreath(player, stack);
-    }
+        int fuel = NBTUtils.getInt(stack, TAG_FUEL, 0);
+        double speed = NBTUtils.getDouble(stack, TAG_SPEED, 1D);
 
-    private void accelerate(Player player, ItemStack stack) {
-        int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
+        if (!player.isShiftKeyDown() || fuel <= 0 || !player.isFallFlying()) {
+            NBTUtils.setDouble(stack, TAG_SPEED, 1D);
 
-        if (!player.isShiftKeyDown() || breath <= 0)
             return;
+        }
+
+        if (player.tickCount % 3 == 0) {
+            double maxSpeed = getAbilityValue(stack, "boost", "speed");
+
+            if (speed < maxSpeed) {
+                speed = Math.min(maxSpeed, speed + ((maxSpeed - 1D) / 100D));
+
+                NBTUtils.setDouble(stack, TAG_SPEED, speed);
+            } else {
+                player.startAutoSpinAttack(5);
+            }
+        }
 
         Vec3 look = player.getLookAngle();
         Vec3 motion = player.getDeltaMovement();
         Level world = player.getCommandSenderWorld();
         Random random = world.getRandom();
 
-        player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * stats.flySpeed - motion.x) * 0.5D,
-                look.y * 0.1D + (look.y * stats.flySpeed - motion.y) * 0.5D,
-                look.z * 0.1D + (look.z * stats.flySpeed - motion.z) * 0.5D));
+        player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * speed - motion.x) * 0.5D,
+                look.y * 0.1D + (look.y * speed - motion.y) * 0.5D,
+                look.z * 0.1D + (look.z * speed - motion.z) * 0.5D));
 
-        world.addParticle(ParticleTypes.DRAGON_BREATH,
-                player.getX() + (MathUtils.randomFloat(random) * 0.5F),
-                player.getY() + (MathUtils.randomFloat(random) * 0.5F),
-                player.getZ() + (MathUtils.randomFloat(random) * 0.5F),
-                0, 0, 0);
+        for (int i = 0; i < speed * 3; i++)
+            world.addParticle(ParticleTypes.SMOKE,
+                    player.getX() + (MathUtils.randomFloat(random) * 0.4F),
+                    player.getY() + (MathUtils.randomFloat(random) * 0.4F),
+                    player.getZ() + (MathUtils.randomFloat(random) * 0.4F),
+                    0, 0, 0);
 
-        if (player.tickCount % 10 == 0)
-            NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath - 1);
+        if (player.tickCount % Math.max(1, (int) Math.round((10 - speed * 2) / (player.isInWaterOrRain() ? 2 : 1))) == 0)
+            NBTUtils.setInt(stack, TAG_FUEL, fuel - 1);
     }
 
-    private void collectBreath(Player player, ItemStack stack) {
-        Level world = player.getCommandSenderWorld();
-        int breath = NBTUtils.getInt(stack, TAG_BREATH_AMOUNT, 0);
+    @Mod.EventBusSubscriber
+    public static class Events {
+        @SubscribeEvent
+        public static void onSlotClick(ContainerSlotClickEvent event) {
+            if (event.getAction() != ClickAction.PRIMARY)
+                return;
 
-        if (breath >= stats.breathCapacity)
-            return;
+            Player player = event.getPlayer();
 
-        if (world.dimension() == Level.END && player.tickCount %
-                (stats.breathRegenerationCooldown * 20) == 0)
-            NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
+            ItemStack heldStack = event.getHeldStack();
+            ItemStack slotStack = event.getSlotStack();
 
-        for (AreaEffectCloud cloud : world.getEntitiesOfClass(AreaEffectCloud.class,
-                player.getBoundingBox().inflate(stats.breathConsumptionRadius))) {
-            if (cloud.getParticle() != ParticleTypes.DRAGON_BREATH)
-                continue;
+            if (!(slotStack.getItem() instanceof ElytraBoosterItem booster))
+                return;
 
-            if (player.tickCount % 5 == 0)
-                NBTUtils.setInt(stack, TAG_BREATH_AMOUNT, breath + 1);
+            int time = ForgeHooks.getBurnTime(heldStack, RecipeType.SMELTING) / 20;
+            int amount = NBTUtils.getInt(slotStack, TAG_FUEL, 0);
 
-            if (cloud.getRadius() <= 0)
-                cloud.remove(Entity.RemovalReason.KILLED);
+            if (time <= 0 || amount >= booster.getBreathCapacity(slotStack))
+                return;
 
-            cloud.setRadius(cloud.getRadius() - stats.breathConsumptionSpeed);
+            NBTUtils.setInt(slotStack, TAG_FUEL, Math.min(booster.getBreathCapacity(slotStack), amount + time));
 
-            Vec3 direction = player.position().add(0, 1, 0).subtract(cloud.position()).normalize();
-            double distance = player.position().add(0, 1, 0).distanceTo(cloud.position());
+            ItemStack result = heldStack.getContainerItem();
 
-            world.addParticle(new CircleTintData(new Color(160, 0, 255),
-                            (float) (distance * 0.075F), (int) distance * 5, 0.95F, false),
-                    cloud.getX(), cloud.getY(), cloud.getZ(), direction.x * 0.2F, direction.y * 0.2F, direction.z * 0.2F);
+            heldStack.shrink(1);
+
+            if (!result.isEmpty()) {
+                if (heldStack.isEmpty())
+                    player.containerMenu.setCarried(result);
+                else
+                    player.getInventory().add(result);
+            }
+
+            player.playSound(SoundEvents.BLAZE_SHOOT, 0.75F, 2F / (time * 0.025F));
+
+            event.setCanceled(true);
         }
-    }
-
-    public static class Stats extends RelicStats {
-        public float flySpeed = 1.5F;
-        public int breathConsumptionRadius = 10;
-        public int breathCapacity = 1000;
-        public float breathConsumptionSpeed = 0.02F;
-        public int breathRegenerationCooldown = 2;
     }
 }

@@ -41,8 +41,6 @@ public class RelicLootModifier extends LootModifier {
     @Nonnull
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
-        System.out.println(context.getQueriedLootTableId().getPath());
-
         entry.expand(context, generator -> generator.createItemStack(LootItemFunction.decorate(
                 LootItemFunctions.compose(this.functions), generatedLoot::add, context), context));
 

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Item.class)
 public class MixinItem {
-    @Inject(at = @At(value = "HEAD"), method = "inventoryTick", cancellable = true)
+    @Inject(at = @At(value = "HEAD"), method = "inventoryTick")
     protected void handleContract(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected, CallbackInfo info) {
         if (entityIn instanceof Player)
             ContractHandler.handleOwner((Player) entityIn, stack);

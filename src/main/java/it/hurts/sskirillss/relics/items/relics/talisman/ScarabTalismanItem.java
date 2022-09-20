@@ -1,8 +1,8 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigDataOld;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -42,7 +41,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
     private final MutablePair<String, UUID> SPEED_INFO = new MutablePair<>(Reference.MODID
@@ -60,8 +58,8 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
+    public RelicStyleData getStyle(ItemStack stack) {
+        return RelicStyleData.builder()
                 .borders("#fcc100", "#fca900")
                 .ability(AbilityTooltip.builder()
                         .arg("+" + (int) (stats.speedModifier * 100 - 100) + "%")
@@ -78,8 +76,8 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
     }
 
     @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
+    public RelicConfigDataOld<Stats> getConfigData() {
+        return RelicConfigDataOld.<Stats>builder()
                 .stats(new Stats())
                 .build();
     }
@@ -92,21 +90,19 @@ public class ScarabTalismanItem extends RelicItem<ScarabTalismanItem.Stats> {
         if (DurabilityUtils.isBroken(stack))
             return;
 
-        if (stats.allowedBiomes.stream().map(Biome.BiomeCategory::byName).collect(Collectors.toList())
-                .contains(world.getBiome(livingEntity.blockPosition()).getBiomeCategory()))
-            EntityUtils.applyAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
-                    SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
-        else
-            EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
-                    stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+//        if (stats.allowedBiomes.stream().map(Biome.BiomeCategory::byName).collect(Collectors.toList())
+//                .contains(world.getBiome(livingEntity.blockPosition()).getBiomeCategory()))
+//            EntityUtils.applyAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(),
+//                    SPEED_INFO.getLeft(), stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+//        else
+//            EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
+//                    stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         AttributeInstance movementSpeed = slotContext.getWearer().getAttribute(Attributes.MOVEMENT_SPEED);
 
-        EntityUtils.removeAttributeModifier(movementSpeed, new AttributeModifier(SPEED_INFO.getRight(), SPEED_INFO.getLeft(),
-                stats.speedModifier, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 
     @Override

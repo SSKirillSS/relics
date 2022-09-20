@@ -1,10 +1,15 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/magma_walker"
+        "layer0": "relics:items/magma_walker_0"
     },
     "overrides": [
-        { "predicate": { "relics:broken": 1 }, "model": "relics:item/magma_walker_broken" }
+        { "predicate": { "relics:broken": 1 }, "model": "relics:item/magma_walker_broken" },
+        { "predicate": { "relics:heat": 0 }, "model": "relics:item/magma_walker_0" },
+        { "predicate": { "relics:heat": 1 }, "model": "relics:item/magma_walker_1" },
+        { "predicate": { "relics:heat": 2 }, "model": "relics:item/magma_walker_2" },
+        { "predicate": { "relics:heat": 3 }, "model": "relics:item/magma_walker_3" },
+        { "predicate": { "relics:heat": 4 }, "model": "relics:item/magma_walker_4" }
     ]
 }
 

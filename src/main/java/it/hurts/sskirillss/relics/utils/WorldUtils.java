@@ -4,12 +4,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorldUtils {
+    @Nullable
     public static BlockPos getSolidBlockUnderFeet(Level world, BlockPos blockPos) {
-        for (BlockPos pos = blockPos.below(); pos.getY() > 0; pos = pos.below())
+        for (BlockPos pos = blockPos.below(); pos.getY() > world.getMinBuildHeight(); pos = pos.below())
             if (world.getBlockState(pos).getMaterial().blocksMotion())
                 return pos;
 

@@ -1,36 +1,30 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.blocks.MagmaStoneBlock;
+import it.hurts.sskirillss.relics.api.events.FluidCollisionEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
-import it.hurts.sskirillss.relics.init.BlockRegistry;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigDataOld;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import top.theillusivec4.curios.api.SlotContext;
 
 public class MagmaWalkerItem extends RelicItem<RelicStats> {
+    public static final String TAG_HEAT = "heat";
+
     public MagmaWalkerItem() {
         super(RelicData.builder()
                 .rarity(Rarity.RARE)
@@ -38,8 +32,8 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> {
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
+    public RelicStyleData getStyle(ItemStack stack) {
+        return RelicStyleData.builder()
                 .borders("#ff6900", "#ff2e00")
                 .ability(AbilityTooltip.builder()
                         .build())
@@ -49,50 +43,54 @@ public class MagmaWalkerItem extends RelicItem<RelicStats> {
     }
 
     @Override
-    public RelicConfigData<RelicStats> getConfigData() {
-        return RelicConfigData.builder()
-                .build();
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
+
+        if (!(slotContext.getWearer() instanceof Player player) || player.tickCount % 20 != 0)
+            return;
+
+        if (heat > 0) {
+            if (heat > 60)
+                player.hurt(DamageSource.HOT_FLOOR, 1 + ((heat - 60) / 10F));
+
+            Level level = player.level;
+
+            if (!level.getFluidState(player.blockPosition().below()).is(FluidTags.LAVA)
+                    && !level.getFluidState(player.blockPosition()).is(FluidTags.LAVA))
+                NBTUtils.setInt(stack, TAG_HEAT, --heat);
+        }
     }
 
     @Override
-    public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        Level world = livingEntity.getCommandSenderWorld();
-        BlockPos pos = livingEntity.blockPosition();
-        BlockState state = world.getBlockState(pos.below());
-        FluidState fluid = state.getFluidState();
-
-        if (DurabilityUtils.isBroken(stack))
-            return;
-
-        if (fluid.getType() == Fluids.LAVA || fluid.getType() == Fluids.FLOWING_LAVA) {
-            world.setBlockAndUpdate(pos.below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState()
-                    .setValue(MagmaStoneBlock.LEVEL, fluid.isSource() ? 0 : fluid.getValue(FlowingFluid.LEVEL))
-                    .setValue(MagmaStoneBlock.FALLING, !fluid.isSource() && fluid.getValue(FlowingFluid.FALLING)));
-
-            world.addParticle(ParticleTypes.LAVA, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, 1, 1, 1);
-            world.playSound(null, livingEntity.blockPosition(), SoundEvents.BASALT_PLACE,
-                    SoundSource.PLAYERS, 1.0F, 1.0F);
-        }
-
-        if (state.getBlock() == BlockRegistry.MAGMA_STONE_BLOCK.get() && state.getValue(MagmaStoneBlock.AGE) > 0)
-            world.setBlock(pos.below(), BlockRegistry.MAGMA_STONE_BLOCK.get().defaultBlockState(), 2);
+    public RelicConfigDataOld<RelicStats> getConfigData() {
+        return RelicConfigDataOld.builder()
+                .build();
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
-    public static class MagmaWalkerServerEvents {
-
+    public static class Events {
         @SubscribeEvent
-        public static void onLivingHurt(LivingHurtEvent event) {
-            if (!EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get()).isEmpty()
-                    && event.getSource() == DamageSource.HOT_FLOOR)
+        public static void onLivingAttack(LivingAttackEvent event) {
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get());
+
+            if (!stack.isEmpty() && event.getSource() == DamageSource.HOT_FLOOR
+                    && NBTUtils.getInt(stack, TAG_HEAT, 0) <= 60) {
                 event.setCanceled(true);
+            }
         }
 
         @SubscribeEvent
-        public static void onLivingAttack(LivingAttackEvent event) {
-            if (!EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get()).isEmpty()
-                    && event.getSource() == DamageSource.HOT_FLOOR)
-                event.setCanceled(true);
+        public static void onFluidCollide(FluidCollisionEvent event) {
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get());
+
+            if (!(event.getEntityLiving() instanceof Player player) || stack.isEmpty()
+                    || !event.getFluid().is(FluidTags.LAVA) || player.isShiftKeyDown())
+                return;
+
+            if (player.tickCount % 20 == 0)
+                NBTUtils.setInt(stack, TAG_HEAT, NBTUtils.getInt(stack, TAG_HEAT, 0) + 1);
+
+            event.setCanceled(true);
         }
     }
 }

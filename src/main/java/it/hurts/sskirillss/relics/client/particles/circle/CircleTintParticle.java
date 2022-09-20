@@ -1,20 +1,20 @@
 package it.hurts.sskirillss.relics.client.particles.circle;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -86,15 +86,11 @@ public class CircleTintParticle extends TextureSheetParticle {
     private static final ParticleRenderType RENDERER = new ParticleRenderType() {
         @Override
         public void begin(BufferBuilder bufferBuilder, TextureManager textureManager) {
-            RenderSystem.setShader(GameRenderer::getParticleShader);
-
-            RenderSystem.depthMask(true);
-
-            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-
+            RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+
+            textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES).setBlurMipmap(true, false);
 
             bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
@@ -103,7 +99,7 @@ public class CircleTintParticle extends TextureSheetParticle {
         public void end(Tesselator tessellator) {
             tessellator.end();
 
-            RenderSystem.enableDepthTest();
+            Minecraft.getInstance().textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES).restoreLastBlurMipmap();
 
             RenderSystem.disableBlend();
             RenderSystem.depthMask(true);

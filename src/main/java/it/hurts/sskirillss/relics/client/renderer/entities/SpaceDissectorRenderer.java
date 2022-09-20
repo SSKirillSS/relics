@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import it.hurts.sskirillss.relics.entities.SpaceDissectorEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;

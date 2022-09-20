@@ -1,6 +1,0 @@
-{
-  "parent": "relics:block/chalk",
-  "textures": {
-    "texture": "relics:block/chalk_3"
-  }
-}

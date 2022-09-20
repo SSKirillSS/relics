@@ -1,9 +1,6 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.tiles.BloodyLecternTile;
-import it.hurts.sskirillss.relics.tiles.PedestalTile;
-import it.hurts.sskirillss.relics.tiles.RunicAltarTile;
-import it.hurts.sskirillss.relics.tiles.RunicAnvilTile;
+import it.hurts.sskirillss.relics.tiles.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -24,6 +21,8 @@ public class TileRegistry {
             BlockEntityType.Builder.of(RunicAnvilTile::new, BlockRegistry.RUNIC_ANVIL_BLOCK.get()).build(null));
     public static final RegistryObject<BlockEntityType<BloodyLecternTile>> BLOODY_LECTERN_TILE = TILES.register("bloody_lectern", () ->
             BlockEntityType.Builder.of(BloodyLecternTile::new, BlockRegistry.BLOODY_LECTERN_BLOCK.get()).build(null));
+    public static final RegistryObject<BlockEntityType<ResearchingTableTile>> RESEARCHING_TABLE = TILES.register("researching_table", () ->
+            BlockEntityType.Builder.of(ResearchingTableTile::new, BlockRegistry.RESEARCHING_TABLE.get()).build(null));
 
     public static void registerTiles() {
         TILES.register(FMLJavaModLoadingContext.get().getModEventBus());

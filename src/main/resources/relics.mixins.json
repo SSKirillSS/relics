@@ -4,15 +4,23 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "relics.refmap.json",
   "mixins": [
+    "MixinAbstractChestedHorse",
+    "MixinAbstractContainerMenu",
     "MixinEnderMan",
     "MixinEntity",
     "MixinItem",
+    "MixinItemStack",
     "MixinLivingEntity",
+    "MixinPiglinAi",
     "MixinPiglinMobsSensor",
+    "MixinPowderSnowBlock",
     "MixinWebBlock"
   ],
   "minVersion": "0.8",
   "client": [
+    "MixinCamera",
+    "MixinKeyboardHandler",
+    "MixinMouseHandler",
     "MixinScreen"
   ]
 }

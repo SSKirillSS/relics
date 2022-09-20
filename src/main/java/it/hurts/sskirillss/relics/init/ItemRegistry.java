@@ -5,13 +5,12 @@ import it.hurts.sskirillss.relics.items.relics.*;
 import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
 import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
 import it.hurts.sskirillss.relics.items.relics.back.MidnightRobeItem;
-import it.hurts.sskirillss.relics.items.relics.back.SquireBagItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.belt.DrownedBeltItem;
 import it.hurts.sskirillss.relics.items.relics.belt.HunterBeltItem;
 import it.hurts.sskirillss.relics.items.relics.belt.LeatherBeltItem;
 import it.hurts.sskirillss.relics.items.relics.feet.*;
-import it.hurts.sskirillss.relics.items.relics.hands.EndersHandItem;
+import it.hurts.sskirillss.relics.items.relics.hands.EnderHandItem;
 import it.hurts.sskirillss.relics.items.relics.hands.RageGloveItem;
 import it.hurts.sskirillss.relics.items.relics.hands.WoolMittenItem;
 import it.hurts.sskirillss.relics.items.relics.head.FragrantFlowerItem;
@@ -43,17 +42,6 @@ import java.util.stream.Collectors;
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MODID);
 
-    public static final RegistryObject<Item> AQUASTEEL_INGOT = ITEMS.register("aquasteel_ingot", ItemBase::new);
-    public static final RegistryObject<Item> FIRESTEEL_INGOT = ITEMS.register("firesteel_ingot", ItemBase::new);
-    public static final RegistryObject<Item> TERRASTEEL_INGOT = ITEMS.register("terrasteel_ingot", ItemBase::new);
-    public static final RegistryObject<Item> AIRSTEEL_INGOT = ITEMS.register("airsteel_ingot", ItemBase::new);
-    public static final RegistryObject<Item> MITHRIL_INGOT = ITEMS.register("mithril_ingot", ItemBase::new);
-    public static final RegistryObject<Item> OBSIDIAN_INGOT = ITEMS.register("obsidian_ingot", ItemBase::new);
-    public static final RegistryObject<Item> STEEL_INGOT = ITEMS.register("steel_ingot", ItemBase::new);
-    public static final RegistryObject<Item> FLAMING_AMBER_GEODE = ITEMS.register("flaming_amber_geode", ItemBase::new);
-    public static final RegistryObject<Item> FLAMING_AMBER_DUST = ITEMS.register("flaming_amber_dust", ItemBase::new);
-    public static final RegistryObject<Item> CHRYSOLITE = ITEMS.register("chrysolite", ItemBase::new);
-
     public static final RegistryObject<Item> COAL_PARCHMENT = ITEMS.register("coal_parchment", ItemBase::new);
     public static final RegistryObject<Item> RELIC_CONTRACT = ITEMS.register("relic_contract", RelicContractItem::new);
     public static final RegistryObject<Item> BLOODY_FEATHER = ITEMS.register("bloody_feather", ItemBase::new);
@@ -74,15 +62,12 @@ public class ItemRegistry {
     public static final RegistryObject<Item> RUNE_OF_LUCK = ITEMS.register("rune_of_luck", LuckRuneItem::new);
     public static final RegistryObject<Item> RUNE_OF_COLD = ITEMS.register("rune_of_cold", ColdRuneItem::new);
 
-    public static final RegistryObject<Item> COMMON_SCRAP = ITEMS.register("common_scrap", () -> new RelicScrapItem(4));
-    public static final RegistryObject<Item> UNCOMMON_SCRAP = ITEMS.register("uncommon_scrap", () -> new RelicScrapItem(8));
-    public static final RegistryObject<Item> RARE_SCRAP = ITEMS.register("rare_scrap", () -> new RelicScrapItem(16));
-    public static final RegistryObject<Item> EPIC_SCRAP = ITEMS.register("epic_scrap", () -> new RelicScrapItem(32));
+    public static final RegistryObject<Item> SOLID_SNOWBALL = ITEMS.register("solid_snowball", SolidSnowballItem::new);
 
     public static final RegistryObject<Item> SPATIAL_SIGN = ITEMS.register("spatial_sign", SpatialSignItem::new);
-    public static final RegistryObject<Item> CHALK = ITEMS.register("chalk", ChalkItem::new);
     public static final RegistryObject<Item> REFLECTION_NECKLACE = ITEMS.register("reflection_necklace", ReflectionNecklaceItem::new);
     public static final RegistryObject<Item> MAGMA_WALKER = ITEMS.register("magma_walker", MagmaWalkerItem::new);
+    public static final RegistryObject<Item> AQUA_WALKER = ITEMS.register("aqua_walker", AquaWalkerItem::new);
     public static final RegistryObject<Item> MIDNIGHT_ROBE = ITEMS.register("midnight_robe", MidnightRobeItem::new);
     public static final RegistryObject<Item> SCARAB_TALISMAN = ITEMS.register("scarab_talisman", ScarabTalismanItem::new);
     public static final RegistryObject<Item> STELLAR_CATALYST = ITEMS.register("stellar_catalyst", StellarCatalystItem::new);
@@ -100,7 +85,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> SPACE_DISSECTOR = ITEMS.register("space_dissector", SpaceDissectorItem::new);
     public static final RegistryObject<Item> SOUL_DEVOURER = ITEMS.register("soul_devourer", SoulDevourerItem::new);
     public static final RegistryObject<Item> HOLY_LOCKET = ITEMS.register("holy_locket", HolyLocketItem::new);
-    public static final RegistryObject<Item> ENDERS_HAND = ITEMS.register("enders_hand", EndersHandItem::new);
+    public static final RegistryObject<Item> ENDER_HAND = ITEMS.register("enders_hand", EnderHandItem::new);
     public static final RegistryObject<Item> ELYTRA_BOOSTER = ITEMS.register("elytra_booster", ElytraBoosterItem::new);
     public static final RegistryObject<Item> FRAGRANT_FLOWER = ITEMS.register("fragrant_flower", FragrantFlowerItem::new);
     public static final RegistryObject<Item> MAGIC_MIRROR = ITEMS.register("magic_mirror", MagicMirrorItem::new);
@@ -109,8 +94,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> SPIDER_NECKLACE = ITEMS.register("spider_necklace", SpiderNecklaceItem::new);
     public static final RegistryObject<Item> SPORE_SACK = ITEMS.register("spore_sack", SporeSackItem::new);
     public static final RegistryObject<Item> SHADOW_GLAIVE = ITEMS.register("shadow_glaive", ShadowGlaiveItem::new);
-    public static final RegistryObject<Item> OUT_RUNNER = ITEMS.register("out_runner", OutRunnerItem::new);
-    public static final RegistryObject<Item> AMPHIBIAN_BOOT = ITEMS.register("amphibian_boot", AmphibianBootItem::new);
+    public static final RegistryObject<Item> ROLLER_SKATES = ITEMS.register("roller_skates", RollerSkatesItem::new);
     public static final RegistryObject<Item> INFINITY_HAM = ITEMS.register("infinity_ham", InfinityHamItem::new);
     public static final RegistryObject<Item> OLD_BOOT = ITEMS.register("old_boot", OldBootItem::new);
     public static final RegistryObject<Item> SLIME_HEART = ITEMS.register("slime_heart", SlimeHeartItem::new);
@@ -118,7 +102,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> HORSE_FLUTE = ITEMS.register("horse_flute", HorseFluteItem::new);
     public static final RegistryObject<Item> WOOL_MITTEN = ITEMS.register("wool_mitten", WoolMittenItem::new);
     public static final RegistryObject<Item> GHOST_SKIN_TALISMAN = ITEMS.register("ghost_skin_talisman", GhostSkinTalismanItem::new);
-    public static final RegistryObject<Item> SQUIRE_BAG = ITEMS.register("squire_bag", SquireBagItem::new);
+    public static final RegistryObject<Item> AMPHIBIAN_BOOT = ITEMS.register("amphibian_boot", AmphibianBootItem::new);
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());

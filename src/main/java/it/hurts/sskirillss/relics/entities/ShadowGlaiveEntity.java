@@ -2,24 +2,24 @@ package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
-import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -31,18 +31,19 @@ import java.util.stream.Collectors;
 
 public class ShadowGlaiveEntity extends ThrowableProjectile {
     private static final EntityDataAccessor<Integer> BOUNCES = SynchedEntityData.defineId(ShadowGlaiveEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<String> OWNER = SynchedEntityData.defineId(ShadowGlaiveEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> TARGET = SynchedEntityData.defineId(ShadowGlaiveEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> BOUNCED_ENTITIES = SynchedEntityData.defineId(ShadowGlaiveEntity.class, EntityDataSerializers.STRING);
 
     private static final String TAG_BOUNCES_AMOUNT = "bounces";
-    private static final String TAG_OWNER_UUID = "owner";
     private static final String TAG_TARGET_UUID = "target";
     private static final String TAG_BOUNCED_ENTITIES = "entities";
 
     private boolean isBounced = false;
-    private Player owner;
     private LivingEntity target;
+
+    @Getter
+    @Setter
+    private ItemStack stack = ItemStack.EMPTY;
 
     public ShadowGlaiveEntity(EntityType<? extends ShadowGlaiveEntity> type, Level worldIn) {
         super(type, worldIn);
@@ -50,13 +51,6 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
 
     public ShadowGlaiveEntity(Level world, LivingEntity throwerIn) {
         super(EntityRegistry.SHADOW_GLAIVE.get(), throwerIn, world);
-    }
-
-    public void setOwner(Player playerIn) {
-        this.owner = playerIn;
-
-        if (playerIn != null)
-            entityData.set(OWNER, playerIn.getUUID().toString());
     }
 
     public void setTarget(LivingEntity target) {
@@ -67,29 +61,27 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     }
 
     private void locateNearestTarget() {
-        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getStats();
-        int bounces = entityData.get(BOUNCES);
-
-        if (level.getRandom().nextFloat() > 1.0F - (bounces * config.bounceChanceMultiplier)) {
-            this.remove(Entity.RemovalReason.KILLED);
+        if (entityData.get(BOUNCES) >= RelicItem.getAbilityValue(stack, "glaive", "bounces")) {
+            this.discard();
 
             return;
         }
 
         List<String> bouncedEntities = Arrays.asList(entityData.get(BOUNCED_ENTITIES).split(","));
         List<LivingEntity> entitiesAround = level.getEntitiesOfClass(LivingEntity.class,
-                this.getBoundingBox().inflate(config.bounceRadius));
+                this.getBoundingBox().inflate(RelicItem.getAbilityValue(stack, "glaive", "radius")));
 
         entitiesAround = entitiesAround.stream()
                 .filter(entity -> !bouncedEntities.contains(entity.getUUID().toString()))
                 .filter(EntitySelector.NO_CREATIVE_OR_SPECTATOR)
-                .filter(entity -> entity != owner)
+                .filter(entity -> this.getOwner() != null && entity.getStringUUID().equals(this.getOwner().getStringUUID()))
+                .filter(entity -> entity.hasLineOfSight(this))
                 .sorted(Comparator.comparing(entity -> entity.position().distanceTo(this.position())))
                 .collect(Collectors.toList());
 
         if (entitiesAround.isEmpty()) {
             if (isBounced)
-                this.remove(Entity.RemovalReason.KILLED);
+                this.discard();
 
             return;
         }
@@ -106,7 +98,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         }
 
         if (target == null || !target.isAlive()) {
-            this.remove(Entity.RemovalReason.KILLED);
+            this.discard();
 
             return;
         }
@@ -118,8 +110,6 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     public void tick() {
         super.tick();
 
-        ShadowGlaiveItem.Stats config = ShadowGlaiveItem.INSTANCE.getStats();
-
         for (int i = 0; i < 3; i++)
             level.addParticle(new SparkTintData(new Color(255, random.nextInt(100), 255), 0.2F, 30),
                     this.xo, this.yo, this.zo, MathUtils.randomFloat(random) * 0.01F, 0, MathUtils.randomFloat(random) * 0.01F);
@@ -128,10 +118,10 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
             return;
 
         if (!isBounced && target == null && this.tickCount > 30)
-            this.remove(Entity.RemovalReason.KILLED);
+            this.discard();
 
         if (this.tickCount > 300)
-            this.remove(Entity.RemovalReason.KILLED);
+            this.discard();
 
         if (target == null && this.tickCount > 10 && this.tickCount % 2 == 0) {
             this.locateNearestTarget();
@@ -141,27 +131,23 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
 
         if (target != null && target.isAlive()) {
             EntityUtils.moveTowardsPosition(this, target.position()
-                    .add(0D, target.getBbHeight() * 0.5D, 0D), config.projectileSpeed);
+                    .add(0D, target.getBbHeight() * 0.5D, 0D), 0.75F);
 
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class,
                     this.getBoundingBox().inflate(0.3D, 3D, 0.3D))) {
-                if (entity == owner)
-                    return;
-
-                int bounces = entityData.get(BOUNCES);
-
-                if (bounces > config.maxBounces)
-                    this.remove(Entity.RemovalReason.KILLED);
+                if (this.getOwner() instanceof Player player && entity.getStringUUID().equals(player.getStringUUID()))
+                    continue;
 
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
 
-                entity.hurt(owner != null ? DamageSource.playerAttack(owner) : DamageSource.GENERIC, config.damage);
+                entity.hurt(this.getOwner() instanceof Player player ? DamageSource.playerAttack(player) : DamageSource.MAGIC, (float) RelicItem.getAbilityValue(stack, "glaive", "damage"));
 
                 if (!bouncedEntities.contains(entity.getUUID().toString())) {
                     entityData.set(BOUNCED_ENTITIES, bouncedEntitiesString + "," + entity.getUUID());
 
-                    entityData.set(BOUNCES, bounces + 1);
+                    entityData.set(BOUNCES, entityData.get(BOUNCES) + 1);
+
                     isBounced = true;
                 }
 
@@ -174,19 +160,8 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected void onHit(@Nonnull HitResult rayTraceResult) {
-        if (level.isClientSide())
-            return;
-
-        if (rayTraceResult.getType() == HitResult.Type.BLOCK
-                && level.getBlockState(((BlockHitResult) rayTraceResult).getBlockPos()).getMaterial().blocksMotion())
-            this.remove(Entity.RemovalReason.KILLED);
-    }
-
-    @Override
     protected void defineSynchedData() {
         entityData.define(BOUNCES, 0);
-        entityData.define(OWNER, "");
         entityData.define(TARGET, "");
         entityData.define(BOUNCED_ENTITIES, "");
     }
@@ -194,7 +169,6 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt(TAG_BOUNCES_AMOUNT, entityData.get(BOUNCES));
-        tag.putString(TAG_OWNER_UUID, entityData.get(OWNER));
         tag.putString(TAG_TARGET_UUID, entityData.get(TARGET));
         tag.putString(TAG_BOUNCED_ENTITIES, entityData.get(BOUNCED_ENTITIES));
 
@@ -204,7 +178,6 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         entityData.set(BOUNCES, tag.getInt(TAG_BOUNCES_AMOUNT));
-        entityData.set(OWNER, tag.getString(TAG_OWNER_UUID));
         entityData.set(TARGET, tag.getString(TAG_TARGET_UUID));
         entityData.set(BOUNCED_ENTITIES, tag.getString(TAG_BOUNCED_ENTITIES));
 
@@ -218,7 +191,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
 
     @Override
     protected float getGravity() {
-        return 0;
+        return 0F;
     }
 
     @Nonnull

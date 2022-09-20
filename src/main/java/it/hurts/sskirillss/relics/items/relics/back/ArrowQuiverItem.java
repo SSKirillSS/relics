@@ -1,53 +1,53 @@
 package it.hurts.sskirillss.relics.items.relics.back;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.api.events.ContainerSlotClickEvent;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
-import it.hurts.sskirillss.relics.network.NetworkHandler;
-import it.hurts.sskirillss.relics.network.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import lombok.Getter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements ICurioItem {
+public class ArrowQuiverItem extends RelicItem {
     public static ArrowQuiverItem INSTANCE;
 
-    private static final String TAG_CHARGED = "charged";
-    private static final String TAG_ARROW = "arrow";
+    private static final String TAG_ARROWS = "arrows";
 
     public ArrowQuiverItem() {
         super(RelicData.builder()
-                .rarity(Rarity.UNCOMMON)
+                .rarity(Rarity.COMMON)
                 .hasAbility()
                 .build());
 
@@ -55,175 +55,326 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
-                .borders("#c87625", "#ab661b")
-                .ability(AbilityTooltip.builder()
-                        .arg(stats.skippedTicks + 1)
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("receptacle", RelicAbilityEntry.builder()
+                                .stat("slots", RelicAbilityStat.builder()
+                                        .initialValue(3, 5)
+                                        .upgradeModifier("add", 1)
+                                        .build())
+                                .build())
+                        .ability("agility", RelicAbilityEntry.builder()
+                                .requiredLevel(5)
+                                .requiredPoints(2)
+                                .stat("modifier", RelicAbilityStat.builder()
+                                        .initialValue(1, 1)
+                                        .upgradeModifier("add", 1)
+                                        .build())
+                                .build())
                         .build())
-                .ability(AbilityTooltip.builder()
-                        .active()
+                .levelingData(new RelicLevelingData(100, 20, 100))
+                .styleData(RelicStyleData.builder()
+                        .borders("#eed551", "#dcbe1d")
                         .build())
                 .build();
     }
 
+    public static int getSlotsAmount(ItemStack stack) {
+        return (int) Math.round(getAbilityValue(stack, "receptacle", "slots"));
+    }
+
     @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
-                .stats(new Stats())
-                .build();
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        return Optional.of(new ArrowQuiverTooltip(getArrows(stack), getSlotsAmount(stack)));
     }
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (DurabilityUtils.isBroken(stack))
+        if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        handleArrow(stack, livingEntity.getCommandSenderWorld());
-        handleUse(stack, livingEntity);
+        if (player.isUsingItem() && player.getMainHandItem().getItem() instanceof BowItem)
+            for (int i = 0; i < 1; i++)
+                player.updatingUsingItem();
     }
 
-    private void handleArrow(ItemStack stack, Level world) {
-        if (world.isClientSide())
-            return;
+    public static List<ItemStack> getArrows(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
 
-        String UUIDString = NBTUtils.getString(stack, TAG_ARROW, "");
-        ServerLevel serverLevel = (ServerLevel) world;
+        return tag == null ? new ArrayList<>() : tag.getList(TAG_ARROWS, 10).stream()
+                .map(CompoundTag.class::cast)
+                .map(ItemStack::of)
+                .collect(Collectors.toList());
+    }
 
-        if (UUIDString.equals(""))
-            return;
+    public int insertStack(ItemStack stack, ItemStack arrow) {
+        if (!arrow.getItem().canFitInsideContainerItems())
+            return 0;
 
-        Entity arrow = serverLevel.getEntity(UUID.fromString(UUIDString));
+        CompoundTag tag = stack.getOrCreateTag();
 
-        if (arrow == null || !arrow.isAlive()) {
-            NBTUtils.setString(stack, TAG_ARROW, "");
-            NBTUtils.setBoolean(stack, TAG_CHARGED, false);
+        if (!tag.contains(TAG_ARROWS))
+            tag.put(TAG_ARROWS, new ListTag());
 
-            return;
+        ListTag list = tag.getList(TAG_ARROWS, 10);
+
+        List<CompoundTag> entries = list.stream()
+                .filter(CompoundTag.class::isInstance)
+                .map(CompoundTag.class::cast)
+                .filter(nbt -> ItemStack.isSameItemSameTags(ItemStack.of(nbt), arrow))
+                .filter(nbt -> {
+                    ItemStack item = ItemStack.of(nbt);
+
+                    return item.getCount() < item.getMaxStackSize();
+                })
+                .toList();
+
+        int amount = 0;
+
+        if (!entries.isEmpty()) {
+            for (CompoundTag entry : entries) {
+                ItemStack s = ItemStack.of(entry);
+
+                int count = s.getCount() + arrow.getCount();
+
+                if (count <= s.getMaxStackSize()) {
+                    amount += arrow.getCount();
+
+                    arrow.setCount(0);
+
+                    s.grow(amount);
+                    s.save(entry);
+
+                    list.remove(entry);
+                    list.add(0, entry);
+
+                    break;
+                } else {
+                    int step = s.getMaxStackSize() - s.getCount();
+
+                    amount += step;
+
+                    arrow.shrink(step);
+
+                    s.grow(step);
+                    s.save(entry);
+
+                    list.remove(entry);
+                    list.add(0, entry);
+                }
+            }
         }
 
-        serverLevel.sendParticles(ParticleTypes.CLOUD, arrow.getX(), arrow.getY(), arrow.getZ(), 1, 0, 0, 0, 0);
+        if (!arrow.isEmpty()) {
+            if (getSlotsAmount(stack) <= getArrows(stack).size())
+                return 0;
+
+            amount += arrow.getCount();
+
+            CompoundTag entry = new CompoundTag();
+
+            arrow.copy().save(entry);
+
+            list.add(0, entry);
+        }
+
+        return amount;
     }
 
-    private void handleUse(ItemStack stack, LivingEntity entity) {
-        if (!entity.isUsingItem() || NBTUtils.getBoolean(stack, TAG_CHARGED, false))
+    public static Optional<ItemStack> takeStack(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+
+        if (!tag.contains(TAG_ARROWS))
+            return Optional.empty();
+
+        ListTag list = tag.getList(TAG_ARROWS, 10);
+
+        if (list.isEmpty())
+            return Optional.empty();
+
+        ItemStack s = ItemStack.of(list.getCompound(0));
+
+        list.remove(0);
+
+        if (list.isEmpty())
+            stack.removeTagKey(TAG_ARROWS);
+
+        return Optional.of(s);
+    }
+
+    public static void takeArrow(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+
+        if (!tag.contains(TAG_ARROWS))
             return;
 
-        Item item = entity.getMainHandItem().getItem();
-        String id = item.getRegistryName().toString();
+        ListTag list = tag.getList(TAG_ARROWS, 10);
 
-        if ((item instanceof BowItem && !stats.blacklistedItems.contains(id)) || stats.whitelistedItems.contains(id))
-            for (int i = 0; i < stats.skippedTicks; i++)
-                entity.updatingUsingItem();
-    }
-
-    @Override
-    public void castAbility(Player player, ItemStack stack) {
-        if (player.getCooldowns().isOnCooldown(stack.getItem()))
+        if (list.isEmpty())
             return;
 
-        player.getCommandSenderWorld().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP,
-                SoundSource.PLAYERS, 1.0F, 1.0F);
+        CompoundTag entry = list.getCompound(0);
 
-        NBTUtils.setBoolean(stack, TAG_CHARGED, !NBTUtils.getBoolean(stack, TAG_CHARGED, false));
-        NBTUtils.setString(stack, TAG_ARROW, "");
+        ItemStack s = ItemStack.of(entry);
+
+        s.shrink(1);
+        s.save(entry);
+
+        list.remove(0);
+
+        if (!s.isEmpty())
+            list.add(0, entry);
+
+        if (list.isEmpty())
+            stack.removeTagKey(TAG_ARROWS);
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
+    public record ArrowQuiverTooltip(@Getter List<ItemStack> items, @Getter int maxAmount) implements TooltipComponent {
+
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public record ClientArrowQuiverTooltip(@Getter ArrowQuiverTooltip tooltip) implements ClientTooltipComponent {
+        public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/tooltip/arrow_quiver/empty_arrow.png");
+
+        @Override
+        public int getHeight() {
+            return 26;
+        }
+
+        @Override
+        public int getWidth(Font font) {
+            return tooltip.getMaxAmount() * 11;
+        }
+
+        @Override
+        public void renderImage(Font font, int mouseX, int mouseY, PoseStack poseStack, ItemRenderer itemRenderer, int blitOffset) {
+            poseStack.pushPose();
+
+            poseStack.translate(0, 0, 410);
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+
+            int step = 0;
+
+            for (ItemStack stack : tooltip.getItems()) {
+                font.draw(poseStack, String.valueOf(stack.getCount()), ((mouseX + step) * 2) + ((16 - font.width(String.valueOf(stack.getCount()))) / 2F), (mouseY + 16) * 2, 0xFFFFFF);
+
+                itemRenderer.renderAndDecorateFakeItem(stack, mouseX + step, mouseY);
+
+                step += 10;
+            }
+
+            poseStack.scale(2F, 2F, 2F);
+
+            for (int i = step / 10; i < tooltip.getMaxAmount(); i++) {
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                RenderSystem.setShaderTexture(0, TEXTURE);
+
+                Minecraft.getInstance().getTextureManager().getTexture(TEXTURE).bind();
+
+                Gui.blit(poseStack, mouseX + step, mouseY, 16, 16, 0, 0, 16, 16, 16, 16);
+
+                step += 10;
+            }
+
+            poseStack.translate(0, 0, -410);
+
+            poseStack.popPose();
+        }
+    }
+
+    @Mod.EventBusSubscriber
     public static class Events {
         @SubscribeEvent
-        public static void onArrowLoose(ArrowLooseEvent event) {
-            Stats stats = INSTANCE.stats;
+        public static void onSlotClick(ContainerSlotClickEvent event) {
+            Player player = event.getPlayer();
 
+            ItemStack heldStack = event.getHeldStack();
+            ItemStack slotStack = event.getSlotStack();
+
+            if (slotStack.getItem() != ItemRegistry.ARROW_QUIVER.get())
+                return;
+
+            ArrowQuiverItem quiver = (ArrowQuiverItem) slotStack.getItem();
+
+            if (event.getAction() == ClickAction.PRIMARY) {
+                if (!(heldStack.getItem() instanceof ArrowItem))
+                    return;
+
+                int amount = quiver.insertStack(slotStack, heldStack);
+
+                if (amount <= 0)
+                    return;
+
+                heldStack.shrink(amount);
+
+                player.playSound(SoundEvents.BUNDLE_INSERT, 1F, 1F);
+
+                event.setCanceled(true);
+            } else {
+                if (!heldStack.isEmpty())
+                    return;
+
+                takeStack(slotStack).ifPresent((stack) -> {
+                    event.getContainer().setCarried(stack);
+
+                    player.playSound(SoundEvents.BUNDLE_REMOVE_ONE, 1F, 1F);
+
+                    event.setCanceled(true);
+                });
+            }
+        }
+
+        @SubscribeEvent
+        public static void onArrowLoose(ArrowLooseEvent event) {
+            Player player = event.getPlayer();
+            ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
+
+            if (relic.isEmpty() || DurabilityUtils.isBroken(relic)
+                    || getArrows(relic).isEmpty() || player.isCreative())
+                return;
+
+            takeArrow(relic);
+        }
+
+        @SubscribeEvent
+        public static void onGettingProjectile(LivingGetProjectileEvent event) {
             if (!(event.getEntityLiving() instanceof Player player))
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
+            ItemStack weapon = event.getProjectileWeaponItemStack();
 
-            if (stack.isEmpty())
+            if (!(weapon.getItem() instanceof BowItem) || (weapon.getItem() instanceof CrossbowItem))
                 return;
 
-            Level world = player.getCommandSenderWorld();
+            ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-            if (!NBTUtils.getBoolean(stack, TAG_CHARGED, false))
+            if (relic.isEmpty() || DurabilityUtils.isBroken(relic))
                 return;
 
-            event.setCanceled(true);
+            List<ItemStack> arrows = getArrows(relic);
 
-            ItemStack bow = event.getBow();
-            ItemStack ammo = player.getProjectile(bow);
-
-            if (ammo.isEmpty())
-                return;
-
-            AbstractArrow projectile = ((ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW)).createArrow(world, ammo, player);
-
-            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, bow) <= 0 && !player.isCreative()) {
-                projectile.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-                ammo.shrink(1);
-            }
-
-            projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, BowItem.getPowerForTime(event.getCharge()) * 3F, 0F);
-            world.addFreshEntity(projectile);
-
-            NBTUtils.setString(stack, TAG_ARROW, projectile.getStringUUID());
-
-            player.getCooldowns().addCooldown(stack.getItem(), stats.activeCooldown * 20);
-
-            world.addParticle(ParticleTypes.EXPLOSION, player.getX(), player.getY() + 1, player.getZ(), 0, 0, 0);
-            world.playSound(player, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1F, 1F);
-            world.playSound(player, player.blockPosition(), SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.PLAYERS, 1F, 1.75F);
+            if (!arrows.isEmpty())
+                event.setProjectileItemStack(arrows.get(0));
         }
 
         @SubscribeEvent
-        public static void onProjectileImpact(ProjectileImpactEvent event) {
-            Stats stats = INSTANCE.stats;
-
-            if (!(event.getEntity() instanceof Projectile projectile)
-                    || !(projectile.getOwner() instanceof Player owner))
+        public static void onProjectileImpact(LivingHurtEvent event) {
+            if (!(event.getSource().getEntity() instanceof Player player)
+                    || !(event.getSource().getDirectEntity() instanceof AbstractArrow arrow))
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(owner, ItemRegistry.ARROW_QUIVER.get());
+            ArrowQuiverItem item = (ArrowQuiverItem) ItemRegistry.ARROW_QUIVER.get();
+            ItemStack stack = EntityUtils.findEquippedCurio(player, item);
 
-            if (stack.isEmpty())
+            if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
                 return;
 
-            Level world = owner.getCommandSenderWorld();
+            int amount = (int) Math.min(10, Math.round(player.position().distanceTo(arrow.position()) * 0.1));
 
-            if (DurabilityUtils.isBroken(stack) || !event.getEntity().getUUID().toString().equals(NBTUtils.getString(stack, TAG_ARROW, "")))
-                return;
-
-            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(stats.explosionRadius))) {
-                if (world.isClientSide())
-                    return;
-
-                Vec3 motion = entity.position().add(0F, 2.25F, 0F).subtract(projectile.position())
-                        .normalize().multiply(1.5F, 1.5F, 1.5F);
-
-                if (!world.isClientSide() && entity instanceof ServerPlayer)
-                    NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x(), motion.y(), motion.z()), (ServerPlayer) entity);
-                else
-                    entity.setDeltaMovement(motion);
-
-                if (!entity.getStringUUID().equals(owner.getStringUUID()))
-                    entity.hurt(DamageSource.playerAttack(owner), (float) Math.min(stats.maxExplosionDamage,
-                            entity.position().distanceTo(owner.position()) * stats.explosionDamageMultiplier));
-            }
-
-            NBTUtils.setString(stack, TAG_ARROW, "");
-            NBTUtils.setBoolean(stack, TAG_CHARGED, false);
-
-            world.playSound(null, projectile.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1F, 1F);
+            if (amount > 0)
+                RelicItem.addExperience(stack, amount);
         }
-    }
-
-    public static class Stats extends RelicStats {
-        public int skippedTicks = 1;
-        public int activeCooldown = 10;
-        public int explosionRadius = 5;
-        public float explosionDamageMultiplier = 1.5F;
-        public int maxExplosionDamage = 75;
-        public List<String> whitelistedItems = new ArrayList<>();
-        public List<String> blacklistedItems = new ArrayList<>();
     }
 }

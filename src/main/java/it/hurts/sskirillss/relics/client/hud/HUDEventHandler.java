@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.*;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
-import it.hurts.sskirillss.relics.network.PacketRelicAbility;
+import it.hurts.sskirillss.relics.network.packets.PacketRelicAbility;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.KeyMapping;
@@ -189,7 +189,7 @@ public class HUDEventHandler {
 
                 RelicItem<?> relic = (RelicItem<?>) stack.getItem();
 
-                if (DurabilityUtils.isBroken(stack) || !relic.getData().hasAbility())
+                if (DurabilityUtils.isBroken(stack) || !relic.data.hasAbility())
                     continue;
 
                 relics.add(new ImmutablePair<>(stack, i));
@@ -246,7 +246,7 @@ public class HUDEventHandler {
             if (!(stack.getItem() instanceof RelicItem<?> relic))
                 continue;
 
-            if (!relic.getData().hasAbility())
+            if (!relic.data.hasAbility())
                 continue;
 
             NetworkHandler.sendToServer(new PacketRelicAbility(pair.getRight()));

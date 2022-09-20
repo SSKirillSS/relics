@@ -1,99 +1,94 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.entities.SporeEntity;
+import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-public class SporeSackItem extends RelicItem<SporeSackItem.Stats> {
-    public static SporeSackItem INSTANCE;
+import java.util.Random;
 
+public class SporeSackItem extends RelicItem {
     public SporeSackItem() {
         super(RelicData.builder()
                 .rarity(Rarity.UNCOMMON)
                 .build());
-
-        INSTANCE = this;
     }
 
     @Override
-    public RelicTooltip getTooltip(ItemStack stack) {
-        return RelicTooltip.builder()
-                .borders("#398f00", "#006e00")
-                .ability(AbilityTooltip.builder()
-                        .arg((int) (stats.chance * 100) + "%")
-                        .arg(stats.radius)
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("spore", RelicAbilityEntry.builder()
+                                .requiredPoints(2)
+                                .stat("amount", RelicAbilityStat.builder()
+                                        .initialValue(1D, 1D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .build())
+                                .build())
+                        .ability("puddle", RelicAbilityEntry.builder()
+                                .requiredPoints(2)
+                                .stat("slowness", RelicAbilityStat.builder()
+                                        .initialValue(1D, 2D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .build())
+                                .stat("resize", RelicAbilityStat.builder()
+                                        .initialValue(0.01D, 0.1D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.01D)
+                                        .build())
+                                .build())
+                        .build())
+                .levelingData(new RelicLevelingData(100, 10, 100))
+                .styleData(RelicStyleData.builder()
+                        .borders("#ffe0d2", "#9c756b")
                         .build())
                 .build();
     }
 
-    @Override
-    public RelicConfigData<Stats> getConfigData() {
-        return RelicConfigData.<Stats>builder()
-                .stats(new Stats())
-                .build();
-    }
-
     @Mod.EventBusSubscriber(modid = Reference.MODID)
-    public static class SporeSackEvents {
+    public static class Events {
         @SubscribeEvent
-        public static void onProjectileImpact(ProjectileImpactEvent event) {
-            Stats stats = INSTANCE.stats;
-
-            if (!(event.getEntity() instanceof Projectile projectile))
+        public static void onLivingHurt(LivingHurtEvent event) {
+            if (!(event.getEntityLiving() instanceof Player player))
                 return;
 
-            if (projectile.getOwner() == null || !(projectile.getOwner() instanceof Player player))
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.SPORE_SACK.get());
+
+            if (stack.isEmpty())
                 return;
 
-            Level world = projectile.getCommandSenderWorld();
+            Level level = player.getLevel();
+            Random random = player.getRandom();
 
-            if (world.isClientSide())
-                return;
+            for (int i = 0; i < random.nextInt((int) Math.round(getAbilityValue(stack, "spore", "amount"))) + 1; i++) {
+                float speed = 0.25F + random.nextFloat() * 0.2F;
 
-            if (EntityUtils.findEquippedCurio(player, ItemRegistry.SPORE_SACK.get()).isEmpty()
-                    || world.getRandom().nextFloat() > stats.chance)
-                return;
+                Vec3 motion = new Vec3(MathUtils.randomFloat(random) * speed, speed, MathUtils.randomFloat(random) * speed);
 
-            world.playSound(null, projectile.blockPosition(), SoundEvents.FIRE_EXTINGUISH,
-                    SoundSource.PLAYERS, 1.0F, 0.5F);
-            player.getCooldowns().addCooldown(ItemRegistry.SPORE_SACK.get(), stats.cooldown * 20);
+                float mul = player.getBbHeight() / 1.5F;
 
-            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(stats.radius))) {
-                if (entity == player)
-                    continue;
+                Vec3 pos = player.position().add(0, mul, 0).add(motion.normalize().multiply(mul, mul, mul));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.POISON, stats.poisonDuration * 20, stats.poisonAmplifier));
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, stats.slownessDuration * 20, stats.slownessAmplifier));
+                SporeEntity spore = new SporeEntity(level);
+
+                spore.setOwner(player);
+                spore.setPos(pos);
+                spore.setDeltaMovement(motion);
+
+                level.addFreshEntity(spore);
             }
         }
-    }
-
-    public static class Stats extends RelicStats {
-        public float chance = 0.3F;
-        public int radius = 3;
-        public int cooldown = 5;
-        public int poisonAmplifier = 2;
-        public int poisonDuration = 5;
-        public int slownessAmplifier = 0;
-        public int slownessDuration = 5;
     }
 }

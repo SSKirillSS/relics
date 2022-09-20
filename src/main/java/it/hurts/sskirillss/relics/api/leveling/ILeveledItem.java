@@ -41,10 +41,6 @@ public interface ILeveledItem {
         setLevel(stack, getLevel(stack) + level);
     }
 
-    default void takeLevel(ItemStack stack, int level) {
-        setLevel(stack, getLevel(stack) - level);
-    }
-
     default int getExperience(ItemStack stack) {
         return NBTUtils.getInt(stack, TAG_EXPERIENCE, 0);
     }
