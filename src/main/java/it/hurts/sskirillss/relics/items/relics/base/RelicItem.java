@@ -364,8 +364,6 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public static void setLevel(ItemStack stack, int level) {
-        System.out.println(getLevelingData(stack));
-
         CompoundTag tag = getLevelingData(stack);
 
         tag.putInt(TAG_LEVEL, Math.min(((RelicItem<?>) stack.getItem()).getNewData().getLevelingData().getMaxLevel(), level));

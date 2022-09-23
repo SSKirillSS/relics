@@ -2,6 +2,9 @@ package it.hurts.sskirillss.relics.utils;
 
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -11,6 +14,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class NBTUtils {
     public static void setBoolean(ItemStack stack, String tag, boolean value) {
@@ -41,6 +45,21 @@ public class NBTUtils {
         stack.getOrCreateTag().put(tag, value);
     }
 
+    public static void setList(ItemStack stack, String tag, List<?> list) {
+        ListTag listTag = new ListTag();
+
+        for (Object entry : list) {
+            if (entry instanceof String stringEntry)
+                listTag.add(StringTag.valueOf(stringEntry));
+            else if (entry instanceof Integer intEntry)
+                listTag.add(IntTag.valueOf(intEntry));
+            else
+                throw new NullPointerException("Wrong entry instance type!");
+        }
+
+        stack.getOrCreateTag().put(tag, listTag);
+    }
+
     public static boolean getBoolean(ItemStack stack, String tag, boolean defaultValue) {
         return safeCheck(stack, tag) ? stack.getTag().getBoolean(tag) : defaultValue;
     }
@@ -67,6 +86,20 @@ public class NBTUtils {
 
     public static CompoundTag getCompound(ItemStack stack, String tag, CompoundTag defaultValue) {
         return safeCheck(stack, tag) ? stack.getTag().getCompound(tag) : defaultValue;
+    }
+
+    public static ListTag getList(ItemStack stack, String tag) {
+        return safeCheck(stack, tag) ? stack.getTag().getList(tag, 9) : new ListTag();
+    }
+
+    public static ListTag constructListTag(Object... objects) {
+        ListTag tag = new ListTag();
+
+        for (Object object : objects) {
+            tag.add(StringTag.valueOf(object.toString()));
+        }
+
+        return tag;
     }
 
     public static boolean safeCheck(ItemStack stack, String tag) {
