@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
+import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -49,6 +50,9 @@ public class ShadowSawEntity extends ThrowableProjectile {
         if (level.isClientSide())
             return;
 
+        if (this.tickCount >= 1200)
+            this.isReturning = true;
+
         if (isReturning) {
             this.noPhysics = true;
 
@@ -56,8 +60,19 @@ public class ShadowSawEntity extends ThrowableProjectile {
                 if (this.position().distanceTo(player.position()) > this.getBbWidth())
                     this.setDeltaMovement(player.position().add(0, player.getBbHeight() / 2, 0).subtract(this.position()).normalize().multiply(0.75, 0.75, 0.75));
                 else {
-                    NBTUtils.setInt(stack, ShadowGlaiveItem.TAG_CHARGES, 8);
-                    NBTUtils.clearTag(stack, ShadowGlaiveItem.TAG_SAW);
+                    for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                        ItemStack stack = player.getInventory().getItem(i);
+
+                        if (stack.getItem() != ItemRegistry.SHADOW_GLAIVE.get())
+                            continue;
+
+                        if (NBTUtils.getString(stack, ShadowGlaiveItem.TAG_SAW, "").equals(this.getStringUUID())) {
+                            NBTUtils.setInt(stack, ShadowGlaiveItem.TAG_CHARGES, 8);
+                            NBTUtils.clearTag(stack, ShadowGlaiveItem.TAG_SAW);
+
+                            break;
+                        }
+                    }
 
                     this.discard();
                 }
@@ -72,7 +87,7 @@ public class ShadowSawEntity extends ThrowableProjectile {
 
         for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
             if ((this.getOwner() == null || (this.getOwner() != null && entity != this.getOwner()))
-                    && entity.hurt(DamageSource.MAGIC, (float) RelicItem.getAbilityValue(stack, "saw", "bounces"))) {
+                    && entity.hurt(DamageSource.MAGIC, (float) Math.max(RelicItem.getAbilityValue(stack, "saw", "damage"), 0.1D))) {
                 entity.invulnerableTime = (int) Math.round(RelicItem.getAbilityValue(stack, "saw", "speed"));
             }
         }

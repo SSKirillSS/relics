@@ -74,7 +74,12 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         entitiesAround = entitiesAround.stream()
                 .filter(entity -> !bouncedEntities.contains(entity.getUUID().toString()))
                 .filter(EntitySelector.NO_CREATIVE_OR_SPECTATOR)
-                .filter(entity -> this.getOwner() != null && entity.getStringUUID().equals(this.getOwner().getStringUUID()))
+                .filter(entity -> {
+                    if (this.getOwner() == null)
+                        return false;
+
+                    return !entity.getStringUUID().equals(this.getOwner().getStringUUID());
+                })
                 .filter(entity -> entity.hasLineOfSight(this))
                 .sorted(Comparator.comparing(entity -> entity.position().distanceTo(this.position())))
                 .collect(Collectors.toList());
