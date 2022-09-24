@@ -97,4 +97,20 @@ public class ParticleUtils {
                 level.addParticle(particle, extraX, extraY + 0.1F, extraZ, 0, 0, 0);
         }
     }
+
+    public static void createLine(ParticleOptions particle, Level level, Vec3 start, Vec3 end, int amount, Vec3 motion) {
+        Vec3 delta = end.subtract(start);
+        Vec3 dir = delta.normalize();
+
+        for (int i = 0; i < amount; ++i) {
+            double progress = i * delta.length() / amount;
+
+            level.addParticle(particle, start.x + dir.x * progress, start.y + dir.y * progress,
+                    start.z + dir.z * progress, motion.x, motion.y, motion.z);
+        }
+    }
+
+    public static void createLine(ParticleOptions particle, Level level, Vec3 start, Vec3 end, int amount) {
+        createLine(particle, level, start, end, amount, Vec3.ZERO);
+    }
 }
