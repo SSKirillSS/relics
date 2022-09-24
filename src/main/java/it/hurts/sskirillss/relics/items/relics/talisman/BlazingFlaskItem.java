@@ -1,6 +1,8 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
@@ -37,6 +39,40 @@ public class BlazingFlaskItem extends RelicItem {
     }
 
     @Override
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("bonfire", RelicAbilityEntry.builder()
+                                .requiredPoints(2)
+                                .stat("radius", RelicAbilityStat.builder()
+                                        .initialValue(1, 2)
+                                        .upgradeModifier("add", 0.5D)
+                                        .build())
+                                .stat("step", RelicAbilityStat.builder()
+                                        .initialValue(2, 3)
+                                        .upgradeModifier("add", 1)
+                                        .build())
+                                .build())
+                        .ability("levitation", RelicAbilityEntry.builder()
+                                .maxLevel(10)
+                                .stat("speed", RelicAbilityStat.builder()
+                                        .initialValue(0.25D, 0.5D)
+                                        .upgradeModifier("add", 0.05)
+                                        .build())
+                                .stat("height", RelicAbilityStat.builder()
+                                        .initialValue(3, 5)
+                                        .upgradeModifier("add", 1)
+                                        .build())
+                                .build())
+                        .build())
+                .levelingData(new RelicLevelingData(100, 20, 100))
+                .styleData(RelicStyleData.builder()
+                        .borders("#eed551", "#dcbe1d")
+                        .build())
+                .build();
+    }
+
+    @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         if (!(entity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
@@ -60,7 +96,7 @@ public class BlazingFlaskItem extends RelicItem {
         Vec3 center = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
 
         if (center != null) {
-            float radius = NBTUtils.getFloat(stack, TAG_RADIUS, 0F);
+            double radius = NBTUtils.getDouble(stack, TAG_RADIUS, 0D);
 
             if (!player.isCreative() && !player.isSpectator()) {
                 if (new Vec3(player.getX(), center.y(), player.getZ()).distanceTo(center) <= radius + 0.5F)
@@ -71,41 +107,36 @@ public class BlazingFlaskItem extends RelicItem {
                 }
 
                 if (player.getAbilities().flying) {
-                    float speed = 0.5F;
+                    double speed = Math.min(1D, getAbilityValue(stack, "levitation", "speed"));
 
                     if (player.zza != 0 || player.xxa != 0 || player.yya != 0)
-                        player.setDeltaMovement(player.getDeltaMovement().multiply(speed, 1F, speed));
+                        player.setDeltaMovement(player.getDeltaMovement().multiply(speed, 1D, speed));
 
                     Vec3 motion = player.getDeltaMovement();
 
-                    float height = 3;
+                    double height = getAbilityValue(stack, "levitation", "height");
 
                     if (!player.isShiftKeyDown() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping)
                         player.setDeltaMovement(motion.x(), Math.min(0.3, 0.04 * ((getGroundHeight(player)
                                 - (player.getY() - height)))), motion.z());
-
-                    if (player.getY() - height > getGroundHeight(player)) {
-                        player.setDeltaMovement(motion.x(), -Math.min(player.getY() - height
-                                - getGroundHeight(player), 2) / 8, motion.z());
-                    }
                 }
             }
 
-            float size = NBTUtils.getInt(stack, TAG_COUNT, 0) * 5;
+            double size = NBTUtils.getInt(stack, TAG_COUNT, 0) * getAbilityValue(stack, "bonfire", "step");
 
-            float step = 0.1F;
+            double step = 0.1D;
 
             int time = 0;
 
             if (radius < size) {
                 if (radius + step < size)
-                    radius += 0.1F;
+                    radius += step;
                 else
                     radius = size;
 
                 time = 10;
 
-                NBTUtils.setFloat(stack, TAG_RADIUS, radius);
+                NBTUtils.setDouble(stack, TAG_RADIUS, radius);
             }
 
             if (radius > size) {
@@ -116,11 +147,11 @@ public class BlazingFlaskItem extends RelicItem {
 
                 time = 10;
 
-                NBTUtils.setFloat(stack, TAG_RADIUS, radius);
+                NBTUtils.setDouble(stack, TAG_RADIUS, radius);
             }
 
             if (radius <= step)
-                ParticleUtils.createBall(new CircleTintData(new Color(255, 100, 0), 0.3F, 60, 0.9F, true),
+                ParticleUtils.createBall(new CircleTintData(new Color(255, 100, 0), 0.3F, 20, 0.9F, true),
                         center, level, 3, 0.2F);
 
             ParticleUtils.createCyl(new CircleTintData(new Color(255, 100, 0), 0.2F, time, 0.8F, true),
@@ -138,36 +169,6 @@ public class BlazingFlaskItem extends RelicItem {
         return -player.getCommandSenderWorld().getMaxBuildHeight();
     }
 
-    protected void handleLevitation(Player player) {
-        double riseVelocity = 0.0D;
-
-        player.getAbilities().flying = true;
-
-        player.setDeltaMovement(player.getDeltaMovement().multiply(0.75, 0.75, 0.75));
-
-        Vec3 motion = player.getDeltaMovement();
-
-        if (player.zza > 0)
-            player.setDeltaMovement(motion.x() + new Vec3(player.getLookAngle().x,
-                            0, player.getLookAngle().z).normalize().x() * 0.025F, motion.y(),
-                    motion.z() + new Vec3(player.getLookAngle().x, 0, player.getLookAngle().z).normalize().z() * 0.025F);
-
-        if (player.getCommandSenderWorld().isClientSide() && ((LocalPlayer) player).input.jumping)
-            riseVelocity = 0.04D;
-
-        if (!player.isShiftKeyDown())
-            player.setDeltaMovement(motion.x(), riseVelocity * ((getGroundHeight(player)
-                    - (player.getY() - 5))), motion.z());
-
-        if (player.getY() - 5 > getGroundHeight(player)) {
-            if (motion.y() > 0)
-                player.setDeltaMovement(motion.x(), 0, motion.z());
-
-            player.setDeltaMovement(motion.x(), -Math.min(player.getY() - 5
-                    - getGroundHeight(player), 2) / 8, motion.z());
-        }
-    }
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
@@ -175,14 +176,14 @@ public class BlazingFlaskItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = 32;
+        float distance = 16;
 
         Vec3 end = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 
-        if (getFireAround(end, level) > 0) {
+        if (getFireAround(stack, end, level) > 0) {
             NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(end));
-            NBTUtils.setFloat(stack, TAG_RADIUS, 0F);
+            NBTUtils.setDouble(stack, TAG_RADIUS, 0D);
 
             player.getCooldowns().addCooldown(this, 20);
         }
@@ -196,11 +197,11 @@ public class BlazingFlaskItem extends RelicItem {
         if (center == null)
             return 0;
 
-        return getFireAround(center, level);
+        return getFireAround(stack, center, level);
     }
 
-    public int getFireAround(Vec3 center, Level level) {
-        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos(center), 10)
+    public int getFireAround(ItemStack stack, Vec3 center, Level level) {
+        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos(center), getAbilityValue(stack, "bonfire", "radius"))
                 .stream().filter(pos -> (level.getBlockState(pos).getBlock() instanceof BaseFireBlock)).toList();
 
         return positions.size();
@@ -208,7 +209,7 @@ public class BlazingFlaskItem extends RelicItem {
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (!(slotContext.getWearer() instanceof Player player))
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
         if (player.isCreative() || player.isSpectator())

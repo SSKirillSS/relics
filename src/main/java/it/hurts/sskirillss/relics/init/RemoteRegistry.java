@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
 import it.hurts.sskirillss.relics.items.relics.feet.AquaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.MagmaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.RollerSkatesItem;
+import it.hurts.sskirillss.relics.items.relics.talisman.BlazingFlaskItem;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -119,6 +120,9 @@ public class RemoteRegistry {
                 });
         ItemProperties.register(ItemRegistry.ROLLER_SKATES.get(), new ResourceLocation(Reference.MODID, "active"),
                 (stack, world, entity, id) -> NBTUtils.getInt(stack, RollerSkatesItem.TAG_SKATING_DURATION, 0) > 0 ? 1 : 0);
+
+        ItemProperties.register(ItemRegistry.BLAZING_FLASK.get(), new ResourceLocation(Reference.MODID, "active"),
+                (stack, world, entity, id) -> NBTUtils.getString(stack, BlazingFlaskItem.TAG_POSITION, "").isEmpty() ? 0 : 1);
 
         MinecraftForgeClient.registerTooltipComponentFactory(ArrowQuiverTooltip.class, ClientArrowQuiverTooltip::new);
     }
