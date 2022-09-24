@@ -1,6 +1,8 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -35,6 +37,28 @@ public class ChorusInhibitorItem extends RelicItem {
     }
 
     @Override
+    public RelicDataNew getNewData() {
+        return RelicDataNew.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("blink", RelicAbilityEntry.builder()
+                                .stat("distance", RelicAbilityStat.builder()
+                                        .initialValue(32, 48)
+                                        .upgradeModifier("add", 4D)
+                                        .build())
+                                .stat("cooldown", RelicAbilityStat.builder()
+                                        .initialValue(5, 10)
+                                        .upgradeModifier("add", -0.5D)
+                                        .build())
+                                .build())
+                        .build())
+                .levelingData(new RelicLevelingData(100, 20, 100))
+                .styleData(RelicStyleData.builder()
+                        .borders("#eed551", "#dcbe1d")
+                        .build())
+                .build();
+    }
+
+    @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack)
                 || player.getItemInHand(InteractionHand.MAIN_HAND).getItem() != Items.CHORUS_FRUIT
@@ -49,7 +73,7 @@ public class ChorusInhibitorItem extends RelicItem {
         Vec3 start = player.position().add(0, player.getBbHeight() * 0.65D, 0);
         Vec3 end = new Vec3(pos.getX() + 0.5F, pos.getY() - 0.5F, pos.getZ() + 0.5F);
 
-        ParticleUtils.createLine(new CircleTintData(new Color(10, 0, 80), 0.2F, 0, 0.5F, false),
+        ParticleUtils.createLine(new CircleTintData(new Color(20, 0, 80), 0.15F, 0, 0.5F, false),
                 player.getLevel(), start, end, (int) Math.round(start.distanceTo(end) * 5));
     }
 
@@ -59,7 +83,7 @@ public class ChorusInhibitorItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        double distance = 50D;
+        double distance = getAbilityValue(stack, "blink", "distance");
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
@@ -104,7 +128,7 @@ public class ChorusInhibitorItem extends RelicItem {
 
             player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
             player.getLevel().playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1F, 1F);
-            player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, 100);
+            player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, Math.max((int) Math.round(getAbilityValue(stack, "blink", "cooldown") * 20D), 0));
         }
     }
 }
