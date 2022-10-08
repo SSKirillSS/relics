@@ -36,6 +36,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -238,21 +239,29 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         return data.getCompound(ability);
     }
 
-    public static double getAbilityInitialValue(ItemStack stack, String ability, String stat) {
+    public static Map<String, Double> getAbilityInitialValues(ItemStack stack, String ability) {
         CompoundTag abilityTag = getAbilityTag(stack, ability);
 
+        Map<String, Double> result = new HashMap<>();
+
         if (abilityTag.isEmpty())
-            return 0D;
+            return result;
 
         CompoundTag statTag = abilityTag.getCompound(TAG_STATS);
 
         if (statTag.isEmpty())
-            return 0D;
+            return result;
 
-        return statTag.getDouble(stat);
+        statTag.getAllKeys().forEach(entry -> result.put(entry, statTag.getDouble(entry)));
+
+        return result;
     }
 
-    public static double getAbilityValue(ItemStack stack, String ability, String stat) {
+    public static double getAbilityInitialValue(ItemStack stack, String ability, String stat) {
+        return getAbilityInitialValues(stack, ability).getOrDefault(stat, 0D);
+    }
+
+    public static double getAbilityValue(ItemStack stack, String ability, String stat, int points) {
         RelicAbilityStat data = getAbilityStat(stack, ability, stat);
 
         double result = 0D;
@@ -262,14 +271,17 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
         double current = getAbilityInitialValue(stack, ability, stat);
         double step = data.getUpgradeModifier().value();
-        int points = getAbilityPoints(stack, ability);
 
         switch (data.getUpgradeModifier().first()) {
             case ADD -> result = current + (points * step);
             case MULTIPLY -> result = current * (points * step);
         }
 
-        return result;
+        return Math.round(result * 1000D) / 1000D;
+    }
+
+    public static double getAbilityValue(ItemStack stack, String ability, String stat) {
+        return getAbilityValue(stack, ability, stat, getAbilityPoints(stack, ability));
     }
 
     public static void setAbilityValue(ItemStack stack, String ability, String stat, double value) {

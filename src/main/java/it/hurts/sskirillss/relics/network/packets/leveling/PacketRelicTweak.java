@@ -64,23 +64,20 @@ public class PacketRelicTweak {
                 return;
 
             switch (operation) {
-                case INCREASE:
-                    //if (relic.getPoints(stack) >= entry.getRequiredPoints())
+                case INCREASE -> {
+                    int maxPoints = entry.getMaxLevel() == -1 ? ((relic.getNewData().getLevelingData().getMaxLevel() - entry.getRequiredLevel()) / entry.getRequiredPoints()) : entry.getMaxLevel();
+
+                    if (RelicItem.getAbilityPoints(stack, ability) < maxPoints)
                         RelicItem.setAbilityPoints(stack, ability, RelicItem.getAbilityPoints(stack, ability) + 1);
-
-                    break;
-                case REROLL:
-                    RelicItem.randomizeStats(stack, ability);
-
-                    break;
-
-                case RESET:
+                }
+                case REROLL -> RelicItem.randomizeStats(stack, ability);
+                case RESET -> {
                     RelicItem.setAbilityPoints(stack, ability, 0);
-
-                    relic.setPoints(stack, 0);
-
-                    break;
+                    RelicItem.setPoints(stack, 0);
+                }
             }
+
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
         });
 
         return true;

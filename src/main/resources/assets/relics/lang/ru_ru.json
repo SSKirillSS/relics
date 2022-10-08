@@ -1,0 +1,12 @@
+{
+  "itemGroup.relics": "Реликвии",
+
+  "item.relics.spatial_sign": "Пространственная печать",
+
+  "item.relics.holy_locket": "Священный медальон",
+  "tooltip.relics.holy_locket.lore": "Невероятно красивый крест, изготовленный из металлов, полученных под Голгофой. Праведнику даёт силу, грешнику агонию и смерть.",
+  "tooltip.relics.holy_locket.ability.steal": "Божественное благославение",
+  "tooltip.relics.holy_locket.ability.steal.description": "Перенаправляет часть регенерируемого здоровья ближайших существ носителю реликвии.",
+  "tooltip.relics.holy_locket.ability.steal.stat.amount": "Количество: %1$s %% от регенерируемого здоровья.",
+  "tooltip.relics.holy_locket.ability.steal.stat.radius": "Радиус: %1$s блоков."
+}

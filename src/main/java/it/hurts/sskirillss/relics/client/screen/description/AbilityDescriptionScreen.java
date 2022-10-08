@@ -5,10 +5,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityRerollButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityResetButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityUpgradeButtonWidget;
+import it.hurts.sskirillss.relics.indev.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.indev.RelicAbilityStat;
+import it.hurts.sskirillss.relics.indev.RelicDataNew;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
@@ -20,6 +26,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
+import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class AbilityDescriptionScreen extends Screen {
@@ -28,7 +35,7 @@ public class AbilityDescriptionScreen extends Screen {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/ability_background.png");
 
     public final BlockPos pos;
-    public final ItemStack stack;
+    public ItemStack stack;
     public final String ability;
 
     public int backgroundHeight = 177;
@@ -61,6 +68,13 @@ public class AbilityDescriptionScreen extends Screen {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        ClientLevel world = MC.level;
+
+        if (world == null || !(world.getBlockEntity(pos) instanceof ResearchingTableTile tile))
+            return;
+
+        stack = tile.getStack();
+
         if (!(stack.getItem() instanceof RelicItem<?> relic))
             return;
 
@@ -85,18 +99,74 @@ public class AbilityDescriptionScreen extends Screen {
 
         MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
 
-        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics.horse_flute.lore"), 290);
+        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".ability." + ability + ".description"), 290);
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
 
             pPoseStack.pushPose();
 
-            pPoseStack.scale(0.5F, 0.5F, 1F);
+            pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-            MC.font.draw(pPoseStack, line, x * 2 + 66 * 2, y * 2 + i * 8 + 32 * 2, 0x412708);
+            MC.font.draw(pPoseStack, line, x * 2 + 68 * 2, y * 2 + i * 9 + 36 * 2, 0x412708);
 
             pPoseStack.popPose();
+        }
+
+        Set<String> stats = RelicItem.getAbilityInitialValues(stack, ability).keySet();
+
+        for (int i = 0; i < stats.size(); i++) {
+            String stat = stats.stream().toList().get(i);
+
+            RelicDataNew relicData = relic.getNewData();
+            RelicAbilityStat statData = RelicItem.getAbilityStat(relic, ability, stat);
+            RelicAbilityEntry abilityData = RelicItem.getAbility(relic, ability);
+
+            if (relicData != null && abilityData != null) {
+                int points = RelicItem.getAbilityPoints(stack, ability);
+                int maxPoints = abilityData.getMaxLevel() == -1 ? ((relicData.getLevelingData().getMaxLevel() - abilityData.getRequiredLevel()) / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
+
+                double current = RelicItem.getAbilityValue(stack, ability, stat);
+
+                boolean isHoveringUpgrade = (pMouseX >= x + 209
+                        && pMouseY >= y + 93
+                        && pMouseX < x + 209 + 22
+                        && pMouseY < y + 93 + 22);
+
+                boolean isHoveringReroll = (pMouseX >= x + 209
+                        && pMouseY >= y + 116
+                        && pMouseX < x + 209 + 22
+                        && pMouseY < y + 116 + 22);
+
+                boolean isHoveringReset = (pMouseX >= x + 209
+                        && pMouseY >= y + 139
+                        && pMouseX < x + 209 + 22
+                        && pMouseY < y + 139 + 22);
+
+                TextComponent cost = new TextComponent(String.valueOf(current));
+
+                if (isHoveringUpgrade && points < maxPoints) {
+                    cost.append(" -> " + RelicItem.getAbilityValue(stack, ability, stat, points + 1));
+                }
+
+                if (isHoveringReroll) {
+                    cost.append(" -> ").append(new TextComponent("X.XXX").withStyle(ChatFormatting.OBFUSCATED));
+                }
+
+                if (isHoveringReset && points > 0) {
+                    cost.append(" -> " + RelicItem.getAbilityValue(stack, ability, stat, 0));
+                }
+
+                TranslatableComponent start = new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".ability." + ability + ".stat." + stat, cost);
+
+                pPoseStack.pushPose();
+
+                pPoseStack.scale(0.5F, 0.5F, 0.5F);
+
+                MC.font.draw(pPoseStack, start, x * 2 + 36 * 2, y * 2 + i * 9 + 106 * 2, 0x412708);
+
+                pPoseStack.popPose();
+            }
         }
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
@@ -105,5 +175,10 @@ public class AbilityDescriptionScreen extends Screen {
     @Override
     public void onClose() {
         MC.setScreen(new RelicDescriptionScreen(pos, stack));
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 }

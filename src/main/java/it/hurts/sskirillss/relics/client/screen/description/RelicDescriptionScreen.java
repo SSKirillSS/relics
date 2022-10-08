@@ -112,7 +112,7 @@ public class RelicDescriptionScreen extends Screen {
         MC.font.drawShadow(pPoseStack, String.valueOf(relic.getLevel(stack)), x + 58, y + 93, 0xFFFFFF);
         MC.font.drawShadow(pPoseStack, String.valueOf(relic.getLevel(stack) + 1), x + 193, y + 93, 0xFFFFFF);
 
-        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics.horse_flute.lore"), 240);
+        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".lore"), 240);
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
@@ -121,11 +121,16 @@ public class RelicDescriptionScreen extends Screen {
 
             pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-            MC.font.draw(pPoseStack, line, x * 2 + 128 * 2 - font.width(line) * 0.5F, y * 2 + i * 8 + 32 * 2, 0x412708);
+            MC.font.draw(pPoseStack, line, x * 2 + 128 * 2 - font.width(line) * 0.5F, y * 2 + i * 8 + 44 * 2, 0x412708);
 
             pPoseStack.popPose();
         }
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 }
