@@ -10,6 +10,12 @@
   "tooltip.relics.infinity_ham.ability.infusion.description": "Использование зелья на реликвии в инвентаре пропитывает мясо его эффектом. При полном поедании теряет полученные свойства.",
   "tooltip.relics.infinity_ham.ability.infusion.stat.duration": "Продолжительность: %1$s секунд.",
 
+  "item.relics.enders_hand": "Рука Края",
+  "tooltip.relics.enders_hand.lore": "Перчатка, выкованная затерянной цивилизацией Края. Она же и обрекла эту цивилизацию на гибель.",
+  "tooltip.relics.enders_hand.ability.swap": "Транспозиция Края",
+  "tooltip.relics.enders_hand.ability.swap.description": "Использование меняет местами носителя и цель.",
+  "tooltip.relics.enders_hand.ability.swap.stat.distance": "Дистанция: %1$s блоков.",
+
   "item.relics.holy_locket": "Священный медальон",
   "tooltip.relics.holy_locket.lore": "Невероятно красивый крест, изготовленный из металлов, полученных под Голгофой. Праведнику даёт силу, грешнику агонию и смерть.",
   "tooltip.relics.holy_locket.ability.steal": "Божественное благославение",
