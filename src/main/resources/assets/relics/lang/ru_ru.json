@@ -1,7 +1,14 @@
 {
   "itemGroup.relics": "Реликвии",
 
-  "item.relics.spatial_sign": "Пространственная печать",
+  "item.relics.infinity_ham": "Бесконечный окорок",
+  "tooltip.relics.infinity_ham.lore": "Постоянно регенерирующая плоть неизвестного существа, по вкусу напоминающая свинью.",
+  "tooltip.relics.infinity_ham.ability.autophagy": "Регенерация",
+  "tooltip.relics.infinity_ham.ability.autophagy.description": "Использование реликвии расходует накопленное мясо, восполняя голод владельца. Постепенно регенерирует.",
+  "tooltip.relics.infinity_ham.ability.autophagy.stat.feed": "Насыщение: %1$s единиц.",
+  "tooltip.relics.infinity_ham.ability.infusion": "Алхимия",
+  "tooltip.relics.infinity_ham.ability.infusion.description": "Использование зелья на реликвии в инвентаре пропитывает мясо его эффектом. При полном поедании теряет полученные свойства.",
+  "tooltip.relics.infinity_ham.ability.infusion.stat.duration": "Продолжительность: %1$s секунд.",
 
   "item.relics.holy_locket": "Священный медальон",
   "tooltip.relics.holy_locket.lore": "Невероятно красивый крест, изготовленный из металлов, полученных под Голгофой. Праведнику даёт силу, грешнику агонию и смерть.",
