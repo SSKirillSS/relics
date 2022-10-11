@@ -21,5 +21,12 @@
   "tooltip.relics.holy_locket.ability.steal": "Божественное благославение",
   "tooltip.relics.holy_locket.ability.steal.description": "Перенаправляет часть регенерируемого здоровья ближайших существ носителю реликвии.",
   "tooltip.relics.holy_locket.ability.steal.stat.amount": "Количество: %1$s %% от регенерируемого здоровья.",
-  "tooltip.relics.holy_locket.ability.steal.stat.radius": "Радиус: %1$s блоков."
+  "tooltip.relics.holy_locket.ability.steal.stat.radius": "Радиус: %1$s блоков.",
+
+  "item.relics.magic_mirror": "Волшебное зеркало",
+  "tooltip.relics.magic_mirror.lore": "Это зеркало так часто использовалось провидцами, что получило силу путешествия сквозь пространство.",
+  "tooltip.relics.magic_mirror.ability.teleport": "Кротовая нора",
+  "tooltip.relics.magic_mirror.ability.teleport.description": "После использования телепортирует владельца к его точке возрождения. Начиная с 5 уровня телепортация работает в любом измерении.\n",
+  "tooltip.relics.magic_mirror.ability.teleport.stat.distance": "Дистанция: %1$s блоков.",
+  "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown": "Перезарядка: %1$s секунд."
 }

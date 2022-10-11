@@ -99,7 +99,7 @@ public class AbilityDescriptionScreen extends Screen {
 
         MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
 
-        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".ability." + ability + ".description"), 290);
+        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".ability." + ability + ".description"), 320);
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
@@ -108,7 +108,7 @@ public class AbilityDescriptionScreen extends Screen {
 
             pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-            MC.font.draw(pPoseStack, line, x * 2 + 68 * 2, y * 2 + i * 9 + 36 * 2, 0x412708);
+            MC.font.draw(pPoseStack, line, x * 2 + 65 * 2, y * 2 + i * 9 + 33 * 2, 0x412708);
 
             pPoseStack.popPose();
         }
@@ -161,7 +161,7 @@ public class AbilityDescriptionScreen extends Screen {
 
                 pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-                MC.font.draw(pPoseStack, start, x * 2 + 36 * 2, y * 2 + i * 9 + 106 * 2, 0x412708);
+                MC.font.draw(pPoseStack, start, x * 2 + 35 * 2, y * 2 + i * 9 + 103 * 2, 0x412708);
 
                 pPoseStack.popPose();
             }

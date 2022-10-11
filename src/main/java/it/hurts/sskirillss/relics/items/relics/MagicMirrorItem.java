@@ -7,9 +7,9 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -53,11 +53,13 @@ public class MagicMirrorItem extends RelicItem {
                         .ability("teleport", RelicAbilityEntry.builder()
                                 .stat("distance", RelicAbilityStat.builder()
                                         .initialValue(200F, 1000F)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 500F)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 250F)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("cooldown", RelicAbilityStat.builder()
                                         .initialValue(60F, 300F)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, -2F)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())
@@ -189,27 +191,18 @@ public class MagicMirrorItem extends RelicItem {
     }
 
     private boolean canTeleport(ServerPlayer player, Pair<ServerLevel, Vec3> data, ItemStack stack) {
-        if (data == null) {
-            player.displayClientMessage(new TranslatableComponent("tooltip.relics.magic_mirror.invalid_location"), false);
-
+        if (data == null)
             return false;
-        }
 
         Vec3 pos = data.getRight();
         ServerLevel level = data.getLeft();
 
         if (pos.distanceTo(player.position()) * DimensionType.getTeleportationScale(player.level.dimensionType(),
-                level.dimensionType()) > getAbilityValue(stack, "teleport", "distance")) {
-            player.displayClientMessage(new TranslatableComponent("tooltip.relics.magic_mirror.too_far"), false);
-
+                level.dimensionType()) > getAbilityValue(stack, "teleport", "distance"))
             return false;
-        }
 
-        if (level.dimension() != player.level.dimension() && getAbilityPoints(stack, "teleport") < 5) {
-            player.displayClientMessage(new TranslatableComponent("tooltip.relics.magic_mirror.invalid_dimension"), false);
-
+        if (level.dimension() != player.level.dimension() && getAbilityPoints(stack, "teleport") < 5)
             return false;
-        }
 
         return true;
     }
