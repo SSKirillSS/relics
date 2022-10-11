@@ -8,10 +8,7 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -55,18 +52,22 @@ public class ShadowGlaiveItem extends RelicItem {
                                 .stat("recharge", RelicAbilityStat.builder()
                                         .initialValue(20D, 30D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, -2D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("bounces", RelicAbilityStat.builder()
                                         .initialValue(3D, 5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .formatValue(value -> String.valueOf((int) MathUtils.round(value, 0)))
                                         .build())
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(3D, 5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("radius", RelicAbilityStat.builder()
                                         .initialValue(3D, 5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .ability("saw", RelicAbilityEntry.builder()
@@ -74,10 +75,12 @@ public class ShadowGlaiveItem extends RelicItem {
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(17D, 20D)
                                         .upgradeModifier("add", -1D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(20 - Math.max(1, value), 1)))
                                         .build())
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(1D, 1.5D)
                                         .upgradeModifier("add", 0.5D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())

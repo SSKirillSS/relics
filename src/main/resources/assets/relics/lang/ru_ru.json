@@ -26,7 +26,20 @@
   "item.relics.magic_mirror": "Волшебное зеркало",
   "tooltip.relics.magic_mirror.lore": "Это зеркало так часто использовалось провидцами, что получило силу путешествия сквозь пространство.",
   "tooltip.relics.magic_mirror.ability.teleport": "Кротовая нора",
-  "tooltip.relics.magic_mirror.ability.teleport.description": "После использования телепортирует владельца к его точке возрождения. Начиная с 5 уровня телепортация работает в любом измерении.\n",
+  "tooltip.relics.magic_mirror.ability.teleport.description": "После использования телепортирует владельца к его точке возрождения. Начиная с 5 уровня телепортация работает в любом измерении.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.distance": "Дистанция: %1$s блоков.",
-  "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown": "Перезарядка: %1$s секунд."
+  "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown": "Перезарядка: %1$s секунд.",
+
+  "item.relics.shadow_glaive": "Теневая глефф",
+  "tooltip.relics.shadow_glaive.lore": "Созданное цивилизацией Края для подавления бунтов оружие. Создатели так и не успели опробовать его в деле.",
+  "tooltip.relics.shadow_glaive.ability.glaive": "Слепое правосудие",
+  "tooltip.relics.shadow_glaive.ability.glaive.description": "Использование выпускает один из 8 снарядов глефы, отскакивающий между ближайшими целями.",
+  "tooltip.relics.shadow_glaive.ability.glaive.stat.damage": "Урон: %1$s единиц.",
+  "tooltip.relics.shadow_glaive.ability.glaive.stat.recharge": "Перезарядка: %1$s секунд.",
+  "tooltip.relics.shadow_glaive.ability.glaive.stat.bounces": "Отскоки: %1$s единиц.",
+  "tooltip.relics.shadow_glaive.ability.glaive.stat.radius": "Радиус отскока: %1$s блоков.",
+  "tooltip.relics.shadow_glaive.ability.saw": "Безжалостное наказание",
+  "tooltip.relics.shadow_glaive.ability.saw.description": "Использует все 8 зарядов глефы и блокирует возможность их восстановления, призывая пилу, наносящую урон целям поблизости.",
+  "tooltip.relics.shadow_glaive.ability.saw.stat.speed": "Скорость атаки: %1$s ударов в секунду.",
+  "tooltip.relics.shadow_glaive.ability.saw.stat.damage": "Урон: %1$s единиц."
 }
