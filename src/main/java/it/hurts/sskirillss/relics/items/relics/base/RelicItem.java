@@ -277,7 +277,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
             case MULTIPLY -> result = current * (points * step);
         }
 
-        return Math.round(result * 1000D) / 1000D;
+        return MathUtils.round(result, 3);
     }
 
     public static double getAbilityValue(ItemStack stack, String ability, String stat) {
@@ -332,7 +332,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         for (Map.Entry<String, RelicAbilityStat> stats : entry.stats.entrySet()) {
             RelicAbilityStat stat = stats.getValue();
 
-            double result = Math.round(MathUtils.randomBetween(new Random(), stat.getInitialValue().first(), stat.getInitialValue().second()) * 1000D) / 1000D;
+            double result = MathUtils.round(MathUtils.randomBetween(new Random(), stat.getInitialValue().first(), stat.getInitialValue().second()), 3);
 
             RelicItem.setAbilityValue(stack, ability, stats.getKey(), result);
         }

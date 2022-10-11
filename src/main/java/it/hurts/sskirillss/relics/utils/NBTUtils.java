@@ -111,7 +111,7 @@ public class NBTUtils {
     }
 
     public static String writePosition(Vec3 vec) {
-        return (Math.round(vec.x() * 10F) / 10F) + "," + (Math.round(vec.y() * 10F) / 10F) + "," + (Math.round(vec.z() * 10F) / 10F);
+        return (MathUtils.round(vec.x(), 1)) + "," + (MathUtils.round(vec.y(), 1)) + "," + (MathUtils.round(vec.z(), 1));
     }
 
     public static String writeLevel(Level level) {

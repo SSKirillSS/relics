@@ -30,4 +30,10 @@ public class MathUtils {
     public static int randomBetween(Random random, int min, int max) {
         return random.nextInt() * (max - min) + min;
     }
+
+    public static double round(double value, int steps) {
+        double multiplier = Math.pow(10, steps);
+
+        return Math.round(value * multiplier) / multiplier;
+    }
 }

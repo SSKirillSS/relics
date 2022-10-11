@@ -122,11 +122,9 @@ public class AbilityDescriptionScreen extends Screen {
             RelicAbilityStat statData = RelicItem.getAbilityStat(relic, ability, stat);
             RelicAbilityEntry abilityData = RelicItem.getAbility(relic, ability);
 
-            if (relicData != null && abilityData != null) {
+            if (relicData != null && abilityData != null && statData != null) {
                 int points = RelicItem.getAbilityPoints(stack, ability);
                 int maxPoints = abilityData.getMaxLevel() == -1 ? ((relicData.getLevelingData().getMaxLevel() - abilityData.getRequiredLevel()) / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
-
-                double current = RelicItem.getAbilityValue(stack, ability, stat);
 
                 boolean isHoveringUpgrade = (pMouseX >= x + 209
                         && pMouseY >= y + 93
@@ -143,10 +141,10 @@ public class AbilityDescriptionScreen extends Screen {
                         && pMouseX < x + 209 + 22
                         && pMouseY < y + 139 + 22);
 
-                TextComponent cost = new TextComponent(String.valueOf(current));
+                TextComponent cost = new TextComponent(statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat)));
 
                 if (isHoveringUpgrade && points < maxPoints) {
-                    cost.append(" -> " + RelicItem.getAbilityValue(stack, ability, stat, points + 1));
+                    cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, points + 1)));
                 }
 
                 if (isHoveringReroll) {
@@ -154,7 +152,7 @@ public class AbilityDescriptionScreen extends Screen {
                 }
 
                 if (isHoveringReset && points > 0) {
-                    cost.append(" -> " + RelicItem.getAbilityValue(stack, ability, stat, 0));
+                    cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, 0)));
                 }
 
                 TranslatableComponent start = new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".ability." + ability + ".stat." + stat, cost);

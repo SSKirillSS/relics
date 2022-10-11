@@ -4,12 +4,17 @@ import it.unimi.dsi.fastutil.Pair;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.function.Function;
+
 @Data
 @Builder
 public class RelicAbilityStat {
     private Pair<Operation, Double> upgradeModifier;
     private Pair<Double, Double> initialValue;
     private Pair<Double, Double> thresholdValue;
+
+    @Builder.Default
+    private Function<Double, String> formatValue = String::valueOf;
 
     public enum Operation {
         ADD,

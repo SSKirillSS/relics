@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +32,7 @@ public class HolyLocketItem extends RelicItem {
                                 .stat("radius", RelicAbilityStat.builder()
                                         .initialValue(4D, 8D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 2D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("amount", RelicAbilityStat.builder()
                                         .initialValue(0.1D, 0.25D)
