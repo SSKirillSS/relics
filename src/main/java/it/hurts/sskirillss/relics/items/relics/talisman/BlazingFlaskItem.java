@@ -182,8 +182,12 @@ public class BlazingFlaskItem extends RelicItem {
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 
         if (getFireAround(stack, end, level) > 0) {
+            Vec3 center = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
+
+            double radius = NBTUtils.getDouble(stack, TAG_RADIUS, 0D);
+
+            NBTUtils.setDouble(stack, TAG_RADIUS, (center != null && end.distanceTo(center) <= radius) ? radius - center.distanceTo(end) : 0D);
             NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(end));
-            NBTUtils.setDouble(stack, TAG_RADIUS, 0D);
 
             player.getCooldowns().addCooldown(this, 20);
         }
