@@ -30,7 +30,7 @@
   "tooltip.relics.magic_mirror.ability.teleport.stat.distance": "Дистанция: %1$s блоков.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown": "Перезарядка: %1$s секунд.",
 
-  "item.relics.shadow_glaive": "Теневая глефф",
+  "item.relics.shadow_glaive": "Теневая глефа",
   "tooltip.relics.shadow_glaive.lore": "Созданное цивилизацией Края для подавления бунтов оружие. Создатели так и не успели опробовать его в деле.",
   "tooltip.relics.shadow_glaive.ability.glaive": "Слепое правосудие",
   "tooltip.relics.shadow_glaive.ability.glaive.description": "Использование выпускает один из 8 снарядов глефы, отскакивающий между ближайшими целями.",
@@ -50,5 +50,14 @@
   "tooltip.relics.arrow_quiver.ability.receptacle.stat.slots": "Слоты: %1$s.",
   "tooltip.relics.arrow_quiver.ability.agility": "Ловкость",
   "tooltip.relics.arrow_quiver.ability.agility.description": "Увеличивает скорость натяжения тетивы.",
-  "tooltip.relics.arrow_quiver.ability.agility.stat.modifier": "Множитель скорости: %1$s %%."
+  "tooltip.relics.arrow_quiver.ability.agility.stat.modifier": "Множитель скорости: %1$s %%.",
+
+  "item.relics.horse_flute": "Лошадиная флейта",
+  "tooltip.relics.horse_flute.lore": "Волшебная флейта, чей звук был способен управлять любыми живыми существами. Однако ныне ей подвластны лишь лошади.",
+  "tooltip.relics.horse_flute.ability.paddock": "Портативное стойло",
+  "tooltip.relics.horse_flute.ability.paddock.description": "Использование реликвии по лошади переместит животное во внутреннее хранилище. Повторное использование высвободит существо. Если расстояние между владельцем и призванной лошадью слишком велико, она автоматически поместится обратно во флейту.",
+  "tooltip.relics.horse_flute.ability.paddock.stat.slots": "Слоты: %1$s.",
+  "tooltip.relics.horse_flute.ability.heal": "Заговор на лечение",
+  "tooltip.relics.horse_flute.ability.heal.description": "Помещённая во внутреннее хранилище лошадь будет медленно восстанавливать здоровье.",
+  "tooltip.relics.horse_flute.ability.heal.stat.amount": "Лечение: %1$s единиц здоровья в секунду."
 }

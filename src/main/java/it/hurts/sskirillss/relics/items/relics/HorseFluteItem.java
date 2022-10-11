@@ -133,7 +133,7 @@ public class HorseFluteItem extends RelicItem {
             AbstractHorse horse = decodeHorseData(stack, level);
             if (horse != null) {
                 if (canUseAbility(stack, "heal")) {
-                    horse.heal(1);
+                    horse.heal((float) getAbilityValue(stack, "heal", "amount"));
 
                     CompoundTag nbt = new CompoundTag();
 
