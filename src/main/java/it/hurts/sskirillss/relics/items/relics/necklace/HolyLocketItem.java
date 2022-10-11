@@ -54,7 +54,7 @@ public class HolyLocketItem extends RelicItem {
             LivingEntity entity = event.getEntityLiving();
             Level level = entity.getCommandSenderWorld();
 
-            for (Player player : level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(16))) {
+            for (Player player : level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(32))) {
                 ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
 
                 if (stack.isEmpty() || getAbilityValue(stack, "steal", "radius") < player.position().distanceTo(entity.position())
