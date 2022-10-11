@@ -8,7 +8,9 @@ import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 
 public class AbilityUpgradeButtonWidget extends AbstractSilentButton {
@@ -31,7 +33,7 @@ public class AbilityUpgradeButtonWidget extends AbstractSilentButton {
 
     @Override
     public void playDownSound(SoundManager handler) {
-
+        handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
     }
 
     @Override

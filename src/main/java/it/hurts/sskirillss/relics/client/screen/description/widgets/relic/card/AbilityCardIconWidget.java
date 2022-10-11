@@ -7,7 +7,9 @@ import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionSc
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 
 public class AbilityCardIconWidget extends AbstractSilentButton {
@@ -30,7 +32,7 @@ public class AbilityCardIconWidget extends AbstractSilentButton {
 
     @Override
     public void playDownSound(SoundManager handler) {
-
+        handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
     }
 
     @Override
