@@ -27,6 +27,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
@@ -371,7 +372,7 @@ public class ArrowQuiverItem extends RelicItem {
             if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
                 return;
 
-            int amount = (int) Math.min(10, Math.round(player.position().distanceTo(arrow.position()) * 0.1));
+            int amount = (int) Math.min(10, Math.round(player.position().distanceTo(new Vec3(arrow.getX(), player.getY(), arrow.getZ())) * 0.1));
 
             if (amount > 0)
                 RelicItem.addExperience(stack, amount);

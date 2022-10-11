@@ -123,11 +123,14 @@ public class ElytraBoosterItem extends RelicItem {
 
             int time = ForgeHooks.getBurnTime(heldStack, RecipeType.SMELTING) / 20;
             int amount = NBTUtils.getInt(slotStack, TAG_FUEL, 0);
+            int capacity = booster.getBreathCapacity(slotStack);
 
-            if (time <= 0 || amount >= booster.getBreathCapacity(slotStack))
+            if (time <= 0 || amount >= capacity)
                 return;
 
-            NBTUtils.setInt(slotStack, TAG_FUEL, Math.min(booster.getBreathCapacity(slotStack), amount + time));
+            NBTUtils.setInt(slotStack, TAG_FUEL, Math.min(capacity, amount + time));
+
+            addExperience(slotStack, Math.round((capacity - amount) / 100F));
 
             ItemStack result = heldStack.getContainerItem();
 

@@ -165,6 +165,18 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     }
 
     @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+
+        if (stack.isEmpty())
+            return;
+
+        int bounces = (int) Math.floor(entityData.get(BOUNCES) / 2);
+
+        RelicItem.addExperience(stack, bounces);
+    }
+
+    @Override
     protected void defineSynchedData() {
         entityData.define(BOUNCES, 0);
         entityData.define(TARGET, "");

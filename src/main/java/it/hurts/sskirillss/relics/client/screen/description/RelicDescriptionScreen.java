@@ -90,7 +90,7 @@ public class RelicDescriptionScreen extends Screen {
 
         int percentage = relic.getExperience(stack) / (relic.getTotalExperienceForLevel(stack, relic.getLevel(stack) + 1) / 100);
 
-        blit(pPoseStack, x + 66, y + 93, 388, 0, (int) Math.ceil(percentage / 100F * 124F), 7, texWidth, texHeight);
+        blit(pPoseStack, x + 63, y + 91, 388, 0, (int) Math.ceil(percentage / 100F * 124F), 7, texWidth, texHeight);
 
         String name = stack.getDisplayName().getString()
                 .replace("[", "")
@@ -102,15 +102,15 @@ public class RelicDescriptionScreen extends Screen {
 
         String experience = relic.getExperience(stack) + "/" + relic.getTotalExperienceForLevel(stack, relic.getLevel(stack) + 1) + " [" + percentage + "%]";
 
-        pPoseStack.translate((this.width - (font.width(experience) * 0.5F)) / 2F, this.height / 2F, 0);
+        //pPoseStack.translate((this.width - (font.width(experience) * 0.5F)) / 2F, this.height / 2F, 0);
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
-        MC.font.drawShadow(pPoseStack, experience, 0, 0, 0xFFFFFF);
+        MC.font.drawShadow(pPoseStack, experience, (x + 143 - font.width(experience) / 2F) * 2, (y + 87) * 2, 0xFFFFFF);
 
         pPoseStack.popPose();
 
-        MC.font.drawShadow(pPoseStack, String.valueOf(relic.getLevel(stack)), x + 58, y + 93, 0xFFFFFF);
-        MC.font.drawShadow(pPoseStack, String.valueOf(relic.getLevel(stack) + 1), x + 193, y + 93, 0xFFFFFF);
+        MC.font.drawShadow(pPoseStack, String.valueOf(relic.getLevel(stack)), x + 60, y + 91, 0xFFFFFF);
+        MC.font.drawShadow(pPoseStack, String.valueOf(relic.getLevel(stack) + 1), x + 190, y + 91, 0xFFFFFF);
 
         List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".lore"), 240);
 
