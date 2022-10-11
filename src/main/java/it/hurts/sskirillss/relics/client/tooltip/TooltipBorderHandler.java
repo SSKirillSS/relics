@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.api.events.TooltipDisplayEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.indev.RelicDataNew;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
@@ -95,7 +96,12 @@ public class TooltipBorderHandler {
         if (!(stack.getItem() instanceof RelicItem<?> relic))
             return null;
 
-        RelicStyleData tooltip = relic.getStyle(stack);
+        RelicDataNew data = relic.getNewData();
+
+        if (data == null)
+            return null;
+
+        RelicStyleData tooltip = relic.getNewData().getStyleData();
 
         if (tooltip == null)
             return null;

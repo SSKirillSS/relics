@@ -26,7 +26,7 @@
   "item.relics.magic_mirror": "Волшебное зеркало",
   "tooltip.relics.magic_mirror.lore": "Это зеркало так часто использовалось провидцами, что получило силу путешествия сквозь пространство.",
   "tooltip.relics.magic_mirror.ability.teleport": "Кротовая нора",
-  "tooltip.relics.magic_mirror.ability.teleport.description": "После использования телепортирует владельца к его точке возрождения. Начиная с 5 уровня телепортация работает в любом измерении.",
+  "tooltip.relics.magic_mirror.ability.teleport.description": "После использования телепортирует владельца к его точке возрождения.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.distance": "Дистанция: %1$s блоков.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown": "Перезарядка: %1$s секунд.",
 
@@ -34,12 +34,21 @@
   "tooltip.relics.shadow_glaive.lore": "Созданное цивилизацией Края для подавления бунтов оружие. Создатели так и не успели опробовать его в деле.",
   "tooltip.relics.shadow_glaive.ability.glaive": "Слепое правосудие",
   "tooltip.relics.shadow_glaive.ability.glaive.description": "Использование выпускает один из 8 снарядов глефы, отскакивающий между ближайшими целями.",
-  "tooltip.relics.shadow_glaive.ability.glaive.stat.damage": "Урон: %1$s единиц.",
+  "tooltip.relics.shadow_glaive.ability.glaive.stat.damage": "Урон: %1$s.",
   "tooltip.relics.shadow_glaive.ability.glaive.stat.recharge": "Перезарядка: %1$s секунд.",
-  "tooltip.relics.shadow_glaive.ability.glaive.stat.bounces": "Отскоки: %1$s единиц.",
+  "tooltip.relics.shadow_glaive.ability.glaive.stat.bounces": "Отскоки: %1$s.",
   "tooltip.relics.shadow_glaive.ability.glaive.stat.radius": "Радиус отскока: %1$s блоков.",
   "tooltip.relics.shadow_glaive.ability.saw": "Безжалостное наказание",
   "tooltip.relics.shadow_glaive.ability.saw.description": "Использует все 8 зарядов глефы и блокирует возможность их восстановления, призывая пилу, наносящую урон целям поблизости.",
   "tooltip.relics.shadow_glaive.ability.saw.stat.speed": "Скорость атаки: %1$s ударов в секунду.",
-  "tooltip.relics.shadow_glaive.ability.saw.stat.damage": "Урон: %1$s единиц."
+  "tooltip.relics.shadow_glaive.ability.saw.stat.damage": "Урон: %1$s единиц.",
+
+  "item.relics.arrow_quiver": "Колчан",
+  "tooltip.relics.arrow_quiver.lore": "Неотъемлемый атрибут лучника, созданный по эльфийским технологиям из кожи вымерших мистических зверей.",
+  "tooltip.relics.arrow_quiver.ability.receptacle": "Хранилище стрел",
+  "tooltip.relics.arrow_quiver.ability.receptacle.description": "Стрельба из лука в первую очередь использует стрелы из внутреннего хранилища колчана. Использование стрелы ЛКМ по колчану в инвентаре разместит её во внутреннее хранилище реликвии. Нажатие ПКМ по колчану достанет последние размещённые в него стрелы.",
+  "tooltip.relics.arrow_quiver.ability.receptacle.stat.slots": "Слоты: %1$s.",
+  "tooltip.relics.arrow_quiver.ability.agility": "Ловкость",
+  "tooltip.relics.arrow_quiver.ability.agility.description": "Увеличивает скорость натяжения тетивы.",
+  "tooltip.relics.arrow_quiver.ability.agility.stat.modifier": "Множитель скорости: %1$s %%."
 }
