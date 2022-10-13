@@ -9,7 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
 import it.hurts.sskirillss.relics.items.relics.feet.AquaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.MagmaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.RollerSkatesItem;
-import it.hurts.sskirillss.relics.items.relics.talisman.BlazingFlaskItem;
+import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;

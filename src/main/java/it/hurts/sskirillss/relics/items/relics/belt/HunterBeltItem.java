@@ -35,7 +35,7 @@ public class HunterBeltItem extends RelicItem {
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 20, 100))
+                .levelingData(new RelicLevelingData(100, 10, 100))
                 .styleData(RelicStyleData.builder()
                         .borders("#32a167", "#16702e")
                         .build())

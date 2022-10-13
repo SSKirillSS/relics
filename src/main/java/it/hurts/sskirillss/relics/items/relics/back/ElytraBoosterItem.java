@@ -49,7 +49,7 @@ public class ElytraBoosterItem extends RelicItem {
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 20, 100))
+                .levelingData(new RelicLevelingData(100, 10, 100))
                 .styleData(RelicStyleData.builder()
                         .borders("#b8b8d6", "#6e6e8f")
                         .build())

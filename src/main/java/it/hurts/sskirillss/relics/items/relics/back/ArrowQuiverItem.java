@@ -76,7 +76,7 @@ public class ArrowQuiverItem extends RelicItem {
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 20, 100))
+                .levelingData(new RelicLevelingData(100, 10, 100))
                 .styleData(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
                         .build())

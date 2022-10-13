@@ -48,7 +48,7 @@ public class DrownedBeltItem extends RelicItem {
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 20, 100))
+                .levelingData(new RelicLevelingData(100, 10, 100))
                 .styleData(RelicStyleData.builder()
                         .borders("#7889b8", "#25374e")
                         .build())

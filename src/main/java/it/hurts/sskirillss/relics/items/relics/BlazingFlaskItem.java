@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.items.relics.talisman;
+package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
@@ -43,29 +43,21 @@ public class BlazingFlaskItem extends RelicItem {
         return RelicDataNew.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("bonfire", RelicAbilityEntry.builder()
-                                .requiredPoints(2)
-                                .stat("radius", RelicAbilityStat.builder()
-                                        .initialValue(1, 2)
+                                .stat("step", RelicAbilityStat.builder()
+                                        .initialValue(1, 3)
                                         .upgradeModifier("add", 0.5D)
                                         .build())
-                                .stat("step", RelicAbilityStat.builder()
-                                        .initialValue(2, 3)
-                                        .upgradeModifier("add", 1)
-                                        .build())
-                                .build())
-                        .ability("levitation", RelicAbilityEntry.builder()
-                                .maxLevel(10)
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(0.25D, 0.5D)
-                                        .upgradeModifier("add", 0.05)
+                                        .upgradeModifier("add", 0.05D)
                                         .build())
                                 .stat("height", RelicAbilityStat.builder()
                                         .initialValue(3, 5)
-                                        .upgradeModifier("add", 1)
+                                        .upgradeModifier("add", 1D)
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 20, 100))
+                .levelingData(new RelicLevelingData(100, 10, 100))
                 .styleData(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
                         .build())
@@ -107,14 +99,14 @@ public class BlazingFlaskItem extends RelicItem {
                 }
 
                 if (player.getAbilities().flying) {
-                    double speed = Math.min(1D, getAbilityValue(stack, "levitation", "speed"));
+                    double speed = Math.min(1D, getAbilityValue(stack, "bonfire", "speed"));
 
                     if (player.zza != 0 || player.xxa != 0 || player.yya != 0)
                         player.setDeltaMovement(player.getDeltaMovement().multiply(speed, 1D, speed));
 
                     Vec3 motion = player.getDeltaMovement();
 
-                    double height = getAbilityValue(stack, "levitation", "height");
+                    double height = getAbilityValue(stack, "bonfire", "height");
 
                     if (!player.isShiftKeyDown() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping)
                         player.setDeltaMovement(motion.x(), Math.min(0.3, 0.04 * ((getGroundHeight(player)
@@ -205,7 +197,7 @@ public class BlazingFlaskItem extends RelicItem {
     }
 
     public int getFireAround(ItemStack stack, Vec3 center, Level level) {
-        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos(center), getAbilityValue(stack, "bonfire", "radius"))
+        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos(center), 2)
                 .stream().filter(pos -> (level.getBlockState(pos).getBlock() instanceof BaseFireBlock)).toList();
 
         return positions.size();

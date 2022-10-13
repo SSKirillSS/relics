@@ -53,6 +53,10 @@ public class MidnightRobeItem extends RelicItem {
                                         .initialValue(1D, 2D)
                                         .upgradeModifier("add", 1D)
                                         .build())
+                                .stat("speed", RelicAbilityStat.builder()
+                                        .initialValue(0.1D, 0.2D)
+                                        .upgradeModifier("add", 0.1D)
+                                        .build())
                                 .build())
                         .ability("backstab", RelicAbilityEntry.builder()
                                 .stat("damage", RelicAbilityStat.builder()
@@ -65,7 +69,7 @@ public class MidnightRobeItem extends RelicItem {
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 20, 100))
+                .levelingData(new RelicLevelingData(100, 10, 100))
                 .styleData(RelicStyleData.builder()
                         .borders("#00071f", "#001974")
                         .build())
@@ -149,7 +153,7 @@ public class MidnightRobeItem extends RelicItem {
         } else {
             entity.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
 
-            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, 0.2F, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, (float) getAbilityValue(stack, "vanishing", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         }
     }
 
@@ -201,6 +205,8 @@ public class MidnightRobeItem extends RelicItem {
                 return;
 
             event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "backstab", "damage")));
+
+            addExperience(stack, 1);
 
             NBTUtils.setString(stack, TAG_TARGET, event.getEntityLiving().getStringUUID());
         }
