@@ -71,18 +71,16 @@ public class BlazingFlaskItem extends RelicItem {
 
         Level world = player.getCommandSenderWorld();
 
-        if (player.tickCount % 20 == 0) {
-            int fire = getFireAround(stack, world);
+        int fire = getFireAround(stack, world);
 
-            if (!player.isSpectator() && !player.isCreative())
-                player.getAbilities().mayfly = fire > 0;
+        if (!player.isSpectator() && !player.isCreative())
+            player.getAbilities().mayfly = fire > 0;
 
-            if (fire <= 0) {
-                NBTUtils.clearTag(stack, TAG_POSITION);
-                NBTUtils.clearTag(stack, TAG_COUNT);
-            } else {
-                NBTUtils.setInt(stack, TAG_COUNT, fire);
-            }
+        if (fire <= 0) {
+            NBTUtils.clearTag(stack, TAG_POSITION);
+            NBTUtils.clearTag(stack, TAG_COUNT);
+        } else {
+            NBTUtils.setInt(stack, TAG_COUNT, fire);
         }
 
         Vec3 center = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
