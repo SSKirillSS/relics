@@ -66,6 +66,10 @@ public class ElytraBoosterItem extends RelicItem {
             return;
 
         int fuel = NBTUtils.getInt(stack, TAG_FUEL, 0);
+
+        if (fuel > 0 && player.tickCount % 20 == 0)
+            NBTUtils.setInt(stack, TAG_FUEL, --fuel);
+
         double speed = NBTUtils.getDouble(stack, TAG_SPEED, 1D);
 
         if (!player.isShiftKeyDown() || fuel <= 0 || !player.isFallFlying()) {
