@@ -166,7 +166,7 @@ public class BlazingFlaskItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = 16;
+        float distance = (float) (8F + getAbilityValue(stack, "bonfire", "height"));
 
         Vec3 end = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
