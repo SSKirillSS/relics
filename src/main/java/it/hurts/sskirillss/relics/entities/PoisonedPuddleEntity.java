@@ -60,7 +60,7 @@ public class PoisonedPuddleEntity extends ThrowableProjectile {
         super.tick();
 
         if (this.getSize() > 0.5F)
-            this.addSize((float) -Math.max(RelicItem.getAbilityValue(stack, "puddle", "resize"), 0.01D));
+            this.addSize((float) -Math.max(RelicItem.getAbilityValue(stack, "spore", "resize"), 0.01D));
         else
             this.discard();
 
@@ -88,7 +88,7 @@ public class PoisonedPuddleEntity extends ThrowableProjectile {
             MobEffectInstance effect = entity.getEffect(MobEffects.POISON);
 
             entity.addEffect(new MobEffectInstance(MobEffects.POISON, effect == null ? 20 : effect.getDuration() + 2, 0));
-            entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5, (int) (Math.round(RelicItem.getAbilityValue(stack, "puddle", "slowness")) - 1)));
+            entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5, (int) (Math.round(RelicItem.getAbilityValue(stack, "spore", "slowness")) - 1)));
 
             if (this.getOwner() instanceof Player player)
                 entity.setLastHurtByPlayer(player);
