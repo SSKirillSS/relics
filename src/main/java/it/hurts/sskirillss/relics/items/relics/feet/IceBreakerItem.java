@@ -41,6 +41,12 @@ public class IceBreakerItem extends RelicItem {
     public RelicDataNew getNewData() {
         return RelicDataNew.builder()
                 .abilityData(RelicAbilityData.builder()
+                        .ability("sustainability", RelicAbilityEntry.builder()
+                                .stat("modifier", RelicAbilityStat.builder()
+                                        .initialValue(0.75, 0.5D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.05D)
+                                        .build())
+                                .build())
                         .ability("impact", RelicAbilityEntry.builder()
                                 .stat("size", RelicAbilityStat.builder()
                                         .initialValue(5D, 10D)
@@ -62,7 +68,7 @@ public class IceBreakerItem extends RelicItem {
     @Override
     public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, 0F))
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, (float) getAbilityValue(stack, "sustainability", "modifier")))
                 .build();
     }
 
