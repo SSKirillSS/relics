@@ -75,7 +75,7 @@ public class StalactiteEntity extends ThrowableProjectile {
                 || (this.getOwner() != null && entity.getStringUUID().equals(this.getOwner().getStringUUID())))
             return;
 
-        entity.hurt(DamageSource.thrown(this, this.getOwner()), amount * 0.1F);
+        entity.hurt(DamageSource.thrown(this, this.getOwner()), amount * 0.25F);
 
         entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), Math.round(amount * 0.5F), 0, true, false));
 

@@ -30,6 +30,8 @@ public class JellyfishNecklaceItem extends RelicItem {
     public RelicDataNew getNewData() {
         return RelicDataNew.builder()
                 .abilityData(RelicAbilityData.builder()
+                        .ability("unsinkable", RelicAbilityEntry.builder()
+                                .build())
                         .ability("shock", RelicAbilityEntry.builder()
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(1D, 2.5D)
