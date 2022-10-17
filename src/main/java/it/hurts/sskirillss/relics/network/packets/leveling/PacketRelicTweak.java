@@ -66,26 +66,25 @@ public class PacketRelicTweak {
             switch (operation) {
                 case INCREASE -> {
                     if (RelicItem.mayPlayerUpgrade(player, stack, ability)) {
+                        player.giveExperiencePoints(-RelicItem.getUpgradeRequiredExperience(stack, ability));
+
                         RelicItem.setAbilityPoints(stack, ability, RelicItem.getAbilityPoints(stack, ability) + 1);
                         RelicItem.addPoints(stack, -entry.getRequiredPoints());
-
-                        player.giveExperiencePoints(-RelicItem.getUpgradeRequiredExperience(stack, ability));
                     }
                 }
                 case REROLL -> {
                     if (RelicItem.mayPlayerReroll(player, stack, ability)) {
-                        RelicItem.randomizeStats(stack, ability);
-
                         player.giveExperiencePoints(-RelicItem.getRerollRequiredExperience(stack, ability));
+
+                        RelicItem.randomizeStats(stack, ability);
                     }
                 }
                 case RESET -> {
                     if (RelicItem.mayPlayerReset(player, stack, ability)) {
-                        RelicItem.setAbilityPoints(stack, ability, 0);
-
-                        RelicItem.addPoints(stack, RelicItem.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
-
                         player.giveExperiencePoints(-RelicItem.getResetRequiredExperience(stack, ability));
+
+                        RelicItem.setAbilityPoints(stack, ability, 0);
+                        RelicItem.addPoints(stack, RelicItem.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
                     }
                 }
             }
