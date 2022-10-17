@@ -5,12 +5,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.card.AbilityCardIconWidget;
 import it.hurts.sskirillss.relics.indev.RelicAbilityData;
 import it.hurts.sskirillss.relics.indev.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.indev.RelicDataNew;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -71,6 +73,11 @@ public class RelicDescriptionScreen extends Screen {
         if (!(stack.getItem() instanceof RelicItem<?> relic))
             return;
 
+        RelicDataNew relicData = relic.getNewData();
+
+        if (relicData == null)
+            return;
+
         TextureManager manager = MC.getTextureManager();
 
         this.renderBackground(pPoseStack);
@@ -87,30 +94,32 @@ public class RelicDescriptionScreen extends Screen {
         int y = (this.height - backgroundHeight) / 2;
 
         blit(pPoseStack, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
-
-        int percentage = relic.getExperience(stack) / (relic.getTotalExperienceForLevel(stack, relic.getLevel(stack) + 1) / 100);
+        
+        int level = RelicItem.getLevel(stack);
+        int maxLevel = relicData.getLevelingData().getMaxLevel();
+        
+        int percentage = relic.getExperience(stack) / (relic.getTotalExperienceForLevel(stack, level + 1) / 100);
 
         blit(pPoseStack, x + 63, y + 91, 388, 0, (int) Math.ceil(percentage / 100F * 124F), 7, texWidth, texHeight);
 
-        String name = stack.getDisplayName().getString()
-                .replace("[", "")
-                .replace("]", "");
+        MutableComponent name = new TextComponent(stack.getDisplayName().getString()
+                .replace("[", "").replace("]", ""))
+                .append(new TranslatableComponent("tooltip.relics.relic.level", level, maxLevel == -1 ? "∞" : maxLevel));;
 
         MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
 
         pPoseStack.pushPose();
 
-        String experience = relic.getExperience(stack) + "/" + relic.getTotalExperienceForLevel(stack, relic.getLevel(stack) + 1) + " [" + percentage + "%]";
+        String experience = relic.getExperience(stack) + "/" + relic.getTotalExperienceForLevel(stack, level + 1) + " [" + percentage + "%]";
 
-        //pPoseStack.translate((this.width - (font.width(experience) * 0.5F)) / 2F, this.height / 2F, 0);
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
         MC.font.drawShadow(pPoseStack, experience, (x + 143 - font.width(experience) / 2F) * 2, (y + 87) * 2, 0xFFFFFF);
 
         pPoseStack.popPose();
 
-        MC.font.drawShadow(pPoseStack, String.valueOf(relic.getLevel(stack)), x + 60, y + 91, 0xFFFFFF);
-        MC.font.drawShadow(pPoseStack, String.valueOf(relic.getLevel(stack) + 1), x + 190, y + 91, 0xFFFFFF);
+        MC.font.drawShadow(pPoseStack, String.valueOf(level), x + 60, y + 91, 0xFFFFFF);
+        MC.font.drawShadow(pPoseStack, String.valueOf(level + 1), x + 190, y + 91, 0xFFFFFF);
 
         List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".lore"), 240);
 

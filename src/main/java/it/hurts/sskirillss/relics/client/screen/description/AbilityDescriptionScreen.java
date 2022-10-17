@@ -17,6 +17,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -78,6 +79,16 @@ public class AbilityDescriptionScreen extends Screen {
         if (!(stack.getItem() instanceof RelicItem<?> relic))
             return;
 
+        RelicDataNew relicData = relic.getNewData();
+
+        if (relicData == null)
+            return;
+
+        RelicAbilityEntry abilityData = RelicItem.getAbility(relic, ability);
+
+        if (abilityData == null)
+            return;
+
         TextureManager manager = MC.getTextureManager();
 
         this.renderBackground(pPoseStack);
@@ -95,7 +106,11 @@ public class AbilityDescriptionScreen extends Screen {
 
         blit(pPoseStack, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
 
-        TranslatableComponent name = new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".ability." + ability);
+        int level = RelicItem.getAbilityPoints(stack, ability);
+        int maxLevel = abilityData.getMaxLevel() == -1 ? ((relicData.getLevelingData().getMaxLevel() - abilityData.getRequiredLevel()) / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
+
+        MutableComponent name = new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".ability." + ability)
+                .append(new TranslatableComponent("tooltip.relics.relic.ability.level", level, maxLevel == -1 ? "∞" : maxLevel));
 
         MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
 
@@ -118,14 +133,9 @@ public class AbilityDescriptionScreen extends Screen {
         for (int i = 0; i < stats.size(); i++) {
             String stat = stats.stream().toList().get(i);
 
-            RelicDataNew relicData = relic.getNewData();
             RelicAbilityStat statData = RelicItem.getAbilityStat(relic, ability, stat);
-            RelicAbilityEntry abilityData = RelicItem.getAbility(relic, ability);
 
-            if (relicData != null && abilityData != null && statData != null) {
-                int points = RelicItem.getAbilityPoints(stack, ability);
-                int maxPoints = abilityData.getMaxLevel() == -1 ? ((relicData.getLevelingData().getMaxLevel() - abilityData.getRequiredLevel()) / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
-
+            if (statData != null) {
                 boolean isHoveringUpgrade = (pMouseX >= x + 209
                         && pMouseY >= y + 93
                         && pMouseX < x + 209 + 22
@@ -143,15 +153,15 @@ public class AbilityDescriptionScreen extends Screen {
 
                 TextComponent cost = new TextComponent(statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat)));
 
-                if (isHoveringUpgrade && points < maxPoints) {
-                    cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, points + 1)));
+                if (isHoveringUpgrade && level < maxLevel) {
+                    cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, level + 1)));
                 }
 
                 if (isHoveringReroll) {
                     cost.append(" -> ").append(new TextComponent("X.XXX").withStyle(ChatFormatting.OBFUSCATED));
                 }
 
-                if (isHoveringReset && points > 0) {
+                if (isHoveringReset && level > 0) {
                     cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, 0)));
                 }
 

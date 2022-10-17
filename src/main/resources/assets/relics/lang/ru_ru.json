@@ -1,6 +1,9 @@
 {
   "itemGroup.relics": "Реликвии",
 
+  "tooltip.relics.relic.level": " [%1$s/%2$s]",
+  "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
+
   "item.relics.infinity_ham": "Бесконечный окорок",
   "tooltip.relics.infinity_ham.lore": "Постоянно регенерирующая плоть неизвестного существа, по вкусу напоминающая свинью.",
   "tooltip.relics.infinity_ham.ability.autophagy": "Регенерация",
