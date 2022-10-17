@@ -6,6 +6,7 @@ import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -36,6 +37,7 @@ public class JellyfishNecklaceItem extends RelicItem {
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(1D, 2.5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .ability("paralysis", RelicAbilityEntry.builder()
@@ -43,6 +45,7 @@ public class JellyfishNecklaceItem extends RelicItem {
                                 .stat("duration", RelicAbilityStat.builder()
                                         .initialValue(0.5D, 1.5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.5D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())
