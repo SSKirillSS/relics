@@ -5,10 +5,7 @@ import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.ParticleUtils;
-import it.hurts.sskirillss.relics.utils.WorldUtils;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -46,14 +43,17 @@ public class BlazingFlaskItem extends RelicItem {
                                 .stat("step", RelicAbilityStat.builder()
                                         .initialValue(1, 3)
                                         .upgradeModifier("add", 0.5D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(0.25D, 0.5D)
                                         .upgradeModifier("add", 0.05D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("height", RelicAbilityStat.builder()
                                         .initialValue(3, 5)
                                         .upgradeModifier("add", 1D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())
@@ -195,7 +195,7 @@ public class BlazingFlaskItem extends RelicItem {
     }
 
     public int getFireAround(ItemStack stack, Vec3 center, Level level) {
-        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos(center), 2)
+        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos(center), getAbilityValue(stack, "bonfire", "step"))
                 .stream().filter(pos -> (level.getBlockState(pos).getBlock() instanceof BaseFireBlock)).toList();
 
         return positions.size();

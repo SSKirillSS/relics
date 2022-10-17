@@ -52,12 +52,11 @@
   "tooltip.relics.arrow_quiver.ability.agility.description": "Увеличивает скорость натяжения тетивы.",
   "tooltip.relics.arrow_quiver.ability.agility.stat.modifier": "Множитель скорости: %1$s %%.",
 
-  "item.relics.horse_flute": "Лошадиная флейта",
-  "tooltip.relics.horse_flute.lore": "Волшебная флейта, чей звук был способен управлять любыми живыми существами. Однако ныне ей подвластны лишь лошади.",
-  "tooltip.relics.horse_flute.ability.paddock": "Портативное стойло",
-  "tooltip.relics.horse_flute.ability.paddock.description": "Использование реликвии по лошади переместит животное во внутреннее хранилище. Повторное использование высвободит существо. Если расстояние между владельцем и призванной лошадью слишком велико, она автоматически поместится обратно во флейту.",
-  "tooltip.relics.horse_flute.ability.paddock.stat.slots": "Слоты: %1$s.",
-  "tooltip.relics.horse_flute.ability.heal": "Заговор на лечение",
-  "tooltip.relics.horse_flute.ability.heal.description": "Помещённая во внутреннее хранилище лошадь будет медленно восстанавливать здоровье.",
-  "tooltip.relics.horse_flute.ability.heal.stat.amount": "Лечение: %1$s единиц здоровья в секунду."
+  "item.relics.blazing_flask": "Пылающий флакон",
+  "tooltip.relics.blazing_flask.lore": "Продукт работы инженеров цивилизации пиглинов. При испытании первого прототипа превратил багровый лес в пустошь.",
+  "tooltip.relics.blazing_flask.ability.bonfire": "Вечный огонь",
+  "tooltip.relics.blazing_flask.ability.bonfire.description": "Использование реликвии на блоке создаст зону ограниченного полёта, размер которой зависит от количества огня поблизости.",
+  "tooltip.relics.blazing_flask.ability.bonfire.stat.step": "Радиус обнаружения огня: %1$s.",
+  "tooltip.relics.blazing_flask.ability.bonfire.stat.speed": "Скорость полёта: %1$s.",
+  "tooltip.relics.blazing_flask.ability.bonfire.stat.height": "Высота полёта: %1$s."
 }
