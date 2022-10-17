@@ -119,5 +119,14 @@
   "tooltip.relics.bastion_ring.ability.compass.description": "Делает пиглинов нейтральными по отношению к носителю. Ближайший пиглин будет указывать на расположение бастиона неподалёку.",
   "tooltip.relics.bastion_ring.ability.trade": "Уважение",
   "tooltip.relics.bastion_ring.ability.trade.description": "Каждая торговля с пиглинами получает шанс на выдачу дополнительного результата торгов. ",
-  "tooltip.relics.bastion_ring.ability.trade.stat.rolls": "Максимальное количество дополнительных торгов: %1$s."
+  "tooltip.relics.bastion_ring.ability.trade.stat.rolls": "Максимальное количество дополнительных торгов: %1$s.",
+
+  "item.relics.horse_flute": "Лошадиная флейта",
+  "tooltip.relics.horse_flute.lore": "Волшебная флейта, чей звук был способен управлять любыми живыми существами. Однако ныне ей подвластны лишь лошади.",
+  "tooltip.relics.horse_flute.ability.paddock": "Портативное стойло",
+  "tooltip.relics.horse_flute.ability.paddock.description": "Использование реликвии по лошади переместит животное во внутреннее хранилище. Повторное использование высвободит существо. Если расстояние между владельцем и призванной лошадью слишком велико, она автоматически поместится обратно во флейту.",
+  "tooltip.relics.horse_flute.ability.paddock.stat.slots": "Слоты: %1$s.",
+  "tooltip.relics.horse_flute.ability.heal": "Заговор на лечение",
+  "tooltip.relics.horse_flute.ability.heal.description": "Помещённая во внутреннее хранилище лошадь будет медленно восстанавливать здоровье.",
+  "tooltip.relics.horse_flute.ability.heal.stat.amount": "Лечение: %1$s единиц здоровья в секунду."
 }

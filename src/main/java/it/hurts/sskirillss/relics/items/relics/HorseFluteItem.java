@@ -4,6 +4,7 @@ import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -50,6 +51,7 @@ public class HorseFluteItem extends RelicItem {
                                 .stat("amount", RelicAbilityStat.builder()
                                         .initialValue(0.01, 0.1)
                                         .upgradeModifier("add", 0.1)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 2)))
                                         .build())
                                 .build())
                         .build())
