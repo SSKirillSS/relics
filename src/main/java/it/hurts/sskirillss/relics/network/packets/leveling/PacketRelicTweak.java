@@ -75,6 +75,8 @@ public class PacketRelicTweak {
                 case REROLL -> {
                     if (RelicItem.mayPlayerReroll(player, stack, ability)) {
                         RelicItem.randomizeStats(stack, ability);
+
+                        player.giveExperiencePoints(-RelicItem.getRerollRequiredExperience(stack, ability));
                     }
                 }
                 case RESET -> {
@@ -82,6 +84,8 @@ public class PacketRelicTweak {
                         RelicItem.setAbilityPoints(stack, ability, 0);
 
                         RelicItem.addPoints(stack, RelicItem.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
+
+                        player.giveExperiencePoints(-RelicItem.getResetRequiredExperience(stack, ability));
                     }
                 }
             }

@@ -98,7 +98,7 @@ public class RelicDescriptionScreen extends Screen {
         int level = RelicItem.getLevel(stack);
         int maxLevel = relicData.getLevelingData().getMaxLevel();
         
-        int percentage = relic.getExperience(stack) / (relic.getTotalExperienceForLevel(stack, level + 1) / 100);
+        int percentage = RelicItem.getExperience(stack) / (RelicItem.getTotalExperienceForLevel(stack, level + 1) / 100);
 
         blit(pPoseStack, x + 63, y + 91, 388, 0, (int) Math.ceil(percentage / 100F * 124F), 7, texWidth, texHeight);
 
@@ -110,7 +110,7 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.pushPose();
 
-        String experience = relic.getExperience(stack) + "/" + relic.getTotalExperienceForLevel(stack, level + 1) + " [" + percentage + "%]";
+        String experience = RelicItem.getExperience(stack) + "/" + RelicItem.getTotalExperienceForLevel(stack, level + 1) + " [" + percentage + "%]";
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 

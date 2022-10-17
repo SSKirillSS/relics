@@ -5,7 +5,7 @@
   "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
 
   "tooltip.relics.relic.upgrade.description": "Повышение уровня способности.",
-  "tooltip.relics.relic.upgrade.cost": "Стоимость: %1$s ур., %2$s опыта.",
+  "tooltip.relics.relic.upgrade.cost": "Стоимость: %2$s ур., %1$s опыта.",
 
   "tooltip.relics.relic.reroll.description": "Регенерация случайных характеристик способности.",
   "tooltip.relics.relic.reroll.cost": "Стоимость: %1$s опыта.",
