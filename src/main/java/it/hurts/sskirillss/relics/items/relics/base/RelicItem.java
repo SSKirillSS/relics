@@ -403,7 +403,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         if (entry == null)
             return false;
 
-        return isAbilityMaxLevel(stack, ability) && RelicItem.getPoints(stack) >= entry.getRequiredPoints();
+        return !isAbilityMaxLevel(stack, ability) && RelicItem.getPoints(stack) >= entry.getRequiredPoints();
     }
 
     public static boolean mayPlayerUpgrade(Player player, ItemStack stack, String ability) {
@@ -481,7 +481,11 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public static void setPoints(ItemStack stack, int level) {
-        getLevelingData(stack).putInt(TAG_POINTS, level);
+        CompoundTag tag = getLevelingData(stack);
+
+        tag.putInt(TAG_POINTS, level);
+
+        setLevelingData(stack, tag);
     }
 
     public static void addPoints(ItemStack stack, int amount) {
