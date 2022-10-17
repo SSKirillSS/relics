@@ -218,11 +218,9 @@ public class AbilityDescriptionScreen extends Screen {
 
             MC.font.draw(pPoseStack, new TranslatableComponent("tooltip.relics.relic." + info + ".description"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
 
-            if (showInfo) {
-                yOff += 9;
+            yOff += 9;
 
-                MC.font.draw(pPoseStack, new TranslatableComponent("tooltip.relics.relic." + info + ".cost", cost, abilityData.getRequiredPoints()), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
-            }
+            MC.font.draw(pPoseStack, new TranslatableComponent("tooltip.relics.relic." + info + ".cost", showInfo ? abilityData.getRequiredPoints() : "∞", showInfo ? cost : "∞"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
 
             pPoseStack.popPose();
         }
