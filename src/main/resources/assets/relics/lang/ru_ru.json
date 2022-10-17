@@ -78,6 +78,12 @@
   "tooltip.relics.midnight_robe.ability.backstab.stat.damage": "Множитель урона: %1$s %%.",
   "tooltip.relics.midnight_robe.ability.backstab.stat.distance": "Радиус круга: %1$s блоков.",
 
+  "item.relics.reflection_necklace": "Отражающий амулет",
+  "tooltip.relics.reflection_necklace.lore": "Выкованный в пылающих жаром печах адской тюрьмы, этот амулет пропитался злобой и ненавистью его создателей. Смесь обсидиана и древних обломков наделила его невероятной прочностью, а алмазная инкрустация позволяет реликвии рассекать человеческую плоть словно масло.",
+  "tooltip.relics.reflection_necklace.ability.explode": "Адская ненависть",
+  "tooltip.relics.reflection_necklace.ability.explode.description": "Накапливает полученный урон во внутренний буфер. Спустя 5 секунд после последнего получения урона или в случае переполнения буфера реликвия взрывается, выбрасывая во все стороны обсидиановые осколки, наносящие урон и оглушающие цели. Урон и время оглушения осколков зависят от количества накопленного урона во внутреннем буфере реликвии.",
+  "tooltip.relics.reflection_necklace.ability.explode.stat.capacity": "Буфер урона: %1$s единиц.",
+
   "item.relics.jellyfish_necklace": "Ожерелье медузы",
   "tooltip.relics.jellyfish_necklace.lore": "Семейная реликвия сирен, созданная из жемчуга и поддерживаемой в живых волей носителя медузы, чья мучительная агония раздаётся импульсами электричества.",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable": "Власть над морем",
