@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -52,20 +53,24 @@ public class MidnightRobeItem extends RelicItem {
                                 .stat("light", RelicAbilityStat.builder()
                                         .initialValue(1D, 2D)
                                         .upgradeModifier("add", 1D)
+                                        .formatValue(value -> String.valueOf((int) MathUtils.round(value, 0)))
                                         .build())
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(0.1D, 0.2D)
                                         .upgradeModifier("add", 0.1D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .ability("backstab", RelicAbilityEntry.builder()
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(1.5D, 2D)
                                         .upgradeModifier("add", 0.1D)
+                                        .formatValue(value -> String.valueOf((int) (100 * MathUtils.round(value - 1, 1))))
                                         .build())
                                 .stat("distance", RelicAbilityStat.builder()
                                         .initialValue(15D, 20D)
                                         .upgradeModifier("add", -1D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())

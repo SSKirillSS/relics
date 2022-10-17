@@ -65,5 +65,16 @@
   "tooltip.relics.elytra_booster.ability.boost": "Ускорение",
   "tooltip.relics.elytra_booster.ability.boost.description": "Использование топлива на реликвии пополняет её внутренний буфер. Зажатие клавиши [Shift] во время полёта на элитрах устремляет носителя вперёд.",
   "tooltip.relics.elytra_booster.ability.boost.stat.capacity": "Ёмкость: %1$s единиц.",
-  "tooltip.relics.elytra_booster.ability.boost.stat.speed": "Скорость: %1$s."
+  "tooltip.relics.elytra_booster.ability.boost.stat.speed": "Скорость: %1$s.",
+
+  "item.relics.midnight_robe": "Получночная мантия",
+  "tooltip.relics.midnight_robe.lore": "Одеяние придворного астронома с вышитой на нём картой звёздного неба.",
+  "tooltip.relics.midnight_robe.ability.vanish": "Исчезновение",
+  "tooltip.relics.midnight_robe.ability.vanish.description": "Носитель становится невидимым, когда находится в кромешной тьме.",
+  "tooltip.relics.midnight_robe.ability.vanish.stat.light": "Минимальный уровень света: %1$s.",
+  "tooltip.relics.midnight_robe.ability.vanish.stat.speed": "Множитель скорости: %1$s %%.",
+  "tooltip.relics.midnight_robe.ability.backstab": "Предательство",
+  "tooltip.relics.midnight_robe.ability.backstab.description": "Атака в состоянии невидимости от способности «Исчезновение» наносит двойной урон. Повторное использование способности «Исчезновение» возможно лишь после выхода за круг.",
+  "tooltip.relics.midnight_robe.ability.backstab.stat.damage": "Множитель урона: %1$s %%.",
+  "tooltip.relics.midnight_robe.ability.backstab.stat.distance": "Радиус круга: %1$s блоков."
 }
