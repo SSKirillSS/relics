@@ -87,5 +87,13 @@
   "tooltip.relics.jellyfish_necklace.ability.shock.stat.damage": "Урон: %1$s единиц.",
   "tooltip.relics.jellyfish_necklace.ability.paralysis": "Паралич",
   "tooltip.relics.jellyfish_necklace.ability.paralysis.description": "После срабатывания способности «Электрическая разрядка» запрещает передвижение цели.",
-  "tooltip.relics.jellyfish_necklace.ability.paralysis.stat.duration": "Продолжительность эффекта: %1$s секунд."
+  "tooltip.relics.jellyfish_necklace.ability.paralysis.stat.duration": "Продолжительность эффекта: %1$s секунд.",
+
+  "item.relics.spore_sack": "Мешок со спорами",
+  "tooltip.relics.spore_sack.lore": "Мешок для семян, в котором проросли споры смертельно опасных грибов.",
+  "tooltip.relics.spore_sack.ability.spore": "Синтез яда",
+  "tooltip.relics.spore_sack.ability.spore.description": "При получении урона выбрасывает споры в случайном направлении, которые при соприкосновении с поверхностью формируют ядовитые облака, наносящие урон и замедляющие цели в радиусе действия.",
+  "tooltip.relics.spore_sack.ability.spore.stat.amount": "Количество спор: %1$s.",
+  "tooltip.relics.spore_sack.ability.spore.stat.slowness": "Уровень замедления: %1$s.",
+  "tooltip.relics.spore_sack.ability.spore.stat.resize": "Скорость уменьшения: %1$s %% в секунду."
 }
