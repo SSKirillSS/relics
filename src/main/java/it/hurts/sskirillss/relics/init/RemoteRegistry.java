@@ -107,7 +107,7 @@ public class RemoteRegistry {
                 (stack, world, entity, id) -> {
                     int fuel = NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0);
 
-                    return (int) Math.floor(fuel / (getAbilityValue(stack, "boost", "capacity") / 4F));
+                    return (int) Math.ceil(fuel / (getAbilityValue(stack, "boost", "capacity") / 5F));
                 });
         ItemProperties.register(ItemRegistry.SOLID_SNOWBALL.get(), new ResourceLocation(Reference.MODID, "snow"),
                 (stack, world, entity, id) -> {
