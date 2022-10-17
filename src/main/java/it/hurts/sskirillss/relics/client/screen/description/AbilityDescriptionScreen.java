@@ -128,7 +128,24 @@ public class AbilityDescriptionScreen extends Screen {
             pPoseStack.popPose();
         }
 
+        boolean isHoveringUpgrade = (pMouseX >= x + 209
+                && pMouseY >= y + 93
+                && pMouseX < x + 209 + 22
+                && pMouseY < y + 93 + 22);
+
+        boolean isHoveringReroll = (pMouseX >= x + 209
+                && pMouseY >= y + 116
+                && pMouseX < x + 209 + 22
+                && pMouseY < y + 116 + 22);
+
+        boolean isHoveringReset = (pMouseX >= x + 209
+                && pMouseY >= y + 139
+                && pMouseX < x + 209 + 22
+                && pMouseY < y + 139 + 22);
+
         Set<String> stats = RelicItem.getAbilityInitialValues(stack, ability).keySet();
+
+        int yOff = 0;
 
         for (int i = 0; i < stats.size(); i++) {
             String stat = stats.stream().toList().get(i);
@@ -136,21 +153,6 @@ public class AbilityDescriptionScreen extends Screen {
             RelicAbilityStat statData = RelicItem.getAbilityStat(relic, ability, stat);
 
             if (statData != null) {
-                boolean isHoveringUpgrade = (pMouseX >= x + 209
-                        && pMouseY >= y + 93
-                        && pMouseX < x + 209 + 22
-                        && pMouseY < y + 93 + 22);
-
-                boolean isHoveringReroll = (pMouseX >= x + 209
-                        && pMouseY >= y + 116
-                        && pMouseX < x + 209 + 22
-                        && pMouseY < y + 116 + 22);
-
-                boolean isHoveringReset = (pMouseX >= x + 209
-                        && pMouseY >= y + 139
-                        && pMouseX < x + 209 + 22
-                        && pMouseY < y + 139 + 22);
-
                 TextComponent cost = new TextComponent(statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat)));
 
                 if (isHoveringUpgrade && level < maxLevel) {
@@ -171,10 +173,58 @@ public class AbilityDescriptionScreen extends Screen {
 
                 pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-                MC.font.draw(pPoseStack, start, x * 2 + 35 * 2, y * 2 + i * 9 + 103 * 2, 0x412708);
+                MC.font.draw(pPoseStack, start, x * 2 + 35 * 2, y * 2 + yOff + 103 * 2, 0x412708);
 
                 pPoseStack.popPose();
+
+                yOff += 9;
             }
+        }
+
+        boolean showInfo = false;
+        String info = "";
+        int cost = 0;
+
+        if (isHoveringUpgrade) {
+            info = "upgrade";
+
+            showInfo = !RelicItem.isAbilityMaxLevel(stack, ability);
+
+            cost = RelicItem.getUpgradeRequiredExperience(stack, ability);
+        }
+
+        if (isHoveringReroll) {
+            info = "reroll";
+
+            showInfo = RelicItem.mayReroll(stack, ability);
+
+            cost = RelicItem.getRerollRequiredExperience(stack, ability);
+        }
+
+        if (isHoveringReset) {
+            info = "reset";
+
+            showInfo = RelicItem.mayReset(stack, ability);
+
+            cost = RelicItem.getResetRequiredExperience(stack, ability);
+        }
+
+        if (!info.isEmpty()) {
+            pPoseStack.pushPose();
+
+            pPoseStack.scale(0.5F, 0.5F, 0.5F);
+
+            yOff += 9;
+
+            MC.font.draw(pPoseStack, new TranslatableComponent("tooltip.relics.relic." + info + ".description"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
+
+            if (showInfo) {
+                yOff += 9;
+
+                MC.font.draw(pPoseStack, new TranslatableComponent("tooltip.relics.relic." + info + ".cost", cost, abilityData.getRequiredPoints()), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
+            }
+
+            pPoseStack.popPose();
         }
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);

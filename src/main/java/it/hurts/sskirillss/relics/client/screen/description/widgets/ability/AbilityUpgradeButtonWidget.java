@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.AbstractSilentButton;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import net.minecraft.client.Minecraft;
@@ -28,12 +29,14 @@ public class AbilityUpgradeButtonWidget extends AbstractSilentButton {
 
     @Override
     public void onPress() {
-        NetworkHandler.sendToServer(new PacketRelicTweak(screen.pos, ability, PacketRelicTweak.Operation.INCREASE));
+        if (RelicItem.mayPlayerUpgrade(MC.player, screen.stack, ability))
+            NetworkHandler.sendToServer(new PacketRelicTweak(screen.pos, ability, PacketRelicTweak.Operation.INCREASE));
     }
 
     @Override
     public void playDownSound(SoundManager handler) {
-        handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+        if (RelicItem.mayPlayerUpgrade(MC.player, screen.stack, ability))
+            handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
     }
 
     @Override

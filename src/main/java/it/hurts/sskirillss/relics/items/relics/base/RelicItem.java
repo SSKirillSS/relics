@@ -340,6 +340,123 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         return true;
     }
 
+    public static int getUpgradeRequiredExperience(ItemStack stack, String ability) {
+        if (!(stack.getItem() instanceof RelicItem<?> relic))
+            return 0;
+
+        RelicDataNew relicData = relic.getNewData();
+
+        if (relicData == null)
+            return 0;
+
+        RelicAbilityData abilityData = relicData.getAbilityData();
+
+        if (abilityData == null)
+            return 0;
+
+        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+
+        if (entry == null)
+            return 0;
+
+        return (RelicItem.getLevel(stack) + 1) * (RelicItem.getAbilityPoints(stack, ability) + 1) * entry.getRequiredPoints();
+    }
+
+    public static boolean isAbilityMaxLevel(ItemStack stack, String ability) {
+        if (!(stack.getItem() instanceof RelicItem<?> relic))
+            return false;
+
+        RelicDataNew relicData = relic.getNewData();
+
+        if (relicData == null)
+            return false;
+
+        RelicAbilityData abilityData = relicData.getAbilityData();
+
+        if (abilityData == null)
+            return false;
+
+        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+
+        if (entry == null)
+            return false;
+
+        return RelicItem.getAbilityPoints(stack, ability) >= (entry.getMaxLevel() == -1 ? ((relicData.getLevelingData().getMaxLevel() - entry.getRequiredLevel()) / entry.getRequiredPoints()) : entry.getMaxLevel());
+    }
+
+    public static boolean mayUpgrade(ItemStack stack, String ability) {
+        if (!(stack.getItem() instanceof RelicItem<?> relic))
+            return false;
+
+        RelicDataNew relicData = relic.getNewData();
+
+        if (relicData == null)
+            return false;
+
+        RelicAbilityData abilityData = relicData.getAbilityData();
+
+        if (abilityData == null)
+            return false;
+
+        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+
+        if (entry == null)
+            return false;
+
+        return isAbilityMaxLevel(stack, ability) && RelicItem.getPoints(stack) >= entry.getRequiredPoints();
+    }
+
+    public static boolean mayPlayerUpgrade(Player player, ItemStack stack, String ability) {
+        return mayUpgrade(stack, ability) && player.totalExperience >= getUpgradeRequiredExperience(stack, ability);
+    }
+
+    public static int getRerollRequiredExperience(ItemStack stack, String ability) {
+        if (!(stack.getItem() instanceof RelicItem<?> relic))
+            return 0;
+
+        RelicDataNew relicData = relic.getNewData();
+
+        if (relicData == null)
+            return 0;
+
+        RelicAbilityData abilityData = relicData.getAbilityData();
+
+        if (abilityData == null)
+            return 0;
+
+        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+
+        if (entry == null)
+            return 0;
+
+        int count = entry.getStats().size();
+
+        if (count == 0)
+            return 0;
+
+        return 100 / count;
+    }
+
+    public static boolean mayReroll(ItemStack stack, String ability) {
+        return getRerollRequiredExperience(stack, ability) > 0;
+    }
+
+    public static boolean mayPlayerReroll(Player player, ItemStack stack, String ability) {
+        return mayReroll(stack, ability) && player.totalExperience >= getRerollRequiredExperience(stack, ability);
+    }
+
+    public static int getResetRequiredExperience(ItemStack stack, String ability) {
+        return getAbilityPoints(stack, ability) * 50;
+    }
+
+    public static boolean mayReset(ItemStack stack, String ability) {
+        return getResetRequiredExperience(stack, ability) > 0;
+    }
+
+    public static boolean mayPlayerReset(Player player, ItemStack stack, String ability) {
+        return mayReset(stack, ability) && player.totalExperience >= getResetRequiredExperience(stack, ability);
+    }
+
     /*
     =================================================
                         Leveling

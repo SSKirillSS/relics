@@ -43,9 +43,9 @@ public class PacketRelicTweak {
             if (player == null)
                 return;
 
-            Level level = player.level;
+            Level world = player.level;
 
-            if (!(level.getBlockEntity(pos) instanceof ResearchingTableTile tile))
+            if (!(world.getBlockEntity(pos) instanceof ResearchingTableTile tile))
                 return;
 
             ItemStack stack = tile.getStack();
@@ -65,19 +65,28 @@ public class PacketRelicTweak {
 
             switch (operation) {
                 case INCREASE -> {
-                    int maxPoints = entry.getMaxLevel() == -1 ? ((relic.getNewData().getLevelingData().getMaxLevel() - entry.getRequiredLevel()) / entry.getRequiredPoints()) : entry.getMaxLevel();
-
-                    if (RelicItem.getAbilityPoints(stack, ability) < maxPoints)
+                    if (RelicItem.mayPlayerUpgrade(player, stack, ability)) {
                         RelicItem.setAbilityPoints(stack, ability, RelicItem.getAbilityPoints(stack, ability) + 1);
+                        RelicItem.addPoints(stack, -entry.getRequiredPoints());
+
+                        player.giveExperiencePoints(-RelicItem.getUpgradeRequiredExperience(stack, ability));
+                    }
                 }
-                case REROLL -> RelicItem.randomizeStats(stack, ability);
+                case REROLL -> {
+                    if (RelicItem.mayPlayerReroll(player, stack, ability)) {
+                        RelicItem.randomizeStats(stack, ability);
+                    }
+                }
                 case RESET -> {
-                    RelicItem.setAbilityPoints(stack, ability, 0);
-                    RelicItem.setPoints(stack, 0);
+                    if (RelicItem.mayPlayerReset(player, stack, ability)) {
+                        RelicItem.setAbilityPoints(stack, ability, 0);
+
+                        RelicItem.addPoints(stack, RelicItem.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
+                    }
                 }
             }
 
-            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
+            world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
         });
 
         return true;
