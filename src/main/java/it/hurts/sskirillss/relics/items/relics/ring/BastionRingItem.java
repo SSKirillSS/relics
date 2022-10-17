@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -49,6 +50,7 @@ public class BastionRingItem extends RelicItem {
                                 .stat("rolls", RelicAbilityStat.builder()
                                         .initialValue(1F, 2F)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1F)
+                                        .formatValue(value -> String.valueOf((int) MathUtils.round(value, 0)))
                                         .build())
                                 .build())
                         .build())

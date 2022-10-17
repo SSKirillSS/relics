@@ -111,5 +111,13 @@
   "tooltip.relics.ice_breaker.ability.impact": "Землетрясение",
   "tooltip.relics.ice_breaker.ability.impact.description": "Зажатие [Shift] во время падения по приземлении создаёт ударную волну, наносящую урон и отбрасывающую цели. Радиус волны зависит от расстояния, которое пролетел носитель.",
   "tooltip.relics.ice_breaker.ability.impact.stat.size": "Максимальный радиус: %1$s блоков.",
-  "tooltip.relics.ice_breaker.ability.impact.stat.damage": "Начальный урон: %1$s единиц."
+  "tooltip.relics.ice_breaker.ability.impact.stat.damage": "Начальный урон: %1$s единиц.",
+
+  "item.relics.bastion_ring": "Кольцо бастиона",
+  "tooltip.relics.bastion_ring.lore": "Сверкающее кольцо, созданное из полированного гранита и инкрустированное золотыми самородками.",
+  "tooltip.relics.bastion_ring.ability.compass": "Признание",
+  "tooltip.relics.bastion_ring.ability.compass.description": "Делает пиглинов нейтральными по отношению к носителю. Ближайший пиглин будет указывать на расположение бастиона неподалёку.",
+  "tooltip.relics.bastion_ring.ability.trade": "Уважение",
+  "tooltip.relics.bastion_ring.ability.trade.description": "Каждая торговля с пиглинами получает шанс на выдачу дополнительного результата торгов. ",
+  "tooltip.relics.bastion_ring.ability.trade.stat.rolls": "Максимальное количество дополнительных торгов: %1$s."
 }
