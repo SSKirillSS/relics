@@ -6,10 +6,7 @@ import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -42,6 +39,7 @@ public class ReflectionNecklaceItem extends RelicItem {
                                 .stat("capacity", RelicAbilityStat.builder()
                                         .initialValue(20D, 60D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 20D)
+                                        .formatValue(value -> String.valueOf((int) MathUtils.round(value, 0)))
                                         .build())
                                 .build())
                         .build())
