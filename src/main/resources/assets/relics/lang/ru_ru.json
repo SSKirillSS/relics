@@ -58,5 +58,12 @@
   "tooltip.relics.blazing_flask.ability.bonfire.description": "Использование реликвии на блоке создаст зону ограниченного полёта, размер которой зависит от количества огня поблизости.",
   "tooltip.relics.blazing_flask.ability.bonfire.stat.step": "Радиус обнаружения огня: %1$s.",
   "tooltip.relics.blazing_flask.ability.bonfire.stat.speed": "Скорость полёта: %1$s.",
-  "tooltip.relics.blazing_flask.ability.bonfire.stat.height": "Высота полёта: %1$s."
+  "tooltip.relics.blazing_flask.ability.bonfire.stat.height": "Высота полёта: %1$s.",
+
+  "item.relics.elytra_booster": "Ускоритель элитр",
+  "tooltip.relics.elytra_booster.lore": "Душа всполоха, надёжно запертая в неизвестном механизме.",
+  "tooltip.relics.elytra_booster.ability.boost": "Ускорение",
+  "tooltip.relics.elytra_booster.ability.boost.description": "Использование топлива на реликвии пополняет её внутренний буфер. Зажатие клавиши [Shift] во время полёта на элитрах устремляет носителя вперёд.",
+  "tooltip.relics.elytra_booster.ability.boost.stat.capacity": "Ёмкость: %1$s единиц.",
+  "tooltip.relics.elytra_booster.ability.boost.stat.speed": "Скорость: %1$s."
 }
