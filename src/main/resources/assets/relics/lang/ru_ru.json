@@ -101,5 +101,15 @@
   "tooltip.relics.spore_sack.ability.spore.description": "При получении урона выбрасывает споры в случайном направлении, которые при соприкосновении с поверхностью формируют ядовитые облака, наносящие урон и замедляющие цели в радиусе действия.",
   "tooltip.relics.spore_sack.ability.spore.stat.amount": "Количество спор: %1$s.",
   "tooltip.relics.spore_sack.ability.spore.stat.slowness": "Уровень замедления: %1$s.",
-  "tooltip.relics.spore_sack.ability.spore.stat.resize": "Скорость уменьшения: %1$s %% в секунду."
+  "tooltip.relics.spore_sack.ability.spore.stat.resize": "Скорость уменьшения: %1$s %% в секунду.",
+
+  "item.relics.ice_breaker": "Ледоколы",
+  "tooltip.relics.ice_breaker.lore": "Сшитая из шкуры бурого медведя обувь со стальными пластинами и шипами, предназначенная для передвижения по ледникам и обледенелым холмам.",
+  "tooltip.relics.ice_breaker.ability.sustainability": "Устройчивость",
+  "tooltip.relics.ice_breaker.ability.sustainability.description": "Повышает сопротивление отдаче и убирает скольжение на блоках, а также увеличивает скорость падения.",
+  "tooltip.relics.ice_breaker.ability.sustainability.stat.modifier": "Сопротивление отдаче: %1$s %%.",
+  "tooltip.relics.ice_breaker.ability.impact": "Землетрясение",
+  "tooltip.relics.ice_breaker.ability.impact.description": "Зажатие [Shift] во время падения по приземлении создаёт ударную волну, наносящую урон и отбрасывающую цели. Радиус волны зависит от расстояния, которое пролетел носитель.",
+  "tooltip.relics.ice_breaker.ability.impact.stat.size": "Максимальный радиус: %1$s блоков.",
+  "tooltip.relics.ice_breaker.ability.impact.stat.damage": "Начальный урон: %1$s единиц."
 }

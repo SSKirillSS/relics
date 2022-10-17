@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -45,16 +46,19 @@ public class IceBreakerItem extends RelicItem {
                                 .stat("modifier", RelicAbilityStat.builder()
                                         .initialValue(0.75, 0.5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.05D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(1 - value, 1) * 100)))
                                         .build())
                                 .build())
                         .ability("impact", RelicAbilityEntry.builder()
                                 .stat("size", RelicAbilityStat.builder()
                                         .initialValue(5D, 10D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(2.5D, 5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())
