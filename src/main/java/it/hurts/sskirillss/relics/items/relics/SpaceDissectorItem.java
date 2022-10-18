@@ -2,14 +2,12 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.entities.DissectionEntity;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -20,16 +18,6 @@ import top.theillusivec4.curios.api.SlotContext;
 public class SpaceDissectorItem extends RelicItem {
     public static final String TAG_START = "start";
     public static final String TAG_END = "end";
-
-    public static SpaceDissectorItem INSTANCE;
-
-    public SpaceDissectorItem() {
-        super(RelicData.builder()
-                .rarity(Rarity.EPIC)
-                .build());
-
-        INSTANCE = this;
-    }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand handIn) {

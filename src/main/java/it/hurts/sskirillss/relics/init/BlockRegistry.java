@@ -18,11 +18,6 @@ import net.minecraftforge.registries.RegistryObject;
 public class BlockRegistry {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MODID);
 
-    public static final RegistryObject<MagmaStoneBlock> MAGMA_STONE_BLOCK = BLOCKS.register("magma_stone", MagmaStoneBlock::new);
-    public static final RegistryObject<PedestalBlock> PEDESTAL_BLOCK = BLOCKS.register("pedestal", PedestalBlock::new);
-    public static final RegistryObject<RunicAltarBlock> RUNIC_ALTAR_BLOCK = BLOCKS.register("runic_altar", RunicAltarBlock::new);
-    public static final RegistryObject<RunicAnvilBlock> RUNIC_ANVIL_BLOCK = BLOCKS.register("runic_anvil", RunicAnvilBlock::new);
-    public static final RegistryObject<BloodyLecternBlock> BLOODY_LECTERN_BLOCK = BLOCKS.register("bloody_lectern", BloodyLecternBlock::new);
     public static final RegistryObject<ResearchingTableBlock> RESEARCHING_TABLE = BLOCKS.register("researching_table", ResearchingTableBlock::new);
 
     public static void registerBlocks() {

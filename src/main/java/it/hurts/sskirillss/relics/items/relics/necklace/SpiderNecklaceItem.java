@@ -1,24 +1,20 @@
 package it.hurts.sskirillss.relics.items.relics.necklace;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
-import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 
 public class SpiderNecklaceItem extends RelicItem {
-    public SpiderNecklaceItem() {
-        super(RelicData.builder()
-                .rarity(Rarity.RARE)
-                .build());
-    }
-
     @Override
-    public RelicDataNew getNewData() {
-        return RelicDataNew.builder()
+    public RelicData getRelicData() {
+        return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("scramble", RelicAbilityEntry.builder()
                                 .stat("speed", RelicAbilityStat.builder()

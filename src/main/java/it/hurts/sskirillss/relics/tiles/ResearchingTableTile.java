@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.tiles;
 
 import it.hurts.sskirillss.relics.init.TileRegistry;
+import it.hurts.sskirillss.relics.tiles.base.TileBase;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;

@@ -3,14 +3,12 @@ package it.hurts.sskirillss.relics.items.relics.hands;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -24,12 +22,6 @@ import java.util.Comparator;
 import java.util.Optional;
 
 public class WoolMittenItem extends RelicItem {
-    public WoolMittenItem() {
-        super(RelicData.builder()
-                .rarity(Rarity.COMMON)
-                .build());
-    }
-
     @Mod.EventBusSubscriber
     public static class Events {
         @SubscribeEvent

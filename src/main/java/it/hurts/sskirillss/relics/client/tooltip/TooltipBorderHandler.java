@@ -91,7 +91,7 @@ public class TooltipBorderHandler {
 
     @Nullable
     public static Pair<String, String> getBorderColors(ItemStack stack) {
-//        if (!(stack.getItem() instanceof RelicItem<?> relic))
+//        if (!(stack.getItem() instanceof RelicItem relic))
 //            return null;
 //
 //        RelicDataNew data = relic.getNewData();

@@ -1,11 +1,10 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.items.*;
+import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.*;
 import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
 import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
 import it.hurts.sskirillss.relics.items.relics.back.MidnightRobeItem;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.belt.DrownedBeltItem;
 import it.hurts.sskirillss.relics.items.relics.belt.HunterBeltItem;
 import it.hurts.sskirillss.relics.items.relics.belt.LeatherBeltItem;
@@ -22,45 +21,17 @@ import it.hurts.sskirillss.relics.items.relics.ring.BastionRingItem;
 import it.hurts.sskirillss.relics.items.relics.ring.CamouflageRingItem;
 import it.hurts.sskirillss.relics.items.relics.ring.DelayRingItem;
 import it.hurts.sskirillss.relics.items.relics.talisman.*;
-import it.hurts.sskirillss.relics.items.runes.*;
 import it.hurts.sskirillss.relics.utils.Reference;
-import lombok.Getter;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @Mod.EventBusSubscriber(modid = Reference.MODID)
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MODID);
-
-    public static final RegistryObject<Item> COAL_PARCHMENT = ITEMS.register("coal_parchment", ItemBase::new);
-    public static final RegistryObject<Item> RELIC_CONTRACT = ITEMS.register("relic_contract", RelicContractItem::new);
-    public static final RegistryObject<Item> BLOODY_FEATHER = ITEMS.register("bloody_feather", ItemBase::new);
-
-    public static final RegistryObject<Item> RUNIC_HAMMER = ITEMS.register("runic_hammer", RunicHammerItem::new);
-
-    public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", ItemBase::new);
-    public static final RegistryObject<Item> RUNE_OF_AIR = ITEMS.register("rune_of_air", AirRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_EARTH = ITEMS.register("rune_of_earth", EarthRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_WATER = ITEMS.register("rune_of_water", WaterRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_FIRE = ITEMS.register("rune_of_fire", FireRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_LIGHTNING = ITEMS.register("rune_of_lightning", LightningRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_LOVE = ITEMS.register("rune_of_love", LoveRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_SUN = ITEMS.register("rune_of_sun", SunRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_MOON = ITEMS.register("rune_of_moon", MoonRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_EXPLOSION = ITEMS.register("rune_of_explosion", ExplosionRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_REDSTONE = ITEMS.register("rune_of_redstone", RedstoneRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_LUCK = ITEMS.register("rune_of_luck", LuckRuneItem::new);
-    public static final RegistryObject<Item> RUNE_OF_COLD = ITEMS.register("rune_of_cold", ColdRuneItem::new);
 
     public static final RegistryObject<Item> SOLID_SNOWBALL = ITEMS.register("solid_snowball", SolidSnowballItem::new);
 
@@ -106,49 +77,5 @@ public class ItemRegistry {
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
-    }
-
-    @Getter
-    private static List<RelicItem<?>> registeredRelics = new ArrayList<>();
-
-    @Getter
-    private static List<RuneItem> registeredRunes = new ArrayList<>();
-
-    @Getter
-    private static List<RelicItem<?>> slotModifiers = new ArrayList<>();
-
-    @Getter
-    private static List<RelicItem<?>> attributeModifiers = new ArrayList<>();
-
-    public static void syncItemLists() {
-        registeredRelics = ITEMS.getEntries().stream()
-                .filter(RegistryObject::isPresent)
-                .map(RegistryObject::get)
-                .filter(item -> item instanceof RelicItem)
-                .map(item -> (RelicItem<?>) item)
-                .collect(Collectors.toList());
-
-        registeredRunes = ITEMS.getEntries().stream()
-                .filter(RegistryObject::isPresent)
-                .map(RegistryObject::get)
-                .filter(item -> item instanceof RuneItem)
-                .map(item -> (RuneItem) item)
-                .collect(Collectors.toList());
-
-        slotModifiers = ForgeRegistries.ITEMS.getEntries().stream()
-                .map(Map.Entry::getValue)
-                .filter(entry -> entry instanceof RelicItem)
-                .map(item -> (RelicItem<?>) item)
-                .filter(relic -> relic.getSlotModifiers(new ItemStack(relic)) != null)
-                .filter(relic -> !relic.getSlotModifiers(new ItemStack(relic)).getModifiers().isEmpty())
-                .collect(Collectors.toList());
-
-        attributeModifiers = ForgeRegistries.ITEMS.getEntries().stream()
-                .map(Map.Entry::getValue)
-                .filter(entry -> entry instanceof RelicItem)
-                .map(item -> (RelicItem<?>) item)
-                .filter(relic -> relic.getAttributeModifiers(new ItemStack(relic)) != null)
-                .filter(relic -> !relic.getAttributeModifiers(new ItemStack(relic)).getAttributes().isEmpty())
-                .collect(Collectors.toList());
     }
 }

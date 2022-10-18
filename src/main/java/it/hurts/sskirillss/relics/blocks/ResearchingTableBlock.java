@@ -1,23 +1,15 @@
 package it.hurts.sskirillss.relics.blocks;
 
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.TileRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
-import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.TickerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -29,7 +21,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -50,10 +41,7 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
             return InteractionResult.FAIL;
 
         ItemStack handStack = player.getMainHandItem();
-        Item handItem = handStack.getItem();
-
         ItemStack tileStack = tile.getStack();
-        Item tileItem = tileStack.getItem();
 
         if (tileStack.isEmpty()) {
             if (handStack.isEmpty())
@@ -61,45 +49,17 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
 
             tile.setStack(handStack.split(1));
         } else {
-            if (handItem == ItemRegistry.RUNIC_HAMMER.get()) {
-                if (tileStack.getMaxDamage() == 0 || player.getAttackStrengthScale(1F) < 1F)
-                    return InteractionResult.FAIL;
-
-                int expCost = 1 + (50 / tileStack.getMaxDamage());
-
-                if (!(tileStack.getItem() instanceof RelicItem) || !tileStack.isDamaged()
-                        || player.totalExperience < expCost)
-                    return InteractionResult.FAIL;
-
-                player.giveExperiencePoints(-expCost);
-                player.resetAttackStrengthTicker();
-
-                handStack.hurtAndBreak(1, player, (entity) -> entity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
-
-                tileStack.setDamageValue(Math.max(0, tileStack.getDamageValue() - (tileStack.getDamageValue() / 10 + 1)));
-
-                world.playSound(null, pos, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.BLOCKS,
-                        1F, 1F - world.getRandom().nextFloat() * 0.2F);
-
-                Vec3 animationVec = new Vec3(pos.getX() + 0.5F, pos.getY() + 0.85F, pos.getZ() + 0.5F);
-
-                world.addParticle(ParticleTypes.EXPLOSION, animationVec.x(), animationVec.y(),
-                        animationVec.z(), 0F, 0F, 0F);
-
-                ParticleUtils.createBall(ParticleTypes.LAVA, animationVec, world, 1, 0.4F);
-            } else {
-                if (player.isShiftKeyDown()) {
-                    try {
-                        if (world.isClientSide())
-                            Minecraft.getInstance().setScreen(new RelicDescriptionScreen(pos, tileStack));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), tileStack));
-
-                    tile.setStack(ItemStack.EMPTY);
+            if (player.isShiftKeyDown()) {
+                try {
+                    if (world.isClientSide())
+                        Minecraft.getInstance().setScreen(new RelicDescriptionScreen(pos, tileStack));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            } else {
+                world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), tileStack));
+
+                tile.setStack(ItemStack.EMPTY);
             }
         }
 

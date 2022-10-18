@@ -2,9 +2,12 @@ package it.hurts.sskirillss.relics.items.relics.back;
 
 import it.hurts.sskirillss.relics.api.events.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
-import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -14,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -28,15 +30,9 @@ public class ElytraBoosterItem extends RelicItem {
     public static final String TAG_FUEL = "fuel";
     public static final String TAG_SPEED = "speed";
 
-    public ElytraBoosterItem() {
-        super(RelicData.builder()
-                .rarity(Rarity.RARE)
-                .build());
-    }
-
     @Override
-    public RelicDataNew getNewData() {
-        return RelicDataNew.builder()
+    public RelicData getRelicData() {
+        return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("boost", RelicAbilityEntry.builder()
                                 .stat("capacity", RelicAbilityStat.builder()

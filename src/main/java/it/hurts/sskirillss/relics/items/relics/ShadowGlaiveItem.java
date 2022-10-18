@@ -3,11 +3,14 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.entities.ShadowSawEntity;
-import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
@@ -20,7 +23,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import top.theillusivec4.curios.api.SlotContext;
@@ -34,19 +36,9 @@ public class ShadowGlaiveItem extends RelicItem {
     public static final String TAG_TIME = "time";
     public static final String TAG_SAW = "saw";
 
-    public static ShadowGlaiveItem INSTANCE;
-
-    public ShadowGlaiveItem() {
-        super(RelicData.builder()
-                .rarity(Rarity.EPIC)
-                .build());
-
-        INSTANCE = this;
-    }
-
     @Override
-    public RelicDataNew getNewData() {
-        return RelicDataNew.builder()
+    public RelicData getRelicData() {
+        return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("glaive", RelicAbilityEntry.builder()
                                 .stat("recharge", RelicAbilityStat.builder()

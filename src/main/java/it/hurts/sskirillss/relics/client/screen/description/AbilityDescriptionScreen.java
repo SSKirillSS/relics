@@ -5,9 +5,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityRerollButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityResetButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityUpgradeButtonWidget;
-import it.hurts.sskirillss.relics.indev.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.indev.RelicAbilityStat;
-import it.hurts.sskirillss.relics.indev.RelicDataNew;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -52,7 +52,7 @@ public class AbilityDescriptionScreen extends Screen {
 
     @Override
     protected void init() {
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return;
 
         TextureManager manager = MC.getTextureManager();
@@ -76,10 +76,10 @@ public class AbilityDescriptionScreen extends Screen {
 
         stack = tile.getStack();
 
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return;
 
-        RelicDataNew relicData = relic.getNewData();
+        RelicData relicData = relic.getRelicData();
 
         if (relicData == null)
             return;

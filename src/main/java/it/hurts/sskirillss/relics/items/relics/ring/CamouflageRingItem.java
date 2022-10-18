@@ -2,10 +2,12 @@ package it.hurts.sskirillss.relics.items.relics.ring;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
-import it.hurts.sskirillss.relics.indev.*;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -21,7 +23,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -39,15 +40,9 @@ public class CamouflageRingItem extends RelicItem {
     private static final String TAG_TIME = "time";
     private static final String TAG_POS = "pos";
 
-    public CamouflageRingItem() {
-        super(RelicData.builder()
-                .rarity(Rarity.UNCOMMON)
-                .build());
-    }
-
     @Override
-    public RelicDataNew getNewData() {
-        return RelicDataNew.builder()
+    public RelicData getRelicData() {
+        return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("morph", RelicAbilityEntry.builder()
                                 .build())

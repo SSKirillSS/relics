@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.network.packets.leveling;
 
-import it.hurts.sskirillss.relics.indev.RelicAbilityData;
-import it.hurts.sskirillss.relics.indev.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import net.minecraft.core.BlockPos;
@@ -50,10 +50,10 @@ public class PacketRelicTweak {
 
             ItemStack stack = tile.getStack();
 
-            if (!(stack.getItem() instanceof RelicItem<?> relic))
+            if (!(stack.getItem() instanceof RelicItem relic))
                 return;
 
-            RelicAbilityData data = relic.getNewData().getAbilityData();
+            RelicAbilityData data = relic.getRelicData().getAbilityData();
 
             if (data == null)
                 return;

@@ -5,9 +5,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import it.hurts.sskirillss.relics.indev.RelicAbilityData;
-import it.hurts.sskirillss.relics.indev.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.indev.RelicDataNew;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -28,7 +28,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                            if (!(stack.getItem() instanceof RelicItem)) {
                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -44,7 +44,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                            if (!(stack.getItem() instanceof RelicItem)) {
                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -61,7 +61,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                            if (!(stack.getItem() instanceof RelicItem)) {
                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -77,7 +77,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                            if (!(stack.getItem() instanceof RelicItem)) {
                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -94,7 +94,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                            if (!(stack.getItem() instanceof RelicItem)) {
                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -110,7 +110,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                            if (!(stack.getItem() instanceof RelicItem)) {
                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -129,7 +129,7 @@ public class RelicsCommand {
                                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                                            if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                                            if (!(stack.getItem() instanceof RelicItem)) {
                                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                                 return 0;
@@ -147,7 +147,7 @@ public class RelicsCommand {
                                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                                            if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                                            if (!(stack.getItem() instanceof RelicItem)) {
                                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                                 return 0;
@@ -166,7 +166,7 @@ public class RelicsCommand {
                                                                     ServerPlayer player = context.getSource().getPlayerOrException();
                                                                     ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                                                    if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                                                    if (!(stack.getItem() instanceof RelicItem)) {
                                                                         context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                                         return 0;
@@ -183,7 +183,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem<?>)) {
+                                            if (!(stack.getItem() instanceof RelicItem)) {
                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -198,18 +198,18 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem<?> relic)) {
+                                            if (!(stack.getItem() instanceof RelicItem relic)) {
                                                 context.getSource().sendFailure(new TranslatableComponent("command.relics.base.not_relic"));
 
                                                 return 0;
                                             }
 
-                                            RelicDataNew data = relic.getNewData();
+                                            RelicData data = relic.getRelicData();
 
                                             if (data == null)
                                                 return 0;
 
-                                            RelicAbilityData abilities = relic.getNewData().getAbilityData();
+                                            RelicAbilityData abilities = relic.getRelicData().getAbilityData();
 
                                             if (abilities == null)
                                                 return 0;

@@ -2,9 +2,6 @@ package it.hurts.sskirillss.relics.world;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import it.hurts.sskirillss.relics.configs.data.runes.RuneLootData;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.RuneItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -23,7 +20,6 @@ import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Random;
 
 public class RelicLootModifier extends LootModifier {
     private static final Gson GSON = Deserializers.createFunctionSerializer().create();
@@ -43,19 +39,6 @@ public class RelicLootModifier extends LootModifier {
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
         entry.expand(context, generator -> generator.createItemStack(LootItemFunction.decorate(
                 LootItemFunctions.compose(this.functions), generatedLoot::add, context), context));
-
-        Random random = context.getRandom();
-
-        for (RuneItem rune : ItemRegistry.getRegisteredRunes()) {
-            RuneLootData loot = rune.getLoot();
-            ItemStack stack = new ItemStack(rune);
-
-            stack.setCount(random.nextInt(5) + 1);
-
-            if (loot.getTable().contains(context.getQueriedLootTableId().toString())
-                    && random.nextFloat() <= loot.getChance())
-                generatedLoot.add(stack);
-        }
 
         return generatedLoot;
     }

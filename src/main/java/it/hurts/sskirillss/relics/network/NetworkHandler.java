@@ -24,20 +24,10 @@ public class NetworkHandler {
                 s -> true,
                 s -> true);
 
-        INSTANCE.messageBuilder(PacketMouseScroll.class, nextID())
-                .encoder(PacketMouseScroll::toBytes)
-                .decoder(PacketMouseScroll::new)
-                .consumer(PacketMouseScroll::handle)
-                .add();
         INSTANCE.messageBuilder(PacketPlayerMotion.class, nextID())
                 .encoder(PacketPlayerMotion::toBytes)
                 .decoder(PacketPlayerMotion::new)
                 .consumer(PacketPlayerMotion::handle)
-                .add();
-        INSTANCE.messageBuilder(PacketRelicAbility.class, nextID())
-                .encoder(PacketRelicAbility::toBytes)
-                .decoder(PacketRelicAbility::new)
-                .consumer(PacketRelicAbility::handle)
                 .add();
         INSTANCE.messageBuilder(PacketItemActivation.class, nextID())
                 .encoder(PacketItemActivation::toBytes)

@@ -2,10 +2,13 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.api.events.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
-import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -33,20 +36,16 @@ public class InfinityHamItem extends RelicItem {
     private static final String TAG_CHARGE = "charge";
     private static final String TAG_POTION = "potion";
 
-    private static final String TAG_USES = "uses";
-
     public InfinityHamItem() {
-        super(RelicData.builder()
-                .properties(new Item.Properties()
-                        .tab(RelicsTab.RELICS_TAB)
-                        .stacksTo(1)
-                        .rarity(Rarity.RARE))
-                .build());
+        super(new Item.Properties()
+                .tab(RelicsTab.RELICS_TAB)
+                .stacksTo(1)
+                .rarity(Rarity.RARE));
     }
 
     @Override
-    public RelicDataNew getNewData() {
-        return RelicDataNew.builder()
+    public RelicData getRelicData() {
+        return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("autophagy", RelicAbilityEntry.builder()
                                 .stat("feed", RelicAbilityStat.builder()

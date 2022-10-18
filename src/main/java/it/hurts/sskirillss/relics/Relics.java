@@ -1,15 +1,12 @@
 package it.hurts.sskirillss.relics;
 
-import it.hurts.sskirillss.relics.configs.RelicsConfig;
 import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -29,10 +26,7 @@ public class Relics {
         BlockRegistry.registerBlocks();
         TileRegistry.registerTiles();
         EntityRegistry.registerEntities();
-        RecipeRegistry.registerRecipes();
         EffectRegistry.registerEffects();
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RelicsConfig.getConfig());
     }
 
     private void enqueue(final InterModEnqueueEvent event) {
@@ -61,6 +55,5 @@ public class Relics {
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         NetworkHandler.registerMessages();
-        ItemRegistry.syncItemLists();
     }
 }

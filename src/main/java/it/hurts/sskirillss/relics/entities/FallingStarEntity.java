@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
-import it.hurts.sskirillss.relics.items.relics.talisman.StellarCatalystItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -49,8 +48,6 @@ public class FallingStarEntity extends ThrowableProjectile {
     public void tick() {
         super.tick();
 
-        StellarCatalystItem.Stats config = StellarCatalystItem.INSTANCE.getStats();
-
         Random random = this.getCommandSenderWorld().getRandom();
 
         for (int i = 0; i < 5; i++)
@@ -61,13 +58,11 @@ public class FallingStarEntity extends ThrowableProjectile {
         if (this.tickCount > 100)
             this.remove(Entity.RemovalReason.KILLED);
 
-        this.setDeltaMovement(0.0F, -config.projectileSpeed - this.tickCount * 0.01F, 0.0F);
+        this.setDeltaMovement(0.0F, -0.1 - this.tickCount * 0.01F, 0.0F);
     }
 
     @Override
     protected void onHit(@NotNull HitResult result) {
-        StellarCatalystItem.Stats config = StellarCatalystItem.INSTANCE.getStats();
-
         Random random = this.getCommandSenderWorld().getRandom();
 
         ParticleUtils.createBall(new CircleTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(100)),
@@ -79,8 +74,8 @@ public class FallingStarEntity extends ThrowableProjectile {
             return;
 
         for (LivingEntity entity : this.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class,
-                this.getBoundingBox().inflate(config.explosionRadius))) {
-            float multiplier = config.knockbackPower;
+                this.getBoundingBox().inflate(5))) {
+            float multiplier = 1;
             Vec3 motion = entity.position().subtract(this.position()).normalize().multiply(multiplier, multiplier, multiplier);
 
             if (entity instanceof ServerPlayer && entity != owner)

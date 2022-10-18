@@ -2,21 +2,19 @@ package it.hurts.sskirillss.relics.items.relics.base;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
-import it.hurts.sskirillss.relics.configs.data.relics.RelicConfigDataOld;
-import it.hurts.sskirillss.relics.indev.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicStats;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.SneakyThrows;
+import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +24,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
@@ -41,24 +40,16 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-public abstract class RelicItem<T extends RelicStats> extends Item implements ICurioItem, IRepairableItem {
-    @Getter
-    @Setter
-    public RelicData data;
-    @Getter
-    @Setter
-    protected T stats;
-    @Getter
-    @Setter
-    protected RelicConfigDataOld<T> configData;
+public abstract class RelicItem extends Item implements ICurioItem {
+    public RelicItem(Item.Properties properties) {
+        super(properties);
+    }
 
-    @SneakyThrows
-    public RelicItem(RelicData data) {
-        super(data.getRarity() == null ? data.getProperties()
-                : data.getProperties().rarity(data.getRarity()));
-
-        setData(data);
-        setConfig(getConfigData());
+    public RelicItem() {
+        super(new Item.Properties()
+                .tab(RelicsTab.RELICS_TAB)
+                .rarity(Rarity.RARE)
+                .stacksTo(1));
     }
 
     @Override
@@ -175,12 +166,8 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
         return null;
     }
 
-    public void castAbility(Player player, ItemStack stack) {
-
-    }
-
     @Nullable
-    public RelicDataNew getNewData() {
+    public RelicData getRelicData() {
         return null;
     }
 
@@ -195,32 +182,32 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
 
     @Nullable
     public static RelicAbilityEntry getAbility(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return null;
 
         return getAbility(relic, ability);
     }
 
     @Nullable
-    public static RelicAbilityEntry getAbility(RelicItem<?> relic, String ability) {
-        if (relic.getNewData() == null)
+    public static RelicAbilityEntry getAbility(RelicItem relic, String ability) {
+        if (relic.getRelicData() == null)
             return null;
 
-        RelicAbilityData data = relic.getNewData().getAbilityData();
+        RelicAbilityData data = relic.getRelicData().getAbilityData();
 
         return data == null ? null : data.getAbilities().get(ability);
     }
 
     @Nullable
     public static RelicAbilityStat getAbilityStat(ItemStack stack, String ability, String stat) {
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return null;
 
         return getAbilityStat(relic, ability, stat);
     }
 
     @Nullable
-    public static RelicAbilityStat getAbilityStat(RelicItem<?> relic, String ability, String stat) {
+    public static RelicAbilityStat getAbilityStat(RelicItem relic, String ability, String stat) {
         RelicAbilityEntry entry = getAbility(relic, ability);
 
         return entry == null ? null : entry.getStats().get(stat);
@@ -341,10 +328,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public static int getUpgradeRequiredExperience(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return 0;
 
-        RelicDataNew relicData = relic.getNewData();
+        RelicData relicData = relic.getRelicData();
 
         if (relicData == null)
             return 0;
@@ -363,10 +350,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public static boolean isAbilityMaxLevel(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return false;
 
-        RelicDataNew relicData = relic.getNewData();
+        RelicData relicData = relic.getRelicData();
 
         if (relicData == null)
             return false;
@@ -385,10 +372,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public static boolean mayUpgrade(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return false;
 
-        RelicDataNew relicData = relic.getNewData();
+        RelicData relicData = relic.getRelicData();
 
         if (relicData == null)
             return false;
@@ -411,10 +398,10 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public static int getRerollRequiredExperience(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return 0;
 
-        RelicDataNew relicData = relic.getNewData();
+        RelicData relicData = relic.getRelicData();
 
         if (relicData == null)
             return 0;
@@ -499,7 +486,7 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     public static void setLevel(ItemStack stack, int level) {
         CompoundTag tag = getLevelingData(stack);
 
-        tag.putInt(TAG_LEVEL, Math.min(((RelicItem<?>) stack.getItem()).getNewData().getLevelingData().getMaxLevel(), level));
+        tag.putInt(TAG_LEVEL, Math.min(((RelicItem) stack.getItem()).getRelicData().getLevelingData().getMaxLevel(), level));
 
         setLevelingData(stack, tag);
     }
@@ -543,12 +530,8 @@ public abstract class RelicItem<T extends RelicStats> extends Item implements IC
     }
 
     public static int getTotalExperienceForLevel(ItemStack stack, int level) {
-        RelicLevelingData data = ((RelicItem<?>) stack.getItem()).getNewData().getLevelingData();
+        RelicLevelingData data = ((RelicItem) stack.getItem()).getRelicData().getLevelingData();
 
         return data.getInitialCost() + (data.getStep() * (level - 1));
-    }
-
-    public void setConfig(RelicConfigDataOld<?> data) {
-        this.stats = (T) (data == null ? new RelicStats() : data.getStats());
     }
 }

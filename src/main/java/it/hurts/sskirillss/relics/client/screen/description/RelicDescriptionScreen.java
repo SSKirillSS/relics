@@ -3,9 +3,9 @@ package it.hurts.sskirillss.relics.client.screen.description;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.card.AbilityCardIconWidget;
-import it.hurts.sskirillss.relics.indev.RelicAbilityData;
-import it.hurts.sskirillss.relics.indev.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.indev.RelicDataNew;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
@@ -45,7 +45,7 @@ public class RelicDescriptionScreen extends Screen {
 
     @Override
     protected void init() {
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return;
 
         TextureManager manager = MC.getTextureManager();
@@ -55,7 +55,12 @@ public class RelicDescriptionScreen extends Screen {
 
         manager.bindForSetup(TEXTURE);
 
-        RelicAbilityData abilityData = relic.getNewData().getAbilityData();
+        RelicData relicData = relic.getRelicData();
+
+        if (relicData == null)
+            return;
+
+        RelicAbilityData abilityData = relicData.getAbilityData();
 
         if (abilityData != null) {
             int step = 0;
@@ -70,10 +75,10 @@ public class RelicDescriptionScreen extends Screen {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        if (!(stack.getItem() instanceof RelicItem<?> relic))
+        if (!(stack.getItem() instanceof RelicItem relic))
             return;
 
-        RelicDataNew relicData = relic.getNewData();
+        RelicData relicData = relic.getRelicData();
 
         if (relicData == null)
             return;

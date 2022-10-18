@@ -1,8 +1,8 @@
 package it.hurts.sskirillss.relics.mixin;
 
-import it.hurts.sskirillss.relics.indev.RelicAbilityData;
-import it.hurts.sskirillss.relics.indev.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.indev.RelicDataNew;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
@@ -22,10 +22,10 @@ public abstract class MixinItemStack {
         ItemStack stack = (ItemStack) (Object) this;
         Item item = stack.getItem();
 
-        if (!(item instanceof RelicItem<?> relic))
+        if (!(item instanceof RelicItem relic))
             return;
 
-        RelicDataNew data = relic.getNewData();
+        RelicData data = relic.getRelicData();
 
         if (data == null)
             return;

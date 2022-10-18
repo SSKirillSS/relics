@@ -1,16 +1,15 @@
 package it.hurts.sskirillss.relics.init;
 
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
-import it.hurts.sskirillss.relics.client.renderer.tiles.*;
+import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
+import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
 import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
 import it.hurts.sskirillss.relics.items.relics.feet.AquaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.MagmaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.RollerSkatesItem;
-import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -54,15 +53,10 @@ public class RemoteRegistry {
 
     @SubscribeEvent
     public static void setupClient(final FMLClientSetupEvent event) {
-        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.RUNIC_ALTAR_BLOCK.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.RUNIC_ANVIL_BLOCK.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.BLOODY_LECTERN_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.RESEARCHING_TABLE.get(), RenderType.cutout());
 
         HotkeyRegistry.register();
 
-        ItemRegistry.getRegisteredRelics().forEach(item -> ItemProperties.register(item, new ResourceLocation(Reference.MODID, "broken"),
-                (stack, world, entity, id) -> DurabilityUtils.isBroken(stack) ? 1 : 0));
         ItemProperties.register(ItemRegistry.INFINITY_HAM.get(), new ResourceLocation(Reference.MODID, "pieces"),
                 (stack, world, entity, id) -> Math.min(10, NBTUtils.getInt(stack, InfinityHamItem.TAG_PIECES, 0)));
         ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
@@ -140,10 +134,6 @@ public class RemoteRegistry {
         event.registerEntityRenderer(EntityRegistry.SHADOW_SAW.get(), new ShadowSawRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.POISONED_PUDDLE.get(), new NullRenderer.RenderFactory());
 
-        event.registerBlockEntityRenderer(TileRegistry.PEDESTAL_TILE.get(), PedestalTileRenderer::new);
-        event.registerBlockEntityRenderer(TileRegistry.RUNIC_ALTAR_TILE.get(), RunicAltarTileRenderer::new);
-        event.registerBlockEntityRenderer(TileRegistry.RUNIC_ANVIL_TILE.get(), RunicAnvilTileRenderer::new);
-        event.registerBlockEntityRenderer(TileRegistry.BLOODY_LECTERN_TILE.get(), BloodyLecternTileRenderer::new);
         event.registerBlockEntityRenderer(TileRegistry.RESEARCHING_TABLE.get(), ResearchingTableRenderer::new);
     }
 }
