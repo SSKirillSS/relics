@@ -69,6 +69,9 @@ public class EnderHandItem extends RelicItem {
         String uuid = NBTUtils.getString(stack, TAG_TARGET, "");
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
 
+        if (time > 0)
+            level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.5F, 1F + (time * 0.025F));
+
         if (player.isShiftKeyDown()) {
             if (uuid.isEmpty()) {
                 EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(stack, "swap", "distance"));
@@ -81,6 +84,10 @@ public class EnderHandItem extends RelicItem {
             } else {
                 if (time < 20) {
                     ++time;
+
+                    if (!level.isClientSide())
+                        ((ServerLevel) level).sendParticles(ParticleTypes.DRAGON_BREATH, player.getX(), player.getY() + player.getBbHeight() * 0.5F, player.getZ(),
+                                time, player.getBbWidth() * 0.5F, player.getBbHeight() * 0.5F, player.getBbWidth() * 0.5F, 0.025F);
 
                     NBTUtils.setInt(stack, TAG_TIME, time);
                 } else if (!level.isClientSide()) {
@@ -120,7 +127,7 @@ public class EnderHandItem extends RelicItem {
                         float y = (float) (((finalVec.y - targetPos.y) * i / distance) + targetPos.y + player.getBbHeight() / 2F);
                         float z = (float) (((finalVec.z - targetPos.z) * i / distance) + targetPos.z);
 
-                        serverLevel.sendParticles(ParticleTypes.DRAGON_BREATH, x, y, z, 1, 0F, 0F, 0F, 0.01F);
+                        serverLevel.sendParticles(ParticleTypes.DRAGON_BREATH, x, y, z, 1, 0F, 0F, 0F, 0.005F);
                     }
                 }
             }
