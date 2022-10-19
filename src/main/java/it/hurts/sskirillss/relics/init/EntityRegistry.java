@@ -72,6 +72,12 @@ public class EntityRegistry {
                     .build("poisoned_puddle")
     );
 
+    public static final RegistryObject<EntityType<SolidSnowballEntity>> SOLID_SNOWBALL = ENTITIES.register("solid_snowball", () ->
+            EntityType.Builder.<SolidSnowballEntity>of(SolidSnowballEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .build("solid_snowball")
+    );
+
     public static void registerEntities() {
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

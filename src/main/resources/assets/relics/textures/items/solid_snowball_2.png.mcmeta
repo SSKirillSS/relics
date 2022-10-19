@@ -2,7 +2,7 @@
   "animation": {
     "interpolate": false,
     "frames": [
-	        {
+            {
                 "index": 0,
                 "time": 200
             }, {
@@ -32,13 +32,7 @@
             }, {
                 "index": 9,
                 "time": 2
-            }, {
-                "index": 10,
-                "time": 2
-            }, {
-                "index": 11,
-                "time": 2
             }
-    ]
-  }
+        ]
+    }
 }
