@@ -3,10 +3,10 @@ package it.hurts.sskirillss.relics.client.screen.description;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.card.AbilityCardIconWidget;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -99,17 +99,25 @@ public class RelicDescriptionScreen extends Screen {
         int y = (this.height - backgroundHeight) / 2;
 
         blit(pPoseStack, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
-        
+
         int level = RelicItem.getLevel(stack);
         int maxLevel = relicData.getLevelingData().getMaxLevel();
-        
+
         int percentage = RelicItem.getExperience(stack) / (RelicItem.getTotalExperienceForLevel(stack, level + 1) / 100);
 
         blit(pPoseStack, x + 63, y + 91, 388, 0, (int) Math.ceil(percentage / 100F * 124F), 7, texWidth, texHeight);
 
+        boolean isHoveringExperience = (pMouseX >= x + 55
+                && pMouseY >= y + 87
+                && pMouseX < x + 55 + 146
+                && pMouseY < y + 87 + 17);
+
+        if (isHoveringExperience)
+            blit(pPoseStack, x + 54, y + 79, 364, 0, 148, 26, texWidth, texHeight);
+
         MutableComponent name = new TextComponent(stack.getDisplayName().getString()
                 .replace("[", "").replace("]", ""))
-                .append(new TranslatableComponent("tooltip.relics.relic.level", level, maxLevel == -1 ? "∞" : maxLevel));;
+                .append(new TranslatableComponent("tooltip.relics.relic.level", level, maxLevel == -1 ? "∞" : maxLevel));
 
         MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
 
@@ -119,14 +127,18 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
-        MC.font.drawShadow(pPoseStack, experience, (x + 143 - font.width(experience) / 2F) * 2, (y + 87) * 2, 0xFFFFFF);
+        MC.font.drawShadow(pPoseStack, experience, (x + 142 - font.width(experience) / 2F) * 2, (y + 85) * 2, 0xFFFFFF);
 
         pPoseStack.popPose();
 
         MC.font.drawShadow(pPoseStack, String.valueOf(level), x + 60, y + 91, 0xFFFFFF);
         MC.font.drawShadow(pPoseStack, String.valueOf(level + 1), x + 190, y + 91, 0xFFFFFF);
 
-        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".lore"), 240);
+        MutableComponent description = isHoveringExperience
+                ? new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".leveling")
+                : new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".lore");
+
+        List<FormattedCharSequence> lines = MC.font.split(description, 240);
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
@@ -135,7 +147,7 @@ public class RelicDescriptionScreen extends Screen {
 
             pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-            MC.font.draw(pPoseStack, line, x * 2 + 128 * 2 - font.width(line) * 0.5F, y * 2 + i * 9 + 31 * 2 + (44 - (lines.size() * MC.font.lineHeight) / 2F), 0x412708);
+            MC.font.draw(pPoseStack, line, x * 2 + 128 * 2 - font.width(line) * 0.5F, y * 2 + i * 9 + 31 * 2 + (40 - (lines.size() * MC.font.lineHeight) / 2F), 0x412708);
 
             pPoseStack.popPose();
         }

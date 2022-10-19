@@ -2,26 +2,27 @@ package it.hurts.sskirillss.relics.client.screen.description.widgets.ability;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.hurts.sskirillss.relics.client.screen.AbstractSilentButton;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
-import org.jetbrains.annotations.NotNull;
 
-public class AbilityUpgradeButtonWidget extends AbstractSilentButton {
+public class AbilityUpgradeButtonWidget extends AbstractButton {
     private final Minecraft MC = Minecraft.getInstance();
 
     private final AbilityDescriptionScreen screen;
     private final String ability;
 
     public AbilityUpgradeButtonWidget(int x, int y, AbilityDescriptionScreen screen, String ability) {
-        super(x, y, 22, 22);
+        super(x, y, 22, 22, TextComponent.EMPTY);
 
         this.screen = screen;
         this.ability = ability;
@@ -40,7 +41,7 @@ public class AbilityUpgradeButtonWidget extends AbstractSilentButton {
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
         TextureManager manager = MC.getTextureManager();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -48,6 +49,21 @@ public class AbilityUpgradeButtonWidget extends AbstractSilentButton {
 
         manager.bindForSetup(AbilityDescriptionScreen.TEXTURE);
 
-        blit(poseStack, x, y, 258, 0, 22, 22, 512, 512);
+        if (RelicItem.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
+            blit(poseStack, x, y, 258, 0, 22, 22, 512, 512);
+
+            if (isHovered)
+                blit(poseStack, x - 1, y - 1, 330, 0, 24, 24, 512, 512);
+        } else {
+            blit(poseStack, x, y, 258, 24, 22, 22, 512, 512);
+
+            if (isHovered)
+                blit(poseStack, x - 1, y - 1, 330, 24, 24, 24, 512, 512);
+        }
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+
     }
 }

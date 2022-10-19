@@ -2,24 +2,26 @@ package it.hurts.sskirillss.relics.client.screen.description.widgets.relic.card;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.hurts.sskirillss.relics.client.screen.AbstractSilentButton;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
-import org.jetbrains.annotations.NotNull;
 
-public class AbilityCardIconWidget extends AbstractSilentButton {
+public class AbilityCardIconWidget extends AbstractButton {
     private final Minecraft MC = Minecraft.getInstance();
 
     private final RelicDescriptionScreen screen;
     private final String ability;
 
     public AbilityCardIconWidget(int x, int y, RelicDescriptionScreen screen, String ability) {
-        super(x, y, 28, 37);
+        super(x, y, 28, 37, TextComponent.EMPTY);
 
         this.screen = screen;
         this.ability = ability;
@@ -36,7 +38,7 @@ public class AbilityCardIconWidget extends AbstractSilentButton {
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
         TextureManager manager = MC.getTextureManager();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -44,6 +46,21 @@ public class AbilityCardIconWidget extends AbstractSilentButton {
 
         manager.bindForSetup(RelicDescriptionScreen.TEXTURE);
 
-        blit(poseStack, x, y, 258, 0, 28, 37, 512, 512);
+        if (RelicItem.canUseAbility(screen.stack, ability)) {
+            blit(poseStack, x, y, 258, 0, 28, 37, 512, 512);
+
+            if (isHovered)
+                blit(poseStack, x - 1, y - 1, 288, 0, 30, 39, 512, 512);
+        } else {
+            blit(poseStack, x, y, 258, 39, 28, 37, 512, 512);
+
+            if (isHovered)
+                blit(poseStack, x - 1, y - 1, 288, 39, 30, 39, 512, 512);
+        }
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
+
     }
 }
