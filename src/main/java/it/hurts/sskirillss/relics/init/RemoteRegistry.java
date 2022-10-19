@@ -80,7 +80,7 @@ public class RemoteRegistry {
         ItemProperties.register(ItemRegistry.MAGMA_WALKER.get(), new ResourceLocation(Reference.MODID, "heat"),
                 (stack, world, entity, id) -> {
                     int heat = NBTUtils.getInt(stack, MagmaWalkerItem.TAG_HEAT, 0);
-                    int maxHeat = 60;
+                    int maxHeat = (int) Math.round(getAbilityValue(stack, "pace", "heat"));
 
                     return heat > maxHeat ? 4 : (int) Math.floor(heat / (maxHeat / 4F));
                 });

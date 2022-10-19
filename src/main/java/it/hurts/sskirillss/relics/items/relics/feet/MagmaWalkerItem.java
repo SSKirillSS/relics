@@ -1,11 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
 import it.hurts.sskirillss.relics.api.events.FluidCollisionEvent;
-import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.tags.FluidTags;
@@ -22,12 +27,20 @@ public class MagmaWalkerItem extends RelicItem {
     public static final String TAG_HEAT = "heat";
 
     @Override
-    public RelicStyleData getStyle(ItemStack stack) {
-        return RelicStyleData.builder()
-                .borders("#ff6900", "#ff2e00")
-                .ability(AbilityTooltip.builder()
+    public RelicData getRelicData() {
+        return RelicData.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("pace", RelicAbilityEntry.builder()
+                                .stat("heat", RelicAbilityStat.builder()
+                                        .initialValue(20, 40)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 5)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 0))))
+                                        .build())
+                                .build())
                         .build())
-                .ability(AbilityTooltip.builder()
+                .levelingData(new RelicLevelingData(100, 10, 200))
+                .styleData(RelicStyleData.builder()
+                        .borders("#dc41ff", "#832698")
                         .build())
                 .build();
     }
@@ -40,8 +53,8 @@ public class MagmaWalkerItem extends RelicItem {
             return;
 
         if (heat > 0) {
-            if (heat > 60)
-                player.hurt(DamageSource.HOT_FLOOR, 1 + ((heat - 60) / 10F));
+            if (heat > getAbilityValue(stack, "pace", "heat"))
+                player.hurt(DamageSource.HOT_FLOOR, (float) (1F + ((heat - getAbilityValue(stack, "pace", "heat")) / 10F)));
 
             Level level = player.level;
 
@@ -58,7 +71,7 @@ public class MagmaWalkerItem extends RelicItem {
             ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get());
 
             if (!stack.isEmpty() && event.getSource() == DamageSource.HOT_FLOOR
-                    && NBTUtils.getInt(stack, TAG_HEAT, 0) <= 60) {
+                    && NBTUtils.getInt(stack, TAG_HEAT, 0) <= getAbilityValue(stack, "pace", "heat")) {
                 event.setCanceled(true);
             }
         }
