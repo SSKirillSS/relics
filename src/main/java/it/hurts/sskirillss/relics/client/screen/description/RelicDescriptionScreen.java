@@ -104,9 +104,9 @@ public class RelicDescriptionScreen extends Screen {
         int level = RelicItem.getLevel(stack);
         int maxLevel = relicData.getLevelingData().getMaxLevel();
 
-        int percentage = RelicItem.getExperience(stack) / (RelicItem.getTotalExperienceForLevel(stack, level + 1) / 100);
+        int percentage = RelicItem.getExperience(stack) / (RelicItem.getExperienceBetweenLevels(stack, level, level + 1) / 100);
 
-        blit(pPoseStack, x + 63, y + 91, 388, 0, (int) Math.ceil(percentage / 100F * 124F), 7, texWidth, texHeight);
+        blit(pPoseStack, x + 68, y + 91, 258, 80, (int) Math.ceil(percentage / 100F * 124F), 7, texWidth, texHeight);
 
         boolean isHoveringExperience = (pMouseX >= x + 55
                 && pMouseY >= y + 87
@@ -124,7 +124,7 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.pushPose();
 
-        String experience = RelicItem.getExperience(stack) + "/" + RelicItem.getTotalExperienceForLevel(stack, level + 1) + " [" + percentage + "%]";
+        String experience = RelicItem.getExperience(stack) + "/" + RelicItem.getExperienceBetweenLevels(stack, level, level + 1) + " [" + percentage + "%]";
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
@@ -132,8 +132,8 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.popPose();
 
-        MC.font.drawShadow(pPoseStack, String.valueOf(level), x + 60, y + 91, 0xFFFFFF);
-        MC.font.drawShadow(pPoseStack, String.valueOf(level + 1), x + 190, y + 91, 0xFFFFFF);
+        MC.font.drawShadow(pPoseStack, String.valueOf(level), x + 63 - MC.font.width(String.valueOf(level)) / 2F, y + 91, 0xFFFFFF);
+        MC.font.drawShadow(pPoseStack, String.valueOf(level + 1), x + 192 - MC.font.width(String.valueOf(level + 1)) / 2F, y + 91, 0xFFFFFF);
 
         MutableComponent description = isHoveringExperience
                 ? new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".leveling")

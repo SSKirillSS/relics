@@ -492,6 +492,8 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static void addLevel(ItemStack stack, int amount) {
+        addPoints(stack, amount);
+
         setLevel(stack, getLevel(stack) + amount);
     }
 
@@ -502,17 +504,21 @@ public abstract class RelicItem extends Item implements ICurioItem {
     public static void setExperience(ItemStack stack, int experience) {
         CompoundTag data = getLevelingData(stack);
 
-        while (getExperience(stack) + experience >= getExperienceLeftForLevel(stack, getLevel(stack) + 1)) {
-            setExperience(stack, 0);
+        int required = getTotalExperienceForLevel(stack, getLevel(stack) + 1);
 
-            experience -= getExperienceLeftForLevel(stack, getLevel(stack) + 1) - getExperience(stack);
+        if (experience >= required) {
+            data.putInt(TAG_EXPERIENCE, 0);
+
+            setLevelingData(stack, data);
 
             addLevel(stack, 1);
+
+            addExperience(stack, experience - required);
+        } else {
+            data.putInt(TAG_EXPERIENCE, experience);
+
+            setLevelingData(stack, data);
         }
-
-        data.putInt(TAG_EXPERIENCE, experience);
-
-        setLevelingData(stack, data);
     }
 
     public static void addExperience(ItemStack stack, int amount) {
@@ -530,8 +536,16 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static int getTotalExperienceForLevel(ItemStack stack, int level) {
+        if (level <= 0)
+            return 0;
+
         RelicLevelingData data = ((RelicItem) stack.getItem()).getRelicData().getLevelingData();
 
-        return data.getInitialCost() + (data.getStep() * (level - 1));
+        int result = data.getInitialCost();
+
+        for (int i = 1; i < level; i++)
+            result += data.getInitialCost() + (data.getStep() * i);
+
+        return result;
     }
 }
