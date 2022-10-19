@@ -83,8 +83,8 @@ public class PacketRelicTweak {
                     if (RelicItem.mayPlayerReset(player, stack, ability)) {
                         player.giveExperiencePoints(-RelicItem.getResetRequiredExperience(stack, ability));
 
-                        RelicItem.setAbilityPoints(stack, ability, 0);
                         RelicItem.addPoints(stack, RelicItem.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
+                        RelicItem.setAbilityPoints(stack, ability, 0);
                     }
                 }
             }

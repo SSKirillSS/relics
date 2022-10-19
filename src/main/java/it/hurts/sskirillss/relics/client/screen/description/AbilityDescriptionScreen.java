@@ -34,6 +34,7 @@ public class AbilityDescriptionScreen extends Screen {
     private final Minecraft MC = Minecraft.getInstance();
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/ability_background.png");
+    public static final ResourceLocation WIDGETS = new ResourceLocation(Reference.MODID, "textures/gui/description/relic_widgets.png");
 
     public final BlockPos pos;
     public ItemStack stack;
@@ -223,6 +224,22 @@ public class AbilityDescriptionScreen extends Screen {
             MC.font.draw(pPoseStack, new TranslatableComponent("tooltip.relics.relic." + info + ".cost", showInfo ? cost : "∞", showInfo ? abilityData.getRequiredPoints() : "∞"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
 
             pPoseStack.popPose();
+        }
+
+        int points = RelicItem.getPoints(stack);
+
+        if (points > 0) {
+            manager.bindForSetup(WIDGETS);
+
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderTexture(0, WIDGETS);
+
+            blit(pPoseStack, x + backgroundWidth - 3, y + 31, 0, 0, 40, 25, texWidth, texHeight);
+            blit(pPoseStack, x + backgroundWidth + 16, y + 36, 0, 27, 16, 13, texWidth, texHeight);
+
+            String value = String.valueOf(points);
+
+            MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 39, 0xFFFFFF);
         }
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
