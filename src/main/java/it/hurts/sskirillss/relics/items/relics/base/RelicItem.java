@@ -368,7 +368,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
         if (entry == null)
             return false;
 
-        return RelicItem.getAbilityPoints(stack, ability) >= (entry.getMaxLevel() == -1 ? ((relicData.getLevelingData().getMaxLevel() - entry.getRequiredLevel()) / entry.getRequiredPoints()) : entry.getMaxLevel());
+        return RelicItem.getAbilityPoints(stack, ability) >= (entry.getMaxLevel() == -1 ? (relicData.getLevelingData().getMaxLevel() / entry.getRequiredPoints()) : entry.getMaxLevel());
     }
 
     public static boolean mayUpgrade(ItemStack stack, String ability) {
