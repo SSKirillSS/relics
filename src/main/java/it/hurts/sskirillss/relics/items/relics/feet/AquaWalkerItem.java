@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.tags.FluidTags;
@@ -28,8 +29,9 @@ public class AquaWalkerItem extends RelicItem {
                 .abilityData(RelicAbilityData.builder()
                         .ability("walking", RelicAbilityEntry.builder()
                                 .stat("time", RelicAbilityStat.builder()
-                                        .initialValue(30D, 90D)
+                                        .initialValue(30D, 60D)
                                         .upgradeModifier("add", 5F)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 0))))
                                         .build())
                                 .build())
                         .build())
