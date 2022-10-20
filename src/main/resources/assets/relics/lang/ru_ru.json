@@ -203,5 +203,11 @@
   "tooltip.relics.ice_skates.ability.skating.stat.duration": "Максимальная количество множителей: %1$s.",
   "tooltip.relics.ice_skates.ability.ram": "Таран",
   "tooltip.relics.ice_skates.ability.ram.description": "При столкновении с целями наносит урон, пропорциональный продолжительности использования способности “Скольжение”.",
-  "tooltip.relics.ice_skates.ability.ram.stat.damage": "Урон: %1$s единица за секунду скольжения."
+  "tooltip.relics.ice_skates.ability.ram.stat.damage": "Урон: %1$s единица за секунду скольжения.",
+
+  "item.relics.amphibian_boot": "Ботинок амфибии",
+  "tooltip.relics.amphibian_boot.lore": "Прибиваясь к населённым побережьям этот ботинок выжидает свою жертву и затягивает её в самую бездну непроглядных морских пучин, не оставляя ни единого шанса на спасение.",
+  "tooltip.relics.amphibian_boot.ability.swimming": "Плавники",
+  "tooltip.relics.amphibian_boot.ability.swimming.description": "Ускоряет скорость плаванья в зависимости от его продолжительности.",
+  "tooltip.relics.amphibian_boot.ability.swimming.stat.speed": "Множитель скорости: %1$s %% за каждую секунду."
 }

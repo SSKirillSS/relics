@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
@@ -25,8 +26,9 @@ public class AmphibianBootItem extends RelicItem {
                 .abilityData(RelicAbilityData.builder()
                         .ability("swimming", RelicAbilityEntry.builder()
                                 .stat("speed", RelicAbilityStat.builder()
-                                        .initialValue(0.01D, 0.02D)
+                                        .initialValue(0.01D, 0.025D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.01D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 2) * 100 * 20)))
                                         .build())
                                 .build())
                         .build())
