@@ -36,17 +36,21 @@ public class IceSkatesItem extends RelicItem {
                         .ability("skating", RelicAbilityEntry.builder()
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(0.005D, 0.01D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.01D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.005D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 3) * 10 * 100)))
                                         .build())
                                 .stat("duration", RelicAbilityStat.builder()
                                         .initialValue(25D, 50D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 5D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value / 10, 0))))
                                         .build())
                                 .build())
                         .ability("ram", RelicAbilityEntry.builder()
+                                .requiredLevel(5)
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(0.05D, 0.1D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.1D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 1) * 10)))
                                         .build())
                                 .build())
                         .build())
@@ -80,7 +84,7 @@ public class IceSkatesItem extends RelicItem {
         } else if (duration > 0)
             NBTUtils.setInt(stack, TAG_SKATING_DURATION, Math.max(0, duration - 2));
 
-        if (duration >= 10) {
+        if (canUseAbility(stack, "ram") && duration >= 10) {
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox())) {
                 if (entity == player || entity.hurtTime > 0)
                     continue;

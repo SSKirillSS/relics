@@ -193,5 +193,15 @@
   "tooltip.relics.rage_glove.ability.rage.stat.incoming_damage": "Множитель входящего урона: %1$s %% за каждый заряд.",
   "tooltip.relics.rage_glove.ability.rage.stat.dealt_damage": "Множитель исходящего урона: %1$s %% за каждый заряд.",
   "tooltip.relics.rage_glove.ability.rage.stat.movement_speed": "Множитель скорости передвижения: %1$s %% за каждый заряд.",
-  "tooltip.relics.rage_glove.ability.rage.stat.attack_speed": "Множитель скорости атаки: %1$s %% за каждый заряд."
+  "tooltip.relics.rage_glove.ability.rage.stat.attack_speed": "Множитель скорости атаки: %1$s %% за каждый заряд.",
+
+  "item.relics.ice_skates": "Ледовые коньки",
+  "tooltip.relics.ice_skates.lore": "С виду обычные коньки, истинные способности которых раскрываются лишь при использовании, а острые как бритва лезвия способны рассекать не только лёд, но и плоть.",
+  "tooltip.relics.ice_skates.ability.skating": "Скольжение",
+  "tooltip.relics.ice_skates.ability.skating.description": "Увеличивает скорость передвижения по льду в зависимости от продолжительности скольжения.",
+  "tooltip.relics.ice_skates.ability.skating.stat.speed": "Множитель скорости: %1$s %% за секунду скольжения.",
+  "tooltip.relics.ice_skates.ability.skating.stat.duration": "Максимальная количество множителей: %1$s.",
+  "tooltip.relics.ice_skates.ability.ram": "Таран",
+  "tooltip.relics.ice_skates.ability.ram.description": "При столкновении с целями наносит урон, пропорциональный продолжительности использования способности “Скольжение”.",
+  "tooltip.relics.ice_skates.ability.ram.stat.damage": "Урон: %1$s единица за секунду скольжения."
 }
