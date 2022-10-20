@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -40,10 +41,12 @@ public class ChorusInhibitorItem extends RelicItem {
                                 .stat("distance", RelicAbilityStat.builder()
                                         .initialValue(32, 48)
                                         .upgradeModifier("add", 4D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 0))))
                                         .build())
                                 .stat("cooldown", RelicAbilityStat.builder()
                                         .initialValue(5, 10)
                                         .upgradeModifier("add", -0.5D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())

@@ -216,5 +216,12 @@
   "tooltip.relics.spatial_sign.ability.seal": "Временной разлом",
   "tooltip.relics.spatial_sign.ability.seal.description": "Использование записывает в реликвию текущее расположение носителя, к которому тот будет возвращён спустя определённое время или при повторном использовании.",
   "tooltip.relics.spatial_sign.ability.seal.stat.speed": "Скорость возвращения %1$s блоков в секунду.",
-  "tooltip.relics.spatial_sign.ability.seal.stat.duration": "Максимальная продолжительность %1$s секунд."
+  "tooltip.relics.spatial_sign.ability.seal.stat.duration": "Максимальная продолжительность %1$s секунд.",
+
+  "item.relics.chorus_inhibitor": "Хорусовый ингибитор",
+  "tooltip.relics.chorus_inhibitor.lore": "Соцветие неизвестного растения, способное самостоятельно передвигаться благодаря своим щупальцам. Обожает хорусовые плоды. Несмотря на своё происхождение имеет ряд обезображенных человеческих черт.",
+  "tooltip.relics.chorus_inhibitor.ability.blink": "Контроль телепортации",
+  "tooltip.relics.chorus_inhibitor.ability.blink.description": "Использование плода хоруса телепортирует игрока на блок по линии взгляда в пределах досягаемости.",
+  "tooltip.relics.chorus_inhibitor.ability.blink.stat.distance": "Максимальная дистанция: %1$s блоков.",
+  "tooltip.relics.chorus_inhibitor.ability.blink.stat.cooldown": "Время перезарядки: %1$s секунд."
 }
