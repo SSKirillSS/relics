@@ -169,5 +169,14 @@
   "tooltip.relics.drowned_belt.ability.pressure.stat.damage": "Множитель урона: %1$s %%.",
   "tooltip.relics.drowned_belt.ability.riptide": "Водное притяжение",
   "tooltip.relics.drowned_belt.ability.riptide.description": "Позволяет использовать способность трезубца “Тягун” без дождя или воды, добавляя ей время перезарядки.",
-  "tooltip.relics.drowned_belt.ability.riptide.stat.cooldown": "Время перезарядки: %1$s секунд."
+  "tooltip.relics.drowned_belt.ability.riptide.stat.cooldown": "Время перезарядки: %1$s секунд.",
+
+  "item.relics.hunter_belt": "Пояс охотника",
+  "tooltip.relics.hunter_belt.lore": "Пояс из неизвестного материала, создающий духовную связь между носителем и всеми его питомцами, наделяя их небывалой силой и выносливостью.",
+  "tooltip.relics.hunter_belt.ability.slots": "Грузоподъемность",
+  "tooltip.relics.hunter_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
+  "tooltip.relics.hunter_belt.ability.slots.stat.talisman": "Талисманы: %1$s.",
+  "tooltip.relics.hunter_belt.ability.training": "Дрессировка",
+  "tooltip.relics.hunter_belt.ability.training.description": "Повышает наносимый питомцами носителя урон.",
+  "tooltip.relics.hunter_belt.ability.training.stat.damage": "Множитель урона: %1$s %%."
 }
