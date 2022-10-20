@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.api.events;
+package it.hurts.sskirillss.relics.api.events.common;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;

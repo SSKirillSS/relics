@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.api.events;
+package it.hurts.sskirillss.relics.api.events.common;
 
 import lombok.Getter;
 import net.minecraft.world.entity.player.Player;

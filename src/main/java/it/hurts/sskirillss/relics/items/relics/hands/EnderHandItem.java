@@ -8,10 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -43,6 +40,7 @@ public class EnderHandItem extends RelicItem {
                                 .stat("distance", RelicAbilityStat.builder()
                                         .initialValue(16D, 32D)
                                         .upgradeModifier("add", 4D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())
@@ -111,9 +109,12 @@ public class EnderHandItem extends RelicItem {
                     NBTUtils.setString(stack, TAG_TARGET, "");
                     NBTUtils.setInt(stack, TAG_TIME, 0);
 
+                    int distance = (int) Math.round(targetPos.distanceTo(currentPos));
+
+                    addExperience(stack, 1 + Math.round(distance * 0.1F));
+
                     player.getCooldowns().addCooldown(this, 20);
 
-                    int distance = (int) Math.round(targetPos.distanceTo(currentPos));
                     Vec3 finalVec = targetPos.add(currentPos.subtract(targetPos).normalize().multiply(distance, distance, distance));
                     distance = (int) Math.round(targetPos.distanceTo(finalVec)) * 5;
 
