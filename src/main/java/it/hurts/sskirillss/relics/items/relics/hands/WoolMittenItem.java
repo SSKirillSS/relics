@@ -74,6 +74,16 @@ public class WoolMittenItem extends RelicItem {
             if (!player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty() || relic.isEmpty())
                 return;
 
+            Level level = player.getLevel();
+            BlockPos pos = event.getPos();
+            BlockState state = level.getBlockState(pos);
+            Block block = state.getBlock();
+
+            int layers = block == Blocks.SNOW ? state.getValue(SnowLayerBlock.LAYERS) : block == Blocks.SNOW_BLOCK ? 9 : 0;
+
+            if (layers == 0)
+                return;
+
             Inventory inventory = player.getInventory();
 
             int size = (int) Math.round(getAbilityValue(relic, "mold", "size"));
@@ -93,15 +103,6 @@ public class WoolMittenItem extends RelicItem {
             }
 
             ItemStack stack = inventory.getItem(slot.get());
-            Level level = player.getLevel();
-            BlockPos pos = event.getPos();
-            BlockState state = level.getBlockState(pos);
-            Block block = state.getBlock();
-
-            int layers = block == Blocks.SNOW ? state.getValue(SnowLayerBlock.LAYERS) : block == Blocks.SNOW_BLOCK ? 9 : 0;
-
-            if (layers == 0)
-                return;
 
             level.destroyBlock(pos, false);
 
