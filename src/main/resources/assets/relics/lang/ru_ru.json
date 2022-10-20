@@ -223,5 +223,14 @@
   "tooltip.relics.chorus_inhibitor.ability.blink": "Контроль телепортации",
   "tooltip.relics.chorus_inhibitor.ability.blink.description": "Использование плода хоруса телепортирует игрока на блок по линии взгляда в пределах досягаемости.",
   "tooltip.relics.chorus_inhibitor.ability.blink.stat.distance": "Максимальная дистанция: %1$s блоков.",
-  "tooltip.relics.chorus_inhibitor.ability.blink.stat.cooldown": "Время перезарядки: %1$s секунд."
+  "tooltip.relics.chorus_inhibitor.ability.blink.stat.cooldown": "Время перезарядки: %1$s секунд.",
+
+  "item.relics.wool_mitten": "Шерстяная рукавица",
+  "tooltip.relics.wool_mitten.lore": "Перчатка, в основу которой легла шерсть убитого горного йети. Сохраняя тепло внутри, она способна создавать обжигающий холод снаружи.",
+  "tooltip.relics.wool_mitten.ability.mold": "Лепка",
+  "tooltip.relics.wool_mitten.ability.mold.description": "Сбор снега пустой рукой постепенно формирует особые твёрдые снежки. Попадание такого снежка в цель нанесёт ей урон, оглушит и заморозит цели поблизости. Удержание снежка без экипированной реликвии также замораживает носителя.",
+  "tooltip.relics.wool_mitten.ability.mold.stat.size": "Максимальный размер: %1$s единицы.",
+  "tooltip.relics.wool_mitten.ability.mold.stat.damage": "Урон: %1$s за единицу размера.",
+  "tooltip.relics.wool_mitten.ability.mold.stat.stun": "Оглушение: %1$s секунд за единицу размера.",
+  "tooltip.relics.wool_mitten.ability.mold.stat.freeze": "Обморожение: %1$s секунд за единицу размера."
 }

@@ -47,7 +47,7 @@ public class WoolMittenItem extends RelicItem {
                                 .stat("stun", RelicAbilityStat.builder()
                                         .initialValue(0.01D, 0.05D)
                                         .upgradeModifier("add", 0.005D)
-                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 3)))
                                         .build())
                                 .stat("freeze", RelicAbilityStat.builder()
                                         .initialValue(1D, 2D)
