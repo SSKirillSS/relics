@@ -8,10 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -34,18 +31,22 @@ public class RageGloveItem extends RelicItem {
                                 .stat("incoming_damage", RelicAbilityStat.builder()
                                         .initialValue(0.02D, 0.05D)
                                         .upgradeModifier("add", -0.005D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 2) * 100)))
                                         .build())
                                 .stat("dealt_damage", RelicAbilityStat.builder()
                                         .initialValue(0.075D, 0.1D)
                                         .upgradeModifier("add", 0.05D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 2) * 100)))
                                         .build())
                                 .stat("movement_speed", RelicAbilityStat.builder()
                                         .initialValue(0.01D, 0.025D)
                                         .upgradeModifier("add", 0.005D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 2) * 100)))
                                         .build())
                                 .stat("attack_speed", RelicAbilityStat.builder()
                                         .initialValue(0.005D, 0.01D)
                                         .upgradeModifier("add", 0.005D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 2) * 100)))
                                         .build())
                                 .build())
                         .build())
