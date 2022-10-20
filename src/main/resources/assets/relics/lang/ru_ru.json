@@ -178,5 +178,11 @@
   "tooltip.relics.hunter_belt.ability.slots.stat.talisman": "Талисманы: %1$s.",
   "tooltip.relics.hunter_belt.ability.training": "Дрессировка",
   "tooltip.relics.hunter_belt.ability.training.description": "Повышает наносимый питомцами носителя урон.",
-  "tooltip.relics.hunter_belt.ability.training.stat.damage": "Множитель урона: %1$s %%."
+  "tooltip.relics.hunter_belt.ability.training.stat.damage": "Множитель урона: %1$s %%.",
+
+  "item.relics.leather_belt": "Кожаный пояс",
+  "tooltip.relics.leather_belt.lore": "Обычный лоскут кожи, украшенный сверкающей золотой пряжкой. Невероятно удобен и одновременно элегантен.",
+  "tooltip.relics.leather_belt.ability.slots": "Грузоподъемность",
+  "tooltip.relics.leather_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
+  "tooltip.relics.leather_belt.ability.slots.stat.talisman": "Талисманы: %1$s."
 }
