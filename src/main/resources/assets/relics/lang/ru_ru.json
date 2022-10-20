@@ -200,7 +200,7 @@
   "tooltip.relics.ice_skates.ability.skating": "Скольжение",
   "tooltip.relics.ice_skates.ability.skating.description": "Увеличивает скорость передвижения по льду в зависимости от продолжительности скольжения.",
   "tooltip.relics.ice_skates.ability.skating.stat.speed": "Множитель скорости: %1$s %% за секунду скольжения.",
-  "tooltip.relics.ice_skates.ability.skating.stat.duration": "Максимальная количество множителей: %1$s.",
+  "tooltip.relics.ice_skates.ability.skating.stat.duration": "Максимальное количество множителей: %1$s.",
   "tooltip.relics.ice_skates.ability.ram": "Таран",
   "tooltip.relics.ice_skates.ability.ram.description": "При столкновении с целями наносит урон, пропорциональный продолжительности использования способности “Скольжение”.",
   "tooltip.relics.ice_skates.ability.ram.stat.damage": "Урон: %1$s единица за секунду скольжения.",
@@ -232,5 +232,12 @@
   "tooltip.relics.wool_mitten.ability.mold.stat.size": "Максимальный размер: %1$s единицы.",
   "tooltip.relics.wool_mitten.ability.mold.stat.damage": "Урон: %1$s за единицу размера.",
   "tooltip.relics.wool_mitten.ability.mold.stat.stun": "Оглушение: %1$s секунд за единицу размера.",
-  "tooltip.relics.wool_mitten.ability.mold.stat.freeze": "Обморожение: %1$s секунд за единицу размера."
+  "tooltip.relics.wool_mitten.ability.mold.stat.freeze": "Обморожение: %1$s секунд за единицу размера.",
+
+  "item.relics.roller_skates": "Роликовые коньки",
+  "tooltip.relics.roller_skates.lore": "Обычные ботинки на колёсиках, разогнав которые однажды остановиться уже не получится.",
+  "tooltip.relics.roller_skates.ability.skating": "Разгон",
+  "tooltip.relics.roller_skates.ability.skating.description": "Увеличивает скорость передвижения в зависимости от её продолжительности.",
+  "tooltip.relics.roller_skates.ability.skating.stat.speed": "Множитель скорости: %1$s %% за секунду разгона.",
+  "tooltip.relics.roller_skates.ability.skating.stat.duration": "Максимальное количество множителей: %1$s."
 }

@@ -1,12 +1,15 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
 import it.hurts.sskirillss.relics.api.events.LivingSlippingEvent;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -21,6 +24,30 @@ public class RollerSkatesItem extends RelicItem {
     public static final String TAG_SKATING_DURATION = "duration";
 
     @Override
+    public RelicData getRelicData() {
+        return RelicData.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("skating", RelicAbilityEntry.builder()
+                                .stat("speed", RelicAbilityStat.builder()
+                                        .initialValue(0.001D, 0.025D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.005D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 3) * 5 * 100)))
+                                        .build())
+                                .stat("duration", RelicAbilityStat.builder()
+                                        .initialValue(50D, 75D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 5D)
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value / 5, 0))))
+                                        .build())
+                                .build())
+                        .build())
+                .levelingData(new RelicLevelingData(100, 10, 200))
+                .styleData(RelicStyleData.builder()
+                        .borders("#dc41ff", "#832698")
+                        .build())
+                .build();
+    }
+
+    @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
@@ -28,7 +55,7 @@ public class RollerSkatesItem extends RelicItem {
         int duration = NBTUtils.getInt(stack, TAG_SKATING_DURATION, 0);
 
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
-            if (duration < 100 && player.tickCount % 4 == 0)
+            if (duration < getAbilityValue(stack, "skating", "duration") && player.tickCount % 4 == 0)
                 NBTUtils.setInt(stack, TAG_SKATING_DURATION, duration + 1);
         } else if (duration > 0)
             NBTUtils.setInt(stack, TAG_SKATING_DURATION, --duration);
@@ -36,7 +63,7 @@ public class RollerSkatesItem extends RelicItem {
         EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         if (duration > 0) {
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, duration * 0.0025F, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
             EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
             EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
