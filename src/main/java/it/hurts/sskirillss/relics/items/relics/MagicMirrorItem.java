@@ -200,9 +200,6 @@ public class MagicMirrorItem extends RelicItem {
                 level.dimensionType()) > getAbilityValue(stack, "teleport", "distance"))
             return false;
 
-        if (level.dimension() != player.level.dimension() && getAbilityPoints(stack, "teleport") < 5)
-            return false;
-
         return true;
     }
 
