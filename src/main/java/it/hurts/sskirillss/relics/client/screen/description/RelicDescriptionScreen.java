@@ -128,7 +128,7 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
-        MC.font.drawShadow(pPoseStack, experience, (x + 142 - font.width(experience) / 2F) * 2, (y + 85) * 2, 0xFFFFFF);
+        MC.font.drawShadow(pPoseStack, experience, (x + 128 - font.width(experience) / 4F) * 2, (y + 85) * 2, 0xFFFFFF);
 
         pPoseStack.popPose();
 
