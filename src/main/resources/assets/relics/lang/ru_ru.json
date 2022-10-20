@@ -80,7 +80,7 @@
   "tooltip.relics.elytra_booster.ability.boost.stat.capacity": "Ёмкость: %1$s единиц.",
   "tooltip.relics.elytra_booster.ability.boost.stat.speed": "Скорость: %1$s.",
 
-  "item.relics.midnight_robe": "Получночная мантия",
+  "item.relics.midnight_robe": "Полуночная мантия",
   "tooltip.relics.midnight_robe.lore": "Одеяние придворного астронома с вышитой на нём картой звёздного неба.",
   "tooltip.relics.midnight_robe.ability.vanish": "Исчезновение",
   "tooltip.relics.midnight_robe.ability.vanish.description": "Носитель становится невидимым, когда находится в кромешной тьме.",
@@ -153,5 +153,21 @@
   "tooltip.relics.aqua_walker.lore": "Сотканные из былинной ткани морской глади ботинки, лёгкость которых осталась несравнимой ни с чем земным и по сей день.",
   "tooltip.relics.aqua_walker.ability.walking": "Влагоустойчивость",
   "tooltip.relics.aqua_walker.ability.walking.description": "В течение определенного времени позволяет передвигаться по поверхности воды, не проваливаясь в неё. По истечении запаса времени ботинки начинают тонуть, затягивая их носителя с собой под воду.",
-  "tooltip.relics.aqua_walker.ability.walking.stat.time": "Продолжительность: %1$s секунд."
+  "tooltip.relics.aqua_walker.ability.walking.stat.time": "Продолжительность: %1$s секунд.",
+
+  "item.relics.drowned_belt": "Пояс утопленника",
+  "tooltip.relics.drowned_belt.lore": "Фрагмент кандалов узника затопленной тюрьмы, чьё обезображенное тело поднялось на сушу во время шествия мертвецов под светом кровавого полнолуния.",
+  "tooltip.relics.drowned_belt.ability.slots": "Грузоподъемность",
+  "tooltip.relics.drowned_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
+  "tooltip.relics.drowned_belt.ability.slots.stat.talisman": "Талисманы: %1$s.",
+  "tooltip.relics.drowned_belt.ability.anchor": "Мёртвый груз",
+  "tooltip.relics.drowned_belt.ability.anchor.description": "Уменьшает скорость плаванья и увеличивает скорость потопления носителя.",
+  "tooltip.relics.drowned_belt.ability.anchor.stat.slowness": "Замедление плаванья: %1$s %%.",
+  "tooltip.relics.drowned_belt.ability.anchor.stat.sinking": "Скорость потопления: %1$s %%.",
+  "tooltip.relics.drowned_belt.ability.pressure": "Водные потоки",
+  "tooltip.relics.drowned_belt.ability.pressure.description": "Увеличивает наносимый под водой урон.",
+  "tooltip.relics.drowned_belt.ability.pressure.stat.damage": "Множитель урона: %1$s %%.",
+  "tooltip.relics.drowned_belt.ability.riptide": "Водное притяжение",
+  "tooltip.relics.drowned_belt.ability.riptide.description": "Позволяет использовать способность трезубца “Тягун” без дождя или воды, добавляя ей время перезарядки.",
+  "tooltip.relics.drowned_belt.ability.riptide.stat.cooldown": "Время перезарядки: %1$s секунд."
 }
