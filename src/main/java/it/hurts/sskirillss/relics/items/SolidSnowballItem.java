@@ -47,6 +47,9 @@ public class SolidSnowballItem extends Item {
 
         level.playSound(null, player.blockPosition(), SoundEvents.SNOWBALL_THROW, SoundSource.MASTER, 0.5F, 0.5F);
 
-        return super.use(level, player, usedHand);
+        if (!player.isCreative())
+            stack.shrink(1);
+
+        return InteractionResultHolder.pass(stack);
     }
 }
