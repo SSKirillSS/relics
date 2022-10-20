@@ -106,7 +106,12 @@ public class RelicDescriptionScreen extends Screen {
 
         int percentage = RelicItem.getExperience(stack) / (RelicItem.getExperienceBetweenLevels(stack, level, level + 1) / 100);
 
-        blit(pPoseStack, x + 68, y + 91, 258, 80, (int) Math.ceil(percentage / 100F * 124F), 7, texWidth, texHeight);
+        boolean isMaxLevel = RelicItem.getLevel(stack) >= maxLevel;
+
+        if (isMaxLevel)
+            blit(pPoseStack, x + 57, y + 89, 258, 80, 142, 12, texWidth, texHeight);
+        else
+            blit(pPoseStack, x + 74, y + 89, 275, 80, (int) Math.ceil(percentage / 100F * 109F), 10, texWidth, texHeight);
 
         boolean isHoveringExperience = (pMouseX >= x + 55
                 && pMouseY >= y + 87
@@ -124,7 +129,8 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.pushPose();
 
-        String experience = RelicItem.getExperience(stack) + "/" + RelicItem.getExperienceBetweenLevels(stack, level, level + 1) + " [" + percentage + "%]";
+        MutableComponent experience = isMaxLevel ? new TranslatableComponent("tooltip.relics.relic.max_level")
+                : new TextComponent(RelicItem.getExperience(stack) + "/" + RelicItem.getExperienceBetweenLevels(stack, level, level + 1) + " [" + percentage + "%]");
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
@@ -132,8 +138,10 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.popPose();
 
-        MC.font.drawShadow(pPoseStack, String.valueOf(level), x + 63 - MC.font.width(String.valueOf(level)) / 2F, y + 91, 0xFFFFFF);
-        MC.font.drawShadow(pPoseStack, String.valueOf(level + 1), x + 192 - MC.font.width(String.valueOf(level + 1)) / 2F, y + 91, 0xFFFFFF);
+        if (!isMaxLevel) {
+            MC.font.drawShadow(pPoseStack, String.valueOf(level), x + 66 - MC.font.width(String.valueOf(level)) / 2F, y + 91, 0xFFFFFF);
+            MC.font.drawShadow(pPoseStack, String.valueOf(level + 1), x + 190 - MC.font.width(String.valueOf(level + 1)) / 2F, y + 91, 0xFFFFFF);
+        }
 
         MutableComponent description = isHoveringExperience
                 ? new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".leveling")

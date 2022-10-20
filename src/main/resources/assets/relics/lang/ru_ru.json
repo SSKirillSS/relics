@@ -2,6 +2,7 @@
   "itemGroup.relics": "Реликвии",
 
   "tooltip.relics.relic.level": " [%1$s/%2$s]",
+  "tooltip.relics.relic.max_level": "-= MAX =-",
   "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
 
   "tooltip.relics.relic.upgrade.description": "Повышение уровня способности.",
