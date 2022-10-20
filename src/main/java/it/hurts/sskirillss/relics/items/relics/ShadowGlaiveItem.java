@@ -97,6 +97,9 @@ public class ShadowGlaiveItem extends RelicItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        if (worldIn.isClientSide())
+            return;
+
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
         if (DurabilityUtils.isBroken(stack) || entityIn.tickCount % 20 != 0 || charges >= 8)
@@ -202,5 +205,10 @@ public class ShadowGlaiveItem extends RelicItem {
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
         return false;
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged;
     }
 }
