@@ -209,5 +209,12 @@
   "tooltip.relics.amphibian_boot.lore": "Прибиваясь к населённым побережьям этот ботинок выжидает свою жертву и затягивает её в самую бездну непроглядных морских пучин, не оставляя ни единого шанса на спасение.",
   "tooltip.relics.amphibian_boot.ability.swimming": "Плавники",
   "tooltip.relics.amphibian_boot.ability.swimming.description": "Ускоряет скорость плаванья в зависимости от его продолжительности.",
-  "tooltip.relics.amphibian_boot.ability.swimming.stat.speed": "Множитель скорости: %1$s %% за каждую секунду."
+  "tooltip.relics.amphibian_boot.ability.swimming.stat.speed": "Множитель скорости: %1$s %% за каждую секунду.",
+
+  "item.relics.spatial_sign": "Пространственная печать",
+  "tooltip.relics.spatial_sign.lore": "Печать, некогда запиравшая врата Незера, оказалась мощной реликвией, способной  без труда рассекать паутину времени. Желающие заполучить эту силу в свои руки не заставили себя долго ждать, оставив врата Незера открытыми и по сей день…",
+  "tooltip.relics.spatial_sign.ability.seal": "Временной разлом",
+  "tooltip.relics.spatial_sign.ability.seal.description": "Использование записывает в реликвию текущее расположение носителя, к которому тот будет возвращён спустя определённое время или при повторном использовании.",
+  "tooltip.relics.spatial_sign.ability.seal.stat.speed": "Скорость возвращения %1$s блоков в секунду.",
+  "tooltip.relics.spatial_sign.ability.seal.stat.duration": "Максимальная продолжительность %1$s секунд."
 }

@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -14,8 +15,8 @@ import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketItemActivation;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,6 +24,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -30,8 +32,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -56,10 +56,12 @@ public class SpatialSignItem extends RelicItem {
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(1D, 1.5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.2D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("duration", RelicAbilityStat.builder()
                                         .initialValue(5D, 10D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 5D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())
@@ -78,13 +80,11 @@ public class SpatialSignItem extends RelicItem {
             return InteractionResultHolder.fail(stack);
 
         if (NBTUtils.getString(stack, TAG_POSITION, "").equals("")) {
-            if (playerIn.totalExperience > 0) {
-                NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.position()));
-                NBTUtils.setString(stack, TAG_WORLD, playerIn.getCommandSenderWorld().dimension().location().toString());
-                NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(getAbilityValue(stack, "seal", "duration")));
+            NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(playerIn.position()));
+            NBTUtils.setString(stack, TAG_WORLD, playerIn.getCommandSenderWorld().dimension().location().toString());
+            NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(getAbilityValue(stack, "seal", "duration")));
 
-                worldIn.playSound(playerIn, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
-            }
+            worldIn.playSound(playerIn, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
         } else if (playerIn.isShiftKeyDown()) {
             String string = NBTUtils.getString(stack, TAG_POSITION, "");
             List<String> positions = Arrays.asList(string.split("\\|"));
@@ -168,6 +168,8 @@ public class SpatialSignItem extends RelicItem {
 
                 ((ServerPlayer) player).connection.send(new ClientboundSetEntityMotionPacket(player.getId(), pos.add(0, 1, 0).subtract(player.position()).normalize().scale(speed)));
 
+                player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 20, 0, false, false));
+
                 player.fallDistance = 0;
                 player.noPhysics = true;
                 player.clearFire();
@@ -218,13 +220,10 @@ public class SpatialSignItem extends RelicItem {
                     worldIn.playSound(null, player.blockPosition(), SoundEvents.UI_BUTTON_CLICK,
                             SoundSource.MASTER, 0.75F, 0.75F + time * 0.125F);
 
-                if (player.totalExperience > 0)
-                    player.giveExperiencePoints(-1);
-                else {
-                    NBTUtils.setInt(stack, TAG_STAGE, positions.size() - 1);
 
-                    NBTUtils.setInt(stack, TAG_TIME, 0);
-                }
+                NBTUtils.setInt(stack, TAG_STAGE, positions.size() - 1);
+
+                NBTUtils.setInt(stack, TAG_TIME, 0);
             }
 
             if (player.tickCount % 5 == 0) {
@@ -301,29 +300,6 @@ public class SpatialSignItem extends RelicItem {
 
             if (!(entity instanceof Player player))
                 return;
-
-            for (int slot : EntityUtils.getSlotsWithItem(player, ItemRegistry.SPATIAL_SIGN.get())
-                    .stream()
-                    .filter(slot -> slot != -1)
-                    .toList()) {
-                ItemStack stack = player.getInventory().getItem(slot);
-
-                if (stack.getItem() instanceof SpatialSignItem
-                        && NBTUtils.getInt(stack, TAG_STAGE, -1) > -1
-                        && !NBTUtils.getString(stack, TAG_POSITION, "").isEmpty()) {
-                    event.setCanceled(true);
-
-                    return;
-                }
-            }
-        }
-    }
-
-    @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
-    public static class ClientEvents {
-        @SubscribeEvent
-        public static void onEntityRender(RenderPlayerEvent.Pre event) {
-            Player player = event.getPlayer();
 
             for (int slot : EntityUtils.getSlotsWithItem(player, ItemRegistry.SPATIAL_SIGN.get())
                     .stream()
