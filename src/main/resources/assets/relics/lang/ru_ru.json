@@ -87,6 +87,7 @@
   "tooltip.relics.elytra_booster.ability.boost.stat.speed": "Скорость: %1$s.",
 
   "item.relics.midnight_robe": "Полуночная мантия",
+  "tooltip.relics.midnight_robe.leveling": "+1 ед. опыта за каждую атаку из невидимости от способности “Исчезновение”.",
   "tooltip.relics.midnight_robe.lore": "Одеяние придворного астронома с вышитой на нём картой звёздного неба.",
   "tooltip.relics.midnight_robe.ability.vanish": "Исчезновение",
   "tooltip.relics.midnight_robe.ability.vanish.description": "Носитель становится невидимым, когда находится в кромешной тьме.",
