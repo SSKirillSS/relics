@@ -144,7 +144,7 @@ public class RelicDescriptionScreen extends Screen {
         }
 
         MutableComponent description = isHoveringExperience
-                ? new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".leveling")
+                ? new TranslatableComponent("tooltip.relics.relic.leveling.title").append(new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".leveling"))
                 : new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".lore");
 
         List<FormattedCharSequence> lines = MC.font.split(description, 240);

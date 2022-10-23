@@ -4,6 +4,7 @@
   "tooltip.relics.relic.level": " [%1$s/%2$s]",
   "tooltip.relics.relic.max_level": "-= MAX =-",
   "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
+  "tooltip.relics.relic.leveling.title": "Получение опыта: \n\n",
 
   "tooltip.relics.relic.upgrade.description": "Повышение уровня способности.",
   "tooltip.relics.relic.upgrade.cost": "Стоимость: %2$s ур., %1$s опыта.",
@@ -24,6 +25,7 @@
   "tooltip.relics.infinity_ham.ability.infusion.stat.duration": "Продолжительность: %1$s секунд.",
 
   "item.relics.enders_hand": "Рука Края",
+  "tooltip.relics.enders_hand.leveling": "+1 ед. опыта за использование способности \"Транспозиция Края\" + 10% от расстояния до цели при использовании.",
   "tooltip.relics.enders_hand.lore": "Перчатка, выкованная затерянной цивилизацией Края. Она же и обрекла эту цивилизацию на гибель.",
   "tooltip.relics.enders_hand.ability.swap": "Транспозиция Края",
   "tooltip.relics.enders_hand.ability.swap.description": "Использование меняет местами носителя и цель.",
