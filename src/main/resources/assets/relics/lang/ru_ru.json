@@ -32,6 +32,7 @@
   "tooltip.relics.enders_hand.ability.swap.stat.distance": "Дистанция: %1$s блоков.",
 
   "item.relics.holy_locket": "Священный медальон",
+  "tooltip.relics.holy_locket.leveling": "+1 ед. опыта за каждое исцеление цели в радиусе действия способности “Божественное благословение” + округлённое в ближайшую сторону количество украденного исцеления.",
   "tooltip.relics.holy_locket.lore": "Сверкающий крест, изготовленный из металлов, полученных под Голгофой. Праведнику даёт силу, грешнику агонию и смерть.",
   "tooltip.relics.holy_locket.ability.steal": "Божественное благославение",
   "tooltip.relics.holy_locket.ability.steal.description": "Перенаправляет часть регенерируемого здоровья ближайших существ носителю реликвии.",
