@@ -48,6 +48,7 @@
   "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown": "Перезарядка: %1$s секунд.",
 
   "item.relics.shadow_glaive": "Теневая глефа",
+  "tooltip.relics.shadow_glaive.leveling": "+1 ед. опыта за каждые 2 отскока глефы от способности \"Слепое правосудие\".",
   "tooltip.relics.shadow_glaive.lore": "Созданное цивилизацией Края для подавления бунтов оружие. Создатели так и не успели опробовать его в деле.",
   "tooltip.relics.shadow_glaive.ability.glaive": "Слепое правосудие",
   "tooltip.relics.shadow_glaive.ability.glaive.description": "Использование выпускает один из 8 снарядов глефы, отскакивающий между ближайшими целями.",
