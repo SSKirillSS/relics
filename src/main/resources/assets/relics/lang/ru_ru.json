@@ -106,6 +106,7 @@
   "tooltip.relics.reflection_necklace.ability.explode.stat.capacity": "Буфер урона: %1$s единиц.",
 
   "item.relics.jellyfish_necklace": "Ожерелье медузы",
+  "tooltip.relics.jellyfish_necklace.leveling": "+1 ед. опыта за каждое срабатывание способности “Электрическая разрядка”.",
   "tooltip.relics.jellyfish_necklace.lore": "Семейная реликвия сирен, созданная из жемчуга и поддерживаемой в живых волей носителя медузы, чья мучительная агония раздаётся импульсами электричества.",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable": "Власть над морем",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable.description": "Носитель не тонет в воде.",
