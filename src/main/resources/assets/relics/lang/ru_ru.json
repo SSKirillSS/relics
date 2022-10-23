@@ -112,6 +112,7 @@
   "tooltip.relics.jellyfish_necklace.ability.paralysis.stat.duration": "Продолжительность эффекта: %1$s секунд.",
 
   "item.relics.spore_sack": "Мешок со спорами",
+  "tooltip.relics.spore_sack.leveling": "+1 ед. опыта в секунду за каждую цель, простаивающую в ядовитом облаке от способности “Синтез яда”.",
   "tooltip.relics.spore_sack.lore": "Мешок для семян, в котором проросли споры смертельно опасных грибов.",
   "tooltip.relics.spore_sack.ability.spore": "Синтез яда",
   "tooltip.relics.spore_sack.ability.spore.description": "При получении урона выбрасывает споры в случайном направлении, которые при соприкосновении с поверхностью формируют ядовитые облака, наносящие урон и замедляющие цели в радиусе действия.",

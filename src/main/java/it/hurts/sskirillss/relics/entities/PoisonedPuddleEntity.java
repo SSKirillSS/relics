@@ -92,6 +92,9 @@ public class PoisonedPuddleEntity extends ThrowableProjectile {
 
             if (this.getOwner() instanceof Player player)
                 entity.setLastHurtByPlayer(player);
+
+            if (this.tickCount % 20 == 0)
+                RelicItem.addExperience(stack, 1);
         }
 
         for (PoisonedPuddleEntity puddle : level.getEntitiesOfClass(PoisonedPuddleEntity.class, this.getBoundingBox())) {
