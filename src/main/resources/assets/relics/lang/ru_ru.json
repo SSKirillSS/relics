@@ -61,6 +61,7 @@
   "tooltip.relics.shadow_glaive.ability.saw.stat.damage": "Урон: %1$s единиц.",
 
   "item.relics.arrow_quiver": "Колчан",
+  "tooltip.relics.arrow_quiver.leveling": "+1 ед. опыта за каждые 10 блоков до поражённой выстрелом цели.",
   "tooltip.relics.arrow_quiver.lore": "Неотъемлемый атрибут лучника, созданный по эльфийским технологиям из кожи вымерших мистических зверей.",
   "tooltip.relics.arrow_quiver.ability.receptacle": "Хранилище стрел",
   "tooltip.relics.arrow_quiver.ability.receptacle.description": "Стрельба из лука в первую очередь использует стрелы из внутреннего хранилища колчана. Использование стрелы ЛКМ по колчану в инвентаре разместит её во внутреннее хранилище реликвии. Нажатие ПКМ по колчану достанет последние размещённые в него стрелы.",
