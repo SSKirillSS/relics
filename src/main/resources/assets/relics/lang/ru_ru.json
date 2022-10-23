@@ -16,6 +16,7 @@
   "tooltip.relics.relic.reset.cost": "Стоимость: %1$s опыта.",
 
   "item.relics.infinity_ham": "Бесконечный окорок",
+  "tooltip.relics.infinity_ham.leveling": "+1 ед. опыта за каждый съеденный кусок от способности “Регенерация”.",
   "tooltip.relics.infinity_ham.lore": "Постоянно регенерирующая плоть неизвестного существа, по вкусу напоминающая свинью.",
   "tooltip.relics.infinity_ham.ability.autophagy": "Регенерация",
   "tooltip.relics.infinity_ham.ability.autophagy.description": "Использование реликвии расходует накопленное мясо, восполняя голод владельца. Постепенно регенерирует.",
