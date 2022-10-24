@@ -105,7 +105,7 @@ public class ElytraBoosterItem extends RelicItem {
                     0, 0, 0);
 
         if (player.tickCount % Math.max(1, (int) Math.round((10 - speed * 2) / (player.isInWaterOrRain() ? 2 : 1))) == 0)
-            NBTUtils.setInt(stack, TAG_FUEL, fuel - 1);
+            NBTUtils.setInt(stack, TAG_FUEL, --fuel);
     }
 
     @Mod.EventBusSubscriber
@@ -126,13 +126,16 @@ public class ElytraBoosterItem extends RelicItem {
             int time = ForgeHooks.getBurnTime(heldStack, RecipeType.SMELTING) / 20;
             int amount = NBTUtils.getInt(slotStack, TAG_FUEL, 0);
             int capacity = booster.getBreathCapacity(slotStack);
+            int sum = amount + time;
 
-            if (time <= 0 || amount >= capacity)
+            if (time <= 0)
                 return;
 
-            NBTUtils.setInt(slotStack, TAG_FUEL, Math.min(capacity, amount + time));
+            NBTUtils.setInt(slotStack, TAG_FUEL, Math.min(capacity, sum));
 
-            addExperience(slotStack, Math.round((capacity - amount) / 100F));
+            int left = sum > capacity ? time - (sum - capacity) : time;
+
+            addExperience(slotStack, (int) Math.floor(left / 10F));
 
             ItemStack result = heldStack.getContainerItem();
 
