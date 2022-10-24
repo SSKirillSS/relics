@@ -48,13 +48,13 @@ public class MagicMirrorItem extends RelicItem {
                 .abilityData(RelicAbilityData.builder()
                         .ability("teleport", RelicAbilityEntry.builder()
                                 .stat("distance", RelicAbilityStat.builder()
-                                        .initialValue(200F, 1000F)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 250F)
+                                        .initialValue(5D, 5D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 250D)
                                         .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("cooldown", RelicAbilityStat.builder()
-                                        .initialValue(60F, 300F)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -2F)
+                                        .initialValue(60D, 300D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -2D)
                                         .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
@@ -196,7 +196,7 @@ public class MagicMirrorItem extends RelicItem {
         Vec3 pos = data.getRight();
         ServerLevel level = data.getLeft();
 
-        if (pos.distanceTo(player.position()) * DimensionType.getTeleportationScale(player.level.dimensionType(),
+        if (player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.level.dimensionType(),
                 level.dimensionType()) > getAbilityValue(stack, "teleport", "distance"))
             return false;
 
