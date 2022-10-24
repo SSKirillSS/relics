@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -67,7 +68,7 @@ public class ArrowQuiverItem extends RelicItem {
                                 .stat("modifier", RelicAbilityStat.builder()
                                         .initialValue(1, 1)
                                         .upgradeModifier("add", 1)
-                                        .formatValue(value -> String.valueOf((int) Math.round(value)))
+                                        .formatValue(value -> String.valueOf((int) ((1 + MathUtils.round(value, 0))) * 100))
                                         .build())
                                 .build())
                         .build())
@@ -92,7 +93,7 @@ public class ArrowQuiverItem extends RelicItem {
         if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        if (player.isUsingItem() && player.getMainHandItem().getItem() instanceof BowItem)
+        if (canUseAbility(stack, "agility") && player.isUsingItem() && player.getMainHandItem().getItem() instanceof BowItem)
             for (int i = 0; i < 1; i++)
                 player.updatingUsingItem();
     }
