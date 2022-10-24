@@ -43,7 +43,7 @@ public class ElytraBoosterItem extends RelicItem {
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(1.1D, 1.5D)
                                         .upgradeModifier("add", 0.1D)
-                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value * 16, 1)))
                                         .build())
                                 .build())
                         .build())

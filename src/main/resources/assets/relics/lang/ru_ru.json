@@ -84,7 +84,7 @@
   "tooltip.relics.elytra_booster.ability.boost": "Ускорение",
   "tooltip.relics.elytra_booster.ability.boost.description": "Использование топлива на реликвии пополняет её внутренний буфер. Зажатие клавиши [Shift] во время полёта на элитрах устремляет носителя вперёд.",
   "tooltip.relics.elytra_booster.ability.boost.stat.capacity": "Ёмкость: %1$s единиц.",
-  "tooltip.relics.elytra_booster.ability.boost.stat.speed": "Скорость: %1$s.",
+  "tooltip.relics.elytra_booster.ability.boost.stat.speed": "Скорость: %1$s блоков в секунду.",
 
   "item.relics.midnight_robe": "Полуночная мантия",
   "tooltip.relics.midnight_robe.leveling": "+1 ед. опыта за каждую атаку из невидимости от способности “Исчезновение”.",
