@@ -1,8 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -22,8 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class IceSkatesItem extends RelicItem {
@@ -35,14 +31,14 @@ public class IceSkatesItem extends RelicItem {
                 .abilityData(RelicAbilityData.builder()
                         .ability("skating", RelicAbilityEntry.builder()
                                 .stat("speed", RelicAbilityStat.builder()
-                                        .initialValue(0.005D, 0.01D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.005D)
+                                        .initialValue(0.01D, 0.02D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.0025D)
                                         .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 3) * 10 * 100)))
                                         .build())
                                 .stat("duration", RelicAbilityStat.builder()
                                         .initialValue(25D, 50D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 5D)
-                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value / 10, 0))))
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value / 10, 1)))
                                         .build())
                                 .build())
                         .ability("ram", RelicAbilityEntry.builder()
@@ -115,22 +111,5 @@ public class IceSkatesItem extends RelicItem {
 
         EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
         EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
-    }
-
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
-    public static class Events {
-        @SubscribeEvent
-        public static void onLivingSlipping(LivingSlippingEvent event) {
-            if (!(event.getEntityLiving() instanceof Player player))
-                return;
-
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_SKATES.get());
-
-            if (stack.isEmpty() || NBTUtils.getInt(stack, TAG_SKATING_DURATION, 0) <= 0
-                    || DurabilityUtils.isBroken(stack))
-                return;
-
-            event.setFriction(1.075F);
-        }
     }
 }
