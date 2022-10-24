@@ -103,12 +103,10 @@ public class MagicMirrorItem extends RelicItem {
         if (!player.isCreative())
             player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getAbilityValue(stack, "teleport", "cooldown") * 20));
 
-        addExperience(stack, 1);
-
         world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
-        addExperience(stack, (int) (Math.round((pos.distanceTo(player.position()) * DimensionType.getTeleportationScale(player.level.dimensionType(),
-                data.getLeft().dimensionType()))) / 100));
+        addExperience(stack, (int) (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
+                * DimensionType.getTeleportationScale(player.level.dimensionType(), data.getLeft().dimensionType()))) / 100));
 
         return stack;
     }
