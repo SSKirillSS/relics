@@ -219,11 +219,6 @@ public class SpatialSignItem extends RelicItem {
                 if (time <= 10 && time > 0)
                     worldIn.playSound(null, player.blockPosition(), SoundEvents.UI_BUTTON_CLICK,
                             SoundSource.MASTER, 0.75F, 0.75F + time * 0.125F);
-
-
-                NBTUtils.setInt(stack, TAG_STAGE, positions.size() - 1);
-
-                NBTUtils.setInt(stack, TAG_TIME, 0);
             }
 
             if (player.tickCount % 5 == 0) {
