@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinAbstractContainerMenu {
     @Inject(at = @At(value = "HEAD"), method = "doClick", cancellable = true)
     protected void onClick(int index, int action, ClickType clickType, Player player, CallbackInfo ci) {
-        if (clickType != ClickType.PICKUP || index == -1)
+        if (clickType != ClickType.PICKUP || index < 0)
             return;
 
         AbstractContainerMenu menu = (AbstractContainerMenu) (Object) this;
