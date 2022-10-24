@@ -54,7 +54,7 @@ public class MidnightRobeItem extends RelicItem {
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(0.1D, 0.2D)
                                         .upgradeModifier("add", 0.1D)
-                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 3) * 100)))
                                         .build())
                                 .build())
                         .ability("backstab", RelicAbilityEntry.builder()
@@ -65,7 +65,7 @@ public class MidnightRobeItem extends RelicItem {
                                         .build())
                                 .stat("distance", RelicAbilityStat.builder()
                                         .initialValue(15D, 20D)
-                                        .upgradeModifier("add", -1D)
+                                        .upgradeModifier("add", -0.5D)
                                         .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
@@ -202,7 +202,8 @@ public class MidnightRobeItem extends RelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.MIDNIGHT_ROBE.get());
 
-            if (stack.isEmpty() || !canHide(player))
+            if (stack.isEmpty() || !canHide(player) || player.position().distanceTo(new Vec3(target.getX(),
+                    player.getY(), target.getZ())) > getAbilityValue(stack, "backstab", "distance"))
                 return;
 
             event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "backstab", "damage")));
