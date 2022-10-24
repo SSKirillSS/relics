@@ -43,6 +43,9 @@ public class MixinLivingEntity {
 
         if (entity.hasEffect(EffectRegistry.STUN.get()))
             cir.setReturnValue(true);
+
+        if (entity.hasEffect(EffectRegistry.PARALYSIS.get()))
+            cir.setReturnValue(true);
     }
 
     @Inject(method = "onEffectAdded", at = @At("TAIL"))

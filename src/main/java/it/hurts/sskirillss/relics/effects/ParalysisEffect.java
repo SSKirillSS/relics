@@ -4,10 +4,8 @@ import it.hurts.sskirillss.relics.init.EffectRegistry;
 import net.minecraft.client.player.Input;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -31,16 +29,6 @@ public class ParalysisEffect extends MobEffect {
                 input.forwardImpulse = 0;
                 input.leftImpulse = 0;
             }
-        }
-
-        @SubscribeEvent
-        public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-            LivingEntity entity = event.getEntityLiving();
-
-            if (!entity.hasEffect(EffectRegistry.PARALYSIS.get()))
-                return;
-
-            entity.setDeltaMovement(0, entity.getDeltaMovement().y(), 0);
         }
     }
 }
