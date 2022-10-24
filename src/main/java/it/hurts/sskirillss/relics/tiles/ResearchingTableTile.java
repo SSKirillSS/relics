@@ -32,13 +32,15 @@ public class ResearchingTableTile extends TileBase {
 
     @Override
     public void load(CompoundTag compound) {
-        stack = ItemStack.of((CompoundTag) compound.get("stack"));
-
         super.load(compound);
+
+        stack = ItemStack.of((CompoundTag) compound.get("stack"));
     }
 
     @Override
     protected void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
+
         if (stack != null) {
             CompoundTag itemStack = new CompoundTag();
 
@@ -46,8 +48,6 @@ public class ResearchingTableTile extends TileBase {
 
             compound.put("stack", itemStack);
         }
-
-        super.saveAdditional(compound);
     }
 
     @Override

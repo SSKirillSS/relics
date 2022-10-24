@@ -63,6 +63,10 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
             }
         }
 
+        tile.setChanged();
+
+        world.sendBlockUpdated(pos, state, world.getBlockState(pos), 3);
+
         return InteractionResult.SUCCESS;
     }
 
