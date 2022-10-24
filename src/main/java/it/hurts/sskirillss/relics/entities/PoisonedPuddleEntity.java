@@ -85,10 +85,8 @@ public class PoisonedPuddleEntity extends ThrowableProjectile {
                     && entity.getStringUUID().equals(player.getStringUUID())))
                 continue;
 
-            MobEffectInstance effect = entity.getEffect(MobEffects.POISON);
-
-            entity.addEffect(new MobEffectInstance(MobEffects.POISON, effect == null ? 20 : effect.getDuration() + 2, 0));
-            entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5, (int) (Math.round(RelicItem.getAbilityValue(stack, "spore", "slowness")) - 1)));
+            entity.addEffect(new MobEffectInstance(MobEffects.POISON, entity.getEffect(MobEffects.POISON) == null ? 20 : entity.getEffect(MobEffects.POISON).getDuration() + 2, 0));
+            entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, entity.getEffect(MobEffects.MOVEMENT_SLOWDOWN) == null ? 20 : entity.getEffect(MobEffects.MOVEMENT_SLOWDOWN).getDuration() + 2, 0));
 
             if (this.getOwner() instanceof Player player)
                 entity.setLastHurtByPlayer(player);

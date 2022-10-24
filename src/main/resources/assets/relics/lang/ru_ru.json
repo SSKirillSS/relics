@@ -123,7 +123,6 @@
   "tooltip.relics.spore_sack.ability.spore": "Синтез яда",
   "tooltip.relics.spore_sack.ability.spore.description": "При получении урона выбрасывает споры в случайном направлении, которые при соприкосновении с поверхностью формируют ядовитые облака, наносящие урон и замедляющие цели в радиусе действия.",
   "tooltip.relics.spore_sack.ability.spore.stat.amount": "Количество спор: %1$s.",
-  "tooltip.relics.spore_sack.ability.spore.stat.slowness": "Уровень замедления: %1$s.",
   "tooltip.relics.spore_sack.ability.spore.stat.resize": "Скорость уменьшения: %1$s %% в секунду.",
 
   "item.relics.ice_breaker": "Ледоколы",
