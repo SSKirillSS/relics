@@ -368,7 +368,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
         if (entry == null)
             return false;
 
-        return RelicItem.getAbilityPoints(stack, ability) >= (entry.getMaxLevel() == -1 ? (relicData.getLevelingData().getMaxLevel() / entry.getRequiredPoints()) : entry.getMaxLevel());
+        return entry.getStats().size() == 0 || RelicItem.getAbilityPoints(stack, ability) >= (entry.getMaxLevel() == -1 ? (relicData.getLevelingData().getMaxLevel() / entry.getRequiredPoints()) : entry.getMaxLevel());
     }
 
     public static boolean mayUpgrade(ItemStack stack, String ability) {
@@ -390,7 +390,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
         if (entry == null)
             return false;
 
-        return !isAbilityMaxLevel(stack, ability) && RelicItem.getPoints(stack) >= entry.getRequiredPoints() && canUseAbility(stack, ability);
+        return entry.getStats().size() > 0 && !isAbilityMaxLevel(stack, ability) && RelicItem.getPoints(stack) >= entry.getRequiredPoints() && canUseAbility(stack, ability);
     }
 
     public static boolean mayPlayerUpgrade(Player player, ItemStack stack, String ability) {
@@ -425,7 +425,25 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static boolean mayReroll(ItemStack stack, String ability) {
-        return getRerollRequiredExperience(stack, ability) > 0 && canUseAbility(stack, ability);
+        if (!(stack.getItem() instanceof RelicItem relic))
+            return false;
+
+        RelicData relicData = relic.getRelicData();
+
+        if (relicData == null)
+            return false;
+
+        RelicAbilityData abilityData = relicData.getAbilityData();
+
+        if (abilityData == null)
+            return false;
+
+        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+
+        if (entry == null)
+            return false;
+
+        return entry.getStats().size() > 0 && getRerollRequiredExperience(stack, ability) > 0 && canUseAbility(stack, ability);
     }
 
     public static boolean mayPlayerReroll(Player player, ItemStack stack, String ability) {
@@ -441,7 +459,25 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static boolean mayPlayerReset(Player player, ItemStack stack, String ability) {
-        return mayReset(stack, ability) && player.totalExperience >= getResetRequiredExperience(stack, ability);
+        if (!(stack.getItem() instanceof RelicItem relic))
+            return false;
+
+        RelicData relicData = relic.getRelicData();
+
+        if (relicData == null)
+            return false;
+
+        RelicAbilityData abilityData = relicData.getAbilityData();
+
+        if (abilityData == null)
+            return false;
+
+        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+
+        if (entry == null)
+            return false;
+
+        return entry.getStats().size() > 0 && mayReset(stack, ability) && player.totalExperience >= getResetRequiredExperience(stack, ability);
     }
 
     /*

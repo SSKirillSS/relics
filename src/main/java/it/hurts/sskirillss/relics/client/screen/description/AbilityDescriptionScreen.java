@@ -110,8 +110,10 @@ public class AbilityDescriptionScreen extends Screen {
         int level = RelicItem.getAbilityPoints(stack, ability);
         int maxLevel = abilityData.getMaxLevel() == -1 ? (relicData.getLevelingData().getMaxLevel() / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
 
-        MutableComponent name = new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".ability." + ability)
-                .append(new TranslatableComponent("tooltip.relics.relic.ability.level", level, maxLevel == -1 ? "∞" : maxLevel));
+        MutableComponent name = new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".ability." + ability);
+
+        if (abilityData.getStats().size() > 0)
+            name.append(new TranslatableComponent("tooltip.relics.relic.ability.level", level, maxLevel == -1 ? "∞" : maxLevel));
 
         MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
 
