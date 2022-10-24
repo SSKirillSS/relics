@@ -61,9 +61,9 @@ public class DrownedBeltItem extends RelicItem {
                                 .build())
                         .ability("riptide", RelicAbilityEntry.builder()
                                 .stat("cooldown", RelicAbilityStat.builder()
-                                        .initialValue(20D, 40D)
-                                        .upgradeModifier("add", -2D)
-                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 0))))
+                                        .initialValue(5D, 10D)
+                                        .upgradeModifier("add", -0.5D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())
@@ -148,7 +148,7 @@ public class DrownedBeltItem extends RelicItem {
             if (duration < 10 || enchantment <= 0)
                 return;
 
-            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round((getAbilityValue(relic, "riptide", "cooldown") / (enchantment + 1)) * 20));
+            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getAbilityValue(relic, "riptide", "cooldown") * (enchantment + 1) * 20));
         }
     }
 }
