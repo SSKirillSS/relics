@@ -149,17 +149,17 @@ public class RelicDescriptionScreen extends Screen {
 
         List<FormattedCharSequence> lines = MC.font.split(description, 240);
 
+        pPoseStack.pushPose();
+
+        pPoseStack.scale(0.5F, 0.5F, 1F);
+
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
 
-            pPoseStack.pushPose();
-
-            pPoseStack.scale(0.5F, 0.5F, 0.5F);
-
-            MC.font.draw(pPoseStack, line, x * 2 + 128 * 2 - font.width(line) * 0.5F, y * 2 + i * 9 + 31 * 2 + (40 - (lines.size() * MC.font.lineHeight) / 2F), 0x412708);
-
-            pPoseStack.popPose();
+            MC.font.draw(pPoseStack, line, x * 2 + 128 * 2 - Math.round(font.width(line) / 2F), y * 2 + i * 9 + 31 * 2 + (40 - Math.round((lines.size() * MC.font.lineHeight) / 2F)), 0x412708);
         }
+
+        pPoseStack.popPose();
 
         int points = RelicItem.getPoints(stack);
 
