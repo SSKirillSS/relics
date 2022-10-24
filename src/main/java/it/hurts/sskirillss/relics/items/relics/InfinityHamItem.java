@@ -10,13 +10,13 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,6 +30,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class InfinityHamItem extends RelicItem {
     public static final String TAG_PIECES = "pieces";
@@ -50,7 +52,8 @@ public class InfinityHamItem extends RelicItem {
                         .ability("autophagy", RelicAbilityEntry.builder()
                                 .stat("feed", RelicAbilityStat.builder()
                                         .initialValue(1D, 2D)
-                                        .upgradeModifier("add", 0.5D)
+                                        .upgradeModifier("add", 0.25D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .ability("infusion", RelicAbilityEntry.builder()
@@ -58,6 +61,7 @@ public class InfinityHamItem extends RelicItem {
                                 .stat("duration", RelicAbilityStat.builder()
                                         .initialValue(1, 5)
                                         .upgradeModifier("add", 3)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .build())
@@ -107,7 +111,7 @@ public class InfinityHamItem extends RelicItem {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!DurabilityUtils.isBroken(stack) && NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
-                && player.getFoodData().needsFood())
+                && (player.getFoodData().needsFood() || player.isCreative()))
             player.startUsingItem(hand);
 
         return super.use(world, player, hand);
@@ -118,7 +122,7 @@ public class InfinityHamItem extends RelicItem {
         if (!(entity instanceof Player player))
             return;
 
-        if (!player.getFoodData().needsFood()) {
+        if (!player.getFoodData().needsFood() && !player.isCreative()) {
             player.stopUsingItem();
 
             return;
@@ -194,19 +198,25 @@ public class InfinityHamItem extends RelicItem {
             ItemStack slotStack = event.getSlotStack();
 
             if (!(heldStack.getItem() instanceof PotionItem) || !(slotStack.getItem() instanceof InfinityHamItem)
-                    || slotStack.getOrCreateTag().contains(InfinityHamItem.TAG_POTION) || !RelicItem.canUseAbility(slotStack, "infusion"))
+                    || !RelicItem.canUseAbility(slotStack, "infusion"))
                 return;
 
             CompoundTag tag = slotStack.getOrCreateTag();
-            ListTag list = tag.getList(InfinityHamItem.TAG_POTION, 9);
+            ListTag list = tag.getList(TAG_POTION, 9);
 
-            for (MobEffectInstance mobeffectinstance : PotionUtils.getMobEffects(heldStack))
-                list.add(mobeffectinstance.save(new CompoundTag()));
+            List<MobEffectInstance> effects = PotionUtils.getMobEffects(heldStack);
 
-            tag.put(InfinityHamItem.TAG_POTION, list);
+            if (effects.isEmpty()) {
+                NBTUtils.clearTag(slotStack, TAG_POTION);
+            } else {
+                for (MobEffectInstance effect : effects)
+                    list.add(effect.save(new CompoundTag()));
+
+                tag.put(TAG_POTION, list);
+            }
 
             player.containerMenu.setCarried(new ItemStack(Items.GLASS_BOTTLE));
-            player.level.playSound(null, player.blockPosition(), SoundEvents.BOTTLE_FILL, SoundSource.MASTER, 1F, 1F);
+            player.playSound(SoundEvents.BOTTLE_FILL, 1F, 1F);
 
             event.setCanceled(true);
         }
