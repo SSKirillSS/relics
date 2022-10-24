@@ -41,8 +41,11 @@ public abstract class MixinPiglinAi {
 
         if (!stack.isEmpty()) {
             for (int i = 0; i < Math.round(RelicItem.getAbilityValue(stack, "trade", "rolls")); i++) {
-                if (piglin.getRandom().nextBoolean())
+                if (piglin.getRandom().nextBoolean()) {
                     throwItems(piglin, getBarterResponseItems(piglin));
+
+                    RelicItem.addExperience(stack, 1);
+                }
             }
         } else
             throwItems(piglin, getBarterResponseItems(piglin));

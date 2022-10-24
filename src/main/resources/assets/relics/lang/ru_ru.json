@@ -137,6 +137,7 @@
   "tooltip.relics.ice_breaker.ability.impact.stat.damage": "Начальный урон: %1$s единиц.",
 
   "item.relics.bastion_ring": "Кольцо бастиона",
+  "tooltip.relics.bastion_ring.leveling": "+1/5/10 ед. опыта за каждого убитого Зомбифицированного пиглина/Пиглина/Брутального пиглина.\n+1 ед. опыта за каждый дополнительный торг от способности “Уважение”.",
   "tooltip.relics.bastion_ring.lore": "Сверкающее кольцо, созданное из полированного гранита и инкрустированное золотыми самородками.",
   "tooltip.relics.bastion_ring.ability.compass": "Признание",
   "tooltip.relics.bastion_ring.ability.compass.description": "Делает пиглинов нейтральными по отношению к носителю. Ближайший пиглин будет указывать на расположение бастиона неподалёку.",
