@@ -168,6 +168,9 @@ public class SpatialSignItem extends RelicItem {
 
                 ((ServerPlayer) player).connection.send(new ClientboundSetEntityMotionPacket(player.getId(), pos.add(0, 1, 0).subtract(player.position()).normalize().scale(speed)));
 
+                if (player.tickCount % 20 == 0)
+                    addExperience(player, stack, 1);
+
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 20, 0, false, false));
 
                 player.fallDistance = 0;
