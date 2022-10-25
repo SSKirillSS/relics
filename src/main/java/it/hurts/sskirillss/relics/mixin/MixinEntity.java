@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashMap;
@@ -125,10 +124,5 @@ public class MixinEntity {
 
         if (!EntityUtils.findEquippedCurio(entity, ItemRegistry.DROWNED_BELT.get()).isEmpty())
             info.setReturnValue(true);
-    }
-
-    @Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;isSteppingCarefully()Z"))
-    public boolean setSteppingCarefully(Entity entity) {
-        return !EntityUtils.findEquippedCurio(entity, ItemRegistry.ICE_BREAKER.get()).isEmpty() || entity.isShiftKeyDown();
     }
 }
