@@ -164,6 +164,7 @@
   "tooltip.relics.magma_walker.ability.pace.stat.heat": "Максимальный нагрев: %1$s.",
 
   "item.relics.aqua_walker": "Водоходы",
+  "tooltip.relics.aqua_walker.leveling": "+1 ед. опыта за каждые 5 единиц промокания от способности “Влагоустойчивость”.",
   "tooltip.relics.aqua_walker.lore": "Сотканные из былинной ткани морской глади ботинки, лёгкость которых осталась несравнимой ни с чем земным и по сей день.",
   "tooltip.relics.aqua_walker.ability.walking": "Влагоустойчивость",
   "tooltip.relics.aqua_walker.ability.walking.description": "В течение определенного времени позволяет передвигаться по поверхности воды, не проваливаясь в неё. По истечении запаса времени ботинки начинают тонуть, затягивая их носителя с собой под воду.",

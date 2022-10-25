@@ -30,7 +30,7 @@ public class AquaWalkerItem extends RelicItem {
                         .ability("walking", RelicAbilityEntry.builder()
                                 .stat("time", RelicAbilityStat.builder()
                                         .initialValue(30D, 60D)
-                                        .upgradeModifier("add", 5F)
+                                        .upgradeModifier("add", 5D)
                                         .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 0))))
                                         .build())
                                 .build())
@@ -64,8 +64,12 @@ public class AquaWalkerItem extends RelicItem {
                     || !event.getFluid().is(FluidTags.WATER) || player.isShiftKeyDown())
                 return;
 
-            if (player.tickCount % 20 == 0)
-                NBTUtils.setInt(stack, TAG_DRENCH, drench + 1);
+            if (player.tickCount % 20 == 0) {
+                NBTUtils.setInt(stack, TAG_DRENCH, ++drench);
+
+                if (drench % 5 == 0)
+                    addExperience(stack, 1);
+            }
 
             event.setCanceled(true);
         }
