@@ -135,7 +135,7 @@ public class ElytraBoosterItem extends RelicItem {
 
             int left = sum > capacity ? time - (sum - capacity) : time;
 
-            addExperience(slotStack, (int) Math.floor(left / 10F));
+            addExperience(player, slotStack, (int) Math.floor(left / 10F));
 
             ItemStack result = heldStack.getContainerItem();
 

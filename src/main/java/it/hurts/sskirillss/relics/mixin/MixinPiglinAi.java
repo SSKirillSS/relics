@@ -44,7 +44,7 @@ public abstract class MixinPiglinAi {
                 if (piglin.getRandom().nextBoolean()) {
                     throwItems(piglin, getBarterResponseItems(piglin));
 
-                    RelicItem.addExperience(stack, 1);
+                    RelicItem.addExperience(optional.get(), stack, 1);
                 }
             }
         } else

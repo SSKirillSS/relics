@@ -68,7 +68,7 @@ public class HolyLocketItem extends RelicItem {
                 level.addFreshEntity(essence);
 
                 if (event.getAmount() >= 1)
-                    addExperience(stack, 1 + Math.round(amount));
+                    addExperience(player, stack, 1 + Math.round(amount));
 
                 event.setAmount(event.getAmount() - amount);
             }

@@ -174,7 +174,7 @@ public class HorseFluteItem extends RelicItem {
         Vec3 pos = horse.position();
 
         if (NBTUtils.getString(stack, TAG_UUID, "").equals(horse.getUUID().toString()) && horse.walkDist > 25) {
-            addExperience(stack, Math.round(horse.walkDist / 25));
+            addExperience(player, stack, Math.round(horse.walkDist / 25));
 
             horse.walkDist = 0;
         }

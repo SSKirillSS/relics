@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics.base;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
+import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
@@ -17,6 +18,7 @@ import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -28,6 +30,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -560,7 +563,24 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static void addExperience(ItemStack stack, int amount) {
-        setExperience(stack, getExperience(stack) + amount);
+        ExperienceAddEvent event = new ExperienceAddEvent(null, stack, amount);
+
+        MinecraftForge.EVENT_BUS.post(event);
+
+        if (!event.isCanceled())
+            setExperience(stack, getExperience(stack) + event.getAmount());
+    }
+
+    public static void addExperience(Entity entity, ItemStack stack, int amount) {
+        if (!(entity instanceof Player player))
+            return;
+
+        ExperienceAddEvent event = new ExperienceAddEvent(player, stack, amount);
+
+        MinecraftForge.EVENT_BUS.post(event);
+
+        if (!event.isCanceled())
+            setExperience(stack, getExperience(stack) + event.getAmount());
     }
 
     public static int getExperienceLeftForLevel(ItemStack stack, int level) {

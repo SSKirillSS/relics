@@ -111,7 +111,7 @@ public class EnderHandItem extends RelicItem {
 
                     int distance = (int) Math.round(targetPos.distanceTo(currentPos));
 
-                    addExperience(stack, 1 + Math.round(distance * 0.1F));
+                    addExperience(player, stack, 1 + Math.round(distance * 0.1F));
 
                     player.getCooldowns().addCooldown(this, 20);
 

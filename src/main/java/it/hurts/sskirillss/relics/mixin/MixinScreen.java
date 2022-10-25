@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.mixin;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.hurts.sskirillss.relics.api.events.common.EventDispatcher;
+import it.hurts.sskirillss.relics.api.events.utils.EventDispatcher;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;

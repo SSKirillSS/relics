@@ -171,7 +171,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         if (stack.isEmpty())
             return;
 
-        RelicItem.addExperience(stack, (int) Math.floor(entityData.get(BOUNCES) / 2F));
+        RelicItem.addExperience(this.getOwner() instanceof Player player ? player : null, stack, (int) Math.floor(entityData.get(BOUNCES) / 2F));
     }
 
     @Override

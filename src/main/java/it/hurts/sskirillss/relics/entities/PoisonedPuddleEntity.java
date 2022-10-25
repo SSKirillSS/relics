@@ -88,11 +88,12 @@ public class PoisonedPuddleEntity extends ThrowableProjectile {
             entity.addEffect(new MobEffectInstance(MobEffects.POISON, entity.getEffect(MobEffects.POISON) == null ? 20 : entity.getEffect(MobEffects.POISON).getDuration() + 2, 0));
             entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, entity.getEffect(MobEffects.MOVEMENT_SLOWDOWN) == null ? 20 : entity.getEffect(MobEffects.MOVEMENT_SLOWDOWN).getDuration() + 2, 0));
 
-            if (this.getOwner() instanceof Player player)
+            if (this.getOwner() instanceof Player player) {
                 entity.setLastHurtByPlayer(player);
 
-            if (this.tickCount % 20 == 0)
-                RelicItem.addExperience(stack, 1);
+                if (this.tickCount % 20 == 0)
+                    RelicItem.addExperience(player, stack, 1);
+            }
         }
 
         for (PoisonedPuddleEntity puddle : level.getEntitiesOfClass(PoisonedPuddleEntity.class, this.getBoundingBox())) {

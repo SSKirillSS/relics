@@ -68,7 +68,7 @@ public class HunterBeltItem extends RelicItem {
             if (stack.isEmpty())
                 return;
 
-            addExperience(stack, 1);
+            addExperience(player, stack, 1);
 
             event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "training", "damage")));
         }

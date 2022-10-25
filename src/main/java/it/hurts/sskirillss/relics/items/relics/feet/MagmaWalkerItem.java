@@ -90,7 +90,7 @@ public class MagmaWalkerItem extends RelicItem {
                 NBTUtils.setInt(stack, TAG_HEAT, ++heat);
 
                 if (heat % 5 == 0)
-                    addExperience(stack, 1);
+                    addExperience(player, stack, 1);
             }
 
             event.setCanceled(true);

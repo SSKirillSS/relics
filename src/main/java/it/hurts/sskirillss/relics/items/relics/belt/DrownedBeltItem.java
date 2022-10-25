@@ -148,7 +148,7 @@ public class DrownedBeltItem extends RelicItem {
             if (duration < 10 || enchantment <= 0)
                 return;
 
-            addExperience(relic, enchantment);
+            addExperience(player, relic, enchantment);
 
             player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getAbilityValue(relic, "riptide", "cooldown") * enchantment * 20));
         }

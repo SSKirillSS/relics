@@ -68,7 +68,7 @@ public class JellyfishNecklaceItem extends RelicItem {
                 continue;
 
             if (entity.hurt(DamageSource.playerAttack(player), (float) getAbilityValue(stack, "shock", "damage"))) {
-                addExperience(stack, 1);
+                addExperience(player, stack, 1);
 
                 if (canUseAbility(stack, "paralysis"))
                     entity.addEffect(new MobEffectInstance(EffectRegistry.PARALYSIS.get(), (int) Math.round(getAbilityValue(stack, "paralysis", "duration") * 20), 0));

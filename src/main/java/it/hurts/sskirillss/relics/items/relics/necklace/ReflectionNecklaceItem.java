@@ -95,7 +95,7 @@ public class ReflectionNecklaceItem extends RelicItem {
                 }
             }
 
-            addExperience(stack, (int) Math.floor(charge * 0.05F));
+            addExperience(player, stack, (int) Math.floor(charge * 0.05F));
 
             NBTUtils.setDouble(stack, TAG_CHARGE, 0);
             NBTUtils.setInt(stack, TAG_TIME, 0);

@@ -105,7 +105,7 @@ public class MagicMirrorItem extends RelicItem {
 
         world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
-        addExperience(stack, (int) (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
+        addExperience(player, stack, (int) (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
                 * DimensionType.getTeleportationScale(player.level.dimensionType(), data.getLeft().dimensionType()))) / 100));
 
         return stack;

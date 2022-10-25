@@ -68,7 +68,7 @@ public class AquaWalkerItem extends RelicItem {
                 NBTUtils.setInt(stack, TAG_DRENCH, ++drench);
 
                 if (drench % 5 == 0)
-                    addExperience(stack, 1);
+                    addExperience(player, stack, 1);
             }
 
             event.setCanceled(true);

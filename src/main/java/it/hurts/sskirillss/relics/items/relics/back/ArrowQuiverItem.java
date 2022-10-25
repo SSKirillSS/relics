@@ -373,7 +373,7 @@ public class ArrowQuiverItem extends RelicItem {
             int amount = (int) Math.min(10, Math.round(player.position().distanceTo(new Vec3(arrow.getX(), player.getY(), arrow.getZ())) * 0.1));
 
             if (amount > 0)
-                RelicItem.addExperience(stack, amount);
+                RelicItem.addExperience(player, stack, amount);
         }
     }
 }

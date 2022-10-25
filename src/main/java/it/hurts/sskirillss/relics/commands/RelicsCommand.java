@@ -83,7 +83,7 @@ public class RelicsCommand {
                                                 return 0;
                                             }
 
-                                            RelicItem.addExperience(stack, IntegerArgumentType.getInteger(context, "experience"));
+                                            RelicItem.addExperience(player, stack, IntegerArgumentType.getInteger(context, "experience"));
 
                                             return Command.SINGLE_SUCCESS;
                                         }))))
