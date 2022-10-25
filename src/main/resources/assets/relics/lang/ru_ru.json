@@ -1,6 +1,9 @@
 {
   "itemGroup.relics": "Реликвии",
 
+  "curios.identifier.talisman": "Талисман",
+  "curios.identifier.feet": "Ноги",
+
   "tooltip.relics.relic.level": " [%1$s/%2$s]",
   "tooltip.relics.relic.max_level": "-= MAX =-",
   "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
@@ -249,6 +252,7 @@
   "tooltip.relics.chorus_inhibitor.ability.blink.stat.cooldown": "Время перезарядки: %1$s секунд.",
 
   "item.relics.wool_mitten": "Шерстяная рукавица",
+  "item.relics.solid_snowball": "Заледенелый снежок",
   "tooltip.relics.wool_mitten.leveling": "+1 ед. опыта за каждые 5 единиц снега при попадании снежком от способности “Лепка”.",
   "tooltip.relics.wool_mitten.lore": "Перчатка, в основу которой легла шерсть убитого горного йети. Сохраняя тепло внутри, она способна создавать обжигающий холод снаружи.",
   "tooltip.relics.wool_mitten.ability.mold": "Лепка",
@@ -264,5 +268,14 @@
   "tooltip.relics.roller_skates.ability.skating": "Разгон",
   "tooltip.relics.roller_skates.ability.skating.description": "Увеличивает скорость передвижения в зависимости от её продолжительности.",
   "tooltip.relics.roller_skates.ability.skating.stat.speed": "Множитель скорости: %1$s %% за секунду разгона.",
-  "tooltip.relics.roller_skates.ability.skating.stat.duration": "Максимальное количество множителей: %1$s."
+  "tooltip.relics.roller_skates.ability.skating.stat.duration": "Максимальное количество множителей: %1$s.",
+
+  "block.relics.researching_table": "Стол исследователя",
+
+  "effect.relics.stun": "Оглушение",
+  "effect.relics.paralisys": "Паралич",
+  "effect.relics.confusion": "Запутывание",
+  "effect.relics.vanishing": "Исчезновение",
+
+  "command.relics.base.not_relic": "Предмет в руке должен являться реликвией!"
 }
