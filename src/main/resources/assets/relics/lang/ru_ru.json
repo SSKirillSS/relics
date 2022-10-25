@@ -81,9 +81,9 @@
   "tooltip.relics.blazing_flask.lore": "Продукт работы инженеров цивилизации пиглинов. При испытании первого прототипа превратил багровый лес в пустошь.",
   "tooltip.relics.blazing_flask.ability.bonfire": "Вечный огонь",
   "tooltip.relics.blazing_flask.ability.bonfire.description": "Использование реликвии на блоке создаст зону ограниченного полёта, размер которой зависит от количества огня поблизости.",
-  "tooltip.relics.blazing_flask.ability.bonfire.stat.step": "Радиус обнаружения огня: %1$s.",
-  "tooltip.relics.blazing_flask.ability.bonfire.stat.speed": "Скорость полёта: %1$s.",
-  "tooltip.relics.blazing_flask.ability.bonfire.stat.height": "Высота полёта: %1$s.",
+  "tooltip.relics.blazing_flask.ability.bonfire.stat.step": "Радиус обнаружения огня: %1$s блоков.",
+  "tooltip.relics.blazing_flask.ability.bonfire.stat.speed": "Скорость полёта: %1$s блоков в секунду.",
+  "tooltip.relics.blazing_flask.ability.bonfire.stat.height": "Высота полёта: %1$s блоков.",
 
   "item.relics.elytra_booster": "Ускоритель элитр",
   "tooltip.relics.elytra_booster.leveling": "+1 ед. опыта за каждые 10 секунд горения топлива при помещении его во внутренний буфер реликвии от способности “Ускорение”.",

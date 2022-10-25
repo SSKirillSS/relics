@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -21,6 +22,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
@@ -38,7 +42,7 @@ public class BlazingFlaskItem extends RelicItem {
                         .ability("bonfire", RelicAbilityEntry.builder()
                                 .stat("step", RelicAbilityStat.builder()
                                         .initialValue(1, 3)
-                                        .upgradeModifier("add", 0.5D)
+                                        .upgradeModifier("add", 0.25D)
                                         .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("speed", RelicAbilityStat.builder()
@@ -101,6 +105,11 @@ public class BlazingFlaskItem extends RelicItem {
                     Vec3 motion = player.getDeltaMovement();
 
                     double height = getAbilityValue(stack, "bonfire", "height");
+
+                    if (player.getY() - height > getGroundHeight(player)) {
+                        player.setDeltaMovement(motion.x(), motion.y() - Math.min(player.getY() - height
+                                - getGroundHeight(player), 2) / 8, motion.z());
+                    }
 
                     if (!player.isShiftKeyDown() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping)
                         player.setDeltaMovement(motion.x(), Math.min(0.3, 0.04 * ((getGroundHeight(player)
@@ -214,5 +223,24 @@ public class BlazingFlaskItem extends RelicItem {
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
+    }
+
+    @Mod.EventBusSubscriber
+    public static class Events {
+        @SubscribeEvent
+        public static void onItemToss(ItemTossEvent event) {
+            ItemStack stack = event.getEntityItem().getItem();
+            Player player = event.getPlayer();
+
+            if (player.isCreative())
+                return;
+
+            if (stack.getItem() == ItemRegistry.BLAZING_FLASK.get() && !NBTUtils.getString(stack, TAG_POSITION, "").isEmpty()) {
+                player.getAbilities().flying = false;
+                player.getAbilities().mayfly = false;
+
+                player.onUpdateAbilities();
+            }
+        }
     }
 }
