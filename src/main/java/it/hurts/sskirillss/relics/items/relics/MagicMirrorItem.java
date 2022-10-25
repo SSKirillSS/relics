@@ -98,15 +98,15 @@ public class MagicMirrorItem extends RelicItem {
 
         Vec3 pos = data.getRight();
 
+        addExperience(player, stack, (int) (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
+                * DimensionType.getTeleportationScale(player.level.dimensionType(), data.getLeft().dimensionType()))) / 100));
+
         player.teleportTo(data.getLeft(), pos.x() + 0.5F, pos.y() + 1.0F, pos.z() + 0.5F, player.getYRot(), player.getXRot());
 
         if (!player.isCreative())
             player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getAbilityValue(stack, "teleport", "cooldown") * 20));
 
         world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
-
-        addExperience(player, stack, (int) (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
-                * DimensionType.getTeleportationScale(player.level.dimensionType(), data.getLeft().dimensionType()))) / 100));
 
         return stack;
     }
@@ -194,11 +194,8 @@ public class MagicMirrorItem extends RelicItem {
         Vec3 pos = data.getRight();
         ServerLevel level = data.getLeft();
 
-        if (player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.level.dimensionType(),
-                level.dimensionType()) > getAbilityValue(stack, "teleport", "distance"))
-            return false;
-
-        return true;
+        return !(player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.level.dimensionType(),
+                level.dimensionType()) > getAbilityValue(stack, "teleport", "distance"));
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
