@@ -84,8 +84,14 @@ public class MagmaWalkerItem extends RelicItem {
                     || !event.getFluid().is(FluidTags.LAVA) || player.isShiftKeyDown())
                 return;
 
-            if (player.tickCount % 20 == 0)
-                NBTUtils.setInt(stack, TAG_HEAT, NBTUtils.getInt(stack, TAG_HEAT, 0) + 1);
+            if (player.tickCount % 20 == 0) {
+                int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
+
+                NBTUtils.setInt(stack, TAG_HEAT, ++heat);
+
+                if (heat % 5 == 0)
+                    addExperience(stack, 1);
+            }
 
             event.setCanceled(true);
         }
