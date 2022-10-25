@@ -125,6 +125,8 @@ public class ChorusInhibitorItem extends RelicItem {
             if (pos == null)
                 return;
 
+            addExperience(player, stack, (int) Math.floor(player.position().distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ())) / 10F));
+
             player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
             player.getLevel().playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1F, 1F);
             player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, Math.max((int) Math.round(getAbilityValue(stack, "blink", "cooldown") * 20D), 0));

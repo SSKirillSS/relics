@@ -240,6 +240,7 @@
   "tooltip.relics.spatial_sign.ability.seal.stat.duration": "Максимальная продолжительность %1$s секунд.",
 
   "item.relics.chorus_inhibitor": "Хорусовый ингибитор",
+  "tooltip.relics.chorus_inhibitor.leveling": "+1 ед. опыта за каждые 10 блоков до точки телепортации от способности “Контроль телепортации”.",
   "tooltip.relics.chorus_inhibitor.lore": "Соцветие неизвестного растения, способное самостоятельно передвигаться благодаря своим щупальцам. Обожает хорусовые плоды. Несмотря на своё происхождение имеет ряд обезображенных человеческих черт.",
   "tooltip.relics.chorus_inhibitor.ability.blink": "Контроль телепортации",
   "tooltip.relics.chorus_inhibitor.ability.blink.description": "Использование плода хоруса телепортирует игрока на блок по линии взгляда в пределах досягаемости.",
