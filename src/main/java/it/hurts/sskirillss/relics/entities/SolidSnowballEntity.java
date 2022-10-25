@@ -44,14 +44,10 @@ public class SolidSnowballEntity extends ThrowableProjectile {
 
     public SolidSnowballEntity(EntityType<? extends ThrowableProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-
-        setSize(50);
     }
 
     public SolidSnowballEntity(Level level) {
         super(EntityRegistry.SOLID_SNOWBALL.get(), level);
-
-        setSize(50);
     }
 
     @Override
@@ -115,6 +111,11 @@ public class SolidSnowballEntity extends ThrowableProjectile {
             if (!entity.getStringUUID().equals(owner.getStringUUID()))
                 entity.setTicksFrozen((int) (100 + Math.round(getSize() * RelicItem.getAbilityValue(EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get()), "mold", "freeze"))));
         }
+
+        ItemStack stack = EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get());
+
+        if (!stack.isEmpty())
+            RelicItem.addExperience(owner, stack, (int) Math.floor(getSize() / 5F));
 
         this.level.playSound(null, this.blockPosition(), SoundEvents.SNOW_BREAK, SoundSource.MASTER, 1F, 0.5F);
     }
