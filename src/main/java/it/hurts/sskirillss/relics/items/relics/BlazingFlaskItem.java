@@ -25,7 +25,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
 import java.util.List;
@@ -97,6 +96,9 @@ public class BlazingFlaskItem extends RelicItem {
                 }
 
                 if (player.getAbilities().flying) {
+                    if (player.tickCount % 100 == 0)
+                        addExperience(player, stack, 1);
+
                     double speed = Math.min(1D, getAbilityValue(stack, "bonfire", "speed"));
 
                     if (player.zza != 0 || player.xxa != 0 || player.yya != 0)
@@ -204,20 +206,6 @@ public class BlazingFlaskItem extends RelicItem {
                 .stream().filter(pos -> (level.getBlockState(pos).getBlock() instanceof BaseFireBlock)).toList();
 
         return positions.size();
-    }
-
-    @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
-            return;
-
-        if (player.isCreative() || player.isSpectator())
-            return;
-
-        player.getAbilities().mayfly = false;
-        player.getAbilities().flying = false;
-
-        player.onUpdateAbilities();
     }
 
     @Override

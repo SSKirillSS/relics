@@ -78,6 +78,7 @@
   "tooltip.relics.arrow_quiver.ability.agility.stat.modifier": "Множитель скорости: %1$s %%.",
 
   "item.relics.blazing_flask": "Пылающий флакон",
+  "tooltip.relics.blazing_flask.leveling": "+1 ед. опыта за каждые 5 секунд полёта внутри области действия способности “Вечный огонь”.",
   "tooltip.relics.blazing_flask.lore": "Продукт работы инженеров цивилизации пиглинов. При испытании первого прототипа превратил багровый лес в пустошь.",
   "tooltip.relics.blazing_flask.ability.bonfire": "Вечный огонь",
   "tooltip.relics.blazing_flask.ability.bonfire.description": "Использование реликвии на блоке создаст зону ограниченного полёта, размер которой зависит от количества огня поблизости.",
