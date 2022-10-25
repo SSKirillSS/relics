@@ -134,8 +134,9 @@
   "tooltip.relics.spore_sack.ability.spore.stat.resize": "Скорость уменьшения: %1$s %% в секунду.",
 
   "item.relics.ice_breaker": "Ледоколы",
+  "tooltip.relics.ice_breaker.leveling": "+1 ед. опыта за каждые 3 блока в падении от способности «Землетрясение».",
   "tooltip.relics.ice_breaker.lore": "Сшитая из шкуры бурого медведя обувь со стальными пластинами и шипами, предназначенная для передвижения по ледникам и обледенелым холмам.",
-  "tooltip.relics.ice_breaker.ability.sustainability": "Устройчивость",
+  "tooltip.relics.ice_breaker.ability.sustainability": "Устойчивость",
   "tooltip.relics.ice_breaker.ability.sustainability.description": "Повышает сопротивление отдаче и убирает скольжение на блоках, а также увеличивает скорость падения.",
   "tooltip.relics.ice_breaker.ability.sustainability.stat.modifier": "Сопротивление отдаче: %1$s %%.",
   "tooltip.relics.ice_breaker.ability.impact": "Землетрясение",

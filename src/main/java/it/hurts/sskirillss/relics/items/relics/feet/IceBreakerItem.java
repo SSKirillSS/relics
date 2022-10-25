@@ -114,6 +114,8 @@ public class IceBreakerItem extends RelicItem {
             if (distance < 2 || !player.isShiftKeyDown())
                 return;
 
+            addExperience(player, stack, Math.min(10, Math.round(distance / 3F)));
+
             ShockwaveEntity shockwave = new ShockwaveEntity(world,
                     (int) Math.round(Math.min(getAbilityValue(stack, "impact", "size"), distance * 0.25D)),
                     (float) getAbilityValue(stack, "impact", "damage"));
