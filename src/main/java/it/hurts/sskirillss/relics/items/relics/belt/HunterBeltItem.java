@@ -37,7 +37,7 @@ public class HunterBeltItem extends RelicItem {
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(1.25D, 2D)
                                         .upgradeModifier("add", 0.25F)
-                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 1) * 100)))
+                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 3) * 100)))
                                         .build())
                                 .build())
                         .build())
@@ -67,6 +67,8 @@ public class HunterBeltItem extends RelicItem {
 
             if (stack.isEmpty())
                 return;
+
+            addExperience(stack, 1);
 
             event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "training", "damage")));
         }
