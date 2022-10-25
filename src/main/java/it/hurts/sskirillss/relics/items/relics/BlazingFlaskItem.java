@@ -72,8 +72,12 @@ public class BlazingFlaskItem extends RelicItem {
 
         int fire = getFireAround(stack, world);
 
-        if (!player.isSpectator() && !player.isCreative())
+        if (!player.isSpectator() && !player.isCreative()) {
             player.getAbilities().mayfly = fire > 0;
+            player.getAbilities().flying = fire > 0;
+
+            player.onUpdateAbilities();
+        }
 
         if (fire <= 0) {
             NBTUtils.clearTag(stack, TAG_POSITION);
