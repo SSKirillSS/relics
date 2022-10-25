@@ -214,6 +214,7 @@
   "tooltip.relics.rage_glove.ability.rage.stat.attack_speed": "Множитель скорости атаки: %1$s %% за заряд.",
 
   "item.relics.ice_skates": "Ледовые коньки",
+  "tooltip.relics.ice_skates.leveling": "+1 ед. опыта за каждую секунду ускорения от способности “Скольжение”.",
   "tooltip.relics.ice_skates.lore": "С виду обычные коньки, истинные способности которых раскрываются лишь при использовании, а острые как бритва лезвия способны рассекать не только лёд, но и плоть.",
   "tooltip.relics.ice_skates.ability.skating": "Скольжение",
   "tooltip.relics.ice_skates.ability.skating.description": "Увеличивает скорость передвижения по льду в зависимости от продолжительности скольжения.",
