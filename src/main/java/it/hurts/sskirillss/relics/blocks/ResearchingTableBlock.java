@@ -24,6 +24,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 public class ResearchingTableBlock extends Block implements EntityBlock {
@@ -53,12 +55,8 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
             tile.setStack(handStack.split(1));
         } else {
             if (player.isShiftKeyDown()) {
-                try {
-                    if (world.isClientSide())
-                        Minecraft.getInstance().setScreen(new RelicDescriptionScreen(pos, tileStack));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                if (world.isClientSide())
+                    openGui(pos, tileStack);
             } else {
                 world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), tileStack));
 
@@ -71,6 +69,11 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
         world.sendBlockUpdated(pos, state, world.getBlockState(pos), 3);
 
         return InteractionResult.SUCCESS;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void openGui(BlockPos pos, ItemStack stack) {
+        Minecraft.getInstance().setScreen(new RelicDescriptionScreen(pos, stack));
     }
 
     @Override
