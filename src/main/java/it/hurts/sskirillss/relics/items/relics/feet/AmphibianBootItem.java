@@ -47,6 +47,9 @@ public class AmphibianBootItem extends RelicItem {
         int duration = NBTUtils.getInt(stack, TAG_DURATION, 0);
 
         if (player.isSwimming()) {
+            if (player.tickCount % 20 == 0)
+                addExperience(player, stack, 1);
+
             if (duration < 100)
                 NBTUtils.setInt(stack, TAG_DURATION, duration + 1);
         } else if (duration > 0)
