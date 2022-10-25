@@ -76,6 +76,8 @@ public class RageGloveItem extends RelicItem {
         else {
             NBTUtils.setInt(stack, TAG_STACKS, 0);
 
+            addExperience(player, stack, (int) Math.floor(stacks / 3F));
+
             EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
             EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
         }
