@@ -15,6 +15,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,7 +29,9 @@ import org.jetbrains.annotations.Nullable;
 public class ResearchingTableBlock extends Block implements EntityBlock {
     public ResearchingTableBlock() {
         super(Properties.of(Material.WOOD)
-                .strength(4.0F)
+                .lightLevel((s) -> 15)
+                .strength(1.5F)
+                .sound(SoundType.WOOD)
                 .noOcclusion());
     }
 
@@ -72,6 +75,8 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
 
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), this.asItem().getDefaultInstance()));
+
         if (!state.is(newState.getBlock()) && worldIn.getBlockEntity(pos) instanceof ResearchingTableTile tile) {
             ItemStack stack = tile.getStack();
 
