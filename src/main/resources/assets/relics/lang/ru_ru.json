@@ -31,6 +31,8 @@
   "item.relics.enders_hand": "Рука Края",
   "tooltip.relics.enders_hand.leveling": "+1 ед. опыта за использование способности \"Транспозиция Края\" + 10% от расстояния до цели при использовании.",
   "tooltip.relics.enders_hand.lore": "Перчатка, выкованная затерянной цивилизацией Края. Она же и обрекла эту цивилизацию на гибель.",
+  "tooltip.relics.enders_hand.ability.neutrality": "Нейтралитет",
+  "tooltip.relics.enders_hand.ability.neutrality.description": "Делает эндерменов нейтральными по отношению к носителю.",
   "tooltip.relics.enders_hand.ability.swap": "Транспозиция Края",
   "tooltip.relics.enders_hand.ability.swap.description": "Использование меняет местами носителя и цель.",
   "tooltip.relics.enders_hand.ability.swap.stat.distance": "Дистанция: %1$s блоков.",
