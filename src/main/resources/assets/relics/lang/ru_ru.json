@@ -171,6 +171,7 @@
   "tooltip.relics.aqua_walker.ability.walking.stat.time": "Продолжительность: %1$s секунд.",
 
   "item.relics.drowned_belt": "Пояс утопленника",
+  "tooltip.relics.drowned_belt.leveling": "+1 ед. опыта за каждый уровень зачарования “Тягун” на трезубце при его использовании.",
   "tooltip.relics.drowned_belt.lore": "Фрагмент кандалов узника затопленной тюрьмы, чьё обезображенное тело поднялось на сушу во время шествия мертвецов под светом кровавого полнолуния.",
   "tooltip.relics.drowned_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.drowned_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
