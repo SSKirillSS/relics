@@ -4,6 +4,7 @@ import it.hurts.sskirillss.relics.api.durability.IRepairableItem;
 import it.hurts.sskirillss.relics.api.leveling.ILeveledItem;
 import it.hurts.sskirillss.relics.client.tooltip.base.AbilityTooltip;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicTooltip;
+import it.hurts.sskirillss.relics.configs.RelicsConfig;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
@@ -186,7 +187,8 @@ public class TooltipDescriptionHandler {
     private static List<ITextComponent> getDurabilityTooltip(ItemStack stack) {
         List<ITextComponent> tooltip = new ArrayList<>();
 
-        if (!(stack.getItem() instanceof IRepairableItem) || DurabilityUtils.isBroken(stack))
+        if (!(stack.getItem() instanceof IRepairableItem) || DurabilityUtils.isBroken(stack)
+                || !RelicsConfig.ENABLE_RELICS_DURABILITY.get())
             return tooltip;
 
         tooltip.add((new StringTextComponent("   ◆ ")
