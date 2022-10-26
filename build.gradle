@@ -76,7 +76,7 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.13'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.26'
 
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.6.8")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.6.8:api")
