@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -62,6 +63,10 @@ public class GhostSkinTalismanItem extends RelicItem<GhostSkinTalismanItem.Stats
     public static class Events {
         @SubscribeEvent
         public static void onProjectileImpact(ProjectileImpactEvent event) {
+            if (event.getEntity() instanceof AbstractArrowEntity &&
+                    ((AbstractArrowEntity) event.getEntity()).getPierceLevel() > 0)
+                return;
+
             RayTraceResult ray = event.getRayTraceResult();
 
             if (ray.getType() != RayTraceResult.Type.ENTITY)
