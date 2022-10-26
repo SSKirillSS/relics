@@ -170,10 +170,10 @@ public class ArrowQuiverItem extends RelicItem<ArrowQuiverItem.Stats> implements
 
             AbstractArrowEntity projectile = ((ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW)).createArrow(world, ammo, player);
 
-            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, bow) <= 0 && !player.isCreative()) {
-                projectile.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, bow) <= 0 && !player.isCreative())
                 ammo.shrink(1);
-            }
+            else
+                projectile.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
 
             projectile.shootFromRotation(player, player.xRot, player.yRot, 0.0F, BowItem.getPowerForTime(event.getCharge()) * 3F, 0F);
             world.addFreshEntity(projectile);
