@@ -27,6 +27,11 @@ public class PedestalTile extends TileBase implements ITickableTileEntity {
 
     public void setStack(ItemStack stack) {
         this.stack = stack;
+
+        BlockPos pos = this.getBlockPos();
+
+        if (level != null)
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
     }
 
     public ItemStack getStack() {

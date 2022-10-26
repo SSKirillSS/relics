@@ -66,6 +66,11 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
                 this.relicStack = stack;
                 break;
         }
+
+        BlockPos pos = this.getBlockPos();
+
+        if (level != null)
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
     }
 
     public ItemStack getStack(Direction direction) {
@@ -95,6 +100,11 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
 
     public void setCraftingProgress(int progress) {
         this.progress = Math.min(100, progress);
+
+        BlockPos pos = this.getBlockPos();
+
+        if (level != null)
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
     }
 
     public int getCraftingProgress() {
@@ -107,6 +117,11 @@ public class RunicAltarTile extends TileBase implements ITickableTileEntity {
 
     public void setIngredient(ItemStack ingredient) {
         this.ingredient = ingredient;
+
+        BlockPos pos = this.getBlockPos();
+
+        if (level != null)
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
     }
 
     @Override

@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
@@ -89,6 +90,11 @@ public class RunicAnvilTile extends TileBase implements ITickableTileEntity {
 
         stack.shrink(1);
 
+        BlockPos pos = this.getBlockPos();
+
+        if (level != null)
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
+
         return true;
     }
 
@@ -108,6 +114,11 @@ public class RunicAnvilTile extends TileBase implements ITickableTileEntity {
         world.addFreshEntity(item);
 
         handler.extractItem(slot, 1, false);
+
+        BlockPos pos = this.getBlockPos();
+
+        if (level != null)
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
 
         return true;
     }
