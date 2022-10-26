@@ -16,7 +16,11 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,8 +31,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +45,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -159,6 +166,13 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
     public RelicStyleData getStyle(ItemStack stack) {
         return null;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> tooltip, TooltipFlag pIsAdvanced) {
+        tooltip.add(new TextComponent(" "));
+
+        tooltip.add(new TranslatableComponent("tooltip.relics.relic.table").withStyle(ChatFormatting.GRAY));
     }
 
     public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
