@@ -1,14 +1,15 @@
 package it.hurts.sskirillss.relics.client.screen.description;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityRerollButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityResetButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityUpgradeButtonWidget;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.ChatFormatting;
@@ -25,6 +26,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.Set;
@@ -117,7 +119,7 @@ public class AbilityDescriptionScreen extends Screen {
 
         MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
 
-        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".ability." + ability + ".description"), 320);
+        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".ability." + ability + ".description"), 318);
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
@@ -126,7 +128,7 @@ public class AbilityDescriptionScreen extends Screen {
 
             pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-            MC.font.draw(pPoseStack, line, x * 2 + 65 * 2, y * 2 + i * 9 + 33 * 2, 0x412708);
+            MC.font.draw(pPoseStack, line, x * 2 + 66 * 2, y * 2 + i * 9 + 33 * 2, 0x412708);
 
             pPoseStack.popPose();
         }
@@ -243,6 +245,28 @@ public class AbilityDescriptionScreen extends Screen {
 
             MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 39, 0xFFFFFF);
         }
+
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + stack.getItem().getRegistryName().getPath() + "/" + ability + ".png");
+
+        RenderSystem.setShaderTexture(0, card);
+
+        manager.bindForSetup(card);
+
+        if (GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT) == 29) {
+            pPoseStack.pushPose();
+
+            pPoseStack.scale(1.5F, 1.5F, 1.5F);
+
+            blit(pPoseStack, x - 18, y + 5, 0, 0, 20, 29, 20, 29);
+
+            pPoseStack.popPose();
+        }
+
+        RenderSystem.setShaderTexture(0, TEXTURE);
+
+        manager.bindForSetup(TEXTURE);
+
+        blit(pPoseStack, x + 26, y + 25, 356, 0, 38, 48, texWidth, texHeight);
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
     }
