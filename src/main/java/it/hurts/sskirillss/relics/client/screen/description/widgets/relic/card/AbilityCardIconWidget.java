@@ -68,9 +68,14 @@ public class AbilityCardIconWidget extends AbstractButton {
 
         manager.bindForSetup(card);
 
-        if (GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT) == 29)
-            blit(poseStack, x + 3, y + 3, 2, 2, 20, 29, 24, 33);
+        if (GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT) == 29) {
+            if (!RelicItem.canUseAbility(screen.stack, ability))
+                RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
 
+            blit(poseStack, x + 3, y + 3, 2, 2, 20, 29, 24, 33);
+        }
+
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, RelicDescriptionScreen.TEXTURE);
 
         manager.bindForSetup(RelicDescriptionScreen.TEXTURE);

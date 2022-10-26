@@ -252,15 +252,8 @@ public class AbilityDescriptionScreen extends Screen {
 
         manager.bindForSetup(card);
 
-        if (GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT) == 29) {
-            pPoseStack.pushPose();
-
-            pPoseStack.scale(1.5F, 1.5F, 1.5F);
-
-            blit(pPoseStack, x - 18, y + 5, 0, 0, 20, 29, 20, 29);
-
-            pPoseStack.popPose();
-        }
+        if (GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT) == 29)
+            blit(pPoseStack, x + 30, y + 28, 30, 43, 0, 0, 20, 29, 20, 29);
 
         RenderSystem.setShaderTexture(0, TEXTURE);
 
