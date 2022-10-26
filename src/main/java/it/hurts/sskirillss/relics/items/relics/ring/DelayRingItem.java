@@ -1,11 +1,19 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 
 public class DelayRingItem extends RelicItem {
     public static final String TAG_UPDATE_TIME = "time";
     public static final String TAG_STORED_AMOUNT = "amount";
     public static final String TAG_KILLER_UUID = "killer";
+
+    public DelayRingItem() {
+        super(new Item.Properties()
+                .stacksTo(1)
+                .rarity(Rarity.RARE));
+    }
 
 //    @Override
 //    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {

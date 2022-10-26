@@ -1,10 +1,18 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 
 public class SoulDevourerItem extends RelicItem {
     private static final String TAG_UPDATE_TIME = "time";
     private static final String TAG_SOUL_AMOUNT = "soul";
+
+    public SoulDevourerItem() {
+        super(new Item.Properties()
+                .stacksTo(1)
+                .rarity(Rarity.RARE));
+    }
 
 //    @Override
 //    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {

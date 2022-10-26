@@ -2,6 +2,8 @@ package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.UUID;
@@ -9,6 +11,12 @@ import java.util.UUID;
 public class ScarabTalismanItem extends RelicItem {
     private final MutablePair<String, UUID> SPEED_INFO = new MutablePair<>(Reference.MODID
             + ":" + "scarab_talisman_movement_speed", UUID.fromString("09bc5b60-3277-45ee-8bf0-aae7acba4385"));
+
+    public ScarabTalismanItem() {
+        super(new Item.Properties()
+                .stacksTo(1)
+                .rarity(Rarity.RARE));
+    }
 //
 //    @Override
 //    public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {

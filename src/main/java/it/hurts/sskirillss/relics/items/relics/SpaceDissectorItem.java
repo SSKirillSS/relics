@@ -7,7 +7,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -18,6 +20,12 @@ import top.theillusivec4.curios.api.SlotContext;
 public class SpaceDissectorItem extends RelicItem {
     public static final String TAG_START = "start";
     public static final String TAG_END = "end";
+
+    public SpaceDissectorItem() {
+        super(new Item.Properties()
+                .stacksTo(1)
+                .rarity(Rarity.RARE));
+    }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand handIn) {

@@ -1,8 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 
 public class SlimeHeartItem extends RelicItem {
+    public SlimeHeartItem() {
+        super(new Item.Properties()
+                .stacksTo(1)
+                .rarity(Rarity.RARE));
+    }
+
 //    @Mod.EventBusSubscriber(modid = Reference.MODID)
 //    public static class SlimeHeartEvents {
 //        @SubscribeEvent

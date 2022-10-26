@@ -9,9 +9,17 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 
 public class SpiderNecklaceItem extends RelicItem {
+    public SpiderNecklaceItem() {
+        super(new Item.Properties()
+                .stacksTo(1)
+                .rarity(Rarity.RARE));
+    }
+
     @Override
     public RelicData getRelicData() {
         return RelicData.builder()
