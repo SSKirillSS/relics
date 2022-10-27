@@ -72,7 +72,7 @@ public class AbilityCardIconWidget extends AbstractButton {
             if (!RelicItem.canUseAbility(screen.stack, ability))
                 RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
 
-            blit(poseStack, x + 3, y + 3, 2, 2, 20, 29, 24, 33);
+            blit(poseStack, x + 3, y + 3, 0, 0, 20, 29, 20, 29);
         }
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
