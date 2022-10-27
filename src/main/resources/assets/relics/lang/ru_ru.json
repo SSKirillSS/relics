@@ -48,7 +48,7 @@
   "tooltip.relics.holy_locket.ability.steal.stat.radius": "Радиус: %1$s блоков.",
 
   "item.relics.magic_mirror": "Волшебное зеркало",
-  "tooltip.relics.magic_mirror.leveling": "+1 ед. опыта за каждые 100 блоков до точки телепортации от способности «Кротовая нора».",
+  "tooltip.relics.magic_mirror.leveling": "+1 ед. опыта за каждое использование способности «Кротовая нора» + 1 ед. опыта за каждые 50 блоков до точки телепортации.",
   "tooltip.relics.magic_mirror.lore": "Это зеркало так часто использовалось провидцами, что получило силу путешествия сквозь пространство.",
   "tooltip.relics.magic_mirror.ability.teleport": "Кротовая нора",
   "tooltip.relics.magic_mirror.ability.teleport.description": "После использования телепортирует владельца к его точке возрождения.",

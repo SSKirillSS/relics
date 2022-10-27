@@ -48,7 +48,7 @@
   "tooltip.relics.holy_locket.ability.steal.stat.radius": "Radius: %1$s blocks.",
 
   "item.relics.magic_mirror": "Magic Mirror",
-  "tooltip.relics.magic_mirror.leveling": "Gain 1XP per 100 blocks traveled with this Relic's ability.",
+  "tooltip.relics.magic_mirror.leveling": "Gain 1XP every time you use this Relic's ability. Increase the received XP by 1 per 50 blocks traveled with this Relic's ability.",
   "tooltip.relics.magic_mirror.lore": "Mirror once possessed by mighty Seers, that was enchanted with the ability of interdimensional travel.",
   "tooltip.relics.magic_mirror.ability.teleport": "Wormhole",
   "tooltip.relics.magic_mirror.ability.teleport.description": "Teleports the wearer to their spawn point upon use.",
