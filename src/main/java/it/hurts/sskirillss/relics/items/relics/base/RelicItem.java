@@ -278,7 +278,8 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
         switch (data.getUpgradeModifier().first()) {
             case ADD -> result = current + (points * step);
-            case MULTIPLY -> result = current * (points * step);
+            case MULTIPLY_BASE -> result = current + ((current * step) * points);
+            case MULTIPLY_TOTAL -> result = current * Math.pow(step + 1, points);
         }
 
         return MathUtils.round(result, 3);

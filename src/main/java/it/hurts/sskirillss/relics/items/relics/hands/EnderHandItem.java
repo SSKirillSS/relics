@@ -41,7 +41,7 @@ public class EnderHandItem extends RelicItem {
                         .ability("swap", RelicAbilityEntry.builder()
                                 .stat("distance", RelicAbilityStat.builder()
                                         .initialValue(16D, 32D)
-                                        .upgradeModifier("add", 4D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())

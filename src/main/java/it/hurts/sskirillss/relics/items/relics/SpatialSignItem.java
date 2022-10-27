@@ -60,7 +60,7 @@ public class SpatialSignItem extends RelicItem {
                                         .build())
                                 .stat("duration", RelicAbilityStat.builder()
                                         .initialValue(5D, 10D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 5D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .build())

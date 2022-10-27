@@ -18,7 +18,8 @@ public class RelicAbilityStat {
 
     public enum Operation {
         ADD,
-        MULTIPLY;
+        MULTIPLY_BASE,
+        MULTIPLY_TOTAL;
 
         public static Operation getByName(String name) {
             return Operation.valueOf(name.toUpperCase());

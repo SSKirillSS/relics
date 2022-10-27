@@ -30,7 +30,7 @@ public class AquaWalkerItem extends RelicItem {
                         .ability("walking", RelicAbilityEntry.builder()
                                 .stat("time", RelicAbilityStat.builder()
                                         .initialValue(30D, 60D)
-                                        .upgradeModifier("add", 5D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 0))))
                                         .build())
                                 .build())

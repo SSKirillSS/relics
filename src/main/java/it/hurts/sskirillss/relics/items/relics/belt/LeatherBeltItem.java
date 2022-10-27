@@ -27,7 +27,7 @@ public class LeatherBeltItem extends RelicItem {
                                 .requiredPoints(2)
                                 .stat("talisman", RelicAbilityStat.builder()
                                         .initialValue(1D, 3D)
-                                        .upgradeModifier("add", 1D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
                                         .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 1))))
                                         .build())
                                 .build())
