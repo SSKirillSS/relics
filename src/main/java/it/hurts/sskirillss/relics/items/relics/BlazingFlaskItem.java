@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -15,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -22,9 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.awt.*;
 import java.util.List;
@@ -45,9 +42,9 @@ public class BlazingFlaskItem extends RelicItem {
                                         .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
                                         .build())
                                 .stat("speed", RelicAbilityStat.builder()
-                                        .initialValue(0.25D, 0.5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 0.05D)
-                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
+                                        .initialValue(0.01D, 0.05D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 1.9D)
+                                        .formatValue(value -> String.valueOf(MathUtils.round(value * 8, 1)))
                                         .build())
                                 .stat("height", RelicAbilityStat.builder()
                                         .initialValue(3D, 5D)
@@ -72,13 +69,6 @@ public class BlazingFlaskItem extends RelicItem {
 
         int fire = getFireAround(stack, world);
 
-        if (!player.isSpectator() && !player.isCreative()) {
-            player.getAbilities().mayfly = fire > 0;
-            player.getAbilities().flying = fire > 0;
-
-            player.onUpdateAbilities();
-        }
-
         if (fire <= 0) {
             NBTUtils.clearTag(stack, TAG_POSITION);
             NBTUtils.clearTag(stack, TAG_COUNT);
@@ -91,42 +81,34 @@ public class BlazingFlaskItem extends RelicItem {
         if (center != null) {
             double radius = NBTUtils.getDouble(stack, TAG_RADIUS, 0D);
 
-            if (!player.isCreative() && !player.isSpectator()) {
-                if (new Vec3(player.getX(), center.y(), player.getZ()).distanceTo(center) <= radius + 0.5F)
-                    player.getAbilities().mayfly = true;
-                else {
-                    player.getAbilities().mayfly = false;
-                    player.getAbilities().flying = false;
-                }
+            if (!player.isCreative() && !player.isSpectator() && !player.getAbilities().flying && !player.getAbilities().mayfly) {
+                if (new Vec3(player.getX(), center.y(), player.getZ()).distanceTo(center) <= radius + 0.5F) {
+                    player.fallDistance = 0F;
 
-                if (player.getAbilities().flying) {
                     if (player.tickCount % 100 == 0)
                         addExperience(player, stack, 1);
 
-                    double speed = Math.min(1D, getAbilityValue(stack, "bonfire", "speed"));
+                    double speed = getAbilityValue(stack, "bonfire", "speed");
 
-                    if (player.zza != 0 || player.xxa != 0 || player.yya != 0)
-                        player.setDeltaMovement(player.getDeltaMovement().multiply(speed, 1D, speed));
+                    if (world.isClientSide()) {
+                        if (!player.isOnGround() && (player.zza != 0 || player.xxa != 0))
+                            player.move(MoverType.SELF, player.getDeltaMovement().multiply(speed, 0, speed));
 
-                    Vec3 motion = player.getDeltaMovement();
+                        if (player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
+                                && (getGroundHeight(player) + getAbilityValue(stack, "bonfire", "height")) - player.getY() > 0) {
+                            Vec3 motion = player.getDeltaMovement();
 
-                    double height = getAbilityValue(stack, "bonfire", "height");
+                            if (motion.y() < 0)
+                                player.setDeltaMovement(motion.x(), motion.y() * 0.9F, motion.z());
 
-                    if (player.getY() - height > getGroundHeight(player)) {
-                        player.setDeltaMovement(motion.x(), motion.y() - Math.min(player.getY() - height
-                                - getGroundHeight(player), 2) / 8, motion.z());
+                            player.setDeltaMovement(player.getDeltaMovement().add(0F, 0.1F, 0F));
+                        }
                     }
-
-                    if (!player.isShiftKeyDown() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping)
-                        player.setDeltaMovement(motion.x(), Math.min(0.3, 0.04 * ((getGroundHeight(player)
-                                - (player.getY() - height)))), motion.z());
                 }
             }
 
             double size = NBTUtils.getInt(stack, TAG_COUNT, 0) * getAbilityValue(stack, "bonfire", "step");
-
             double step = 0.1D;
-
             int time = 0;
 
             if (radius < size) {
@@ -161,8 +143,8 @@ public class BlazingFlaskItem extends RelicItem {
     }
 
     protected double getGroundHeight(Player player) {
-        HitResult result = player.level.clip(new ClipContext(player.position(), new Vec3(player.getX(),
-                player.getY() - 64, player.getZ()), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
+        HitResult result = player.level.clip(new ClipContext(player.position(), player.position().add(0, -64, 0),
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
 
         if (result.getType() == HitResult.Type.BLOCK)
             return result.getLocation().y();
@@ -215,24 +197,5 @@ public class BlazingFlaskItem extends RelicItem {
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
-    }
-
-    @Mod.EventBusSubscriber
-    public static class Events {
-        @SubscribeEvent
-        public static void onItemToss(ItemTossEvent event) {
-            ItemStack stack = event.getEntityItem().getItem();
-            Player player = event.getPlayer();
-
-            if (player.isCreative())
-                return;
-
-            if (stack.getItem() == ItemRegistry.BLAZING_FLASK.get() && !NBTUtils.getString(stack, TAG_POSITION, "").isEmpty()) {
-                player.getAbilities().flying = false;
-                player.getAbilities().mayfly = false;
-
-                player.onUpdateAbilities();
-            }
-        }
     }
 }
