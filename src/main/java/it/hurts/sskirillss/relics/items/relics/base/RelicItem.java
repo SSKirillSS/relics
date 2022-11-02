@@ -16,6 +16,7 @@ import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -299,7 +300,10 @@ public abstract class RelicItem extends Item implements ICurioItem {
             case MULTIPLY_TOTAL -> result = current * Math.pow(step + 1, points);
         }
 
-        return MathUtils.round(result, 3);
+        Pair<Double, Double> threshold = data.getThresholdValue();
+
+        return threshold == null ? MathUtils.round(result, 3)
+                : MathUtils.round(Math.max(threshold.first(), Math.min(threshold.second(), result)), 3);
     }
 
     public static double getAbilityValue(ItemStack stack, String ability, String stat) {
