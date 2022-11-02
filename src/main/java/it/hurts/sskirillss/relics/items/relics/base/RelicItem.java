@@ -44,11 +44,9 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.awt.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 
 public abstract class RelicItem extends Item implements ICurioItem {
     public RelicItem(Item.Properties properties) {
@@ -190,29 +188,50 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
     /*
     =================================================
+                          Base
+    =================================================
+    */
+
+    public static RelicData getRelicData(ItemStack stack) {
+        if (!(stack.getItem() instanceof RelicItem relic))
+            return null;
+
+        return relic.getRelicData();
+    }
+
+    /*
+    =================================================
                         Abilities
     =================================================
-     */
+    */
 
     public static final String TAG_ABILITIES = "abilities";
     public static final String TAG_STATS = "stats";
 
     @Nullable
-    public static RelicAbilityEntry getAbility(ItemStack stack, String ability) {
+    public static RelicAbilityData getAbilityData(ItemStack stack) {
         if (!(stack.getItem() instanceof RelicItem relic))
             return null;
 
-        return getAbility(relic, ability);
+        return getRelicData(stack).getAbilityData();
     }
 
     @Nullable
-    public static RelicAbilityEntry getAbility(RelicItem relic, String ability) {
-        if (relic.getRelicData() == null)
+    public static RelicAbilityData getAbilityData(RelicItem relic) {
+        return relic.getRelicData().getAbilityData();
+    }
+
+    @Nullable
+    public static RelicAbilityEntry getAbilityEntryData(ItemStack stack, String ability) {
+        if (!(stack.getItem() instanceof RelicItem relic))
             return null;
 
-        RelicAbilityData data = relic.getRelicData().getAbilityData();
+        return getAbilityEntryData(relic, ability);
+    }
 
-        return data == null ? null : data.getAbilities().get(ability);
+    @Nullable
+    public static RelicAbilityEntry getAbilityEntryData(RelicItem relic, String ability) {
+        return getAbilityData(relic).getAbilities().get(ability);
     }
 
     @Nullable
@@ -225,9 +244,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
     @Nullable
     public static RelicAbilityStat getAbilityStat(RelicItem relic, String ability, String stat) {
-        RelicAbilityEntry entry = getAbility(relic, ability);
-
-        return entry == null ? null : entry.getStats().get(stat);
+        return getAbilityEntryData(relic, ability).getStats().get(stat);
     }
 
     public static CompoundTag getAbilitiesTag(ItemStack stack) {
@@ -323,13 +340,13 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static boolean canUseAbility(ItemStack stack, String ability) {
-        RelicAbilityEntry entry = getAbility(stack, ability);
+        RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
 
         return entry != null && getLevel(stack) >= entry.getRequiredLevel();
     }
 
     public static boolean randomizeStats(ItemStack stack, String ability) {
-        RelicAbilityEntry entry = RelicItem.getAbility(stack, ability);
+        RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
 
         if (entry == null)
             return false;
@@ -339,27 +356,14 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
             double result = MathUtils.round(MathUtils.randomBetween(new Random(), stat.getInitialValue().first(), stat.getInitialValue().second()), 3);
 
-            RelicItem.setAbilityValue(stack, ability, stats.getKey(), result);
+            setAbilityValue(stack, ability, stats.getKey(), result);
         }
 
         return true;
     }
 
     public static int getUpgradeRequiredExperience(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem relic))
-            return 0;
-
-        RelicData relicData = relic.getRelicData();
-
-        if (relicData == null)
-            return 0;
-
-        RelicAbilityData abilityData = relicData.getAbilityData();
-
-        if (abilityData == null)
-            return 0;
-
-        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+        RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
 
         if (entry == null)
             return 0;
@@ -373,42 +377,16 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static boolean isAbilityMaxLevel(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem relic))
-            return false;
-
-        RelicData relicData = relic.getRelicData();
-
-        if (relicData == null)
-            return false;
-
-        RelicAbilityData abilityData = relicData.getAbilityData();
-
-        if (abilityData == null)
-            return false;
-
-        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+        RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
 
         if (entry == null)
             return false;
 
-        return entry.getStats().size() == 0 || RelicItem.getAbilityPoints(stack, ability) >= (entry.getMaxLevel() == -1 ? (relicData.getLevelingData().getMaxLevel() / entry.getRequiredPoints()) : entry.getMaxLevel());
+        return entry.getStats().size() == 0 || RelicItem.getAbilityPoints(stack, ability) >= (entry.getMaxLevel() == -1 ? (getLevelingData(stack).getMaxLevel() / entry.getRequiredPoints()) : entry.getMaxLevel());
     }
 
     public static boolean mayUpgrade(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem relic))
-            return false;
-
-        RelicData relicData = relic.getRelicData();
-
-        if (relicData == null)
-            return false;
-
-        RelicAbilityData abilityData = relicData.getAbilityData();
-
-        if (abilityData == null)
-            return false;
-
-        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+        RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
 
         if (entry == null)
             return false;
@@ -421,23 +399,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static int getRerollRequiredExperience(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem relic))
-            return 0;
-
-        RelicData relicData = relic.getRelicData();
-
-        if (relicData == null)
-            return 0;
-
-        RelicAbilityData abilityData = relicData.getAbilityData();
-
-        if (abilityData == null)
-            return 0;
-
-        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
-
-        if (entry == null)
-            return 0;
+        RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
 
         int count = entry.getStats().size();
 
@@ -448,20 +410,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static boolean mayReroll(ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem relic))
-            return false;
-
-        RelicData relicData = relic.getRelicData();
-
-        if (relicData == null)
-            return false;
-
-        RelicAbilityData abilityData = relicData.getAbilityData();
-
-        if (abilityData == null)
-            return false;
-
-        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+        RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
 
         if (entry == null)
             return false;
@@ -482,20 +431,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static boolean mayPlayerReset(Player player, ItemStack stack, String ability) {
-        if (!(stack.getItem() instanceof RelicItem relic))
-            return false;
-
-        RelicData relicData = relic.getRelicData();
-
-        if (relicData == null)
-            return false;
-
-        RelicAbilityData abilityData = relicData.getAbilityData();
-
-        if (abilityData == null)
-            return false;
-
-        RelicAbilityEntry entry = abilityData.getAbilities().get(ability);
+        RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
 
         if (entry == null)
             return false;
@@ -507,31 +443,41 @@ public abstract class RelicItem extends Item implements ICurioItem {
     =================================================
                         Leveling
     =================================================
-     */
+    */
 
     public static final String TAG_EXPERIENCE = "experience";
     public static final String TAG_LEVELING = "leveling";
     public static final String TAG_POINTS = "points";
     public static final String TAG_LEVEL = "level";
 
-    public static CompoundTag getLevelingData(ItemStack stack) {
+    @Nullable
+    public static RelicLevelingData getLevelingData(ItemStack stack) {
+        return getRelicData(stack).getLevelingData();
+    }
+
+    @Nullable
+    public static RelicLevelingData getLevelingData(RelicItem relic) {
+        return relic.getRelicData().getLevelingData();
+    }
+
+    public static CompoundTag getLevelingTag(ItemStack stack) {
         return NBTUtils.getCompound(stack, TAG_LEVELING, new CompoundTag());
     }
 
-    public static void setLevelingData(ItemStack stack, CompoundTag data) {
+    public static void setLevelingTag(ItemStack stack, CompoundTag data) {
         NBTUtils.setCompound(stack, TAG_LEVELING, data);
     }
 
     public static int getPoints(ItemStack stack) {
-        return getLevelingData(stack).getInt(TAG_POINTS);
+        return getLevelingTag(stack).getInt(TAG_POINTS);
     }
 
     public static void setPoints(ItemStack stack, int level) {
-        CompoundTag tag = getLevelingData(stack);
+        CompoundTag tag = getLevelingTag(stack);
 
         tag.putInt(TAG_POINTS, level);
 
-        setLevelingData(stack, tag);
+        setLevelingTag(stack, tag);
     }
 
     public static void addPoints(ItemStack stack, int amount) {
@@ -539,15 +485,15 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static int getLevel(ItemStack stack) {
-        return getLevelingData(stack).getInt(TAG_LEVEL);
+        return getLevelingTag(stack).getInt(TAG_LEVEL);
     }
 
     public static void setLevel(ItemStack stack, int level) {
-        CompoundTag tag = getLevelingData(stack);
+        CompoundTag tag = getLevelingTag(stack);
 
         tag.putInt(TAG_LEVEL, Math.min(((RelicItem) stack.getItem()).getRelicData().getLevelingData().getMaxLevel(), level));
 
-        setLevelingData(stack, tag);
+        setLevelingTag(stack, tag);
     }
 
     public static void addLevel(ItemStack stack, int amount) {
@@ -557,11 +503,11 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static int getExperience(ItemStack stack) {
-        return getLevelingData(stack).getInt(TAG_EXPERIENCE);
+        return getLevelingTag(stack).getInt(TAG_EXPERIENCE);
     }
 
     public static void setExperience(ItemStack stack, int experience) {
-        CompoundTag data = getLevelingData(stack);
+        CompoundTag data = getLevelingTag(stack);
 
         int level = getLevel(stack);
         int requiredExp = getExperienceBetweenLevels(stack, level, level + 1);
@@ -572,13 +518,13 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
             data.putInt(TAG_EXPERIENCE, sumExp - getTotalExperienceForLevel(stack, resultLevel));
 
-            setLevelingData(stack, data);
+            setLevelingTag(stack, data);
             addPoints(stack, resultLevel - level);
             setLevel(stack, resultLevel);
         } else {
             data.putInt(TAG_EXPERIENCE, experience);
 
-            setLevelingData(stack, data);
+            setLevelingTag(stack, data);
         }
     }
 
@@ -638,5 +584,53 @@ public abstract class RelicItem extends Item implements ICurioItem {
         } while (amount <= experience);
 
         return result - 1;
+    }
+
+    /*
+    =================================================
+                        Quality
+    =================================================
+    */
+
+    public static final int MAX_QUALITY = 10;
+
+    public static int getStatQuality(ItemStack stack, String ability, String stat) {
+        RelicAbilityStat statData = getAbilityStat(stack, ability, stat);
+
+        if (statData == null)
+            return 0;
+
+        Function<Double, ? extends Number> format = statData.getFormatValue();
+
+        double initial = format.apply(getAbilityInitialValue(stack, ability, stat)).doubleValue();
+
+        double min = format.apply(statData.getInitialValue().first()).doubleValue();
+        double max = format.apply(statData.getInitialValue().second()).doubleValue();
+
+        return (int) Math.round((initial - min) / ((max - min) / MAX_QUALITY));
+    }
+
+    public static int getAbilityQuality(ItemStack stack, String ability) {
+        RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
+        Map<String, RelicAbilityStat> stats = entry.getStats();
+
+        int sum = 0;
+
+        for (String stat : stats.keySet())
+            sum += getStatQuality(stack, ability, stat);
+
+        return sum / stats.size();
+    }
+
+    public static int getRelicQuality(ItemStack stack) {
+        RelicAbilityData data = getAbilityData(stack);
+        Map<String, RelicAbilityEntry> abilities = data.getAbilities();
+
+        int sum = 0;
+
+        for (String ability : abilities.keySet())
+            sum += getAbilityQuality(stack, ability);
+
+        return sum / abilities.size();
     }
 }

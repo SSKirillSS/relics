@@ -54,7 +54,7 @@ public class BastionRingItem extends RelicItem {
                                 .stat("rolls", RelicAbilityStat.builder()
                                         .initialValue(1D, 2D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
-                                        .formatValue(value -> String.valueOf((int) MathUtils.round(value, 0)))
+                                        .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .build())
                         .build())

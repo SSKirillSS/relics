@@ -87,7 +87,7 @@ public class AbilityDescriptionScreen extends Screen {
         if (relicData == null)
             return;
 
-        RelicAbilityEntry abilityData = RelicItem.getAbility(relic, ability);
+        RelicAbilityEntry abilityData = RelicItem.getAbilityEntryData(relic, ability);
 
         if (abilityData == null)
             return;
@@ -158,7 +158,7 @@ public class AbilityDescriptionScreen extends Screen {
             RelicAbilityStat statData = RelicItem.getAbilityStat(relic, ability, stat);
 
             if (statData != null) {
-                TextComponent cost = new TextComponent(statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat)));
+                MutableComponent cost = new TextComponent(String.valueOf(statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat))));
 
                 if (isHoveringUpgrade && level < maxLevel) {
                     cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, level + 1)));

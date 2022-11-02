@@ -47,7 +47,7 @@ public class HorseFluteItem extends RelicItem {
                                 .stat("amount", RelicAbilityStat.builder()
                                         .initialValue(0.01D, 0.1D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 1D)
-                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 2)))
+                                        .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
                                 .build())
                         .build())

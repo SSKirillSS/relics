@@ -42,7 +42,7 @@ public class EnderHandItem extends RelicItem {
                                 .stat("distance", RelicAbilityStat.builder()
                                         .initialValue(16D, 32D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
-                                        .formatValue(value -> String.valueOf(MathUtils.round(value, 1)))
+                                        .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())

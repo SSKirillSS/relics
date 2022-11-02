@@ -14,7 +14,7 @@ public class RelicAbilityStat {
     private Pair<Double, Double> thresholdValue;
 
     @Builder.Default
-    private Function<Double, String> formatValue = String::valueOf;
+    private Function<Double, ? extends Number> formatValue = Double::doubleValue;
 
     public enum Operation {
         ADD,

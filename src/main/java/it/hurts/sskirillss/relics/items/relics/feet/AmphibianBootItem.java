@@ -28,7 +28,7 @@ public class AmphibianBootItem extends RelicItem {
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(0.005D, 0.01D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.25D)
-                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 3) * 100 * 20)))
+                                        .formatValue(value -> (int) (MathUtils.round(value, 3) * 100 * 20))
                                         .build())
                                 .build())
                         .build())

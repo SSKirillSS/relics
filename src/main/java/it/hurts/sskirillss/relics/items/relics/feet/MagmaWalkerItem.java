@@ -34,7 +34,7 @@ public class MagmaWalkerItem extends RelicItem {
                                 .stat("heat", RelicAbilityStat.builder()
                                         .initialValue(20D, 50D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> String.valueOf((int) (MathUtils.round(value, 0))))
+                                        .formatValue(value -> (int) (MathUtils.round(value, 0)))
                                         .build())
                                 .build())
                         .build())

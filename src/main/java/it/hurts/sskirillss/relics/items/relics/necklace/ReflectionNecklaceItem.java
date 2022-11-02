@@ -35,7 +35,7 @@ public class ReflectionNecklaceItem extends RelicItem {
                                 .stat("capacity", RelicAbilityStat.builder()
                                         .initialValue(20D, 60D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.35D)
-                                        .formatValue(value -> String.valueOf((int) MathUtils.round(value, 0)))
+                                        .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .build())
                         .build())
