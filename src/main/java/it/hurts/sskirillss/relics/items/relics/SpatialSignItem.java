@@ -106,7 +106,13 @@ public class SpatialSignItem extends RelicItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (DurabilityUtils.isBroken(stack) || worldIn.isClientSide() || !(entityIn instanceof Player player))
+        if (DurabilityUtils.isBroken(stack) || !(entityIn instanceof Player player))
+            return;
+
+        if (NBTUtils.getInt(stack, TAG_STAGE, -1) > -1)
+            player.noPhysics = true;
+
+        if (worldIn.isClientSide())
             return;
 
         Random random = worldIn.getRandom();
@@ -174,13 +180,10 @@ public class SpatialSignItem extends RelicItem {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 20, 0, false, false));
 
                 player.fallDistance = 0;
-                player.noPhysics = true;
                 player.clearFire();
 
                 if (player.position().distanceTo(pos) <= speed * 2) {
                     NBTUtils.setInt(stack, TAG_STAGE, --stage);
-
-                    player.noPhysics = false;
 
                     if (stage < 0) {
                         NBTUtils.clearTag(stack, TAG_TIME);
