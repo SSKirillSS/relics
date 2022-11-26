@@ -154,7 +154,7 @@ public class MidnightRobeItem extends RelicItem {
         } else {
             entity.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
 
-            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, (float) getAbilityValue(stack, "vanishing", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, (float) getAbilityValue(stack, "vanish", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         }
     }
 
