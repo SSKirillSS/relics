@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.blocks;
 
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.init.TileRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.TickerUtils;
 import net.minecraft.client.Minecraft;
@@ -49,7 +50,7 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
         ItemStack tileStack = tile.getStack();
 
         if (tileStack.isEmpty()) {
-            if (handStack.isEmpty())
+            if (!(handStack.getItem() instanceof RelicItem))
                 return InteractionResult.FAIL;
 
             tile.setStack(handStack.split(1));
