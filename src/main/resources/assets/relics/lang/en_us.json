@@ -4,7 +4,7 @@
   "curios.identifier.talisman": "Talisman",
   "curios.identifier.feet": "Feet",
 
-  "tooltip.relics.relic.table": "You can learn more about this item by pressing [Shift] + [RMB] on the Researcher table with relic.",
+  "tooltip.relics.relic.table": "You can learn more about this item on the Researcher table.",
 
   "tooltip.relics.relic.level": " [%1$s/%2$s]",
   "tooltip.relics.relic.max_level": "-= MAX =-",

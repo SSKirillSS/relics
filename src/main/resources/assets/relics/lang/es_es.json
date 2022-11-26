@@ -4,8 +4,6 @@
  "curios.identifier.talisman": "Talismán",
  "curios.identifier.feet": "Pies",
 
- "tooltip.relics.relic.table": "Puedes aprender más sobre este objeto pulsando [Shift] + [RMB] en la mesa de Investigación con la reliquia.",
-
  "tooltip.relics.relic.level": " [%1$s/%2$s]",
  "tooltip.relics.relic.max_level": "-= MAX =-",
  "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
