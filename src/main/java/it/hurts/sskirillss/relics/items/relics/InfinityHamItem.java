@@ -141,7 +141,7 @@ public class InfinityHamItem extends RelicItem {
 
             player.getFoodData().eat(feed, feed);
 
-            addExperience(player, stack, 1);
+            addExperience(player, stack, Math.max(1, Math.min(20 - player.getFoodData().getFoodLevel(), feed)));
 
             if (!canUseAbility(stack, "infusion") || !nbt.contains(TAG_POTION, 9))
                 return;
