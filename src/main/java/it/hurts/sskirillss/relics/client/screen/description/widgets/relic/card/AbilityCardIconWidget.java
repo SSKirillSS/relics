@@ -5,27 +5,19 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import org.lwjgl.opengl.GL11;
 
-public class AbilityCardIconWidget extends AbstractButton {
-    private final Minecraft MC = Minecraft.getInstance();
-
+public class AbilityCardIconWidget extends AbstractDescriptionWidget {
     private final RelicDescriptionScreen screen;
     private final String ability;
 
     public AbilityCardIconWidget(int x, int y, RelicDescriptionScreen screen, String ability) {
-        super(x, y, 28, 37, TextComponent.EMPTY);
+        super(x, y, 28, 37);
 
         this.screen = screen;
         this.ability = ability;
@@ -34,11 +26,6 @@ public class AbilityCardIconWidget extends AbstractButton {
     @Override
     public void onPress() {
         MC.setScreen(new AbilityDescriptionScreen(screen.pos, screen.stack, ability));
-    }
-
-    @Override
-    public void playDownSound(SoundManager handler) {
-        handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
     }
 
     @Override
@@ -84,10 +71,5 @@ public class AbilityCardIconWidget extends AbstractButton {
             blit(poseStack, x, y, 288, 0, 28, 38, 512, 512);
         else
             blit(poseStack, x, y, 288, 39, 28, 38, 512, 512);
-    }
-
-    @Override
-    public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
-
     }
 }

@@ -3,41 +3,32 @@ package it.hurts.sskirillss.relics.client.screen.description.widgets.ability;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.sounds.SoundEvents;
 
-public class AbilityRerollButtonWidget extends AbstractButton {
-    private final Minecraft MC = Minecraft.getInstance();
-
+public class AbilityRerollButtonWidget extends AbstractDescriptionWidget {
     private final AbilityDescriptionScreen screen;
     private final String ability;
 
     public AbilityRerollButtonWidget(int x, int y, AbilityDescriptionScreen screen, String ability) {
-        super(x, y, 22, 22, TextComponent.EMPTY);
+        super(x, y, 22, 22);
 
         this.screen = screen;
         this.ability = ability;
     }
 
     @Override
-    public void onPress() {
-        if (RelicItem.mayPlayerReroll(MC.player, screen.stack, ability))
-            NetworkHandler.sendToServer(new PacketRelicTweak(screen.pos, ability, PacketRelicTweak.Operation.REROLL));
+    public boolean isLocked() {
+        return !RelicItem.mayPlayerReroll(MC.player, screen.stack, ability);
     }
 
     @Override
-    public void playDownSound(SoundManager handler) {
-        if (RelicItem.mayPlayerReroll(MC.player, screen.stack, ability))
-            handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+    public void onPress() {
+        if (!isLocked())
+            NetworkHandler.sendToServer(new PacketRelicTweak(screen.pos, ability, PacketRelicTweak.Operation.REROLL));
     }
 
     @Override
@@ -60,10 +51,5 @@ public class AbilityRerollButtonWidget extends AbstractButton {
             if (isHovered)
                 blit(poseStack, x - 1, y - 1, 330, 24, 24, 24, 512, 512);
         }
-    }
-
-    @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-
     }
 }
