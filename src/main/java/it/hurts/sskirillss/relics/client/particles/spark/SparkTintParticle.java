@@ -15,10 +15,10 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.RandomSource;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.Random;
 
 public class SparkTintParticle extends TextureSheetParticle {
     public SparkTintParticle(ClientLevel world, double x, double y, double z, double velocityX,
@@ -30,7 +30,7 @@ public class SparkTintParticle extends TextureSheetParticle {
 
         lifetime = lifeTime;
 
-        Random random = world.getRandom();
+        RandomSource random = world.getRandom();
         xd = velocityX + MathUtils.randomFloat(random) * 0.01F;
         yd = velocityY + random.nextFloat() * 0.05F;
         zd = velocityZ + MathUtils.randomFloat(random) * 0.01F;

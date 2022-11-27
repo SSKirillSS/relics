@@ -20,7 +20,7 @@ public class ParalysisEffect extends MobEffect {
     public static class ClientEvents {
         @SubscribeEvent
         public static void onMovementInput(MovementInputUpdateEvent event) {
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
 
             if (player.hasEffect(EffectRegistry.PARALYSIS.get())) {
                 Input input = event.getInput();

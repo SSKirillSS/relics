@@ -1,13 +1,8 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.blocks.*;
+import it.hurts.sskirillss.relics.blocks.ResearchingTableBlock;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -22,12 +17,5 @@ public class BlockRegistry {
 
     public static void registerBlocks() {
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
-    }
-
-    @SubscribeEvent
-    public static void onItemBlockRegistry(RegistryEvent.Register<Item> event) {
-        BLOCKS.getEntries().stream().map(RegistryObject::get).filter(block -> !(block instanceof IVoidBlock))
-                .forEach(block -> event.getRegistry().register(new BlockItem(block, new Item.Properties()
-                        .tab(RelicsTab.RELICS_TAB)).setRegistryName(block.getRegistryName())));
     }
 }

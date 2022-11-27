@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.FOVModifierEvent;
+import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
@@ -140,8 +140,8 @@ public class EnderHandItem extends RelicItem {
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
     public static class Events {
         @SubscribeEvent
-        public static void onFOVUpdate(FOVModifierEvent event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.ENDER_HAND.get());
+        public static void onFOVUpdate(ComputeFovModifierEvent event) {
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getPlayer(), ItemRegistry.ENDER_HAND.get());
 
             if (stack.isEmpty())
                 return;
@@ -149,7 +149,7 @@ public class EnderHandItem extends RelicItem {
             int time = NBTUtils.getInt(stack, TAG_TIME, 0);
 
             if (time > 0)
-                event.setNewfov(event.getNewfov() - time / 32.0F);
+                event.setNewFovModifier(event.getNewFovModifier() - time / 32.0F);
         }
     }
 }

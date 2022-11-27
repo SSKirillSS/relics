@@ -287,7 +287,7 @@ public class ArrowQuiverItem extends RelicItem {
     public static class Events {
         @SubscribeEvent
         public static void onSlotClick(ContainerSlotClickEvent event) {
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
 
             ItemStack heldStack = event.getHeldStack();
             ItemStack slotStack = event.getSlotStack();
@@ -327,7 +327,7 @@ public class ArrowQuiverItem extends RelicItem {
 
         @SubscribeEvent
         public static void onArrowLoose(ArrowLooseEvent event) {
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
             ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
             if (relic.isEmpty() || DurabilityUtils.isBroken(relic)
@@ -339,7 +339,7 @@ public class ArrowQuiverItem extends RelicItem {
 
         @SubscribeEvent
         public static void onGettingProjectile(LivingGetProjectileEvent event) {
-            if (!(event.getEntityLiving() instanceof Player player))
+            if (!(event.getEntity() instanceof Player player))
                 return;
 
             ItemStack weapon = event.getProjectileWeaponItemStack();

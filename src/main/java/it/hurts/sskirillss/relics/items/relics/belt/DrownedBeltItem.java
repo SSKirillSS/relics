@@ -109,7 +109,7 @@ public class DrownedBeltItem extends RelicItem {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
             if (!(event.getSource().getEntity() instanceof Player player)
-                    || !player.isUnderWater() || !event.getEntityLiving().isUnderWater())
+                    || !player.isUnderWater() || !event.getEntity().isUnderWater())
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get());
@@ -124,7 +124,7 @@ public class DrownedBeltItem extends RelicItem {
         public static void onItemUseStart(LivingEntityUseItemEvent.Start event) {
             ItemStack stack = event.getItem();
 
-            if (!(event.getEntityLiving() instanceof Player player) || stack.getItem() != Items.TRIDENT || !player.getCooldowns().isOnCooldown(stack.getItem()))
+            if (!(event.getEntity() instanceof Player player) || stack.getItem() != Items.TRIDENT || !player.getCooldowns().isOnCooldown(stack.getItem()))
                 return;
 
             event.setCanceled(true);
@@ -134,7 +134,7 @@ public class DrownedBeltItem extends RelicItem {
         public static void onItemUseFinish(LivingEntityUseItemEvent.Stop event) {
             ItemStack stack = event.getItem();
 
-            if (!(event.getEntityLiving() instanceof Player player) || stack.getItem() != Items.TRIDENT)
+            if (!(event.getEntity() instanceof Player player) || stack.getItem() != Items.TRIDENT)
                 return;
 
             ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get());

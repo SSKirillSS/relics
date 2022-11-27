@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,7 +31,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.FOVModifierEvent;
+import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -39,7 +40,6 @@ import top.theillusivec4.curios.api.SlotContext;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.Random;
 
 public class MagicMirrorItem extends RelicItem {
     @Override
@@ -122,7 +122,7 @@ public class MagicMirrorItem extends RelicItem {
         float radius = count * 0.075F;
         double extraY = player.getY() + 1.5F - Math.log((count + getUseDuration(stack) * 0.075F) * 0.1F);
 
-        Random random = level.getRandom();
+        RandomSource random = level.getRandom();
 
         Color color = switch (level.dimension().location().getPath()) {
             case "overworld" -> new Color(75, 150, 255);
@@ -201,8 +201,8 @@ public class MagicMirrorItem extends RelicItem {
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
     public static class ClientEvents {
         @SubscribeEvent
-        public static void onFovUpdate(FOVModifierEvent event) {
-            Player player = event.getEntity();
+        public static void onFovUpdate(ComputeFovModifierEvent event) {
+            Player player = event.getPlayer();
             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
             if (stack.getItem() != ItemRegistry.MAGIC_MIRROR.get()
@@ -212,7 +212,7 @@ public class MagicMirrorItem extends RelicItem {
             int time = player.getTicksUsingItem();
 
             if (time > 0)
-                event.setNewfov(event.getNewfov() - time * 0.02F);
+                event.setNewFovModifier(event.getNewFovModifier() - time * 0.02F);
         }
     }
 
@@ -222,7 +222,7 @@ public class MagicMirrorItem extends RelicItem {
         public static void onLivingHurt(LivingHurtEvent event) {
             Item item = ItemRegistry.MAGIC_MIRROR.get();
 
-            if (!(event.getEntityLiving() instanceof Player player) || !player.isUsingItem()
+            if (!(event.getEntity() instanceof Player player) || !player.isUsingItem()
                     || (player.getMainHandItem().getItem() != item && player.getOffhandItem().getItem() != item))
                 return;
 

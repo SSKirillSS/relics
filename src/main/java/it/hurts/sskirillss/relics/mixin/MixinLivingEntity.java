@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.mixin;
 
-import it.hurts.sskirillss.relics.api.events.utils.EventDispatcher;
+import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
@@ -12,6 +12,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,7 +35,11 @@ public class MixinLivingEntity {
     protected float setBlockFriction(float original) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        return EventDispatcher.onLivingSlipping(entity, entity.level.getBlockState(entity.getBlockPosBelowThatAffectsMyMovement()), original);
+        LivingSlippingEvent event = new LivingSlippingEvent(entity, entity.level.getBlockState(entity.getBlockPosBelowThatAffectsMyMovement()), original);
+
+        MinecraftForge.EVENT_BUS.post(event);
+
+        return event.getFriction();
     }
 
     @Inject(method = "isImmobile", at = @At("HEAD"), cancellable = true)

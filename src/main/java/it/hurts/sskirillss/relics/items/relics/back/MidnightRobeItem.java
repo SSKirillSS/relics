@@ -193,7 +193,7 @@ public class MidnightRobeItem extends RelicItem {
     public static class ServerEvents {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
-            LivingEntity target = event.getEntityLiving();
+            LivingEntity target = event.getEntity();
             Level level = target.getCommandSenderWorld();
 
             if (!(event.getSource().getEntity() instanceof Player player)
@@ -210,7 +210,7 @@ public class MidnightRobeItem extends RelicItem {
 
             addExperience(player, stack, 1);
 
-            NBTUtils.setString(stack, TAG_TARGET, event.getEntityLiving().getStringUUID());
+            NBTUtils.setString(stack, TAG_TARGET, event.getEntity().getStringUUID());
         }
     }
 }

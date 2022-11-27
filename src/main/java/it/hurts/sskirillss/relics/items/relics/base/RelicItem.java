@@ -20,9 +20,8 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -38,6 +37,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -74,7 +74,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
         if (attributes != null)
             attributes.getAttributes().forEach(attribute ->
                     modifiers.put(attribute.getAttribute(), new AttributeModifier(uuid,
-                            stack.getItem().getRegistryName().getPath() + "_" + attribute.getAttribute().getRegistryName().getPath(),
+                            ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "_" + ForgeRegistries.ATTRIBUTES.getKey(attribute.getAttribute()).getPath(),
                             attribute.getMultiplier(), attribute.getOperation())));
 
         if (slots != null)
@@ -88,7 +88,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         if (!DurabilityUtils.isBroken(stack)) {
             Vec3 pos = entity.position();
-            Random random = entity.getCommandSenderWorld().getRandom();
+            RandomSource random = entity.getCommandSenderWorld().getRandom();
 
             if (getStyle(stack) != null) {
                 String hex = getStyle(stack).getParticles();
@@ -107,11 +107,6 @@ public abstract class RelicItem extends Item implements ICurioItem {
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment == Enchantments.UNBREAKING;
-    }
-
-    @Override
-    public int getItemEnchantability(ItemStack stack) {
-        return 1;
     }
 
     @Override
@@ -169,9 +164,9 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> tooltip, TooltipFlag pIsAdvanced) {
-        tooltip.add(new TextComponent(" "));
+        tooltip.add(Component.literal(" "));
 
-        tooltip.add(new TranslatableComponent("tooltip.relics.relic.table").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.relics.relic.table").withStyle(ChatFormatting.GRAY));
     }
 
     public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {

@@ -32,7 +32,7 @@ public class ArmorRenderHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void handlePostRenderPlayerLow(RenderPlayerEvent.Post event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
 
         if (!haveBoot(player))
             return;
@@ -42,7 +42,7 @@ public class ArmorRenderHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void handlePreRenderPlayerHigh(RenderPlayerEvent.Pre event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
 
         if (!haveBoot(player))
             return;
@@ -63,7 +63,7 @@ public class ArmorRenderHandler {
         if (!event.isCanceled())
             return;
 
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
 
         if (!haveBoot(player))
             return;

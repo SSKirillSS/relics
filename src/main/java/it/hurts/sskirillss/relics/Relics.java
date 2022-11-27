@@ -27,6 +27,9 @@ public class Relics {
         TileRegistry.registerTiles();
         EntityRegistry.registerEntities();
         EffectRegistry.registerEffects();
+        CodecRegistry.registerCodecs();
+        SoundRegistry.registerSounds();
+        ParticleRegistry.registerParticles();
     }
 
     private void enqueue(final InterModEnqueueEvent event) {

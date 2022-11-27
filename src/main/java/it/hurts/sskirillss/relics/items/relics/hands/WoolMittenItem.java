@@ -67,7 +67,7 @@ public class WoolMittenItem extends RelicItem {
     public static class Events {
         @SubscribeEvent
         public static void onBlockClick(PlayerInteractEvent.RightClickBlock event) {
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
 
             ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.WOOL_MITTEN.get());
 

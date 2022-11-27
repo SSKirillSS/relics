@@ -57,10 +57,10 @@ public class AquaWalkerItem extends RelicItem {
     public static class Events {
         @SubscribeEvent
         public static void onFluidCollide(FluidCollisionEvent event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.AQUA_WALKER.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.AQUA_WALKER.get());
             int drench = NBTUtils.getInt(stack, TAG_DRENCH, 0);
 
-            if (!(event.getEntityLiving() instanceof Player player) || stack.isEmpty() || drench > getAbilityValue(stack, "walking", "time")
+            if (!(event.getEntity() instanceof Player player) || stack.isEmpty() || drench > getAbilityValue(stack, "walking", "time")
                     || !event.getFluid().is(FluidTags.WATER) || player.isShiftKeyDown())
                 return;
 

@@ -9,6 +9,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -40,7 +41,7 @@ public class SparkTintData implements ParticleOptions {
     @Nonnull
     @Override
     public ParticleType<SparkTintData> getType() {
-        return ParticleRegistry.SPARK_TINT;
+        return ParticleRegistry.SPARK_TINT.get();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class SparkTintData implements ParticleOptions {
     @Override
     public String writeToString() {
         return String.format(Locale.ROOT, "%s %i %i %i %.2f %i",
-                this.getType().getRegistryName(), tint.getRed(), tint.getGreen(), tint.getBlue(), diameter, lifeTime);
+                ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()), tint.getRed(), tint.getGreen(), tint.getBlue(), diameter, lifeTime);
     }
 
     private static float validateDiameter(float diameter) {

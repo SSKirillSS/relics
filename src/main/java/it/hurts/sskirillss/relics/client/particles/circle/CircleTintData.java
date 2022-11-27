@@ -9,6 +9,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -52,7 +53,7 @@ public class CircleTintData implements ParticleOptions {
     @Nonnull
     @Override
     public ParticleType<CircleTintData> getType() {
-        return ParticleRegistry.CIRCLE_TINT;
+        return ParticleRegistry.CIRCLE_TINT.get();
     }
 
     @Override
@@ -70,7 +71,7 @@ public class CircleTintData implements ParticleOptions {
     @Override
     public String writeToString() {
         return String.format(Locale.ROOT, "%s %i %i %i %.2f %i %f %b",
-                this.getType().getRegistryName(), tint.getRed(), tint.getGreen(), tint.getBlue(), diameter, lifeTime, resizeSpeed, shouldCollide);
+                ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()), tint.getRed(), tint.getGreen(), tint.getBlue(), diameter, lifeTime, resizeSpeed, shouldCollide);
     }
 
     private static float validateDiameter(float diameter) {

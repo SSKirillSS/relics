@@ -13,12 +13,12 @@ description="Just a mod about useful relics with unique mechanics ;)"
 [[dependencies.relics]]
     modId="forge"
     mandatory=true
-    versionRange="[40.1.68,)"
+    versionRange="[43.1.52,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.relics]]
     modId="curios"
     mandatory=true
-    versionRange="[1.18.1-5.0.4.2,)"
+    versionRange="[1.19.2-5.1.1.0,)"
     ordering="AFTER"
     side="BOTH"

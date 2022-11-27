@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +17,6 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.Random;
 
 public class LifeEssenceEntity extends ThrowableProjectile {
     @Setter
@@ -42,7 +42,7 @@ public class LifeEssenceEntity extends ThrowableProjectile {
         if (level.isClientSide())
             return;
 
-        Random random = level.getRandom();
+        RandomSource random = level.getRandom();
 
         double size = 0.02D + heal * 0.001D;
 

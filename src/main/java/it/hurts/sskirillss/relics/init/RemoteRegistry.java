@@ -1,5 +1,7 @@
 package it.hurts.sskirillss.relics.init;
 
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintFactory;
+import it.hurts.sskirillss.relics.client.particles.spark.SparkTintFactory;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
@@ -23,8 +25,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -115,8 +118,6 @@ public class RemoteRegistry {
 
         ItemProperties.register(ItemRegistry.BLAZING_FLASK.get(), new ResourceLocation(Reference.MODID, "active"),
                 (stack, world, entity, id) -> NBTUtils.getString(stack, BlazingFlaskItem.TAG_POSITION, "").isEmpty() ? 0 : 1);
-
-        MinecraftForgeClient.registerTooltipComponentFactory(ArrowQuiverTooltip.class, ClientArrowQuiverTooltip::new);
     }
 
     @SubscribeEvent
@@ -134,5 +135,16 @@ public class RemoteRegistry {
         event.registerEntityRenderer(EntityRegistry.SOLID_SNOWBALL.get(), new SolidSnowballRenderer.RenderFactory());
 
         event.registerBlockEntityRenderer(TileRegistry.RESEARCHING_TABLE.get(), ResearchingTableRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void onTooltipRegistry(RegisterClientTooltipComponentFactoriesEvent event) {
+        event.register(ArrowQuiverTooltip.class, ClientArrowQuiverTooltip::new);
+    }
+
+    @SubscribeEvent
+    public static void onParticleRegistry(RegisterParticleProvidersEvent event) {
+        event.register(ParticleRegistry.CIRCLE_TINT.get(), CircleTintFactory::new);
+        event.register(ParticleRegistry.SPARK_TINT.get(), SparkTintFactory::new);
     }
 }

@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -23,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.Random;
 
 public class FallingStarEntity extends ThrowableProjectile {
     public static final String TAG_DAMAGE = "damage";
@@ -48,7 +48,7 @@ public class FallingStarEntity extends ThrowableProjectile {
     public void tick() {
         super.tick();
 
-        Random random = this.getCommandSenderWorld().getRandom();
+        RandomSource random = this.getCommandSenderWorld().getRandom();
 
         for (int i = 0; i < 5; i++)
             level.addParticle(new CircleTintData(new Color(255 - random.nextInt(150), 0, 255 - random.nextInt(150)),
@@ -63,7 +63,7 @@ public class FallingStarEntity extends ThrowableProjectile {
 
     @Override
     protected void onHit(@NotNull HitResult result) {
-        Random random = this.getCommandSenderWorld().getRandom();
+        RandomSource random = this.getCommandSenderWorld().getRandom();
 
         ParticleUtils.createBall(new CircleTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(100)),
                 0.4F, 40, 0.90F, true), this.position(), this.getCommandSenderWorld(), 2, 0.2F);

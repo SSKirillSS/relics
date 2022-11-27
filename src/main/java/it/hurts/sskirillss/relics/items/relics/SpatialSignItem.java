@@ -22,6 +22,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,7 +41,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class SpatialSignItem extends RelicItem {
     public static final String TAG_POSITION = "pos";
@@ -115,7 +115,7 @@ public class SpatialSignItem extends RelicItem {
         if (worldIn.isClientSide())
             return;
 
-        Random random = worldIn.getRandom();
+        RandomSource random = worldIn.getRandom();
 
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
         int stage = NBTUtils.getInt(stack, TAG_STAGE, -1);
@@ -260,7 +260,7 @@ public class SpatialSignItem extends RelicItem {
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
-    private Color getParticleColor(Random random, int type) {
+    private Color getParticleColor(RandomSource random, int type) {
         return Lists.newArrayList(
                 new Color(random.nextInt(50), 255, random.nextInt(50)),
                 new Color(random.nextInt(50), random.nextInt(50), 255),
@@ -297,7 +297,7 @@ public class SpatialSignItem extends RelicItem {
     public static class ServerEvents {
         @SubscribeEvent
         public static void onLivingAttack(LivingAttackEvent event) {
-            LivingEntity entity = event.getEntityLiving();
+            LivingEntity entity = event.getEntity();
 
             if (!(entity instanceof Player player))
                 return;

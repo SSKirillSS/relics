@@ -18,7 +18,7 @@ public class SoulDevourerItem extends RelicItem {
 //    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 //        super.appendHoverText(stack, worldIn, tooltip, flagIn);
 //
-//        tooltip.add(new TranslatableComponent("tooltip.relics.soul_devourer.tooltip_1", NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0)));
+//        tooltip.add(Component.translatable("tooltip.relics.soul_devourer.tooltip_1", NBTUtils.getInt(stack, TAG_SOUL_AMOUNT, 0)));
 //    }
 //
 //    @Override
@@ -49,7 +49,7 @@ public class SoulDevourerItem extends RelicItem {
 //            if (!(event.getSource().getEntity() instanceof Player player))
 //                return;
 //
-//            LivingEntity target = event.getEntityLiving();
+//            LivingEntity target = event.getEntity();
 //
 //            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.SOUL_DEVOURER.get());
 //

@@ -68,7 +68,7 @@ public class MagmaWalkerItem extends RelicItem {
     public static class Events {
         @SubscribeEvent
         public static void onLivingAttack(LivingAttackEvent event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
             if (!stack.isEmpty() && event.getSource() == DamageSource.HOT_FLOOR
                     && NBTUtils.getInt(stack, TAG_HEAT, 0) <= getAbilityValue(stack, "pace", "heat")) {
@@ -78,9 +78,9 @@ public class MagmaWalkerItem extends RelicItem {
 
         @SubscribeEvent
         public static void onFluidCollide(FluidCollisionEvent event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
-            if (!(event.getEntityLiving() instanceof Player player) || stack.isEmpty()
+            if (!(event.getEntity() instanceof Player player) || stack.isEmpty()
                     || !event.getFluid().is(FluidTags.LAVA) || player.isShiftKeyDown())
                 return;
 
@@ -92,6 +92,8 @@ public class MagmaWalkerItem extends RelicItem {
                 if (heat % 5 == 0)
                     addExperience(player, stack, 1);
             }
+
+            System.out.println(123);
 
             event.setCanceled(true);
         }

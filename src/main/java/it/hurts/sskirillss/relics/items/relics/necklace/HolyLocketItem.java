@@ -48,7 +48,7 @@ public class HolyLocketItem extends RelicItem {
     static class Events {
         @SubscribeEvent
         public static void onLivingHurt(LivingHealEvent event) {
-            LivingEntity entity = event.getEntityLiving();
+            LivingEntity entity = event.getEntity();
             Level level = entity.getCommandSenderWorld();
 
             for (Player player : level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(32))) {

@@ -3,24 +3,20 @@ package it.hurts.sskirillss.relics.init;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SoundRegistry {
-    public static SoundEvent RICOCHET = register("ricochet");
-    public static SoundEvent THROW = register("throw");
+    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Reference.MODID);
 
-    @SubscribeEvent
-    public static void resisterSound(RegistryEvent.Register<SoundEvent> event) {
-        event.getRegistry().register(RICOCHET);
-        event.getRegistry().register(THROW);
-    }
+    public static final RegistryObject<SoundEvent> RICOCHET = SOUNDS.register("ricochet", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "ricochet")));
+    public static final RegistryObject<SoundEvent> THROW = SOUNDS.register("throw", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "throw")));
 
-    private static SoundEvent register(String name) {
-        ResourceLocation rl = new ResourceLocation(Reference.MODID, name);
-
-        return new SoundEvent(rl).setRegistryName(rl);
+    public static void registerSounds() {
+        SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

@@ -18,14 +18,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class AbilityDescriptionScreen extends Screen {
     public int backgroundWidth = 256;
 
     public AbilityDescriptionScreen(BlockPos pos, ItemStack stack, String ability) {
-        super(TextComponent.EMPTY);
+        super(Component.empty());
 
         this.pos = pos;
         this.stack = stack;
@@ -112,14 +112,14 @@ public class AbilityDescriptionScreen extends Screen {
         int level = RelicItem.getAbilityPoints(stack, ability);
         int maxLevel = abilityData.getMaxLevel() == -1 ? (relicData.getLevelingData().getMaxLevel() / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
 
-        MutableComponent name = new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".ability." + ability);
+        MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(relic).getPath() + ".ability." + ability);
 
         if (abilityData.getStats().size() > 0)
-            name.append(new TranslatableComponent("tooltip.relics.relic.ability.level", level, maxLevel == -1 ? "∞" : maxLevel));
+            name.append(Component.translatable("tooltip.relics.relic.ability.level", level, maxLevel == -1 ? "∞" : maxLevel));
 
         MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
 
-        List<FormattedCharSequence> lines = MC.font.split(new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".ability." + ability + ".description"), 318);
+        List<FormattedCharSequence> lines = MC.font.split(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 318);
 
         for (int i = 0; i < lines.size(); i++) {
             FormattedCharSequence line = lines.get(i);
@@ -158,21 +158,21 @@ public class AbilityDescriptionScreen extends Screen {
             RelicAbilityStat statData = RelicItem.getAbilityStat(relic, ability, stat);
 
             if (statData != null) {
-                MutableComponent cost = new TextComponent(String.valueOf(statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat))));
+                MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat))));
 
                 if (isHoveringUpgrade && level < maxLevel) {
                     cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, level + 1)));
                 }
 
                 if (isHoveringReroll) {
-                    cost.append(" -> ").append(new TextComponent("X.XXX").withStyle(ChatFormatting.OBFUSCATED));
+                    cost.append(" -> ").append(Component.literal("X.XXX").withStyle(ChatFormatting.OBFUSCATED));
                 }
 
                 if (isHoveringReset && level > 0) {
                     cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, 0)));
                 }
 
-                TranslatableComponent start = new TranslatableComponent("tooltip.relics." + stack.getItem().getRegistryName().getPath() + ".ability." + ability + ".stat." + stat, cost);
+                MutableComponent start = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat, cost);
 
                 pPoseStack.pushPose();
 
@@ -221,11 +221,11 @@ public class AbilityDescriptionScreen extends Screen {
 
             yOff += 9;
 
-            MC.font.draw(pPoseStack, new TranslatableComponent("tooltip.relics.relic." + info + ".description"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
+            MC.font.draw(pPoseStack, Component.translatable("tooltip.relics.relic." + info + ".description"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
 
             yOff += 9;
 
-            MC.font.draw(pPoseStack, new TranslatableComponent("tooltip.relics.relic." + info + ".cost", showInfo ? cost : "∞", showInfo ? abilityData.getRequiredPoints() : "∞"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
+            MC.font.draw(pPoseStack, Component.translatable("tooltip.relics.relic." + info + ".cost", showInfo ? cost : "∞", showInfo ? abilityData.getRequiredPoints() : "∞"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
 
             pPoseStack.popPose();
         }
@@ -246,7 +246,7 @@ public class AbilityDescriptionScreen extends Screen {
             MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 39, 0xFFFFFF);
         }
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + stack.getItem().getRegistryName().getPath() + "/" + ability + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + ability + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 

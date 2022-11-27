@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class EntityRegistry {
-    private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MODID);
+    private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Reference.MODID);
 
     public static final RegistryObject<EntityType<FallingStarEntity>> STELLAR_CATALYST_PROJECTILE = ENTITIES.register("falling_star", () ->
             EntityType.Builder.<FallingStarEntity>of(FallingStarEntity::new, MobCategory.MISC)

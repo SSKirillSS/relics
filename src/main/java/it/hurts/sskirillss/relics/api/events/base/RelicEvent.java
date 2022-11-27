@@ -10,10 +10,13 @@ import javax.annotation.Nullable;
 
 @AllArgsConstructor
 public class RelicEvent extends Event {
-    @Getter
-    @Nullable
     Player player;
 
     @Getter
     ItemStack stack;
+
+    @Nullable
+    public Player getEntity() {
+        return player;
+    }
 }

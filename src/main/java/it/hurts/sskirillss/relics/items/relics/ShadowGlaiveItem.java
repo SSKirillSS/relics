@@ -15,6 +15,7 @@ import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -28,7 +29,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import top.theillusivec4.curios.api.SlotContext;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.UUID;
 
 public class ShadowGlaiveItem extends RelicItem {
@@ -121,7 +121,7 @@ public class ShadowGlaiveItem extends RelicItem {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
-        Random random = playerIn.getRandom();
+        RandomSource random = playerIn.getRandom();
 
         if (DurabilityUtils.isBroken(stack) || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
             return InteractionResultHolder.fail(stack);
@@ -143,7 +143,7 @@ public class ShadowGlaiveItem extends RelicItem {
 
                     worldIn.addFreshEntity(saw);
 
-                    worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW,
+                    worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW.get(),
                             SoundSource.MASTER, 0.5F, 0.35F + (random.nextFloat() * 0.25F));
 
                     NBTUtils.setInt(stack, TAG_CHARGES, 0);
@@ -169,7 +169,7 @@ public class ShadowGlaiveItem extends RelicItem {
                             glaive.setTarget((LivingEntity) target);
                     }
 
-                    worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW,
+                    worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW.get(),
                             SoundSource.MASTER, 0.5F, 0.75F + (random.nextFloat() * 0.5F));
 
                     NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);

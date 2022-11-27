@@ -20,8 +20,8 @@ public class DelayRingItem extends RelicItem {
 //        super.appendHoverText(stack, worldIn, tooltip, flagIn);
 //
 //        if (NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0) > 0) {
-//            tooltip.add(new TranslatableComponent("tooltip.relics.delay_ring.tooltip_1", NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0)));
-//            tooltip.add(new TranslatableComponent("tooltip.relics.delay_ring.tooltip_2", NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)));
+//            tooltip.add(Component.translatable("tooltip.relics.delay_ring.tooltip_1", NBTUtils.getInt(stack, TAG_UPDATE_TIME, 0)));
+//            tooltip.add(Component.translatable("tooltip.relics.delay_ring.tooltip_2", NBTUtils.getInt(stack, TAG_STORED_AMOUNT, 0)));
 //        }
 //    }
 //
@@ -99,7 +99,7 @@ public class DelayRingItem extends RelicItem {
 //    public static class DelayRingEvents {
 //        @SubscribeEvent(priority = EventPriority.HIGHEST)
 //        public static void onEntityDeath(LivingDeathEvent event) {
-//            if (!(event.getEntityLiving() instanceof Player player))
+//            if (!(event.getEntity() instanceof Player player))
 //                return;
 //
 //            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DELAY_RING.get());
@@ -124,7 +124,7 @@ public class DelayRingItem extends RelicItem {
 //        public static void onEntityHurt(LivingHurtEvent event) {
 //            Stats stats = INSTANCE.stats;
 //
-//            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.DELAY_RING.get());
+//            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.DELAY_RING.get());
 //
 //            if (stack.isEmpty() || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
 //                return;
@@ -137,7 +137,7 @@ public class DelayRingItem extends RelicItem {
 //
 //        @SubscribeEvent
 //        public static void onEntityHeal(LivingHealEvent event) {
-//            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.DELAY_RING.get());
+//            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.DELAY_RING.get());
 //
 //            if (stack.isEmpty() || NBTUtils.getInt(stack, TAG_UPDATE_TIME, -1) < 0)
 //                return;

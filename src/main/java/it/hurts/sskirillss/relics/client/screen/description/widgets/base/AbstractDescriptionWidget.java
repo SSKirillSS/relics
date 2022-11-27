@@ -6,14 +6,14 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 
 public class AbstractDescriptionWidget extends AbstractButton {
     public final Minecraft MC = Minecraft.getInstance();
 
     public AbstractDescriptionWidget(int x, int y, int width, int height) {
-        super(x, y, width, height, TextComponent.EMPTY);
+        super(x, y, width, height, Component.empty());
     }
 
     public boolean isLocked() {

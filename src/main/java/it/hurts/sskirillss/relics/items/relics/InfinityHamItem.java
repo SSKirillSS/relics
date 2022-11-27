@@ -192,7 +192,7 @@ public class InfinityHamItem extends RelicItem {
             if (event.getAction() != ClickAction.PRIMARY)
                 return;
 
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
 
             ItemStack heldStack = event.getHeldStack();
             ItemStack slotStack = event.getSlotStack();

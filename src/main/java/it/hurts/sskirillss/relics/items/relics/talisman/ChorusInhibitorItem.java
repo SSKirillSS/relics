@@ -110,7 +110,7 @@ public class ChorusInhibitorItem extends RelicItem {
     public static class Events {
         @SubscribeEvent
         public static void onChorusTeleport(EntityTeleportEvent.ChorusFruit event) {
-            if (!(event.getEntityLiving() instanceof Player player))
+            if (!(event.getEntity() instanceof Player player))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.CHORUS_INHIBITOR.get());

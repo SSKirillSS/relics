@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.mixin;
 
-import it.hurts.sskirillss.relics.api.events.utils.EventDispatcher;
+import it.hurts.sskirillss.relics.api.events.common.FluidCollisionEvent;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.core.BlockPos;
@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -54,12 +55,18 @@ public class MixinEntity {
                 if (distanceToFluidSurface < original.y || distanceToFluidSurface > fluidStepHeight)
                     break;
 
-                if (!landingState.isEmpty() && (cancelled || EventDispatcher.onFluidCollision(entity, landingState))) {
-                    entry.setValue(distanceToFluidSurface);
+                if (!landingState.isEmpty()) {
+                    FluidCollisionEvent event = new FluidCollisionEvent(entity, landingState);
 
-                    cancelled = true;
+                    MinecraftForge.EVENT_BUS.post(event);
 
-                    break;
+                    if (cancelled || event.isCanceled()) {
+                        entry.setValue(distanceToFluidSurface);
+
+                        cancelled = true;
+
+                        break;
+                    }
                 }
             }
         }

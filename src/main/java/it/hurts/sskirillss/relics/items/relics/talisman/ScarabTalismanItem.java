@@ -47,7 +47,7 @@ public class ScarabTalismanItem extends RelicItem {
 //            return;
 //
 //        Level world = player.getCommandSenderWorld();
-//        Random random = world.getRandom();
+//        RandomSource random = world.getRandom();
 //        BlockPos position = player.blockPosition();
 //        Vec3 vec = player.position();
 //
@@ -92,7 +92,7 @@ public class ScarabTalismanItem extends RelicItem {
 //    public static class ScarabTalismanServerEvents {
 //        @SubscribeEvent
 //        public static void onEntityHurt(LivingHurtEvent event) {
-//            LivingEntity entity = event.getEntityLiving();
+//            LivingEntity entity = event.getEntity();
 //
 //            if (EntityUtils.findEquippedCurio(entity, ItemRegistry.SCARAB_TALISMAN.get()).isEmpty()
 //                    || event.getSource() != DamageSource.IN_WALL)
@@ -106,7 +106,7 @@ public class ScarabTalismanItem extends RelicItem {
 //
 //        @SubscribeEvent
 //        public static void onEntityAttack(LivingAttackEvent event) {
-//            LivingEntity entity = event.getEntityLiving();
+//            LivingEntity entity = event.getEntity();
 //
 //            if (EntityUtils.findEquippedCurio(entity, ItemRegistry.SCARAB_TALISMAN.get()).isEmpty()
 //                    || event.getSource() != DamageSource.IN_WALL)
@@ -122,7 +122,7 @@ public class ScarabTalismanItem extends RelicItem {
 //        public static void onBlockBreakCalculate(PlayerEvent.BreakSpeed event) {
 //            Stats stats = INSTANCE.stats;
 //
-//            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), event.getEntityLiving()).ifPresent(triple -> {
+//            CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.SCARAB_TALISMAN.get(), event.getEntity()).ifPresent(triple -> {
 //                if (DurabilityUtils.isBroken(triple.getRight()))
 //                    return;
 //

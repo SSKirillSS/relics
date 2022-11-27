@@ -86,7 +86,7 @@ public class IceBreakerItem extends RelicItem {
     public static class Events {
         @SubscribeEvent
         public static void onLivingSlipping(LivingSlippingEvent event) {
-            if (event.getFriction() <= 0.6F || !(event.getEntityLiving() instanceof Player player))
+            if (event.getFriction() <= 0.6F || !(event.getEntity() instanceof Player player))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_BREAKER.get());
@@ -99,7 +99,7 @@ public class IceBreakerItem extends RelicItem {
 
         @SubscribeEvent
         public static void onEntityFall(LivingFallEvent event) {
-            if (!(event.getEntityLiving() instanceof Player player))
+            if (!(event.getEntity() instanceof Player player))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_BREAKER.get());

@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.init;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 
@@ -30,6 +29,6 @@ public class HotkeyRegistry {
     }
 
     private static void register(KeyMapping binding) {
-        ClientRegistry.registerKeyBinding(binding);
+
     }
 }

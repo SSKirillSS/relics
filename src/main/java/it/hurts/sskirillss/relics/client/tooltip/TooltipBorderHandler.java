@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
@@ -37,7 +38,7 @@ public class TooltipBorderHandler {
             return;
 
         ResourceLocation texture = new ResourceLocation(Reference.MODID,
-                "textures/gui/tooltip/" + stack.getItem().getRegistryName().getPath() + ".png");
+                "textures/gui/tooltip/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".png");
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, texture);

@@ -105,7 +105,7 @@ public class RageGloveItem extends RelicItem {
 
                 event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * getAbilityValue(stack, "rage", "dealt_damage")))));
             } else {
-                ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.RAGE_GLOVE.get());
+                ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.RAGE_GLOVE.get());
 
                 if (stack.isEmpty())
                     return;

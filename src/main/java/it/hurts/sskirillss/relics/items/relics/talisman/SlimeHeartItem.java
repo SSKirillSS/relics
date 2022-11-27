@@ -17,7 +17,7 @@ public class SlimeHeartItem extends RelicItem {
 //        public static void onEntityHeal(LivingHealEvent event) {
 //            Stats stats = INSTANCE.getStats();
 //
-//            LivingEntity entity = event.getEntityLiving();
+//            LivingEntity entity = event.getEntity();
 //            ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.SLIME_HEART.get());
 //
 //            if (stack.isEmpty())
@@ -30,7 +30,7 @@ public class SlimeHeartItem extends RelicItem {
 //        public static void onEntityFall(LivingFallEvent event) {
 //            Stats stats = INSTANCE.getStats();
 //
-//            LivingEntity entity = event.getEntityLiving();
+//            LivingEntity entity = event.getEntity();
 //            ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.SLIME_HEART.get());
 //
 //            if (stack.isEmpty() || event.getDistance() < 2 || entity.isShiftKeyDown())
@@ -70,7 +70,7 @@ public class SlimeHeartItem extends RelicItem {
 //
 //        @Override
 //        public void accept(LivingEvent.LivingUpdateEvent event) {
-//            if (event.getEntityLiving() != this.entity || this.entity.isFallFlying())
+//            if (event.getEntity() != this.entity || this.entity.isFallFlying())
 //                return;
 //
 //            if (this.entity.tickCount == this.tick) {

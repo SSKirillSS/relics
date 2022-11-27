@@ -28,14 +28,14 @@ public class StellarCatalystItem extends RelicItem {
 //            if (EntityUtils.findEquippedCurio(player, ItemRegistry.STELLAR_CATALYST.get()).isEmpty())
 //                return;
 //
-//            LivingEntity target = event.getEntityLiving();
+//            LivingEntity target = event.getEntity();
 //            Level world = target.getCommandSenderWorld();
-//            Random random = world.getRandom();
+//            RandomSource random = world.getRandom();
 //
 //            if (world.isNight() && world.canSeeSky(target.blockPosition())
 //                    && random.nextFloat() <= stats.chance) {
 //                FallingStarEntity projectile = new FallingStarEntity((LivingEntity) event.getSource().getEntity(),
-//                        event.getEntityLiving(), event.getAmount() * stats.damageMultiplier);
+//                        event.getEntity(), event.getAmount() * stats.damageMultiplier);
 //
 //                projectile.setPos(target.getX(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(), Math.min(target.getCommandSenderWorld().getMaxBuildHeight(),
 //                        target.getY() + target.getCommandSenderWorld().getRandom().nextInt(stats.additionalSummonHeight) + stats.minSummonHeight)), target.getZ());

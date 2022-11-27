@@ -50,7 +50,7 @@ public class LeatherBeltItem extends RelicItem {
     public static class Events {
         @SubscribeEvent
         public static void onExperienceAdded(ExperienceAddEvent event) {
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
             ItemStack relic = event.getStack();
 
             if (player == null || relic.getItem() == ItemRegistry.LEATHER_BELT.get())

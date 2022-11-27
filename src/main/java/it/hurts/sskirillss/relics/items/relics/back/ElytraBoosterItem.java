@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -23,8 +24,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.Random;
 
 public class ElytraBoosterItem extends RelicItem {
     public static final String TAG_FUEL = "fuel";
@@ -91,7 +90,7 @@ public class ElytraBoosterItem extends RelicItem {
         Vec3 look = player.getLookAngle();
         Vec3 motion = player.getDeltaMovement();
         Level world = player.getCommandSenderWorld();
-        Random random = world.getRandom();
+        RandomSource random = world.getRandom();
 
         player.setDeltaMovement(motion.add(look.x * 0.1D + (look.x * speed - motion.x) * 0.5D,
                 look.y * 0.1D + (look.y * speed - motion.y) * 0.5D,
@@ -115,7 +114,7 @@ public class ElytraBoosterItem extends RelicItem {
             if (event.getAction() != ClickAction.PRIMARY)
                 return;
 
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
 
             ItemStack heldStack = event.getHeldStack();
             ItemStack slotStack = event.getSlotStack();
@@ -137,7 +136,7 @@ public class ElytraBoosterItem extends RelicItem {
 
             addExperience(player, slotStack, (int) Math.floor(left / 10F));
 
-            ItemStack result = heldStack.getContainerItem();
+            ItemStack result = heldStack.getCraftingRemainingItem();
 
             heldStack.shrink(1);
 

@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 public class AbilityCardIconWidget extends AbstractDescriptionWidget {
@@ -49,7 +50,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget {
                 blit(poseStack, x - 1, y - 1, 318, 39, 30, 39, 512, 512);
         }
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + screen.stack.getItem().getRegistryName().getPath() + "/" + ability + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + "/" + ability + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 

@@ -12,14 +12,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class RelicDescriptionScreen extends Screen {
     public int backgroundWidth = 256;
 
     public RelicDescriptionScreen(BlockPos pos, ItemStack stack) {
-        super(TextComponent.EMPTY);
+        super(Component.empty());
 
         this.pos = pos;
         this.stack = stack;
@@ -121,16 +121,16 @@ public class RelicDescriptionScreen extends Screen {
         if (isHoveringExperience)
             blit(pPoseStack, x + 54, y + 79, 364, 0, 148, 26, texWidth, texHeight);
 
-        MutableComponent name = new TextComponent(stack.getDisplayName().getString()
+        MutableComponent name = Component.literal(stack.getDisplayName().getString()
                 .replace("[", "").replace("]", ""))
-                .append(new TranslatableComponent("tooltip.relics.relic.level", level, maxLevel == -1 ? "∞" : maxLevel));
+                .append(Component.translatable("tooltip.relics.relic.level", level, maxLevel == -1 ? "∞" : maxLevel));
 
         MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
 
         pPoseStack.pushPose();
 
-        MutableComponent experience = isMaxLevel ? new TranslatableComponent("tooltip.relics.relic.max_level")
-                : new TextComponent(RelicItem.getExperience(stack) + "/" + RelicItem.getExperienceBetweenLevels(stack, level, level + 1) + " [" + percentage + "%]");
+        MutableComponent experience = isMaxLevel ? Component.translatable("tooltip.relics.relic.max_level")
+                : Component.literal(RelicItem.getExperience(stack) + "/" + RelicItem.getExperienceBetweenLevels(stack, level, level + 1) + " [" + percentage + "%]");
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
@@ -144,8 +144,8 @@ public class RelicDescriptionScreen extends Screen {
         }
 
         MutableComponent description = isHoveringExperience
-                ? new TranslatableComponent("tooltip.relics.relic.leveling.title").append(new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".leveling"))
-                : new TranslatableComponent("tooltip.relics." + relic.getRegistryName().getPath() + ".lore");
+                ? Component.translatable("tooltip.relics.relic.leveling.title").append(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(relic).getPath() + ".leveling"))
+                : Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(relic).getPath() + ".lore");
 
         List<FormattedCharSequence> lines = MC.font.split(description, 240);
 

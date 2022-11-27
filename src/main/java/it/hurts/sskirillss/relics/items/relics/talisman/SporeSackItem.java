@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingD
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -19,8 +20,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.Random;
 
 public class SporeSackItem extends RelicItem {
     @Override
@@ -52,7 +51,7 @@ public class SporeSackItem extends RelicItem {
     public static class Events {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
-            if (!(event.getEntityLiving() instanceof Player player))
+            if (!(event.getEntity() instanceof Player player))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.SPORE_SACK.get());
@@ -61,7 +60,7 @@ public class SporeSackItem extends RelicItem {
                 return;
 
             Level level = player.getLevel();
-            Random random = player.getRandom();
+            RandomSource random = player.getRandom();
 
             for (int i = 0; i < random.nextInt((int) Math.round(getAbilityValue(stack, "spore", "amount"))) + 1; i++) {
                 float speed = 0.25F + random.nextFloat() * 0.2F;

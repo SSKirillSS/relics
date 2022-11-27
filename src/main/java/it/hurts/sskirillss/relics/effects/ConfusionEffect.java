@@ -20,7 +20,7 @@ public class ConfusionEffect extends MobEffect {
     public static class ClientEvents {
         @SubscribeEvent
         public static void onChatMessage(MovementInputUpdateEvent event) {
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
 
             if (player.hasEffect(EffectRegistry.CONFUSION.get())) {
                 Input input = event.getInput();

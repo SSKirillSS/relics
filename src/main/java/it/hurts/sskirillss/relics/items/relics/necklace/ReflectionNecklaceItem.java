@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingD
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -20,8 +21,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
-
-import java.util.Random;
 
 public class ReflectionNecklaceItem extends RelicItem {
     public static final String TAG_CHARGE = "charge";
@@ -61,7 +60,7 @@ public class ReflectionNecklaceItem extends RelicItem {
             NBTUtils.setInt(stack, TAG_TIME, time);
         } else if (charge > 0) {
             Level level = player.getLevel();
-            Random random = player.getRandom();
+            RandomSource random = player.getRandom();
 
             float size = (float) (Math.log(charge) * 0.6F);
             float speed = (float) (0.35F + (charge * 0.001F));
@@ -106,10 +105,10 @@ public class ReflectionNecklaceItem extends RelicItem {
     public static class ReflectionNecklaceServerEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
-            if (!(event.getEntityLiving() instanceof Player))
+            if (!(event.getEntity() instanceof Player))
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.REFLECTION_NECKLACE.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.REFLECTION_NECKLACE.get());
 
             if (stack.isEmpty())
                 return;

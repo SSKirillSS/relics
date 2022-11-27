@@ -1,9 +1,11 @@
 package it.hurts.sskirillss.relics.utils;
 
+import net.minecraft.util.RandomSource;
+
 import java.util.Random;
 
 public class MathUtils {
-    public static float randomFloat(Random random) {
+    public static float randomFloat(RandomSource random) {
         return -1 + 2 * random.nextFloat();
     }
 

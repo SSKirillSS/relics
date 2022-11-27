@@ -14,8 +14,8 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,7 +28,7 @@ public class StunEffect extends MobEffect {
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
     public static class ClientEvents {
         @SubscribeEvent
-        public static void onMouseInput(InputEvent.ClickInputEvent event) {
+        public static void onMouseInput(InputEvent.InteractionKeyMappingTriggered event) {
             Player player = Minecraft.getInstance().player;
 
             if (player != null && player.hasEffect(EffectRegistry.STUN.get())) {
@@ -39,7 +39,7 @@ public class StunEffect extends MobEffect {
         }
 
         @SubscribeEvent
-        public void onBlockHighlight(DrawSelectionEvent.HighlightBlock event) {
+        public void onBlockHighlight(RenderHighlightEvent.Block event) {
             Player player = Minecraft.getInstance().player;
 
             if (player != null && player.hasEffect(EffectRegistry.STUN.get()))

@@ -1,9 +1,10 @@
 package it.hurts.sskirillss.relics.mixin;
 
-import it.hurts.sskirillss.relics.api.events.utils.EventDispatcher;
+import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,8 +20,14 @@ public class MixinAbstractContainerMenu {
         AbstractContainerMenu menu = (AbstractContainerMenu) (Object) this;
         Slot slot = menu.slots.get(index);
 
-        if (canInteract(slot, player, menu) && EventDispatcher.onSlotClick(player, menu, slot, action == 0 ? ClickAction.PRIMARY : ClickAction.SECONDARY, menu.getCarried(), slot.getItem()))
-            ci.cancel();
+        if (canInteract(slot, player, menu)) {
+            ContainerSlotClickEvent event = new ContainerSlotClickEvent(player, menu, slot, action == 0 ? ClickAction.PRIMARY : ClickAction.SECONDARY, menu.getCarried(), slot.getItem());
+
+            MinecraftForge.EVENT_BUS.post(event);
+
+            if (event.isCanceled())
+                ci.cancel();
+        }
     }
 
     private boolean canInteract(Slot slot, Player player, AbstractContainerMenu menu) {
