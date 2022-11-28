@@ -25,6 +25,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+@Mod.EventBusSubscriber
 public class ElytraBoosterItem extends RelicItem {
     public static final String TAG_FUEL = "fuel";
     public static final String TAG_SPEED = "speed";
@@ -107,49 +108,46 @@ public class ElytraBoosterItem extends RelicItem {
             NBTUtils.setInt(stack, TAG_FUEL, --fuel);
     }
 
-    @Mod.EventBusSubscriber
-    public static class Events {
-        @SubscribeEvent
-        public static void onSlotClick(ContainerSlotClickEvent event) {
-            if (event.getAction() != ClickAction.PRIMARY)
-                return;
+    @SubscribeEvent
+    public static void onSlotClick(ContainerSlotClickEvent event) {
+        if (event.getAction() != ClickAction.PRIMARY)
+            return;
 
-            Player player = event.getEntity();
+        Player player = event.getEntity();
 
-            ItemStack heldStack = event.getHeldStack();
-            ItemStack slotStack = event.getSlotStack();
+        ItemStack heldStack = event.getHeldStack();
+        ItemStack slotStack = event.getSlotStack();
 
-            if (!(slotStack.getItem() instanceof ElytraBoosterItem booster))
-                return;
+        if (!(slotStack.getItem() instanceof ElytraBoosterItem booster))
+            return;
 
-            int time = ForgeHooks.getBurnTime(heldStack, RecipeType.SMELTING) / 20;
-            int amount = NBTUtils.getInt(slotStack, TAG_FUEL, 0);
-            int capacity = booster.getBreathCapacity(slotStack);
-            int sum = amount + time;
+        int time = ForgeHooks.getBurnTime(heldStack, RecipeType.SMELTING) / 20;
+        int amount = NBTUtils.getInt(slotStack, TAG_FUEL, 0);
+        int capacity = booster.getBreathCapacity(slotStack);
+        int sum = amount + time;
 
-            if (time <= 0)
-                return;
+        if (time <= 0)
+            return;
 
-            NBTUtils.setInt(slotStack, TAG_FUEL, Math.min(capacity, sum));
+        NBTUtils.setInt(slotStack, TAG_FUEL, Math.min(capacity, sum));
 
-            int left = sum > capacity ? time - (sum - capacity) : time;
+        int left = sum > capacity ? time - (sum - capacity) : time;
 
-            addExperience(player, slotStack, (int) Math.floor(left / 10F));
+        addExperience(player, slotStack, (int) Math.floor(left / 10F));
 
-            ItemStack result = heldStack.getCraftingRemainingItem();
+        ItemStack result = heldStack.getCraftingRemainingItem();
 
-            heldStack.shrink(1);
+        heldStack.shrink(1);
 
-            if (!result.isEmpty()) {
-                if (heldStack.isEmpty())
-                    player.containerMenu.setCarried(result);
-                else
-                    player.getInventory().add(result);
-            }
-
-            player.playSound(SoundEvents.BLAZE_SHOOT, 0.75F, 2F / (time * 0.025F));
-
-            event.setCanceled(true);
+        if (!result.isEmpty()) {
+            if (heldStack.isEmpty())
+                player.containerMenu.setCarried(result);
+            else
+                player.getInventory().add(result);
         }
+
+        player.playSound(SoundEvents.BLAZE_SHOOT, 0.75F, 2F / (time * 0.025F));
+
+        event.setCanceled(true);
     }
 }

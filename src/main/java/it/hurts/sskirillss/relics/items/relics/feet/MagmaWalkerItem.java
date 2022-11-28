@@ -23,6 +23,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
+@Mod.EventBusSubscriber(modid = Reference.MODID)
 public class MagmaWalkerItem extends RelicItem {
     public static final String TAG_HEAT = "heat";
 
@@ -64,38 +65,33 @@ public class MagmaWalkerItem extends RelicItem {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
-    public static class Events {
-        @SubscribeEvent
-        public static void onLivingAttack(LivingAttackEvent event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
+    @SubscribeEvent
+    public static void onLivingAttack(LivingAttackEvent event) {
+        ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
-            if (!stack.isEmpty() && event.getSource() == DamageSource.HOT_FLOOR
-                    && NBTUtils.getInt(stack, TAG_HEAT, 0) <= getAbilityValue(stack, "pace", "heat")) {
-                event.setCanceled(true);
-            }
-        }
-
-        @SubscribeEvent
-        public static void onFluidCollide(FluidCollisionEvent event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
-
-            if (!(event.getEntity() instanceof Player player) || stack.isEmpty()
-                    || !event.getFluid().is(FluidTags.LAVA) || player.isShiftKeyDown())
-                return;
-
-            if (player.tickCount % 20 == 0) {
-                int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
-
-                NBTUtils.setInt(stack, TAG_HEAT, ++heat);
-
-                if (heat % 5 == 0)
-                    addExperience(player, stack, 1);
-            }
-
-            System.out.println(123);
-
+        if (!stack.isEmpty() && event.getSource() == DamageSource.HOT_FLOOR
+                && NBTUtils.getInt(stack, TAG_HEAT, 0) <= getAbilityValue(stack, "pace", "heat")) {
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onFluidCollide(FluidCollisionEvent event) {
+        ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
+
+        if (!(event.getEntity() instanceof Player player) || stack.isEmpty()
+                || !event.getFluid().is(FluidTags.LAVA) || player.isShiftKeyDown())
+            return;
+
+        if (player.tickCount % 20 == 0) {
+            int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
+
+            NBTUtils.setInt(stack, TAG_HEAT, ++heat);
+
+            if (heat % 5 == 0)
+                addExperience(player, stack, 1);
+        }
+
+        event.setCanceled(true);
     }
 }

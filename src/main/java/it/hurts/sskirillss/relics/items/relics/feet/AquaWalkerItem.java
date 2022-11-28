@@ -20,6 +20,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
+@Mod.EventBusSubscriber(modid = Reference.MODID)
 public class AquaWalkerItem extends RelicItem {
     public static final String TAG_DRENCH = "drench";
 
@@ -53,25 +54,22 @@ public class AquaWalkerItem extends RelicItem {
             NBTUtils.setInt(stack, TAG_DRENCH, --drench);
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
-    public static class Events {
-        @SubscribeEvent
-        public static void onFluidCollide(FluidCollisionEvent event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.AQUA_WALKER.get());
-            int drench = NBTUtils.getInt(stack, TAG_DRENCH, 0);
+    @SubscribeEvent
+    public static void onFluidCollide(FluidCollisionEvent event) {
+        ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.AQUA_WALKER.get());
+        int drench = NBTUtils.getInt(stack, TAG_DRENCH, 0);
 
-            if (!(event.getEntity() instanceof Player player) || stack.isEmpty() || drench > getAbilityValue(stack, "walking", "time")
-                    || !event.getFluid().is(FluidTags.WATER) || player.isShiftKeyDown())
-                return;
+        if (!(event.getEntity() instanceof Player player) || stack.isEmpty() || drench > getAbilityValue(stack, "walking", "time")
+                || !event.getFluid().is(FluidTags.WATER) || player.isShiftKeyDown())
+            return;
 
-            if (player.tickCount % 20 == 0) {
-                NBTUtils.setInt(stack, TAG_DRENCH, ++drench);
+        if (player.tickCount % 20 == 0) {
+            NBTUtils.setInt(stack, TAG_DRENCH, ++drench);
 
-                if (drench % 5 == 0)
-                    addExperience(player, stack, 1);
-            }
-
-            event.setCanceled(true);
+            if (drench % 5 == 0)
+                addExperience(player, stack, 1);
         }
+
+        event.setCanceled(true);
     }
 }

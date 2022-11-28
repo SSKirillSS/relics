@@ -18,6 +18,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
+@Mod.EventBusSubscriber
 public class LeatherBeltItem extends RelicItem {
     @Override
     public RelicData getRelicData() {
@@ -46,24 +47,21 @@ public class LeatherBeltItem extends RelicItem {
                 .build();
     }
 
-    @Mod.EventBusSubscriber
-    public static class Events {
-        @SubscribeEvent
-        public static void onExperienceAdded(ExperienceAddEvent event) {
-            Player player = event.getEntity();
-            ItemStack relic = event.getStack();
+    @SubscribeEvent
+    public static void onExperienceAdded(ExperienceAddEvent event) {
+        Player player = event.getEntity();
+        ItemStack relic = event.getStack();
 
-            if (player == null || relic.getItem() == ItemRegistry.LEATHER_BELT.get())
+        if (player == null || relic.getItem() == ItemRegistry.LEATHER_BELT.get())
+            return;
+
+        if (relic.getTags().map(tag -> tag.location().getPath()).anyMatch(tag -> tag.equals("talisman"))) {
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.LEATHER_BELT.get());
+
+            if (stack.isEmpty())
                 return;
 
-            if (relic.getTags().map(tag -> tag.location().getPath()).anyMatch(tag -> tag.equals("talisman"))) {
-                ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.LEATHER_BELT.get());
-
-                if (stack.isEmpty())
-                    return;
-
-                RelicItem.addExperience(player, stack, 1);
-            }
+            RelicItem.addExperience(player, stack, 1);
         }
     }
 }
