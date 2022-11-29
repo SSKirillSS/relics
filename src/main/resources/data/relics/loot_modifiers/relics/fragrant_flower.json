@@ -13,5 +13,6 @@
   "entry": {
     "type": "minecraft:item",
     "name": "relics:fragrant_flower"
-  }
+  },
+  "functions": []
 }

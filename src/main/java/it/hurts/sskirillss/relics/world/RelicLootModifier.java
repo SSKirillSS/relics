@@ -7,6 +7,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.hurts.sskirillss.relics.init.CodecRegistry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -43,64 +44,60 @@ public class RelicLootModifier extends LootModifier {
 
     @Override
     public Codec<? extends IGlobalLootModifier> codec() {
-        return CODEC;
+        return CodecRegistry.RELIC_LOOT.get();
     }
-
-    private static final Codec<LootItem> LOOT_ITEM_CODEC = Codec.PASSTHROUGH.flatXmap(
-            d ->
-            {
-                try {
-                    return DataResult.success(LootModifierManager.GSON_INSTANCE.fromJson(IGlobalLootModifier.getJson(d), LootItem.class));
-                } catch (JsonSyntaxException e) {
-                    LootModifierManager.LOGGER.warn("Unable to decode loot item", e);
-
-                    return DataResult.error(e.getMessage());
-                }
-            },
-            item ->
-            {
-                try {
-                    JsonElement element = LootModifierManager.GSON_INSTANCE.toJsonTree(item);
-
-                    return DataResult.success(new Dynamic<>(JsonOps.INSTANCE, element));
-                } catch (JsonSyntaxException e) {
-                    LootModifierManager.LOGGER.warn("Unable to encode loot item", e);
-
-                    return DataResult.error(e.getMessage());
-                }
-            }
-    );
-
-    private static final Codec<LootItemFunction[]> LOOT_FUNCTION_CODEC = Codec.PASSTHROUGH.flatXmap(
-            d ->
-            {
-                try {
-                    return DataResult.success(LootModifierManager.GSON_INSTANCE.fromJson(IGlobalLootModifier.getJson(d), LootItemFunction[].class));
-                } catch (JsonSyntaxException e) {
-                    LootModifierManager.LOGGER.warn("Unable to decode loot functions", e);
-
-                    return DataResult.error(e.getMessage());
-                }
-            },
-            function ->
-            {
-                try {
-                    JsonElement element = LootModifierManager.GSON_INSTANCE.toJsonTree(function);
-
-                    return DataResult.success(new Dynamic<>(JsonOps.INSTANCE, element));
-                } catch (JsonSyntaxException e) {
-                    LootModifierManager.LOGGER.warn("Unable to encode loot functions", e);
-
-                    return DataResult.error(e.getMessage());
-                }
-            }
-    );
 
     public static Codec<RelicLootModifier> CODEC = RecordCodecBuilder.create(
             inst -> LootModifier.codecStart(inst).and(
                     inst.group(
-                            RelicLootModifier.LOOT_ITEM_CODEC.fieldOf("entry").forGetter(m -> m.entry),
-                            RelicLootModifier.LOOT_FUNCTION_CODEC.fieldOf("functions").forGetter(m -> m.functions)
+                            Codec.PASSTHROUGH.flatXmap(
+                                    d ->
+                                    {
+                                        try {
+                                            return DataResult.success(LootModifierManager.GSON_INSTANCE.fromJson(IGlobalLootModifier.getJson(d), LootItem.class));
+                                        } catch (JsonSyntaxException e) {
+                                            LootModifierManager.LOGGER.warn("Unable to decode loot item", e);
+
+                                            return DataResult.error(e.getMessage());
+                                        }
+                                    },
+                                    item ->
+                                    {
+                                        try {
+                                            JsonElement element = LootModifierManager.GSON_INSTANCE.toJsonTree(item);
+
+                                            return DataResult.success(new Dynamic<>(JsonOps.INSTANCE, element));
+                                        } catch (JsonSyntaxException e) {
+                                            LootModifierManager.LOGGER.warn("Unable to encode loot item", e);
+
+                                            return DataResult.error(e.getMessage());
+                                        }
+                                    }
+                            ).fieldOf("entry").forGetter(m -> m.entry),
+                            Codec.PASSTHROUGH.flatXmap(
+                                    d ->
+                                    {
+                                        try {
+                                            return DataResult.success(LootModifierManager.GSON_INSTANCE.fromJson(IGlobalLootModifier.getJson(d), LootItemFunction[].class));
+                                        } catch (JsonSyntaxException e) {
+                                            LootModifierManager.LOGGER.warn("Unable to decode loot functions", e);
+
+                                            return DataResult.error(e.getMessage());
+                                        }
+                                    },
+                                    function ->
+                                    {
+                                        try {
+                                            JsonElement element = LootModifierManager.GSON_INSTANCE.toJsonTree(function);
+
+                                            return DataResult.success(new Dynamic<>(JsonOps.INSTANCE, element));
+                                        } catch (JsonSyntaxException e) {
+                                            LootModifierManager.LOGGER.warn("Unable to encode loot functions", e);
+
+                                            return DataResult.error(e.getMessage());
+                                        }
+                                    }
+                            ).fieldOf("functions").forGetter(m -> m.functions)
                     )
             ).apply(inst, RelicLootModifier::new));
 }

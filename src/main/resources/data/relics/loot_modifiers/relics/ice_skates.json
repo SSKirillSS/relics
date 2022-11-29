@@ -26,5 +26,6 @@
   "entry": {
     "type": "minecraft:item",
     "name": "relics:ice_skates"
-  }
+  },
+  "functions": []
 }

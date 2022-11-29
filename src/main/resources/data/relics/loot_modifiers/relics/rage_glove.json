@@ -38,5 +38,6 @@
   "entry": {
     "type": "minecraft:item",
     "name": "relics:rage_glove"
-  }
+  },
+  "functions": []
 }

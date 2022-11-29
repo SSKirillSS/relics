@@ -13,5 +13,6 @@
   "entry": {
     "type": "minecraft:item",
     "name": "relics:hunter_belt"
-  }
+  },
+  "functions": []
 }

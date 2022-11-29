@@ -30,5 +30,6 @@
   "entry": {
     "type": "minecraft:item",
     "name": "relics:midnight_robe"
-  }
+  },
+  "functions": []
 }

@@ -13,5 +13,6 @@
   "entry": {
     "type": "minecraft:item",
     "name": "relics:chorus_inhibitor"
-  }
+  },
+  "functions": []
 }

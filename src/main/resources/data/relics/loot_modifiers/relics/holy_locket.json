@@ -22,5 +22,6 @@
   "entry": {
     "type": "minecraft:item",
     "name": "relics:holy_locket"
-  }
+  },
+  "functions": []
 }

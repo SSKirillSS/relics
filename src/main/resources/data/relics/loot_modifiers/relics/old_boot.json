@@ -17,5 +17,6 @@
   "entry": {
     "type": "minecraft:item",
     "name": "relics:old_boot"
-  }
+  },
+  "functions": []
 }
