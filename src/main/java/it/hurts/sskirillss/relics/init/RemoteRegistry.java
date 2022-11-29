@@ -13,22 +13,25 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.feet.AquaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.MagmaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.RollerSkatesItem;
+import it.hurts.sskirillss.relics.tiles.base.IHasHUDInfo;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -146,5 +149,29 @@ public class RemoteRegistry {
     public static void onParticleRegistry(RegisterParticleProvidersEvent event) {
         event.register(ParticleRegistry.CIRCLE_TINT.get(), CircleTintFactory::new);
         event.register(ParticleRegistry.SPARK_TINT.get(), SparkTintFactory::new);
+    }
+
+    @SubscribeEvent
+    public static void onOverlayRegistry(RegisterGuiOverlaysEvent event) {
+        event.registerBelowAll("researching_hint", (ForgeGui, poseStack, partialTick, screenWidth, screenHeight) -> {
+            Minecraft MC = Minecraft.getInstance();
+            ClientLevel level = MC.level;
+
+            if (level == null)
+                return;
+
+            HitResult hit = MC.hitResult;
+
+            if (hit == null || hit.getType() != HitResult.Type.BLOCK)
+                return;
+
+            BlockPos pos = ((BlockHitResult) MC.hitResult).getBlockPos();
+            BlockEntity tile = level.getBlockEntity(pos);
+
+            if (!(tile instanceof IHasHUDInfo infoTile))
+                return;
+
+            infoTile.renderHUDInfo(poseStack, MC.getWindow());
+        });
     }
 }
