@@ -29,6 +29,6 @@
   ],
   "entry": {
     "type": "minecraft:item",
-    "name": "relics:out_runner"
+    "name": "relics:roller_skates"
   }
 }
