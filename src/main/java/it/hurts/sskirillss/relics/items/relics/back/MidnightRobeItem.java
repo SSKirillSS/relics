@@ -167,8 +167,14 @@ public class MidnightRobeItem extends RelicItem {
 
         String string = NBTUtils.getString(stack, TAG_TARGET, "");
 
-        if (string.isEmpty() || !(serverLevel.getEntity(UUID.fromString(string)) instanceof LivingEntity target))
+        if (string.isEmpty())
             return null;
+
+        if (!(serverLevel.getEntity(UUID.fromString(string)) instanceof LivingEntity target) || target.isDeadOrDying()) {
+            NBTUtils.clearTag(stack, TAG_TARGET);
+
+            return null;
+        }
 
         return target;
     }
