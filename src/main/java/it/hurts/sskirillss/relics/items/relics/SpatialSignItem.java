@@ -93,6 +93,9 @@ public class SpatialSignItem extends RelicItem {
         List<String> positions = NBTUtils.getList(stack, TAG_POSITION, String.class);
 
         if (time > 0) {
+            if (player.isPassenger())
+                player.stopRiding();
+
             if (player.tickCount % 20 == 0) {
                 NBTUtils.setInt(stack, TAG_TIME, --time);
 
