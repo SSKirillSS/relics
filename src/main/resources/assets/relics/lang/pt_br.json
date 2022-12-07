@@ -245,9 +245,7 @@
   "tooltip.relics.spatial_sign.leveling": "Ganhe 1XP por segundo retornado da Fenda Temporal.",
   "tooltip.relics.spatial_sign.lore": "O Selo que uma vez selou os portões de Nether acabou se tornando uma poderosa Relíquia, capaz de cortar o tempo e o espaço com facilidade. Não demorou muito para que aqueles em busca desse poder colocassem as mãos nessa relíquia, deixando os portões de Nether abertos até hoje…",
   "tooltip.relics.spatial_sign.ability.seal": "Fenda Temporal",
-  "tooltip.relics.spatial_sign.ability.seal.description": "O uso desta Relíquia salva a localização atual do portador, para o qual ele será devolvida após um determinado período de tempo ou quando reutilizada.",
-  "tooltip.relics.spatial_sign.ability.seal.stat.speed": "A taxa de retorno é de %1$s blocos por segundo.",
-  "tooltip.relics.spatial_sign.ability.seal.stat.duration": "A duração máxima é de %1$s segundos.",
+  "tooltip.relics.spatial_sign.ability.seal.stat.time": "A duração máxima é de %1$s segundos.",
 
   "item.relics.chorus_inhibitor": "Inibidor de Coro",
   "tooltip.relics.chorus_inhibitor.leveling": "Ganhe 1XP a cada 10 blocos de teletransporte com a habilidade da Relíquia.",

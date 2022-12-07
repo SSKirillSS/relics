@@ -243,9 +243,7 @@
  "tooltip.relics.spatial_sign.leveling": "Gana 1EXP por cada segundo retornado por la Grieta del Tiempo.",
  "tooltip.relics.spatial_sign.lore": "El Sello que una vez selló las puertas del Infierno se volvió una poderosa Reliquia, capaz de cortar a través del tiempo y del espacio con facilidad. No tomó mucho para aquellos en necesidad de este poder para obtener esta Reliquia, dejando las puertas del Infierno abiertas hasta el día de hoy…",
  "tooltip.relics.spatial_sign.ability.seal": "Grieta del Tiempo",
- "tooltip.relics.spatial_sign.ability.seal.description": "Esta Reliquia guarda la posición del usuario al ser usada, a la que retornarán tras cierto tiempo o cuando sea reusada.",
- "tooltip.relics.spatial_sign.ability.seal.stat.speed": "El radio de retorno es de %1$s bloques por segundo.",
- "tooltip.relics.spatial_sign.ability.seal.stat.duration": "La duración máxima son %1$s degundos.",
+ "tooltip.relics.spatial_sign.ability.seal.stat.time": "La duración máxima son %1$s degundos.",
 
  "item.relics.chorus_inhibitor": "Inhibidor Coral",
  "tooltip.relics.chorus_inhibitor.leveling": "Gana 1EXP por cada 10 bloques teleportados con la habilidad de esta Reliquia.",

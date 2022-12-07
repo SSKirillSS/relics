@@ -245,9 +245,8 @@
   "tooltip.relics.spatial_sign.leveling": "Gain 1XP per second returned from Temporal Rift.",
   "tooltip.relics.spatial_sign.lore": "The Seal that once sealed the gates of Nether turned out to be a powerful Relic, capable of slicing through the time and space with ease. It didn't take long for those in want of tis power to get their hands on this Relic, leaving Nether's gates open to this day …",
   "tooltip.relics.spatial_sign.ability.seal": "Time Rift",
-  "tooltip.relics.spatial_sign.ability.seal.description": "Using this Relic saves the current location of the bearer, to which they will be returned after a certain amount of time or when reused.",
-  "tooltip.relics.spatial_sign.ability.seal.stat.speed": "Return rate is %1$s blocks per second.",
-  "tooltip.relics.spatial_sign.ability.seal.stat.duration": "Max duration is %1$s seconds.",
+  "tooltip.relics.spatial_sign.ability.seal.description": "Using this Relic returns player along travelled path for a certain time. Relic reuse will interrupt effect of this ability.",
+  "tooltip.relics.spatial_sign.ability.seal.stat.time": "Max duration is %1$s seconds.",
 
   "item.relics.chorus_inhibitor": "Chorus Inhibitor",
   "tooltip.relics.chorus_inhibitor.leveling": "Gain 1XP per 10 blocks teleport with Relic's ability.",
