@@ -78,20 +78,6 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), this.asItem().getDefaultInstance()));
-
-        if (!state.is(newState.getBlock()) && worldIn.getBlockEntity(pos) instanceof ResearchingTableTile tile) {
-            ItemStack stack = tile.getStack();
-
-            if (stack != null && !stack.isEmpty())
-                worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack));
-        }
-
-        super.onRemove(state, worldIn, pos, newState, isMoving);
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
         return Block.box(0, 0, 0, 16, 15, 16);
     }
