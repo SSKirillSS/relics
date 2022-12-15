@@ -72,6 +72,18 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
         return InteractionResult.SUCCESS;
     }
 
+    @Override
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock()) && worldIn.getBlockEntity(pos) instanceof ResearchingTableTile tile) {
+            ItemStack stack = tile.getStack();
+
+            if (stack != null && !stack.isEmpty())
+                worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack));
+        }
+
+        super.onRemove(state, worldIn, pos, newState, isMoving);
+    }
+
     @OnlyIn(Dist.CLIENT)
     public static void openGui(BlockPos pos, ItemStack stack) {
         Minecraft.getInstance().setScreen(new RelicDescriptionScreen(pos, stack));
