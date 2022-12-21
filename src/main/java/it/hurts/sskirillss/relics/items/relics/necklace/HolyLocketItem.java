@@ -56,7 +56,7 @@ public class HolyLocketItem extends RelicItem {
 
                 if (stack.isEmpty() || getAbilityValue(stack, "steal", "radius") < player.position().distanceTo(entity.position())
                         || entity.getStringUUID().equals(player.getStringUUID()))
-                    return;
+                    continue;
 
                 float amount = (float) (event.getAmount() * getAbilityValue(stack, "steal", "amount"));
 
