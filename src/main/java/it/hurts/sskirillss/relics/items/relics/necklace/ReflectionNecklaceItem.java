@@ -114,9 +114,10 @@ public class ReflectionNecklaceItem extends RelicItem {
                 return;
 
             double charge = NBTUtils.getDouble(stack, TAG_CHARGE, 0);
+            double capacity = getAbilityValue(stack, "explode", "capacity");
 
-            if (charge < getAbilityValue(stack, "explode", "capacity")) {
-                NBTUtils.setDouble(stack, TAG_CHARGE, charge + (event.getAmount()));
+            if (charge < capacity) {
+                NBTUtils.setDouble(stack, TAG_CHARGE, Math.min(capacity, charge + (event.getAmount())));
 
                 NBTUtils.setInt(stack, TAG_TIME, 5);
             }
