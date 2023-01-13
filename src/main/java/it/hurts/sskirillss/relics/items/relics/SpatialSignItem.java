@@ -64,22 +64,19 @@ public class SpatialSignItem extends RelicItem {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
-        if (DurabilityUtils.isBroken(stack) || NBTUtils.getList(stack, TAG_POSITION, String.class).size() < 2)
+        if (DurabilityUtils.isBroken(stack) || NBTUtils.getList(stack, TAG_POSITION, String.class).size() < 2
+                || worldIn.isClientSide())
             return InteractionResultHolder.fail(stack);
 
         if (NBTUtils.getInt(stack, TAG_TIME, 0) > 0) {
             NBTUtils.setInt(stack, TAG_TIME, 0);
-
-            worldIn.playSound(null, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1F, 0.5F);
-
-            playerIn.getCooldowns().addCooldown(this, 20);
         } else {
             NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(getAbilityValue(stack, "seal", "time")));
 
             worldIn.playSound(null, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1F, 2F);
         }
 
-        return super.use(worldIn, playerIn, handIn);
+        return InteractionResultHolder.success(stack);
     }
 
     @Override
@@ -89,23 +86,27 @@ public class SpatialSignItem extends RelicItem {
 
         RandomSource random = worldIn.getRandom();
 
-        int time = NBTUtils.getInt(stack, TAG_TIME, 0);
+        int time = NBTUtils.getInt(stack, TAG_TIME, -1);
         List<String> positions = NBTUtils.getList(stack, TAG_POSITION, String.class);
 
-        if (time > 0) {
+        if (time >= 0) {
             if (player.isPassenger())
                 player.stopRiding();
 
-            if (player.tickCount % 20 == 0) {
+            if (player.tickCount % 20 == 0 && !worldIn.isClientSide()) {
                 NBTUtils.setInt(stack, TAG_TIME, --time);
 
                 addExperience(player, stack, 1);
+            }
 
-                if (time <= 0) {
-                    worldIn.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1F, 0.5F);
+            if (time <= 0) {
+                worldIn.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1F, 0.5F);
 
-                    player.getCooldowns().addCooldown(this, 20);
-                }
+                player.getCooldowns().addCooldown(this, (int) (Math.ceil(getAbilityValue(stack, "seal", "time")) * 20));
+
+                NBTUtils.setInt(stack, TAG_TIME, -1);
+
+                return;
             }
 
             if (!positions.isEmpty()) {
@@ -121,12 +122,12 @@ public class SpatialSignItem extends RelicItem {
 
                     for (int i = 0; i < 10; i++)
                         worldIn.addParticle(new CircleTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(50)),
-                                        0.1F + random.nextFloat() * 0.25F, 100, 0.965F, true), player.getX(),
+                                        0.1F + random.nextFloat() * 0.25F, 100, 0.96F, true), player.getX(),
                                 player.getY() + random.nextFloat() * player.getBbHeight(), player.getZ(), 0F, random.nextFloat() * 0.1F, 0F);
 
                     player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
 
-                    player.setDeltaMovement(target.add(0, 1, 0).subtract(player.position()).normalize());
+                    player.setDeltaMovement(target.add(0, 1, 0).subtract(player.position()).normalize().scale(0.75F));
 
                     player.fallDistance = 0;
                     player.noPhysics = true;
@@ -138,22 +139,17 @@ public class SpatialSignItem extends RelicItem {
                 }
             } else {
                 NBTUtils.setInt(stack, TAG_TIME, 0);
-
-                worldIn.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1F, 0.5F);
-
-                player.getCooldowns().addCooldown(this, 20);
             }
-        } else {
-            if (player.tickCount % 20 != 0)
-                return;
+        }
 
+        if (player.tickCount % 20 == 0) {
             if (positions.size() >= 5 * getAbilityValue(stack, "seal", "time"))
                 positions.remove(0);
 
             if (positions.isEmpty() || player.position().distanceTo(NBTUtils.parsePosition(positions.get(positions.size() - 1))) >= 2) {
-                if (worldIn.dimension().location().toString().equals(NBTUtils.getString(stack, TAG_WORLD, "")))
+                if (worldIn.dimension().location().toString().equals(NBTUtils.getString(stack, TAG_WORLD, ""))) {
                     positions.add(NBTUtils.writePosition(player.position()));
-                else {
+                } else {
                     positions.clear();
 
                     NBTUtils.setString(stack, TAG_WORLD, worldIn.dimension().location().toString());
@@ -162,8 +158,6 @@ public class SpatialSignItem extends RelicItem {
 
             NBTUtils.setList(stack, TAG_POSITION, positions);
         }
-
-        super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
     @Override
