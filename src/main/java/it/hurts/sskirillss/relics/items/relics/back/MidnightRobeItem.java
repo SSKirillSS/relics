@@ -212,9 +212,9 @@ public class MidnightRobeItem extends RelicItem {
                     player.getY(), target.getZ())) > getAbilityValue(stack, "backstab", "distance"))
                 return;
 
-            event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "backstab", "damage")));
+            addExperience(player, stack, Math.round(event.getAmount() * 0.5F));
 
-            addExperience(player, stack, 1);
+            event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "backstab", "damage")));
 
             NBTUtils.setString(stack, TAG_TARGET, event.getEntity().getStringUUID());
         }

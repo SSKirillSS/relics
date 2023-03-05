@@ -48,7 +48,7 @@ public class MagicMirrorItem extends RelicItem {
                 .abilityData(RelicAbilityData.builder()
                         .ability("teleport", RelicAbilityEntry.builder()
                                 .stat("distance", RelicAbilityStat.builder()
-                                        .initialValue(250D, 750D)
+                                        .initialValue(500D, 1000D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())

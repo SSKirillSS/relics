@@ -32,7 +32,7 @@ public class RollerSkatesItem extends RelicItem {
                                 .stat("speed", RelicAbilityStat.builder()
                                         .initialValue(0.001D, 0.005D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
-                                        .formatValue(value -> (int) (MathUtils.round(value, 3) * 5 * 100))
+                                        .formatValue(value -> (int) (MathUtils.round(value, 3) * 100 * 100))
                                         .build())
                                 .stat("duration", RelicAbilityStat.builder()
                                         .initialValue(15D, 35D)

@@ -1,20 +1,32 @@
 package it.hurts.sskirillss.relics.client.screen.description.widgets.ability;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
+import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
+import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 
-public class AbilityResetButtonWidget extends AbstractDescriptionWidget {
+import java.util.List;
+
+public class AbilityResetButtonWidget extends AbstractDescriptionWidget implements IHoverableWidget {
     private final AbilityDescriptionScreen screen;
     private final String ability;
 
     public AbilityResetButtonWidget(int x, int y, AbilityDescriptionScreen screen, String ability) {
-        super(x, y, 22, 22);
+        super(x, y, 18, 18);
 
         this.screen = screen;
         this.ability = ability;
@@ -41,15 +53,82 @@ public class AbilityResetButtonWidget extends AbstractDescriptionWidget {
         manager.bindForSetup(AbilityDescriptionScreen.TEXTURE);
 
         if (RelicItem.mayPlayerReset(MC.player, screen.stack, ability)) {
-            blit(poseStack, x, y, 282, 0, 22, 22, 512, 512);
+            blit(poseStack, x, y, 298, 0, 18, 18, 512, 512);
 
             if (isHovered)
-                blit(poseStack, x - 1, y - 1, 330, 0, 24, 24, 512, 512);
+                blit(poseStack, x - 1, y - 1, 318, 0, 20, 20, 512, 512);
         } else {
-            blit(poseStack, x, y, 282, 24, 22, 22, 512, 512);
+            blit(poseStack, x, y, 298, 20, 18, 18, 512, 512);
 
-            if (isHovered)
-                blit(poseStack, x - 1, y - 1, 330, 24, 24, 24, 512, 512);
+            RelicAbilityEntry abilityData = RelicItem.getAbilityEntryData(screen.stack, ability);
+
+            if (abilityData == null)
+                return;
+
+            if (RelicItem.canUseAbility(screen.stack, ability) && !abilityData.getStats().isEmpty() && isHovered)
+                blit(poseStack, x - 1, y - 1, 318, 22, 20, 20, 512, 512);
         }
+    }
+
+    @Override
+    public void onHovered(PoseStack poseStack, int mouseX, int mouseY) {
+        if (!RelicItem.canUseAbility(screen.stack, ability))
+            return;
+
+        RelicAbilityEntry data = RelicItem.getAbilityEntryData(screen.stack, ability);
+
+        if (data.getStats().isEmpty())
+            return;
+
+        List<FormattedCharSequence> tooltip = Lists.newArrayList();
+
+        int maxWidth = 100;
+        int renderWidth = 0;
+
+        int requiredExperience = RelicItem.getResetRequiredExperience(screen.stack, ability);
+
+        int experience = MC.player.totalExperience;
+
+        MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative").withStyle(ChatFormatting.RED);
+        MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive").withStyle(ChatFormatting.GREEN);
+
+        List<MutableComponent> entries = Lists.newArrayList(
+                Component.translatable("tooltip.relics.relic.reset.description"),
+                Component.literal(" "));
+
+        if (RelicItem.getAbilityPoints(screen.stack, ability) > 0)
+            entries.add(Component.translatable("tooltip.relics.relic.reset.cost", requiredExperience,
+                    (requiredExperience > experience ? negativeStatus : positiveStatus)));
+        else
+            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.reset.locked")));
+
+        for (MutableComponent entry : entries) {
+            int entryWidth = (MC.font.width(entry) + 4) / 2;
+
+            if (entryWidth > renderWidth)
+                renderWidth = Math.min(entryWidth, maxWidth);
+
+            tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+        }
+
+        int height = tooltip.size() * 4;
+
+        int renderX = x + width + 3;
+        int renderY = y - height / 2;
+
+        ScreenUtils.drawTexturedTooltipBorder(poseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+                renderWidth, height, renderX, renderY);
+
+        int yOff = 0;
+
+        poseStack.scale(0.5F, 0.5F, 0.5F);
+
+        for (FormattedCharSequence entry : tooltip) {
+            MC.font.draw(poseStack, entry, (renderX + 9) * 2, (renderY + 9 + yOff) * 2, 0x412708);
+
+            yOff += 4;
+        }
+
+        poseStack.scale(1F, 1F, 1F);
     }
 }

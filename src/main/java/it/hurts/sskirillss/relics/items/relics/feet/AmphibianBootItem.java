@@ -30,6 +30,11 @@ public class AmphibianBootItem extends RelicItem {
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.25D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 100 * 20))
                                         .build())
+                                .stat("duration", RelicAbilityStat.builder()
+                                        .initialValue(15D, 35D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.2D)
+                                        .formatValue(value -> MathUtils.round(value / 5, 1))
+                                        .build())
                                 .build())
                         .build())
                 .levelingData(new RelicLevelingData(100, 10, 100))
@@ -50,7 +55,7 @@ public class AmphibianBootItem extends RelicItem {
             if (player.tickCount % 20 == 0)
                 addExperience(player, stack, 1);
 
-            if (duration < 100)
+            if (duration < getAbilityValue(stack, "swimming", "duration"))
                 NBTUtils.setInt(stack, TAG_DURATION, duration + 1);
         } else if (duration > 0)
             NBTUtils.setInt(stack, TAG_DURATION, --duration);

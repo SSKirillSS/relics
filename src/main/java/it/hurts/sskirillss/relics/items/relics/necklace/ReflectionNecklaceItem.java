@@ -36,6 +36,16 @@ public class ReflectionNecklaceItem extends RelicItem {
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.35D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
+                                .stat("damage", RelicAbilityStat.builder()
+                                        .initialValue(0.25D, 0.5D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.5D)
+                                        .formatValue(value -> MathUtils.round(value, 2))
+                                        .build())
+                                .stat("stun", RelicAbilityStat.builder()
+                                        .initialValue(0.05D, 0.25D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.25D)
+                                        .formatValue(value -> MathUtils.round(value, 2))
+                                        .build())
                                 .build())
                         .build())
                 .levelingData(new RelicLevelingData(100, 10, 200))
@@ -83,7 +93,9 @@ public class ReflectionNecklaceItem extends RelicItem {
                         if (level.getBlockState(new BlockPos(pos)).getMaterial().blocksMotion())
                             continue;
 
-                        StalactiteEntity stalactite = new StalactiteEntity(level, (float) charge);
+                        StalactiteEntity stalactite = new StalactiteEntity(level,
+                                (float) (charge * getAbilityValue(stack, "explode", "damage")),
+                                (float) (charge * getAbilityValue(stack, "explode", "stun")));
 
                         stalactite.setOwner(player);
                         stalactite.setPos(pos);
@@ -94,7 +106,7 @@ public class ReflectionNecklaceItem extends RelicItem {
                 }
             }
 
-            addExperience(player, stack, (int) Math.floor(charge * 0.05F));
+            addExperience(player, stack, (int) Math.floor(charge / 10F));
 
             NBTUtils.setDouble(stack, TAG_CHARGE, 0);
             NBTUtils.setInt(stack, TAG_TIME, 0);

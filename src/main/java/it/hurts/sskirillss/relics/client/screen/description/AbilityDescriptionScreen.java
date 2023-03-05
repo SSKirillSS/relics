@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.client.screen.description;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityRerollButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityResetButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityUpgradeButtonWidget;
@@ -14,6 +15,8 @@ import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -29,7 +32,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
-import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class AbilityDescriptionScreen extends Screen {
@@ -45,6 +47,10 @@ public class AbilityDescriptionScreen extends Screen {
     public int backgroundHeight = 177;
     public int backgroundWidth = 256;
 
+    public AbilityUpgradeButtonWidget upgradeButton;
+    public AbilityRerollButtonWidget rerollButton;
+    public AbilityResetButtonWidget resetButton;
+
     public AbilityDescriptionScreen(BlockPos pos, ItemStack stack, String ability) {
         super(Component.empty());
 
@@ -55,7 +61,7 @@ public class AbilityDescriptionScreen extends Screen {
 
     @Override
     protected void init() {
-        if (!(stack.getItem() instanceof RelicItem relic))
+        if (!(stack.getItem() instanceof RelicItem))
             return;
 
         TextureManager manager = MC.getTextureManager();
@@ -65,9 +71,13 @@ public class AbilityDescriptionScreen extends Screen {
 
         manager.bindForSetup(TEXTURE);
 
-        this.addRenderableWidget(new AbilityUpgradeButtonWidget(((this.width - backgroundWidth) / 2) + 209, ((this.height - backgroundHeight) / 2) + 93, this, ability));
-        this.addRenderableWidget(new AbilityRerollButtonWidget(((this.width - backgroundWidth) / 2) + 209, ((this.height - backgroundHeight) / 2) + 116, this, ability));
-        this.addRenderableWidget(new AbilityResetButtonWidget(((this.width - backgroundWidth) / 2) + 209, ((this.height - backgroundHeight) / 2) + 139, this, ability));
+        this.upgradeButton = new AbilityUpgradeButtonWidget(((this.width - backgroundWidth) / 2) + 209, ((this.height - backgroundHeight) / 2) + 98, this, ability);
+        this.rerollButton = new AbilityRerollButtonWidget(((this.width - backgroundWidth) / 2) + 209, ((this.height - backgroundHeight) / 2) + 118, this, ability);
+        this.resetButton = new AbilityResetButtonWidget(((this.width - backgroundWidth) / 2) + 209, ((this.height - backgroundHeight) / 2) + 138, this, ability);
+
+        this.addRenderableWidget(upgradeButton);
+        this.addRenderableWidget(rerollButton);
+        this.addRenderableWidget(resetButton);
     }
 
     @Override
@@ -109,6 +119,10 @@ public class AbilityDescriptionScreen extends Screen {
 
         blit(pPoseStack, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
 
+        pPoseStack.pushPose();
+
+        pPoseStack.scale(0.5F, 0.5F, 0.5F);
+
         int level = RelicItem.getAbilityPoints(stack, ability);
         int maxLevel = abilityData.getMaxLevel() == -1 ? (relicData.getLevelingData().getMaxLevel() / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
 
@@ -117,117 +131,72 @@ public class AbilityDescriptionScreen extends Screen {
         if (abilityData.getStats().size() > 0)
             name.append(Component.translatable("tooltip.relics.relic.ability.level", level, maxLevel == -1 ? "∞" : maxLevel));
 
-        MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
+        MC.font.draw(pPoseStack, name.withStyle(ChatFormatting.BOLD), x * 2 + 71 * 2, y * 2 + 26 * 2 - 1, 0x412708);
 
-        List<FormattedCharSequence> lines = MC.font.split(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 318);
+        List<FormattedCharSequence> lines = MC.font.split(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 305);
 
         for (int i = 0; i < lines.size(); i++) {
-            FormattedCharSequence line = lines.get(i);
-
-            pPoseStack.pushPose();
-
-            pPoseStack.scale(0.5F, 0.5F, 0.5F);
-
-            MC.font.draw(pPoseStack, line, x * 2 + 66 * 2, y * 2 + i * 9 + 33 * 2, 0x412708);
-
-            pPoseStack.popPose();
+            MC.font.draw(pPoseStack, lines.get(i), x * 2 + 71 * 2, y * 2 + i * 9 + 35 * 2, 0x412708);
         }
 
-        boolean isHoveringUpgrade = (pMouseX >= x + 209
-                && pMouseY >= y + 93
-                && pMouseX < x + 209 + 22
-                && pMouseY < y + 93 + 22);
-
-        boolean isHoveringReroll = (pMouseX >= x + 209
-                && pMouseY >= y + 116
-                && pMouseX < x + 209 + 22
-                && pMouseY < y + 116 + 22);
-
-        boolean isHoveringReset = (pMouseX >= x + 209
-                && pMouseY >= y + 139
-                && pMouseX < x + 209 + 22
-                && pMouseY < y + 139 + 22);
-
-        Set<String> stats = RelicItem.getAbilityInitialValues(stack, ability).keySet();
+        pPoseStack.popPose();
 
         int yOff = 0;
+        int xOff = 0;
 
-        for (int i = 0; i < stats.size(); i++) {
-            String stat = stats.stream().toList().get(i);
+        boolean isLocked = !RelicItem.canUseAbility(stack, ability);
 
+        boolean isHoveredUpgrade = !isLocked && upgradeButton.isHoveredOrFocused();
+        boolean isHoveredReroll = !isLocked && rerollButton.isHoveredOrFocused();
+        boolean isHoveredReset = !isLocked && resetButton.isHoveredOrFocused();
+
+        for (String stat : RelicItem.getAbilityInitialValues(stack, ability).keySet()) {
             RelicAbilityStat statData = RelicItem.getAbilityStat(relic, ability, stat);
 
             if (statData != null) {
+                RenderSystem.setShaderTexture(0, TEXTURE);
+
+                manager.bindForSetup(TEXTURE);
+
+                blit(pPoseStack, x + 32, y + 103 + yOff / 2, 302, 44, 36, 8, texWidth, texHeight);
+
+                for (int i = 1; i < RelicItem.getStatQuality(stack, ability, stat) + 1; i++) {
+                    boolean isAliquot = i % 2 == 1;
+
+                    blit(pPoseStack, x + 33 + xOff, y + 104 + yOff / 2, (isLocked ? 312 : 303) + (isAliquot ? 0 : 4), 54, isAliquot ? 4 : 3, 7, texWidth, texHeight);
+
+                    xOff += isAliquot ? 4 : 3;
+                }
+
                 MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat))));
 
-                if (isHoveringUpgrade && level < maxLevel) {
-                    cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, level + 1)));
+                if (isHoveredUpgrade && level < maxLevel) {
+                    cost.append(" ➠ " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, level + 1)));
                 }
 
-                if (isHoveringReroll) {
-                    cost.append(" -> ").append(Component.literal("X.XXX").withStyle(ChatFormatting.OBFUSCATED));
+                if (isHoveredReroll) {
+                    cost.append(" ➠ ").append(Component.literal("X.XXX").withStyle(ChatFormatting.OBFUSCATED));
                 }
 
-                if (isHoveringReset && level > 0) {
-                    cost.append(" -> " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, 0)));
+                if (isHoveredReset && level > 0) {
+                    cost.append(" ➠ " + statData.getFormatValue().apply(RelicItem.getAbilityValue(stack, ability, stat, 0)));
                 }
-
-                MutableComponent start = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat, cost);
 
                 pPoseStack.pushPose();
 
                 pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-                MC.font.draw(pPoseStack, start, x * 2 + 35 * 2, y * 2 + yOff + 103 * 2, 0x412708);
+                MC.font.draw(pPoseStack, Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title"), x * 2 + 94 * 2, y * 2 + yOff + 102 * 2, 0x412708);
+
+                yOff += 10;
+
+                MC.font.draw(pPoseStack, Component.literal(" ● ").append(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), x * 2 + 94 * 2, y * 2 + yOff + 102 * 2, 0x412708);
 
                 pPoseStack.popPose();
 
-                yOff += 9;
+                yOff += 17;
+                xOff = 0;
             }
-        }
-
-        boolean showInfo = false;
-        String info = "";
-        int cost = 0;
-
-        if (isHoveringUpgrade) {
-            info = "upgrade";
-
-            showInfo = !RelicItem.isAbilityMaxLevel(stack, ability);
-
-            cost = RelicItem.getUpgradeRequiredExperience(stack, ability);
-        }
-
-        if (isHoveringReroll) {
-            info = "reroll";
-
-            showInfo = RelicItem.mayReroll(stack, ability);
-
-            cost = RelicItem.getRerollRequiredExperience(stack, ability);
-        }
-
-        if (isHoveringReset) {
-            info = "reset";
-
-            showInfo = RelicItem.mayReset(stack, ability);
-
-            cost = RelicItem.getResetRequiredExperience(stack, ability);
-        }
-
-        if (!info.isEmpty()) {
-            pPoseStack.pushPose();
-
-            pPoseStack.scale(0.5F, 0.5F, 0.5F);
-
-            yOff += 9;
-
-            MC.font.draw(pPoseStack, Component.translatable("tooltip.relics.relic." + info + ".description"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
-
-            yOff += 9;
-
-            MC.font.draw(pPoseStack, Component.translatable("tooltip.relics.relic." + info + ".cost", showInfo ? cost : "∞", showInfo ? abilityData.getRequiredPoints() : "∞"), x * 2 + 35 * 2, y * 2 + 103 * 2 + yOff, 0x412708);
-
-            pPoseStack.popPose();
         }
 
         int points = RelicItem.getPoints(stack);
@@ -238,12 +207,12 @@ public class AbilityDescriptionScreen extends Screen {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.setShaderTexture(0, WIDGETS);
 
-            blit(pPoseStack, x + backgroundWidth - 3, y + 31, 0, 0, 40, 25, texWidth, texHeight);
-            blit(pPoseStack, x + backgroundWidth + 16, y + 36, 0, 27, 16, 13, texWidth, texHeight);
+            blit(pPoseStack, x + backgroundWidth - 3, y + 17, 0, 0, 40, 25, texWidth, texHeight);
+            blit(pPoseStack, x + backgroundWidth + 16, y + 22, 0, 27, 16, 13, texWidth, texHeight);
 
             String value = String.valueOf(points);
 
-            MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 39, 0xFFFFFF);
+            MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 25, 0xFFFFFF);
         }
 
         ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + ability + ".png");
@@ -252,8 +221,14 @@ public class AbilityDescriptionScreen extends Screen {
 
         manager.bindForSetup(card);
 
-        if (GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT) == 29)
-            blit(pPoseStack, x + 30, y + 28, 30, 43, 0, 0, 20, 29, 20, 29);
+        if (GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT) == 29) {
+            if (isLocked)
+                RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
+
+            blit(pPoseStack, x + 29, y + 19, 30, 43, 0, 0, 20, 29, 20, 29);
+
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        }
 
         RenderSystem.setShaderTexture(0, TEXTURE);
 
@@ -261,7 +236,30 @@ public class AbilityDescriptionScreen extends Screen {
 
         blit(pPoseStack, x + 26, y + 25, 356, 0, 38, 48, texWidth, texHeight);
 
+        RenderSystem.setShaderTexture(0, TEXTURE);
+
+        manager.bindForSetup(TEXTURE);
+
+        if (isLocked)
+            blit(pPoseStack, x + 24, y + 16, 258, 101, 42, 59, texWidth, texHeight);
+        else
+            blit(pPoseStack, x + 24, y + 16, 258, 40, 42, 59, texWidth, texHeight);
+
+        for (int i = 1; i < RelicItem.getAbilityQuality(stack, ability) + 1; i++) {
+            boolean isAliquot = i % 2 == 1;
+
+            blit(pPoseStack, x + 27 + xOff, y + 63, (isLocked ? 312 : 303) + (isAliquot ? 0 : 4), 54, isAliquot ? 4 : 3, 7, texWidth, texHeight);
+
+            xOff += isAliquot ? 4 : 3;
+        }
+
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+
+        for (GuiEventListener listener : this.children()) {
+            if (listener instanceof AbstractButton button && button.isHoveredOrFocused()
+                    && button instanceof IHoverableWidget widget)
+                widget.onHovered(pPoseStack, pMouseX, pMouseY);
+        }
     }
 
     @Override

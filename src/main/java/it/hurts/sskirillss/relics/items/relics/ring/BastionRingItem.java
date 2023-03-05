@@ -52,7 +52,7 @@ public class BastionRingItem extends RelicItem {
                                 .requiredLevel(5)
                                 .requiredPoints(2)
                                 .stat("rolls", RelicAbilityStat.builder()
-                                        .initialValue(1D, 2D)
+                                        .initialValue(0D, 1D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())

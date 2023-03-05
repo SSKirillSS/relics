@@ -606,12 +606,18 @@ public abstract class RelicItem extends Item implements ICurioItem {
         double min = format.apply(statData.getInitialValue().first()).doubleValue();
         double max = format.apply(statData.getInitialValue().second()).doubleValue();
 
+        if (min == max)
+            return MAX_QUALITY;
+
         return (int) Math.round((initial - min) / ((max - min) / MAX_QUALITY));
     }
 
     public static int getAbilityQuality(ItemStack stack, String ability) {
         RelicAbilityEntry entry = getAbilityEntryData(stack, ability);
         Map<String, RelicAbilityStat> stats = entry.getStats();
+
+        if (stats.isEmpty())
+            return MAX_QUALITY;
 
         int sum = 0;
 
@@ -625,11 +631,22 @@ public abstract class RelicItem extends Item implements ICurioItem {
         RelicAbilityData data = getAbilityData(stack);
         Map<String, RelicAbilityEntry> abilities = data.getAbilities();
 
+        if (abilities.isEmpty())
+            return MAX_QUALITY;
+
+        int size = abilities.size();
         int sum = 0;
 
-        for (String ability : abilities.keySet())
-            sum += getAbilityQuality(stack, ability);
+        for (String ability : abilities.keySet()) {
+            if (!RelicItem.canUseAbility(stack, ability)) {
+                --size;
 
-        return sum / abilities.size();
+                continue;
+            }
+
+            sum += getAbilityQuality(stack, ability);
+        }
+
+        return sum / size;
     }
 }

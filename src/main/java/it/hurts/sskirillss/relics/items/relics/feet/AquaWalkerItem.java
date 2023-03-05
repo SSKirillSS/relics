@@ -14,11 +14,12 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.theillusivec4.curios.api.SlotContext;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID)
 public class AquaWalkerItem extends RelicItem {
@@ -44,10 +45,10 @@ public class AquaWalkerItem extends RelicItem {
     }
 
     @Override
-    public void curioTick(SlotContext slotContext, ItemStack stack) {
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         int drench = NBTUtils.getInt(stack, TAG_DRENCH, 0);
 
-        if (!(slotContext.getWearer() instanceof Player player) || player.tickCount % 20 != 0)
+        if (!(entity instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
         if (drench > 0 && !player.isInWater() && !player.level.getFluidState(player.blockPosition().below()).is(FluidTags.WATER))

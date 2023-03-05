@@ -2,13 +2,17 @@ package it.hurts.sskirillss.relics.client.screen.description;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.card.AbilityCardIconWidget;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
@@ -113,19 +117,27 @@ public class RelicDescriptionScreen extends Screen {
         else
             blit(pPoseStack, x + 74, y + 89, 275, 80, (int) Math.ceil(percentage / 100F * 109F), 10, texWidth, texHeight);
 
-        boolean isHoveringExperience = (pMouseX >= x + 55
-                && pMouseY >= y + 87
-                && pMouseX < x + 55 + 146
-                && pMouseY < y + 87 + 17);
+        int xOff = 0;
 
-        if (isHoveringExperience)
-            blit(pPoseStack, x + 54, y + 79, 364, 0, 148, 26, texWidth, texHeight);
+        for (int i = 1; i < RelicItem.getRelicQuality(stack) + 1; i++) {
+            boolean isAliquot = i % 2 == 1;
+
+            blit(pPoseStack, x + 100 + xOff, y + 11, 258 + (isAliquot ? 0 : 5), 94, isAliquot ? 5 : 9, 9, texWidth, texHeight);
+
+            xOff += isAliquot ? 5 : 6;
+        }
 
         MutableComponent name = Component.literal(stack.getDisplayName().getString()
-                .replace("[", "").replace("]", ""))
-                .append(Component.translatable("tooltip.relics.relic.level", level, maxLevel == -1 ? "∞" : maxLevel));
+                        .replace("[", "").replace("]", ""))
+                .withStyle(ChatFormatting.BOLD);
 
-        MC.font.drawShadow(pPoseStack, name, x + ((backgroundWidth - MC.font.width(name)) / 2F), y + 6, 0xFFFFFF);
+        pPoseStack.pushPose();
+
+        pPoseStack.scale(0.5F, 0.5F, 1F);
+
+        MC.font.draw(pPoseStack, name, (x * 2 + ((backgroundWidth - MC.font.width(name) / 2F))), (y + 34) * 2, 0x412708);
+
+        pPoseStack.popPose();
 
         pPoseStack.pushPose();
 
@@ -143,20 +155,20 @@ public class RelicDescriptionScreen extends Screen {
             MC.font.drawShadow(pPoseStack, String.valueOf(level + 1), x + 190 - MC.font.width(String.valueOf(level + 1)) / 2F, y + 91, 0xFFFFFF);
         }
 
-        MutableComponent description = isHoveringExperience
-                ? Component.translatable("tooltip.relics.relic.leveling.title").append(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(relic).getPath() + ".leveling"))
-                : Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(relic).getPath() + ".lore");
-
-        List<FormattedCharSequence> lines = MC.font.split(description, 240);
+        String registryName = ForgeRegistries.ITEMS.getKey(relic).getPath();
 
         pPoseStack.pushPose();
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
-        for (int i = 0; i < lines.size(); i++) {
-            FormattedCharSequence line = lines.get(i);
+        int yOff = 9;
 
-            MC.font.draw(pPoseStack, line, x * 2 + 128 * 2 - Math.round(font.width(line) / 2F), y * 2 + i * 9 + 31 * 2 + (40 - Math.round((lines.size() * MC.font.lineHeight) / 2F)), 0x412708);
+        List<FormattedCharSequence> lines = MC.font.split(Component.translatable("tooltip.relics." + registryName + ".leveling"), 255);
+
+        for (FormattedCharSequence line : lines) {
+            MC.font.draw(pPoseStack, line, x * 2 + 61 * 2 + (265 - MC.font.width(line)) / 2F, (y + 43) * 2 + yOff, 0x412708);
+
+            yOff += 9;
         }
 
         pPoseStack.popPose();
@@ -169,15 +181,21 @@ public class RelicDescriptionScreen extends Screen {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.setShaderTexture(0, WIDGETS);
 
-            blit(pPoseStack, x + backgroundWidth - 3, y + 31, 0, 0, 40, 25, texWidth, texHeight);
-            blit(pPoseStack, x + backgroundWidth + 16, y + 36, 0, 27, 16, 13, texWidth, texHeight);
+            blit(pPoseStack, x + backgroundWidth - 3, y + 17, 0, 0, 40, 25, texWidth, texHeight);
+            blit(pPoseStack, x + backgroundWidth + 16, y + 22, 0, 27, 16, 13, texWidth, texHeight);
 
             String value = String.valueOf(points);
 
-            MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 39, 0xFFFFFF);
+            MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 25, 0xFFFFFF);
         }
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+
+        for (GuiEventListener listener : this.children()) {
+            if (listener instanceof AbstractButton button && button.isHoveredOrFocused()
+                    && button instanceof IHoverableWidget widget)
+                widget.onHovered(pPoseStack, pMouseX, pMouseY);
+        }
     }
 
     @Override

@@ -28,16 +28,21 @@ import java.awt.*;
 public class StalactiteEntity extends ThrowableProjectile {
     @Getter
     @Setter
-    private float amount;
+    private float damage;
+
+    @Getter
+    @Setter
+    private float stun;
 
     public StalactiteEntity(EntityType<? extends ThrowableProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
-    public StalactiteEntity(Level level, float amount) {
+    public StalactiteEntity(Level level, float damage, float stun) {
         super(EntityRegistry.STALACTITE.get(), level);
 
-        this.amount = amount;
+        this.damage = damage;
+        this.stun = stun;
     }
 
     @Override
@@ -75,9 +80,9 @@ public class StalactiteEntity extends ThrowableProjectile {
                 || (this.getOwner() != null && entity.getStringUUID().equals(this.getOwner().getStringUUID())))
             return;
 
-        entity.hurt(DamageSource.thrown(this, this.getOwner()), amount * 0.25F);
+        entity.hurt(DamageSource.thrown(this, this.getOwner()), damage);
 
-        entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), Math.round(amount * 0.5F), 0, true, false));
+        entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), Math.round(stun), 0, true, false));
 
         this.discard();
     }
@@ -89,12 +94,14 @@ public class StalactiteEntity extends ThrowableProjectile {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.amount = compound.getFloat("Amount");
+        this.damage = compound.getFloat("Damage");
+        this.stun = compound.getFloat("Stun");
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.putFloat("Amount", this.amount);
+        compound.putFloat("Damage", this.damage);
+        compound.putFloat("Stun", this.stun);
     }
 
     @Override
