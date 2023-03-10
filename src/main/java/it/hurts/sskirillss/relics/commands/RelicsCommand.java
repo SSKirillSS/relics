@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class RelicsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("relics")
+        dispatcher.register(Commands.literal("relics").requires(sender -> sender.hasPermission(2))
                 .then(Commands.literal("level")
                         .then(Commands.literal("set")
                                 .then(Commands.argument("level", IntegerArgumentType.integer())
