@@ -76,7 +76,7 @@ public class MagicMirrorItem extends RelicItem {
 
         ServerPlayer serverPlayer = (ServerPlayer) playerIn;
 
-        Pair<ServerLevel, Vec3> data = getHomePos(serverPlayer);
+        Pair<ServerLevel, Vec3> data = getHomePos(serverPlayer, false);
 
         if (!canTeleport(serverPlayer, data, stack))
             return InteractionResultHolder.fail(stack);
@@ -91,7 +91,7 @@ public class MagicMirrorItem extends RelicItem {
         if (world.isClientSide() || !(entity instanceof ServerPlayer player))
             return stack;
 
-        Pair<ServerLevel, Vec3> data = getHomePos(player);
+        Pair<ServerLevel, Vec3> data = getHomePos(player, true);
 
         if (!canTeleport(player, data, stack))
             return stack;
@@ -167,7 +167,7 @@ public class MagicMirrorItem extends RelicItem {
     }
 
     @Nullable
-    private Pair<ServerLevel, Vec3> getHomePos(ServerPlayer player) {
+    private Pair<ServerLevel, Vec3> getHomePos(ServerPlayer player, boolean useAnchor) {
         if (player.level.isClientSide())
             return null;
 
@@ -183,7 +183,7 @@ public class MagicMirrorItem extends RelicItem {
         if (world == null || pos == null)
             return null;
 
-        return Player.findRespawnPositionAndUseSpawnBlock(world, pos, player.getRespawnAngle(), true, false)
+        return Player.findRespawnPositionAndUseSpawnBlock(world, pos, player.getRespawnAngle(), true, !useAnchor)
                 .map(vec3 -> Pair.of(world, vec3)).orElse(null);
     }
 
