@@ -86,7 +86,7 @@ public class RollerSkatesItem extends RelicItem {
 
     @SubscribeEvent
     public static void onLivingSlipping(LivingSlippingEvent event) {
-        if (!(event.getEntity() instanceof Player player) || player.isInWater())
+        if (!(event.getEntity() instanceof Player player) || player.isInWater() || player.isFallFlying())
             return;
 
         ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ROLLER_SKATES.get());
