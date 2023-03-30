@@ -25,7 +25,7 @@ apply plugin: 'java'
 
 compileJava.options.encoding = 'UTF-8'
 
-version = '1.19.2-0.4.2.2'
+version = '1.19.2-0.4.2.3'
 group = 'it.hurts.sskirillss'
 archivesBaseName = 'relics'
 
