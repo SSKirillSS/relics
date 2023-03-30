@@ -42,7 +42,7 @@ public class ShadowGlaiveItem extends RelicItem {
                 .abilityData(RelicAbilityData.builder()
                         .ability("glaive", RelicAbilityEntry.builder()
                                 .stat("recharge", RelicAbilityStat.builder()
-                                        .initialValue(10D, 30D)
+                                        .initialValue(30D, 10D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.09D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())

@@ -61,7 +61,7 @@ public class DrownedBeltItem extends RelicItem {
                                 .build())
                         .ability("riptide", RelicAbilityEntry.builder()
                                 .stat("cooldown", RelicAbilityStat.builder()
-                                        .initialValue(5D, 10D)
+                                        .initialValue(10D, 5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())

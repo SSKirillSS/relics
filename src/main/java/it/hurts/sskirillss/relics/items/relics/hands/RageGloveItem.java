@@ -29,7 +29,7 @@ public class RageGloveItem extends RelicItem {
                 .abilityData(RelicAbilityData.builder()
                         .ability("rage", RelicAbilityEntry.builder()
                                 .stat("incoming_damage", RelicAbilityStat.builder()
-                                        .initialValue(0.02D, 0.05D)
+                                        .initialValue(0.05D, 0.02D)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.0015D)
                                         .formatValue(value -> MathUtils.round(MathUtils.round(value, 3) * 100, 3))
                                         .build())
