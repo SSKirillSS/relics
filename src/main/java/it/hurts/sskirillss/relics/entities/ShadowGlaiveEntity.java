@@ -146,7 +146,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
 
-                entity.hurt(this.getOwner() instanceof Player player ? DamageSource.playerAttack(player) : DamageSource.MAGIC, (float) RelicItem.getAbilityValue(stack, "glaive", "damage"));
+                entity.hurt(this.getOwner() instanceof Player player ? DamageSource.thrown(this, player) : DamageSource.MAGIC, (float) RelicItem.getAbilityValue(stack, "glaive", "damage"));
 
                 if (!bouncedEntities.contains(entity.getUUID().toString())) {
                     entityData.set(BOUNCED_ENTITIES, bouncedEntitiesString + "," + entity.getUUID());
