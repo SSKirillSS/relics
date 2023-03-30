@@ -29,7 +29,7 @@
   ],
   "entry": {
     "type": "minecraft:item",
-    "name": "relics:amphibian_boot"
+    "name": "relics:aqua_walker"
   },
   "functions": []
 }
