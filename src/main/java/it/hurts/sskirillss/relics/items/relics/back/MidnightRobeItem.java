@@ -203,7 +203,7 @@ public class MidnightRobeItem extends RelicItem {
             Level level = target.getCommandSenderWorld();
 
             if (!(event.getSource().getEntity() instanceof Player player)
-                    || level.isClientSide())
+                    || level.isClientSide() || target.getStringUUID().equals(player.getStringUUID()))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.MIDNIGHT_ROBE.get());
@@ -216,7 +216,7 @@ public class MidnightRobeItem extends RelicItem {
 
             event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "backstab", "damage")));
 
-            NBTUtils.setString(stack, TAG_TARGET, event.getEntity().getStringUUID());
+            NBTUtils.setString(stack, TAG_TARGET, target.getStringUUID());
         }
     }
 }
