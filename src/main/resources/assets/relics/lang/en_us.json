@@ -113,7 +113,7 @@
 
   "item.relics.elytra_booster": "Elytra Booster",
   "tooltip.relics.elytra_booster.leveling": "+1 experience point for every 10 seconds of burning fuel when placing it in the internal buffer of the relic from the ability «Acceleration».",
-  "tooltip.relics.elytra_booster.ability.gorenje.boost": "Acceleration",
+  "tooltip.relics.elytra_booster.ability.boost.boost": "Acceleration",
   "tooltip.relics.elytra_booster.ability.boost.description": "Using any combustible fuel on a relic in the inventory replenishes its internal buffer. Pressing the [Shift] key during the flight on elytra rushes the wearer forward, consuming fuel from the internal buffer.",
   "tooltip.relics.elytra_booster.ability.boost.stat.capacity.title": "Capacity:",
   "tooltip.relics.elytra_booster.ability.boost.stat.capacity.value": "%1$s units.",
