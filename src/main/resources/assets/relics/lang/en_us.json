@@ -4,12 +4,10 @@
   "curios.identifier.talisman": "Talisman",
   "curios.identifier.feet": "Feet",
 
-  "tooltip.relics.relic.table": "You may learn more about this relic on the Researching Table.",
+  "tooltip.relics.relic.tooltip.table": "You may learn more about this relic on the Researching Table.",
+  "tooltip.relics.relic.tooltip.shift": "Hold [Shift] for more info.",
 
-  "tooltip.relics.relic.level": "Level: %1$s/%2$s",
-  "tooltip.relics.relic.experience": " [%1$s/%2$s]",
-  "tooltip.relics.relic.abilities": "Abilities: %1$s/%2$s",
-  "tooltip.relics.relic.leveling": "Gaining experience: %1$s",
+  "tooltip.relics.relic.tooltip.abilities": "Abilities:",
 
   "tooltip.relics.relic.ability.tooltip.level": "Level: %1$s/%2$s",
   "tooltip.relics.relic.ability.tooltip.rarity": "Rarity:",

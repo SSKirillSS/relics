@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.blocks;
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.TickerUtils;
 import net.minecraft.client.Minecraft;
@@ -56,6 +57,8 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
             tile.setStack(handStack.split(1));
         } else {
             if (player.isShiftKeyDown()) {
+                ResearchUtils.setItemResearched(player, tileStack, true);
+
                 if (world.isClientSide())
                     openGui(pos, tileStack);
             } else {

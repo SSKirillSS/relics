@@ -1,6 +1,9 @@
 package it.hurts.sskirillss.relics.network;
 
-import it.hurts.sskirillss.relics.network.packets.*;
+import it.hurts.sskirillss.relics.network.packets.PacketItemActivation;
+import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
+import it.hurts.sskirillss.relics.network.packets.PacketSyncEntityEffects;
+import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacket;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
@@ -43,6 +46,11 @@ public class NetworkHandler {
                 .encoder(PacketSyncEntityEffects::toBytes)
                 .decoder(PacketSyncEntityEffects::new)
                 .consumer(PacketSyncEntityEffects::handle)
+                .add();
+        INSTANCE.messageBuilder(CapabilitySyncPacket.class, nextID())
+                .encoder(CapabilitySyncPacket::toBytes)
+                .decoder(CapabilitySyncPacket::new)
+                .consumer(CapabilitySyncPacket::handle)
                 .add();
     }
 

@@ -4,12 +4,10 @@
   "curios.identifier.talisman": "Талисман",
   "curios.identifier.feet": "Ноги",
 
-  "tooltip.relics.relic.table": "Узнать о реликвии больше можно на столе исследователя.",
+  "tooltip.relics.relic.tooltip.table": "Узнать о реликвии больше можно на столе исследователя.",
+  "tooltip.relics.relic.tooltip.shift": "Удерживай [Шифт] для подробной информации.",
 
-  "tooltip.relics.relic.level": "Уровень: %1$s/%2$s",
-  "tooltip.relics.relic.experience": " [%1$s/%2$s]",
-  "tooltip.relics.relic.abilities": "Способности: %1$s/%2$s",
-  "tooltip.relics.relic.leveling": "Получение опыта: %1$s",
+  "tooltip.relics.relic.tooltip.abilities": "Способности:",
 
   "tooltip.relics.relic.ability.tooltip.level": "Уровень: %1$s/%2$s",
   "tooltip.relics.relic.ability.tooltip.rarity": "Редкость:",
