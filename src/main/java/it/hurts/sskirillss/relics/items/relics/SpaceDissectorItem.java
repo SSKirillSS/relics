@@ -1,15 +1,25 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.entities.DissectionEntity;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -17,32 +27,75 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
 
-public class SpaceDissectorItem extends RelicItem {
-    public static final String TAG_START = "start";
-    public static final String TAG_END = "end";
+import java.awt.*;
+import java.util.UUID;
 
-    public SpaceDissectorItem() {
-        super(new Item.Properties()
-                .stacksTo(1)
-                .rarity(Rarity.RARE));
+public class SpaceDissectorItem extends RelicItem {
+    public static final String TAG_PORTAL = "portal";
+
+    @Override
+    public RelicData getRelicData() {
+        return RelicData.builder()
+                .abilityData(RelicAbilityData.builder()
+                        .ability("dissection", RelicAbilityEntry.builder()
+                                .stat("distance", RelicAbilityStat.builder()
+                                        .initialValue(16D, 32D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.25D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .stat("time", RelicAbilityStat.builder()
+                                        .initialValue(5D, 10D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.5D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .build())
+                        .build())
+                .levelingData(new RelicLevelingData(100, 10, 200))
+                .styleData(RelicStyleData.builder()
+                        .borders("#008cd7", "#0a3484")
+                        .build())
+                .build();
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand handIn) {
         ItemStack stack = player.getItemInHand(handIn);
 
-        NBTUtils.clearTag(stack, TAG_START);
-        NBTUtils.clearTag(stack, TAG_END);
+        String stringUUID = NBTUtils.getString(stack, TAG_PORTAL, "");
+
+        if (!stringUUID.isEmpty()) {
+            UUID uuid = UUID.fromString(stringUUID);
+
+            if (!world.isClientSide()) {
+                ServerLevel serverLevel = (ServerLevel) world;
+
+                DissectionEntity startPortal = (DissectionEntity) serverLevel.getEntity(uuid);
+
+                if (startPortal != null)
+                    startPortal.setLifeTime(20);
+                else
+                    addExperience(player, stack, 1);
+            }
+        } else
+            addExperience(player, stack, 1);
 
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = 64;
+        float distance = Math.round(getAbilityValue(stack, "dissection", "distance"));
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 
-        NBTUtils.setString(stack, TAG_START, NBTUtils.writePosition(ray.getLocation()));
+        DissectionEntity portal = new DissectionEntity(world);
+
+        portal.setLifeTime((int) Math.round(getAbilityValue(stack, "dissection", "time")) * 20);
+        portal.setPos(ray.getLocation());
+        portal.setMaster(true);
+
+        world.addFreshEntity(portal);
+
+        NBTUtils.setString(stack, TAG_PORTAL, portal.getStringUUID());
 
         player.startUsingItem(handIn);
 
@@ -57,31 +110,75 @@ public class SpaceDissectorItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = 64;
+        float distance = Math.round(getAbilityValue(stack, "dissection", "distance"));
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+        Vec3 targetVec = ray.getLocation();
 
-        NBTUtils.setString(stack, TAG_END, NBTUtils.writePosition(ray.getLocation()));
+        String stringUUID = NBTUtils.getString(stack, TAG_PORTAL, "");
 
-        Vec3 currentVec = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_START, ""));
-        Vec3 nextVec = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_END, ""));
+        if (stringUUID.isEmpty())
+            return;
 
-        if (currentVec != null && nextVec != null && currentVec.distanceTo(nextVec) <= distance * 1.25F) {
-            DissectionEntity start = new DissectionEntity(world);
+        UUID uuid = UUID.fromString(stringUUID);
 
-            start.setPos(currentVec);
+        if (world.isClientSide())
+            return;
 
-            DissectionEntity end = new DissectionEntity(world);
+        ServerLevel serverLevel = (ServerLevel) world;
 
-            end.setPos(nextVec);
+        DissectionEntity startPortal = (DissectionEntity) serverLevel.getEntity(uuid);
 
-            world.addFreshEntity(start);
-            world.addFreshEntity(end);
+        if (startPortal == null)
+            return;
 
-            start.setPair(end);
-            end.setPair(start);
-        }
+        DissectionEntity endPortal = new DissectionEntity(world);
+
+        endPortal.setPos(targetVec);
+        endPortal.setMaster(false);
+
+        world.addFreshEntity(endPortal);
+
+        startPortal.setPair(endPortal);
+        endPortal.setPair(startPortal);
+    }
+
+    @Override
+    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
+        Level level = player.getLevel();
+        RandomSource random = level.getRandom();
+
+        Vec3 view = player.getViewVector(0);
+        Vec3 eyeVec = player.getEyePosition(0);
+
+        float distance = Math.round(getAbilityValue(stack, "dissection", "distance"));
+
+        BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
+                view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+        Vec3 targetVec = ray.getLocation();
+
+        ParticleUtils.createBall(new CircleTintData(new Color(150 + random.nextInt(100), 100, 0),
+                0.2F + random.nextFloat() * 0.1F, 10 + random.nextInt(20), 0.9F, true), targetVec, level, 1, 0.25F);
+
+        String stringUUID = NBTUtils.getString(stack, TAG_PORTAL, "");
+
+        if (stringUUID.isEmpty())
+            return;
+
+        UUID uuid = UUID.fromString(stringUUID);
+
+        if (level.isClientSide())
+            return;
+
+        ServerLevel serverLevel = (ServerLevel) level;
+
+        DissectionEntity startPortal = (DissectionEntity) serverLevel.getEntity(uuid);
+
+        if (startPortal == null)
+            return;
+
+        startPortal.lookAt(EntityAnchorArgument.Anchor.FEET, targetVec);
     }
 
     @Override

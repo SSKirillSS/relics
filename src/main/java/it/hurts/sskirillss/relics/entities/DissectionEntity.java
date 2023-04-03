@@ -6,10 +6,15 @@ import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -30,6 +35,20 @@ import java.util.List;
 import java.util.UUID;
 
 public class DissectionEntity extends Entity {
+    private static final EntityDataAccessor<Integer> LIFE_TIME = SynchedEntityData.defineId(DissectionEntity.class, EntityDataSerializers.INT);
+
+    @Getter
+    @Setter
+    private boolean isMaster = false;
+
+    public int getLifeTime() {
+        return this.getEntityData().get(LIFE_TIME);
+    }
+
+    public void setLifeTime(int amount) {
+        this.getEntityData().set(LIFE_TIME, amount);
+    }
+
     public List<UUID> entities = new ArrayList<>();
     public List<UUID> blacklist = new ArrayList<>();
 
@@ -73,7 +92,7 @@ public class DissectionEntity extends Entity {
 
         if (this.tickCount > 5) {
             for (int i = 0; i < 5; i++) {
-                float step = Math.min((this.tickCount - 5) * 0.075F, 1F);
+                float step = Math.max(Math.min(getLifeTime() > 20 ? (tickCount - 5) * 0.075F : getLifeTime() * 0.075F, 1F), 0F);
                 float mul = random.nextFloat() * 0.3F;
 
                 Vec3 pos = this.position().add(this.getLookAngle()).add(0, this.getBbHeight() / 2, 0)
@@ -98,9 +117,23 @@ public class DissectionEntity extends Entity {
         DissectionEntity pair = getPair();
 
         if (pair == null) {
-            this.remove(RemovalReason.KILLED);
+            if (!this.isMaster())
+                this.discard();
 
             return;
+        }
+
+        if (isMaster()) {
+            int time = getLifeTime();
+            if (time > 0) {
+                time--;
+
+                setLifeTime(time);
+
+                pair.setLifeTime(time);
+            } else {
+                this.discard();
+            }
         }
 
         this.lookAt(EntityAnchorArgument.Anchor.FEET, pair.position());
@@ -203,17 +236,19 @@ public class DissectionEntity extends Entity {
 
     @Override
     protected void defineSynchedData() {
-
+        entityData.define(LIFE_TIME, 100);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-
+        setMaster(compound.getBoolean("isMaster"));
+        setLifeTime(compound.getInt("lifeTime"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-
+        compound.putBoolean("isMaster", isMaster);
+        compound.putInt("lifeTime", getLifeTime());
     }
 
     @Override

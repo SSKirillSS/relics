@@ -328,6 +328,15 @@
   "tooltip.relics.roller_skates.ability.skating.stat.duration.title": "Максимальная продолжительность:",
   "tooltip.relics.roller_skates.ability.skating.stat.duration.value": "%1$s секунд.",
 
+  "item.relics.space_dissector": "Рассекатель пространства",
+  "tooltip.relics.space_dissector.leveling": "+1 ед. опыта за каждый созданный портал при условии отсутствия уже существующего.",
+  "tooltip.relics.space_dissector.ability.dissection": "Рассечение",
+  "tooltip.relics.space_dissector.ability.dissection.description": "Зажатие ПКМ создаёт портал на точке по линии взгляда, прекращения удерживания ПКМ создаёт второй портал по тому же принципу, связывая его с первым. Приближение живого существа к одному из порталов переместит его к связанному порталу. Порталы не работают, если на их пути находятся какие-либо непроходимые блоки.",
+  "tooltip.relics.space_dissector.ability.dissection.stat.distance.title": "Максимальная дистанция:",
+  "tooltip.relics.space_dissector.ability.dissection.stat.distance.value": "%1$s блоков.",
+  "tooltip.relics.space_dissector.ability.dissection.stat.time.title": "Время жизни портала:",
+  "tooltip.relics.space_dissector.ability.dissection.stat.time.value": "%1$s секунд.",
+
   "block.relics.researching_table": "Стол исследователя",
 
   "effect.relics.stun": "Оглушение",

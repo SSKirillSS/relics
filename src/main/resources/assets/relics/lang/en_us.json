@@ -328,6 +328,15 @@
   "tooltip.relics.roller_skates.ability.skating.stat.duration.title": "Maximum duration:",
   "tooltip.relics.roller_skates.ability.skating.stat.duration.value": "%1$s seconds.",
 
+  "item.relics.space_dissector": "Space Dissector",
+  "tooltip.relics.space_dissector.leveling": "+1 experience point for each created portal if there is no existing one",
+  "tooltip.relics.space_dissector.ability.dissection": "Dissection",
+  "tooltip.relics.space_dissector.ability.dissection.description": "Holding RMB creates a portal on a point along the line of sight, stopping holding RMB creates a second portal along the same principle, linking it to the first one. Bringing a living creature to one of the portals will move it to the linked portal. Portals don't work if there are any solid blocks in their path.",
+  "tooltip.relics.space_dissector.ability.dissection.stat.distance.title": "Maximum distance:",
+  "tooltip.relics.space_dissector.ability.dissection.stat.distance.value": "%1$s blocks.",
+  "tooltip.relics.space_dissector.ability.dissection.stat.time.title": "Portal lifetime:",
+  "tooltip.relics.space_dissector.ability.dissection.stat.time.value": "%1$s seconds",
+
   "block.relics.researching_table": "Researching Table",
 
   "effect.relics.stun": "Stun",
