@@ -199,6 +199,9 @@ public abstract class RelicItem extends Item implements ICurioItem {
                     String item = ForgeRegistries.ITEMS.getKey(this).getPath();
                     String name = entry.getKey();
 
+                    if (!canUseAbility(stack, name))
+                        continue;
+
                     tooltip.add(Component.literal("   ◆ ").withStyle(ChatFormatting.GREEN)
                             .append(Component.translatable("tooltip.relics." + item + ".ability." + name).withStyle(ChatFormatting.YELLOW))
                             .append(Component.literal(" - ").withStyle(ChatFormatting.WHITE))
