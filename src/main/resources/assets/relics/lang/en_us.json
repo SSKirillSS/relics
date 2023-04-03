@@ -44,12 +44,12 @@
 
   "item.relics.enders_hand": "Ender Hand",
   "tooltip.relics.enders_hand.leveling": "+1 experience point for using the ability «Edge Transposition» +1 experience point for every 10 blocks from the distance to the target when using.",
-  "tooltip.relics.ender_hand.ability.neutrality": "Neutrality",
-  "tooltip.relics.ender_hand.ability.neutrality.description": "Makes endermen neutral with respect to the wearer.",
-  "tooltip.relics.ender_hand.ability.swap": "End Transposition",
-  "tooltip.relics.ender_hand.ability.swap.description": "When the [Shift] key is pressed, swaps the wearer with the target along the line of sight.",
-  "tooltip.relics.ender_hand.ability.swap.stat.distance.title": "Distance:",
-  "tooltip.relics.ender_hand.ability.swap.stat.distance.value": "%1$s blocks.",
+  "tooltip.relics.enders_hand.ability.neutrality": "Neutrality",
+  "tooltip.relics.enders_hand.ability.neutrality.description": "Makes endermen neutral with respect to the wearer.",
+  "tooltip.relics.enders_hand.ability.swap": "End Transposition",
+  "tooltip.relics.enders_hand.ability.swap.description": "When the [Shift] key is pressed, swaps the wearer with the target along the line of sight.",
+  "tooltip.relics.enders_hand.ability.swap.stat.distance.title": "Distance:",
+  "tooltip.relics.enders_hand.ability.swap.stat.distance.value": "%1$s blocks.",
 
   "item.relics.holy_locket": "Holy Locket",
   "tooltip.relics.holy_locket.leveling": "+1 experience point for each activation of the ability «Divine Blessing» +1 experience point for each stolen healing unit.",
@@ -181,7 +181,7 @@
   "tooltip.relics.ice_breaker.ability.impact.stat.damage.value": "%1$s units.",
 
   "item.relics.bastion_ring": "Bastion Ring",
-  "tooltip.relics.bastion_ring.leveling": "+1/5/10 experience point pear each killed Zombie Piglin/Piglin/Piglin Brute.\n+1 experience point for each additional trade from the ability «Respect».",
+  "tooltip.relics.bastion_ring.leveling": "+1/5/10 experience point for each killed Zombie Piglin/Piglin/Piglin Brute.\n+1 experience point for each additional trade from the ability «Respect».",
   "tooltip.relics.bastion_ring.ability.compass": "Recognition",
   "tooltip.relics.bastion_ring.ability.compass.description": "Makes piglins neutral in relation to the wearer. The nearest piglin will indicate the location of the bastion nearby.",
   "tooltip.relics.bastion_ring.ability.trade": "Respect",
