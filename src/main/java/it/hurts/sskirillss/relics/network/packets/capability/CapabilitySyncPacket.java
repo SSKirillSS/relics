@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -25,15 +27,18 @@ public class CapabilitySyncPacket {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            LocalPlayer player = Minecraft.getInstance().player;
-
-            if (player == null)
-                return;
-
-            CapabilityUtils.getRelicsCapability(player).deserializeNBT(data);
-        });
+        ctx.get().enqueueWork(this::doSync);
 
         return true;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void doSync() {
+        LocalPlayer player = Minecraft.getInstance().player;
+
+        if (player == null)
+            return;
+
+        CapabilityUtils.getRelicsCapability(player).deserializeNBT(data);
     }
 }
