@@ -22,6 +22,7 @@
 
   "tooltip.relics.relic.upgrade.description": "Повышение уровня",
   "tooltip.relics.relic.upgrade.cost": "Стоимость: %1$s очков прокачки %2$s, %3$s единиц опыта %4$s.",
+  "tooltip.relics.relic.upgrade.locked": "Реликвия достигла максимального уровня.",
 
   "tooltip.relics.relic.reroll.description": "Сброс случайных характеристик",
   "tooltip.relics.relic.reroll.cost": "Стоимость: %1$s единиц опыта %2$s.",

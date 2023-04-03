@@ -95,10 +95,14 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
         List<MutableComponent> entries = Lists.newArrayList(
                 Component.translatable("tooltip.relics.relic.upgrade.description"),
-                Component.literal(" "),
-                Component.translatable("tooltip.relics.relic.upgrade.cost", requiredPoints,
-                        (requiredPoints > points ? negativeStatus : positiveStatus), requiredExperience,
-                        (requiredExperience > experience ? negativeStatus : positiveStatus)));
+                Component.literal(" "));
+
+        if (RelicItem.mayPlayerUpgrade(MC.player, screen.stack, ability))
+            entries.add(Component.translatable("tooltip.relics.relic.upgrade.cost", requiredPoints,
+                    (requiredPoints > points ? negativeStatus : positiveStatus), requiredExperience,
+                    (requiredExperience > experience ? negativeStatus : positiveStatus)));
+        else
+            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.upgrade.locked")));
 
         for (MutableComponent entry : entries) {
             int entryWidth = (MC.font.width(entry) + 4) / 2;
