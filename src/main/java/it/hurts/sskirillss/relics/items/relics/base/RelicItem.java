@@ -535,6 +535,11 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static void setLevel(ItemStack stack, int level) {
+        RelicLevelingData levelingData = getLevelingData(stack);
+
+        if (levelingData == null || level > levelingData.getMaxLevel())
+            return;
+
         CompoundTag tag = getLevelingTag(stack);
 
         tag.putInt(TAG_LEVEL, Math.min(((RelicItem) stack.getItem()).getRelicData().getLevelingData().getMaxLevel(), level));
@@ -553,10 +558,16 @@ public abstract class RelicItem extends Item implements ICurioItem {
     }
 
     public static void setExperience(ItemStack stack, int experience) {
-        CompoundTag data = getLevelingTag(stack);
-
         int level = getLevel(stack);
+
+        RelicLevelingData levelingData = getLevelingData(stack);
+
+        if (levelingData == null || level >= levelingData.getMaxLevel())
+            return;
+
         int requiredExp = getExperienceBetweenLevels(stack, level, level + 1);
+
+        CompoundTag data = getLevelingTag(stack);
 
         if (experience >= requiredExp) {
             int sumExp = getTotalExperienceForLevel(stack, level) + experience;
