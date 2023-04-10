@@ -125,6 +125,11 @@ public class BastionRingItem extends RelicItem {
         }
     }
 
+    @Override
+    public boolean makesPiglinsNeutral(SlotContext slotContext, ItemStack stack) {
+        return true;
+    }
+
     @Mod.EventBusSubscriber
     public static class Events {
         @SubscribeEvent

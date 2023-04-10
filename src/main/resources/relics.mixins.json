@@ -11,7 +11,6 @@
     "MixinItemStack",
     "MixinLivingEntity",
     "MixinPiglinAi",
-    "MixinPiglinMobsSensor",
     "MixinPowderSnowBlock",
     "MixinWebBlock"
   ],
