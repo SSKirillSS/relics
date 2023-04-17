@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.init;
 
+import it.hurts.sskirillss.relics.client.hud.abilities.AbilitiesRenderHandler;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintFactory;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintFactory;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
@@ -61,8 +62,6 @@ public class RemoteRegistry {
     @SubscribeEvent
     public static void setupClient(final FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.RESEARCHING_TABLE.get(), RenderType.cutout());
-
-        HotkeyRegistry.register();
 
         ItemProperties.register(ItemRegistry.INFINITY_HAM.get(), new ResourceLocation(Reference.MODID, "pieces"),
                 (stack, world, entity, id) -> Math.min(10, NBTUtils.getInt(stack, InfinityHamItem.TAG_PIECES, 0)));
@@ -172,6 +171,10 @@ public class RemoteRegistry {
                 return;
 
             infoTile.renderHUDInfo(poseStack, MC.getWindow());
+        });
+
+        event.registerBelowAll("active_abilities", (ForgeGui, poseStack, partialTick, screenWidth, screenHeight) -> {
+            AbilitiesRenderHandler.render(poseStack, partialTick);
         });
     }
 }

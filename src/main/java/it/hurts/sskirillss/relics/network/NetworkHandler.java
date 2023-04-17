@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.network;
 import it.hurts.sskirillss.relics.network.packets.PacketItemActivation;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.network.packets.PacketSyncEntityEffects;
+import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
 import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacket;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -51,6 +52,11 @@ public class NetworkHandler {
                 .encoder(CapabilitySyncPacket::toBytes)
                 .decoder(CapabilitySyncPacket::new)
                 .consumer(CapabilitySyncPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SpellCastPacket.class, nextID())
+                .encoder(SpellCastPacket::toBytes)
+                .decoder(SpellCastPacket::new)
+                .consumer(SpellCastPacket::handle)
                 .add();
     }
 

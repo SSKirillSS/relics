@@ -345,5 +345,8 @@
   "effect.relics.confusion": "Запутывание",
   "effect.relics.vanishing": "Исчезновение",
 
-  "command.relics.base.not_relic": "Предмет в руке должен являться реликвией!"
+  "command.relics.base.not_relic": "Предмет в руке должен являться реликвией!",
+
+  "key.relics.ability_list": "Открыть интерфейс активных способностей",
+  "key.relics.ability_cast": "Использовать выбранную активную способность"
 }

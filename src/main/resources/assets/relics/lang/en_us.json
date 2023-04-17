@@ -345,5 +345,8 @@
   "effect.relics.confusion": "Confusion",
   "effect.relics.vanishing": "Vanishing",
 
-  "command.relics.base.not_relic": "Item in hand must be a relic!"
+  "command.relics.base.not_relic": "Item in hand must be a relic!",
+
+  "key.relics.ability_list": "Show the active abilities HUD",
+  "key.relics.ability_cast": "Cast selected active ability"
 }

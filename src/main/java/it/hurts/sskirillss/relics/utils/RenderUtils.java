@@ -1,9 +1,10 @@
 package it.hurts.sskirillss.relics.utils;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
@@ -12,6 +13,33 @@ import java.awt.*;
 import java.util.Random;
 
 public class RenderUtils {
+    public static void renderTextureFromCenter(PoseStack matrices, float centerX, float centerY, float width, float height, float scale) {
+        BufferBuilder builder = Tesselator.getInstance().getBuilder();
+
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+
+        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+
+        matrices.pushPose();
+
+        matrices.translate(centerX, centerY, 0);
+        matrices.scale(scale, scale, scale);
+
+        Matrix4f m = matrices.last().pose();
+
+        float w2 = width / 2;
+        float h2 = height / 2;
+
+        builder.vertex(m, -w2, +h2, 0).uv(0, 1).endVertex();
+        builder.vertex(m, +w2, +h2, 0).uv(1, 1).endVertex();
+        builder.vertex(m, +w2, -h2, 0).uv(1, 0).endVertex();
+        builder.vertex(m, -w2, -h2, 0).uv(0, 0).endVertex();
+
+        matrices.popPose();
+
+        BufferUploader.drawWithShader(builder.end());
+    }
+
     public static void renderBeams(PoseStack matrixStack, MultiBufferSource bufferIn, float partialTicks, int amount, float size, Color color) {
         matrixStack.pushPose();
 

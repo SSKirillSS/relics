@@ -209,6 +209,10 @@ public abstract class RelicItem extends Item implements ICurioItem {
         tooltip.add(Component.literal(" "));
     }
 
+    public void castActiveAbility(ItemStack stack, Player player, String ability) {
+
+    }
+
     public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
         return null;
     }

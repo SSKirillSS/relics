@@ -21,11 +21,6 @@ public class RelicAbilityEntry {
     @Builder.Default
     private int requiredPoints = 1;
 
-    private Type type;
-
-    public enum Type {
-        POSITIVE,
-        NEUTRAL,
-        NEGATIVE;
-    }
+    @Builder.Default
+    private boolean active = false;
 }
