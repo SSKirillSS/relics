@@ -39,8 +39,11 @@ public class AbilitiesRenderHandler {
 
     private static int selectedIndex = 0;
 
+    private static boolean animationDown = false;
+    private static int animationDelta = 0;
+
     public static void render(PoseStack poseStack, float partialTicks) {
-        if (!HotkeyRegistry.ABILITY_LIST.isDown())
+        if (animationDelta == 0)
             return;
 
         Window window = MC.getWindow();
@@ -51,7 +54,13 @@ public class AbilitiesRenderHandler {
             return;
 
         int x = (window.getGuiScaledWidth()) / 2;
-        int y = 36;
+        int y = -40;
+
+        poseStack.pushPose();
+
+        RenderSystem.setShaderColor(1F, 1F, 1F, animationDelta * 0.2F);
+
+        poseStack.translate(0, (animationDelta - (animationDelta != 5 ? partialTicks * (animationDown ? -1 : 1) : 0)) * 16, 0);
 
         drawAbility(poseStack, player, -2, x - 65, y, partialTicks);
         drawAbility(poseStack, player, -1, x - 34, y, partialTicks);
@@ -65,6 +74,8 @@ public class AbilitiesRenderHandler {
         MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + selectedAbility.getAbility());
 
         MC.font.drawShadow(poseStack, name, x - MC.font.width(name) / 2F, y - 33, 0xFFFFFF);
+
+        poseStack.popPose();
     }
 
     private static void drawAbility(PoseStack poseStack, LocalPlayer player, int realIndex, float x, float y, float partialTicks) {
@@ -73,7 +84,6 @@ public class AbilitiesRenderHandler {
         if (ability == null)
             return;
 
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(AbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png"));
 
         RenderSystem.enableBlend();
@@ -143,13 +153,25 @@ public class AbilitiesRenderHandler {
 
         @SubscribeEvent
         public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-            if (event.side != LogicalSide.CLIENT || event.phase != TickEvent.Phase.END
-                    || !HotkeyRegistry.ABILITY_LIST.isDown())
+            if (event.side != LogicalSide.CLIENT || event.phase != TickEvent.Phase.END)
                 return;
 
-            Player player = event.player;
+            if (HotkeyRegistry.ABILITY_LIST.isDown()) {
+                if (animationDelta < 5)
+                    animationDelta++;
 
-            entries = AbilityUtils.getActiveEntries(player);
+                animationDown = true;
+            } else {
+                if (animationDelta > 0)
+                    animationDelta--;
+
+                animationDown = false;
+            }
+
+            if (animationDelta == 0)
+                return;
+
+            entries = AbilityUtils.getActiveEntries(event.player);
 
             if (selectedIndex > entries.size())
                 selectedIndex = 0;
