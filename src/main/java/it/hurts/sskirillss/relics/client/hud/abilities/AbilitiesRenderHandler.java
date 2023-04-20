@@ -17,6 +17,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +46,8 @@ public class AbilitiesRenderHandler {
     private static boolean animationDown = false;
     private static int animationDelta = 0;
 
+    private static int mouseDelta = 0;
+
     public static void render(PoseStack poseStack, float partialTicks) {
         if (animationDelta == 0)
             return;
@@ -71,12 +74,28 @@ public class AbilitiesRenderHandler {
         drawAbility(poseStack, player, 1, x + 34, y, partialTicks);
         drawAbility(poseStack, player, 2, x + 65, y, partialTicks);
 
+        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
+
+        RenderSystem.enableBlend();
+
+        RenderUtils.renderTextureFromCenter(poseStack, x - 95, y, 2, 2, 256, 256, 18, 29, 1F + (mouseDelta < 0 ? Math.abs(mouseDelta) * 0.01F : 0));
+        if (mouseDelta < 0)
+            RenderUtils.renderTextureFromCenter(poseStack, x - 95, y, 25, 1, 256, 256, 24, 35, 1F + Math.abs(mouseDelta) * 0.01F);
+
+        RenderUtils.renderTextureFromCenter(poseStack, x + 95, y, 2, 38, 256, 256, 18, 29, 1F + (mouseDelta > 0 ? Math.abs(mouseDelta) * 0.01F : 0));
+        if (mouseDelta > 0)
+            RenderUtils.renderTextureFromCenter(poseStack, x + 95, y, 25, 37, 256, 256, 24, 35, 1F + Math.abs(mouseDelta) * 0.01F);
+
+        RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, 2, 256, 256, 6, 11, 1F);
+
+        RenderSystem.disableBlend();
+
         AbilityEntry selectedAbility = getAbilityByIndex(selectedIndex);
         ItemStack stack = AbilityUtils.getStackInCuriosSlot(player, selectedAbility.getSlot());
 
         MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + selectedAbility.getAbility());
 
-        MC.font.drawShadow(poseStack, name, x - MC.font.width(name) / 2F, y - 33, 0xFFFFFF);
+        MC.font.drawShadow(poseStack, name, x - MC.font.width(name) / 2F, y - 35, 0xFFFFFF);
 
         poseStack.popPose();
     }
@@ -100,12 +119,12 @@ public class AbilitiesRenderHandler {
 
         RenderUtils.renderTextureFromCenter(poseStack, x - (1 * scale), y - (1 * scale), width, height, scale);
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/border.png"));
+        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
 
         width = 28;
         height = 37;
 
-        RenderUtils.renderTextureFromCenter(poseStack, x, y, width, height, scale);
+        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, 2, 256, 256, width, height, scale);
 
         poseStack.popPose();
     }
@@ -149,7 +168,18 @@ public class AbilitiesRenderHandler {
             if (!HotkeyRegistry.ABILITY_LIST.isDown())
                 return;
 
+            int current = selectedIndex;
+
             applyDelta(event.getScrollDelta() > 0 ? -1 : 1);
+
+            if (current != selectedIndex) {
+                mouseDelta = event.getScrollDelta() > 0 ? -10 : 10;
+
+                LocalPlayer player = Minecraft.getInstance().player;
+
+                if (player != null)
+                    player.playSound(SoundEvents.UI_BUTTON_CLICK, 0.5F, 1.5F + player.getRandom().nextFloat() * 0.25F);
+            }
 
             event.setCanceled(true);
         }
@@ -158,6 +188,11 @@ public class AbilitiesRenderHandler {
         public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
             if (event.side != LogicalSide.CLIENT || event.phase != TickEvent.Phase.END)
                 return;
+
+            if (mouseDelta > 0)
+                mouseDelta--;
+            else if (mouseDelta < 0)
+                mouseDelta++;
 
             if (HotkeyRegistry.ABILITY_LIST.isDown()) {
                 if (animationDelta < 5)
