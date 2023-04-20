@@ -1,9 +1,11 @@
 package it.hurts.sskirillss.relics.client.hud.abilities;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -26,6 +28,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -178,18 +181,36 @@ public class AbilitiesRenderHandler {
         }
 
         @SubscribeEvent
-        public static void onKeyPressed(InputEvent.Key event) {
-            Player player = Minecraft.getInstance().player;
+        public static void onKeyPressed(InputEvent.MouseButton.Pre event) {
+            if (animationDelta == 0 || event.getAction() != InputConstants.PRESS
+                    || event.getButton() != GLFW.GLFW_MOUSE_BUTTON_1)
+                return;
+
+            Minecraft MC = Minecraft.getInstance();
+
+            if (MC.screen != null)
+                return;
+
+            Player player = MC.player;
 
             if (player == null)
                 return;
 
-            if (HotkeyRegistry.ABILITY_CAST.consumeClick()) {
-                AbilityEntry ability = getAbilityByIndex(selectedIndex);
+            AbilityEntry ability = getAbilityByIndex(selectedIndex);
 
-                if (ability != null)
-                    NetworkHandler.sendToServer(new SpellCastPacket(ability.getAbility(), ability.getSlot()));
-            }
+            if (ability == null)
+                return;
+
+            ItemStack stack = AbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
+
+            if (!(stack.getItem() instanceof RelicItem relic))
+                return;
+
+            NetworkHandler.sendToServer(new SpellCastPacket(ability.getAbility(), ability.getSlot()));
+
+            relic.castActiveAbility(stack, player, ability.getAbility());
+
+            event.setCanceled(true);
         }
     }
 }
