@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
@@ -8,16 +9,32 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import top.theillusivec4.curios.api.SlotContext;
+
+import java.awt.*;
 
 public class RageGloveItem extends RelicItem {
     public static final String TAG_STACKS = "stacks";
@@ -28,9 +45,10 @@ public class RageGloveItem extends RelicItem {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("rage", RelicAbilityEntry.builder()
+                                .maxLevel(10)
                                 .stat("incoming_damage", RelicAbilityStat.builder()
-                                        .initialValue(0.05D, 0.02D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.0015D)
+                                        .initialValue(0.05D, 0.025D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.05D)
                                         .formatValue(value -> MathUtils.round(MathUtils.round(value, 3) * 100, 3))
                                         .build())
                                 .stat("dealt_damage", RelicAbilityStat.builder()
@@ -38,19 +56,53 @@ public class RageGloveItem extends RelicItem {
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(MathUtils.round(value, 3) * 100, 3))
                                         .build())
+                                .stat("duration", RelicAbilityStat.builder()
+                                        .initialValue(2D, 4D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .build())
+                        .ability("phlebotomy", RelicAbilityEntry.builder()
+                                .requiredLevel(5)
+                                .maxLevel(10)
+                                .stat("heal", RelicAbilityStat.builder()
+                                        .initialValue(0.0001D, 0.00025D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(MathUtils.round(value, 5) * 20, 5))
+                                        .build())
                                 .stat("movement_speed", RelicAbilityStat.builder()
                                         .initialValue(0.01D, 0.025D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.2D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(MathUtils.round(value, 3) * 100, 3))
                                         .build())
                                 .stat("attack_speed", RelicAbilityStat.builder()
                                         .initialValue(0.005D, 0.01D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.05D)
                                         .formatValue(value -> MathUtils.round(MathUtils.round(value, 3) * 100, 3))
                                         .build())
                                 .build())
+                        .ability("spurt", RelicAbilityEntry.builder()
+                                .requiredLevel(10)
+                                .maxLevel(10)
+                                .active(true)
+                                .stat("percentage", RelicAbilityStat.builder()
+                                        .initialValue(1.0D, 0.75D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, -0.05D)
+                                        .formatValue(value -> MathUtils.round(MathUtils.round(value, 3) * 100, 1))
+                                        .build())
+                                .stat("damage", RelicAbilityStat.builder()
+                                        .initialValue(0.25D, 0.5D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
+                                        .formatValue(value -> MathUtils.round(value, 2))
+                                        .build())
+                                .stat("distance", RelicAbilityStat.builder()
+                                        .initialValue(3D, 8D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.3D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 100))
+                .levelingData(new RelicLevelingData(100, 20, 100))
                 .styleData(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
                         .build())
@@ -58,39 +110,132 @@ public class RageGloveItem extends RelicItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (!(entity instanceof Player player) || player.tickCount % 20 != 0 || DurabilityUtils.isBroken(stack))
-            return;
+    public void castActiveAbility(ItemStack stack, Player player, String ability) {
+        Level level = player.getCommandSenderWorld();
+        RandomSource random = level.getRandom();
 
-        int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
-        int time = NBTUtils.getInt(stack, TAG_TIME, 0);
+        if (ability.equals("spurt")) {
+            int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
+            int cost = Math.max(((int) Math.ceil(stacks * getAbilityValue(stack, "spurt", "percentage"))), 5);
 
-        if (stacks <= 0)
-            return;
+            if (stacks < cost)
+                return;
 
-        EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, (float) (stacks * getAbilityValue(stack, "rage", "attack_speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
-        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (stacks * getAbilityValue(stack, "rage", "movement_speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            double maxDistance = getAbilityValue(stack, "spurt", "distance");
 
-        if (time > 0)
-            NBTUtils.setInt(stack, TAG_TIME, --time);
-        else {
-            NBTUtils.setInt(stack, TAG_STACKS, 0);
+            Vec3 view = player.getViewVector(0);
+            Vec3 eyeVec = player.getEyePosition(0);
 
-            addExperience(player, stack, (int) Math.floor(stacks / 3F));
+            BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * maxDistance, view.y * maxDistance,
+                    view.z * maxDistance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 
-            EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
-            EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            Vec3 current = player.position();
+            Vec3 target = ray.getLocation();
+
+            int distance = (int) Math.ceil(current.distanceTo(target));
+
+            if (distance <= 0)
+                return;
+
+            Vec3 motion = player.getDeltaMovement().add(target.subtract(current).normalize());
+
+            player.teleportTo(target.x, target.y, target.z);
+
+            if (!level.isClientSide())
+                NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) player);
+
+            player.fallDistance = 0F;
+
+            level.playSound(null, player.blockPosition(), SoundEvents.BLAZE_DEATH, SoundSource.MASTER, 1F, 1.5F + random.nextFloat() * 0.5F);
+
+            Vec3 start = current.add(0, 1, 0);
+            Vec3 end = target.add(0, 1, 0);
+
+            Vec3 delta = end.subtract(start);
+            Vec3 dir = delta.normalize();
+
+            for (int i = 0; i < distance * 10; ++i) {
+                double progress = i * delta.length() / (distance * 10);
+
+                level.addParticle(new CircleTintData(new Color(255, 60 + random.nextInt(60), 0), 0.2F + random.nextFloat() * 0.5F,
+                                60 + random.nextInt(60), 0.95F, true),
+                        start.x + dir.x * progress, start.y + dir.y * progress,
+                        start.z + dir.z * progress, 0, MathUtils.randomFloat(random) * 0.075F, 0);
+            }
+
+            for (int i = 0; i < distance; ++i) {
+                double progress = i * delta.length() / distance;
+
+                for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(new BlockPos(start.x + dir.x * progress,
+                        start.y + dir.y * progress, start.z + dir.z * progress)).inflate(0.5, 1, 0.5))) {
+                    if (entity.getStringUUID().equals(player.getStringUUID())
+                            || entity.isDeadOrDying())
+                        continue;
+
+                    if (entity.hurt(DamageSource.playerAttack(player), (float) (stacks * getAbilityValue(stack, "spurt", "damage")))) {
+                        addExperience(player, stack, 1);
+
+                        entity.setSecondsOnFire(5);
+                    }
+                }
+            }
+
+            NBTUtils.setInt(stack, TAG_STACKS, stacks - cost);
         }
     }
 
+    @Override
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack))
+            return;
+
+        if (canUseAbility(stack, "phlebotomy")) {
+            float percentage = 100F - (player.getHealth() / player.getMaxHealth() * 100F);
+
+            player.heal((float) getAbilityValue(stack, "phlebotomy", "heal") * percentage);
+
+            EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, (float) (getAbilityValue(stack, "phlebotomy", "attack_speed") * percentage), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (getAbilityValue(stack, "phlebotomy", "movement_speed") * percentage), AttributeModifier.Operation.MULTIPLY_TOTAL);
+        }
+
+        if (canUseAbility(stack, "rage")) {
+            int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
+
+            if (stacks > 0) {
+                int time = NBTUtils.getInt(stack, TAG_TIME, 0);
+
+                if (time > 0)
+                    NBTUtils.setInt(stack, TAG_TIME, --time);
+                else {
+                    NBTUtils.setInt(stack, TAG_STACKS, 0);
+
+                    addExperience(player, stack, (int) Math.floor(stacks / 3F));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player)
+                || stack.getItem() == newStack.getItem())
+            return;
+
+        EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        NBTUtils.clearTag(stack, TAG_STACKS);
+        NBTUtils.clearTag(stack, TAG_TIME);
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
-    public static class RageGloveEvents {
+    public static class Events {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
             Entity source = event.getSource().getEntity();
 
             if (source instanceof Player player) {
-                if (!(event.getSource().getDirectEntity() instanceof Player))
+                if (!(event.getSource().getEntity() instanceof Player))
                     return;
 
                 ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.RAGE_GLOVE.get());
@@ -98,24 +243,28 @@ public class RageGloveItem extends RelicItem {
                 if (stack.isEmpty())
                     return;
 
-                int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
+                if (canUseAbility(stack, "rage")) {
+                    int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
 
-                NBTUtils.setInt(stack, TAG_STACKS, ++stacks);
-                NBTUtils.setInt(stack, TAG_TIME, 3);
+                    NBTUtils.setInt(stack, TAG_STACKS, ++stacks);
+                    NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(getAbilityValue(stack, "rage", "duration") * 20));
 
-                event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * getAbilityValue(stack, "rage", "dealt_damage")))));
+                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * getAbilityValue(stack, "rage", "dealt_damage")))));
+                }
             } else {
                 ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.RAGE_GLOVE.get());
 
                 if (stack.isEmpty())
                     return;
 
-                int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
+                if (canUseAbility(stack, "rage")) {
+                    int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
 
-                if (stacks <= 0)
-                    return;
+                    if (stacks <= 0)
+                        return;
 
-                event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * getAbilityValue(stack, "rage", "incoming_damage")))));
+                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * getAbilityValue(stack, "rage", "incoming_damage")))));
+                }
             }
         }
     }

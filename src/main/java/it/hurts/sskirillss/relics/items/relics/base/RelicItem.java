@@ -341,8 +341,8 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
         Pair<Double, Double> threshold = data.getThresholdValue();
 
-        return threshold == null ? MathUtils.round(result, 3)
-                : MathUtils.round(Math.max(threshold.first(), Math.min(threshold.second(), result)), 3);
+        return threshold == null ? MathUtils.round(result, 5)
+                : MathUtils.round(Math.max(threshold.first(), Math.min(threshold.second(), result)), 5);
     }
 
     public static double getAbilityValue(ItemStack stack, String ability, String stat) {
@@ -397,7 +397,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
         for (Map.Entry<String, RelicAbilityStat> stats : entry.stats.entrySet()) {
             RelicAbilityStat stat = stats.getValue();
 
-            double result = MathUtils.round(MathUtils.randomBetween(new Random(), stat.getInitialValue().first(), stat.getInitialValue().second()), 3);
+            double result = MathUtils.round(MathUtils.randomBetween(new Random(), stat.getInitialValue().first(), stat.getInitialValue().second()), 5);
 
             setAbilityValue(stack, ability, stats.getKey(), result);
         }

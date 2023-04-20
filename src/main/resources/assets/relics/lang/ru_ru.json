@@ -256,17 +256,31 @@
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.value": "+%1$s слотов.",
 
   "item.relics.rage_glove": "Перчатка ярости",
-  "tooltip.relics.rage_glove.leveling": "+1 ед. опыта за каждые 3 заряда от способности «Ярость берсерка» при их обнулении.",
+  "tooltip.relics.rage_glove.leveling": "+1 ед. опыта за каждые 3 заряда от способности «Ярость берсерка» при их обнулении.\n+1 ед. опыта за каждую цель, поражённую способностью «Рывок».",
   "tooltip.relics.rage_glove.ability.rage": "Ярость берсерка",
-  "tooltip.relics.rage_glove.ability.rage.description": "Каждая атака носителя, совершённая в течение 3 секунд после последней, накапливает 1 заряд во внутренний буфер реликвии. Наносимый и получаемый урон носителя, а также его скорость передвижения и атаки увеличиваются пропорционально накопленным зарядам. По истечении 3 секунд внутренний буфер реликвии опустошается, аннулируя все полученные бонусы.",
+  "tooltip.relics.rage_glove.ability.rage.description": "Каждая атака носителя, совершённая в течение определённого времени после последней, накапливает 1 заряд во внутренний буфер реликвии. Наносимый и получаемый урон носителя увеличиваются пропорционально накопленным зарядам. По истечении того же времени внутренний буфер реликвии опустошается, аннулируя все полученные бонусы.",
+  "tooltip.relics.rage_glove.ability.rage.stat.duration.title": "Время существования заряда:",
+  "tooltip.relics.rage_glove.ability.rage.stat.duration.value": "%1$s секунд.",
   "tooltip.relics.rage_glove.ability.rage.stat.incoming_damage.title": "Множитель входящего урона:",
   "tooltip.relics.rage_glove.ability.rage.stat.incoming_damage.value": "%1$s%% за заряд.",
   "tooltip.relics.rage_glove.ability.rage.stat.dealt_damage.title": "Множитель исходящего урона:",
   "tooltip.relics.rage_glove.ability.rage.stat.dealt_damage.value": "%1$s%% за заряд.",
-  "tooltip.relics.rage_glove.ability.rage.stat.movement_speed.title": "Множитель скорости передвижения:",
-  "tooltip.relics.rage_glove.ability.rage.stat.movement_speed.value": "%1$s%% за заряд.",
-  "tooltip.relics.rage_glove.ability.rage.stat.attack_speed.title": "Множитель скорости атаки:",
-  "tooltip.relics.rage_glove.ability.rage.stat.attack_speed.value": "%1$s%% за заряд.",
+  "tooltip.relics.rage_glove.ability.phlebotomy": "Флеботомия",
+  "tooltip.relics.rage_glove.ability.phlebotomy.description": "Повышает скорость атаки и передвижения носителя, а также наделяет пассивной регенерацией пропорционально проценту отсутствующего здоровья.",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.heal.title": "Регенерация здоровья:",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.heal.value": "%1$s за 1%% в секунду.",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.movement_speed.title": "Множитель скорости передвижения:",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.movement_speed.value": "%1$s%% за 1%%.",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.attack_speed.title": "Множитель скорости атаки:",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.attack_speed.value": "%1$s%% за 1%%.",
+  "tooltip.relics.rage_glove.ability.spurt": "Рывок",
+  "tooltip.relics.rage_glove.ability.spurt.description": "Совершает телепортационный рывок в направлении линии взгляда, поджигая и нанося урон целям на пути, пропорциональный количеству зарядов во внутреннем буфере реликвии от способности «Ярость берсерка». Каждое использование расходует часть зарядов из внутреннего буфера, но их число не может быть меньше 5.",
+  "tooltip.relics.rage_glove.ability.spurt.stat.percentage.title": "Процент потребляемых зарядов:",
+  "tooltip.relics.rage_glove.ability.spurt.stat.percentage.value": "%1$s%% от общего числа.",
+  "tooltip.relics.rage_glove.ability.spurt.stat.damage.title": "Наносимый урон:",
+  "tooltip.relics.rage_glove.ability.spurt.stat.damage.value": "%1$s за заряд.",
+  "tooltip.relics.rage_glove.ability.spurt.stat.distance.title": "Дистанция:",
+  "tooltip.relics.rage_glove.ability.spurt.stat.distance.value": "%1$s блоков.",
 
   "item.relics.ice_skates": "Ледовые коньки",
   "tooltip.relics.ice_skates.leveling": "+1 ед. опыта за каждую секунду ускорения от способности «Скольжение».",
@@ -347,6 +361,5 @@
 
   "command.relics.base.not_relic": "Предмет в руке должен являться реликвией!",
 
-  "key.relics.ability_list": "Открыть интерфейс активных способностей",
-  "key.relics.ability_cast": "Использовать выбранную активную способность"
+  "key.relics.ability_list": "Открыть интерфейс активных способностей"
 }

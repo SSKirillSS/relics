@@ -256,17 +256,31 @@
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.value": "+%1$s slots.",
 
   "item.relics.rage_glove": "Rage Glove",
-  "tooltip.relics.rage_glove.leveling": "+1 experience point for every 3 charges from the ability «Berserker Rage» when they are reset.",
+  "tooltip.relics.rage_glove.leveling": "+1 experience point for every 3 charges from the ability «Berserker Rage» when they are reset.\n+1 experience point for each target hit by the «Spurt» ability.",
   "tooltip.relics.rage_glove.ability.rage": "Berserker Rage",
   "tooltip.relics.rage_glove.ability.rage.description": "Each wearer attack made within 3 seconds after the last one accumulates 1 charge into the internal buffer of the relic. The damage inflicted and received by the wearer, as well as its movement speed and dealt damage increases in proportion to the accumulated charges. After 3 seconds, the internal buffer of the relic is emptied, canceling all bonuses received.",
+  "tooltip.relics.rage_glove.ability.rage.stat.duration.title": "Charge existence time:",
+  "tooltip.relics.rage_glove.ability.rage.stat.duration.value": "%1$s seconds.",
   "tooltip.relics.rage_glove.ability.rage.stat.incoming_damage.title": "Incoming damage multiplier:",
   "tooltip.relics.rage_glove.ability.rage.stat.incoming_damage.value": "%1$s%% per charge.",
   "tooltip.relics.rage_glove.ability.rage.stat.dealt_damage.title": "Dealt damage multiplier:",
   "tooltip.relics.rage_glove.ability.rage.stat.dealt_damage.value": "%1$s%% per charge.",
-  "tooltip.relics.rage_glove.ability.rage.stat.movement_speed.title": "Movement speed multiplier:",
-  "tooltip.relics.rage_glove.ability.rage.stat.movement_speed.value": "%1$s%% per charge.",
-  "tooltip.relics.rage_glove.ability.rage.stat.attack_speed.title": "Attack speed multiplier:",
-  "tooltip.relics.rage_glove.ability.rage.stat.attack_speed.value": "%1$s%% per charge.",
+  "tooltip.relics.rage_glove.ability.phlebotomy": "Phlebotomy",
+  "tooltip.relics.rage_glove.ability.phlebotomy.description": "Increases the wearer's attack and movement speed, as well as grants passive regeneration proportional to the percentage of missing health.",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.heal.title": "Health regen:",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.heal.value": "%1$s for 1%% per second.",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.movement_speed.title": "Movement speed multiplier:",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.movement_speed.value": "%1$s%% for 1%%.",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.attack_speed.title": "Attack speed multiplier:",
+  "tooltip.relics.rage_glove.ability.phlebotomy.stat.attack_speed.value": "%1$s%% for 1%%.",
+  "tooltip.relics.rage_glove.ability.spurt": "Spurt",
+  "tooltip.relics.rage_glove.ability.spurt.description": "Performs a teleportation dash in the direction of the line of sight, igniting and damaging targets in the path, proportional to the number of charges in the inner relic buffer from the «Berserker Rage» ability. Each use consumes some of the charges from the internal buffer, but their number cannot be less than 5.",
+  "tooltip.relics.rage_glove.ability.spurt.stat.percentage.title": "Percentage of charges consumed:",
+  "tooltip.relics.rage_glove.ability.spurt.stat.percentage.value": "%1$s%% of the total.",
+  "tooltip.relics.rage_glove.ability.spurt.stat.damage.title": "Dealt damage:",
+  "tooltip.relics.rage_glove.ability.spurt.stat.damage.value": "%1$s per charge.",
+  "tooltip.relics.rage_glove.ability.spurt.stat.distance.title": "Distance:",
+  "tooltip.relics.rage_glove.ability.spurt.stat.distance.value": "%1$s blocks.",
 
   "item.relics.ice_skates": "Ice Skates",
   "tooltip.relics.ice_skates.leveling": "+1 experience point for each second of acceleration from the ability «Skating».",
@@ -347,6 +361,5 @@
 
   "command.relics.base.not_relic": "Item in hand must be a relic!",
 
-  "key.relics.ability_list": "Show the active abilities HUD",
-  "key.relics.ability_cast": "Cast selected active ability"
+  "key.relics.ability_list": "Show the active abilities HUD"
 }
