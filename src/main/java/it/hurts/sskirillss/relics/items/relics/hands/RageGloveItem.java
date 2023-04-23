@@ -232,7 +232,7 @@ public class RageGloveItem extends RelicItem {
     public static class Events {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
-            Entity source = event.getSource().getEntity();
+            Entity source = event.getSource().getDirectEntity();
 
             if (source instanceof Player player) {
                 if (!(event.getSource().getEntity() instanceof Player))
@@ -251,8 +251,8 @@ public class RageGloveItem extends RelicItem {
 
                     event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * getAbilityValue(stack, "rage", "dealt_damage")))));
                 }
-            } else {
-                ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.RAGE_GLOVE.get());
+            } else if (event.getEntity() instanceof Player player){
+                ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.RAGE_GLOVE.get());
 
                 if (stack.isEmpty())
                     return;
