@@ -22,7 +22,7 @@
 
   "tooltip.relics.relic.upgrade.description": "Level-up",
   "tooltip.relics.relic.upgrade.cost": "Cost: %1$s leveling points %2$s, %3$s experience points %4$s.",
-  "tooltip.relics.relic.upgrade.locked": "Relic has reached its maximum level.",
+  "tooltip.relics.relic.upgrade.locked": "Ability has reached its max level.",
 
   "tooltip.relics.relic.reroll.description": "Reroll random stats",
   "tooltip.relics.relic.reroll.cost": "Cost: %1$s experience points %2$s.",
