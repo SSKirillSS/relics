@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.mixin;
 
+import it.hurts.sskirillss.relics.api.events.common.EntityBlockSpeedFactorEvent;
 import it.hurts.sskirillss.relics.api.events.common.FluidCollisionEvent;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -131,5 +132,16 @@ public class MixinEntity {
 
         if (!EntityUtils.findEquippedCurio(entity, ItemRegistry.DROWNED_BELT.get()).isEmpty())
             info.setReturnValue(true);
+    }
+
+    @Inject(method = "getBlockSpeedFactor", at = @At("RETURN"), cancellable = true)
+    public void getBlockSpeedFactor(CallbackInfoReturnable<Float> cir) {
+        Entity entity = (Entity) (Object) this;
+
+        EntityBlockSpeedFactorEvent event = new EntityBlockSpeedFactorEvent(entity, entity.level.getBlockState(entity.getBlockPosBelowThatAffectsMyMovement()), cir.getReturnValue());
+
+        MinecraftForge.EVENT_BUS.post(event);
+
+        cir.setReturnValue(event.getSpeedFactor());
     }
 }

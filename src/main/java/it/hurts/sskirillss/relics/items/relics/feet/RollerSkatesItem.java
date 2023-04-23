@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
+import it.hurts.sskirillss.relics.api.events.common.EntityBlockSpeedFactorEvent;
 import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
@@ -20,7 +21,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID)
 public class RollerSkatesItem extends RelicItem {
     public static final String TAG_SKATING_DURATION = "duration";
 
@@ -84,16 +84,32 @@ public class RollerSkatesItem extends RelicItem {
         EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
     }
 
-    @SubscribeEvent
-    public static void onLivingSlipping(LivingSlippingEvent event) {
-        if (!(event.getEntity() instanceof Player player) || player.isInWater() || player.isFallFlying())
-            return;
+    @Mod.EventBusSubscriber(modid = Reference.MODID)
+    public static class Events {
+        @SubscribeEvent
+        public static void onLivingSlipping(LivingSlippingEvent event) {
+            if (!(event.getEntity() instanceof Player player) || player.isInWater() || player.isFallFlying())
+                return;
 
-        ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ROLLER_SKATES.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ROLLER_SKATES.get());
 
-        if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
-            return;
+            if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
+                return;
 
-        event.setFriction(1.075F);
+            event.setFriction(1.075F);
+        }
+
+        @SubscribeEvent
+        public static void onSpeedFactor(EntityBlockSpeedFactorEvent event) {
+            if (!(event.getEntity() instanceof Player player) || player.isInWater() || player.isFallFlying())
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ROLLER_SKATES.get());
+
+            if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
+                return;
+
+            event.setSpeedFactor(1F);
+        }
     }
 }
