@@ -3,7 +3,10 @@ package it.hurts.sskirillss.relics.items.relics.back;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
+import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.entities.ArrowRainEntity;
+import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -11,10 +14,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.*;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -25,6 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -34,6 +35,9 @@ import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,6 +47,7 @@ import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,12 +55,14 @@ import java.util.stream.Collectors;
 
 public class ArrowQuiverItem extends RelicItem {
     private static final String TAG_ARROWS = "arrows";
+    private static final String TAG_COOLDOWN = "cooldown";
 
     @Override
     public RelicData getRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("receptacle", RelicAbilityEntry.builder()
+                                .maxLevel(10)
                                 .stat("slots", RelicAbilityStat.builder()
                                         .initialValue(2, 5)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1)
@@ -65,27 +72,95 @@ public class ArrowQuiverItem extends RelicItem {
                         .ability("agility", RelicAbilityEntry.builder()
                                 .requiredLevel(5)
                                 .requiredPoints(2)
+                                .maxLevel(5)
                                 .stat("modifier", RelicAbilityStat.builder()
                                         .initialValue(1, 1)
                                         .upgradeModifier(RelicAbilityStat.Operation.ADD, 1)
                                         .formatValue(value -> (int) ((1 + MathUtils.round(value, 0))) * 100)
                                         .build())
                                 .build())
+                        .ability("rain", RelicAbilityEntry.builder()
+                                .requiredLevel(10)
+                                .maxLevel(10)
+                                .active(true)
+                                .stat("radius", RelicAbilityStat.builder()
+                                        .initialValue(3, 5)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .stat("duration", RelicAbilityStat.builder()
+                                        .initialValue(10, 15)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.25)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .stat("delay", RelicAbilityStat.builder()
+                                        .initialValue(1, 0.75)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, -0.15)
+                                        .formatValue(value -> MathUtils.round(value, 2))
+                                        .build())
+                                .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 100))
+                .levelingData(new RelicLevelingData(100, 20, 100))
                 .styleData(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
                         .build())
                 .build();
     }
 
-    public static int getSlotsAmount(ItemStack stack) {
-        return (int) Math.round(getAbilityValue(stack, "receptacle", "slots"));
+    @Override
+    public void castActiveAbility(ItemStack stack, Player player, String ability) {
+        Level level = player.getCommandSenderWorld();
+
+        if (ability.equals("rain")) {
+            if (NBTUtils.getInt(stack, TAG_COOLDOWN, 0) > 0
+                    || getArrows(stack).isEmpty())
+                return;
+
+            double maxDistance = 32;
+
+            Vec3 view = player.getViewVector(0);
+            Vec3 eyeVec = player.getEyePosition(0);
+
+            BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * maxDistance, view.y * maxDistance,
+                    view.z * maxDistance), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
+
+            Vec3 target = ray.getLocation();
+
+            int duration = (int) Math.round(getAbilityValue(stack, "rain", "duration") * 20);
+
+            ArrowRainEntity rain = new ArrowRainEntity(EntityRegistry.ARROW_RAIN.get(), level);
+
+            rain.setDelay((int) Math.round(getAbilityValue(stack, "rain", "delay") * 20));
+            rain.setRadius((float) getAbilityValue(stack, "rain", "radius"));
+            rain.setQuiver(stack.copy());
+            rain.setDuration(duration);
+            rain.setOwner(player);
+            rain.setPos(target);
+
+            level.addFreshEntity(rain);
+
+            NBTUtils.setInt(stack, TAG_COOLDOWN, duration / 20);
+        }
     }
 
     @Override
-    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        return Optional.of(new ArrowQuiverTooltip(getArrows(stack), getSlotsAmount(stack)));
+    public void tickActiveAbilitySelection(ItemStack stack, Player player, String ability) {
+        Level level = player.getCommandSenderWorld();
+
+        if (ability.equals("rain")) {
+            double maxDistance = 32;
+
+            Vec3 view = player.getViewVector(0);
+            Vec3 eyeVec = player.getEyePosition(0);
+
+            BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * maxDistance, view.y * maxDistance,
+                    view.z * maxDistance), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
+
+            Vec3 target = ray.getLocation();
+
+            ParticleUtils.createCyl(new CircleTintData(new Color(255, 255, 255), 0.2F, 0, 1F, false),
+                    target, level, getAbilityValue(stack, "rain", "radius"), 0.2F);
+        }
     }
 
     @Override
@@ -98,6 +173,25 @@ public class ArrowQuiverItem extends RelicItem {
                 player.updatingUsingItem();
     }
 
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
+        int cooldown = NBTUtils.getInt(stack, TAG_COOLDOWN, 0);
+
+        if (canUseAbility(stack, "rain")) {
+            if (cooldown > 0 && entity.tickCount % 20 == 0)
+                NBTUtils.setInt(stack, TAG_COOLDOWN, --cooldown);
+        }
+    }
+
+    public static int getSlotsAmount(ItemStack stack) {
+        return (int) Math.round(getAbilityValue(stack, "receptacle", "slots"));
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        return Optional.of(new ArrowQuiverTooltip(getArrows(stack), getSlotsAmount(stack)));
+    }
+
     public static List<ItemStack> getArrows(ItemStack stack) {
         CompoundTag tag = stack.getTag();
 
@@ -107,7 +201,7 @@ public class ArrowQuiverItem extends RelicItem {
                 .collect(Collectors.toList());
     }
 
-    public int insertStack(ItemStack stack, ItemStack arrow) {
+    public static int insertStack(ItemStack stack, ItemStack arrow) {
         if (!arrow.getItem().canFitInsideContainerItems())
             return 0;
 
@@ -301,7 +395,7 @@ public class ArrowQuiverItem extends RelicItem {
                 if (!(heldStack.getItem() instanceof ArrowItem))
                     return;
 
-                int amount = quiver.insertStack(slotStack, heldStack);
+                int amount = insertStack(slotStack, heldStack);
 
                 if (amount <= 0)
                     return;

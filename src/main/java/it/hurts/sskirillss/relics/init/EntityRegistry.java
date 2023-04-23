@@ -78,6 +78,12 @@ public class EntityRegistry {
                     .build("solid_snowball")
     );
 
+    public static final RegistryObject<EntityType<ArrowRainEntity>> ARROW_RAIN = ENTITIES.register("arrow_rain", () ->
+            EntityType.Builder.<ArrowRainEntity>of(ArrowRainEntity::new, MobCategory.MISC)
+                    .sized(1F, 1F)
+                    .build("arrow_rain")
+    );
+
     public static void registerEntities() {
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

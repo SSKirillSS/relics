@@ -213,6 +213,10 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
     }
 
+    public void tickActiveAbilitySelection(ItemStack stack, Player player, String ability) {
+
+    }
+
     public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
         return null;
     }

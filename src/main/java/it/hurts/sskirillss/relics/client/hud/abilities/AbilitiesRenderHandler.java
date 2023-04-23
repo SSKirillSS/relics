@@ -189,12 +189,26 @@ public class AbilitiesRenderHandler {
             if (event.side != LogicalSide.CLIENT || event.phase != TickEvent.Phase.END)
                 return;
 
+            Player player = event.player;
+
+            if (player == null)
+                return;
+
             if (mouseDelta > 0)
                 mouseDelta--;
             else if (mouseDelta < 0)
                 mouseDelta++;
 
             if (HotkeyRegistry.ABILITY_LIST.isDown()) {
+                AbilityEntry ability = getAbilityByIndex(selectedIndex);
+
+                if (ability != null) {
+                    ItemStack stack = AbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
+
+                    if (stack.getItem() instanceof RelicItem relic)
+                        relic.tickActiveAbilitySelection(stack, player, ability.getAbility());
+                }
+
                 if (animationDelta < 5)
                     animationDelta++;
 
@@ -209,7 +223,7 @@ public class AbilitiesRenderHandler {
             if (animationDelta == 0)
                 return;
 
-            entries = AbilityUtils.getActiveEntries(event.player);
+            entries = AbilityUtils.getActiveEntries(player);
 
             if (selectedIndex > entries.size())
                 selectedIndex = 0;
