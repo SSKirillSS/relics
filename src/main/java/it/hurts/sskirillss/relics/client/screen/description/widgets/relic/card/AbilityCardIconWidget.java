@@ -166,7 +166,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
                 }
             }
 
-            List<FormattedCharSequence> lines = MC.font.split(entry, 200);
+            List<FormattedCharSequence> lines = MC.font.split(entry, 210);
 
             for (FormattedCharSequence line : lines) {
                 MC.font.draw(poseStack, line, (renderX + 9) * 2, (renderY + 14) * 2 + yOff, 0x412708);
