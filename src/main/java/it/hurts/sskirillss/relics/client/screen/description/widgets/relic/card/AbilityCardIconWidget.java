@@ -119,11 +119,15 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         int yOff = 0;
 
         if (level < requiredLevel) {
-            width = 100;
+            width = 105;
 
             description.add(rarity);
 
             description.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.ability.tooltip.low_level", requiredLevel, Component.translatable("tooltip.relics.relic.status.negative").withStyle(ChatFormatting.RED))));
+        } else if (abilityData.getMaxLevel() == 0) {
+            width = 105;
+
+            description.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.ability.tooltip.no_stats")));
         } else {
             yOff += 4;
 

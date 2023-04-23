@@ -47,6 +47,7 @@ public class BastionRingItem extends RelicItem {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("compass", RelicAbilityEntry.builder()
+                                .maxLevel(0)
                                 .build())
                         .ability("trade", RelicAbilityEntry.builder()
                                 .requiredLevel(5)

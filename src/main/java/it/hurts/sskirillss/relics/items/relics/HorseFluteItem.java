@@ -41,6 +41,7 @@ public class HorseFluteItem extends RelicItem {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("paddock", RelicAbilityEntry.builder()
+                                .maxLevel(0)
                                 .build())
                         .ability("heal", RelicAbilityEntry.builder()
                                 .requiredLevel(5)

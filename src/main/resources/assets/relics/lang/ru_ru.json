@@ -12,6 +12,7 @@
   "tooltip.relics.relic.ability.tooltip.level": "Уровень: %1$s/%2$s",
   "tooltip.relics.relic.ability.tooltip.rarity": "Редкость:",
   "tooltip.relics.relic.ability.tooltip.low_level": "Для использования необходимо повысить уровень реликвии до %1$s %2$s.",
+  "tooltip.relics.relic.ability.tooltip.no_stats": "Эта способность не имеет улучшаемых характеристик и не влияет на качество реликвии.",
 
   "tooltip.relics.relic.max_level": "-= MAX =-",
 

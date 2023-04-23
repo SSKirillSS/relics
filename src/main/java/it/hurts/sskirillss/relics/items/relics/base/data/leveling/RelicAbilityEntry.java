@@ -13,7 +13,7 @@ public class RelicAbilityEntry {
     public Map<String, RelicAbilityStat> stats;
 
     @Builder.Default
-    private int maxLevel = -1;
+    private int maxLevel = 10;
 
     @Builder.Default
     private int requiredLevel = 0;

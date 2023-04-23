@@ -27,6 +27,7 @@ public class JellyfishNecklaceItem extends RelicItem {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("unsinkable", RelicAbilityEntry.builder()
+                                .maxLevel(0)
                                 .build())
                         .ability("shock", RelicAbilityEntry.builder()
                                 .stat("damage", RelicAbilityStat.builder()

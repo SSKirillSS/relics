@@ -37,6 +37,7 @@ public class EnderHandItem extends RelicItem {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("neutrality", RelicAbilityEntry.builder()
+                                .maxLevel(0)
                                 .build())
                         .ability("swap", RelicAbilityEntry.builder()
                                 .stat("distance", RelicAbilityStat.builder()

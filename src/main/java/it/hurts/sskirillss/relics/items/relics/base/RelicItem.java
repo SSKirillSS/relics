@@ -676,7 +676,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
         Map<String, RelicAbilityStat> stats = entry.getStats();
 
         if (stats.isEmpty())
-            return MAX_QUALITY;
+            return 0;
 
         int sum = 0;
 
@@ -691,13 +691,15 @@ public abstract class RelicItem extends Item implements ICurioItem {
         Map<String, RelicAbilityEntry> abilities = data.getAbilities();
 
         if (abilities.isEmpty())
-            return MAX_QUALITY;
+            return 0;
 
         int size = abilities.size();
         int sum = 0;
 
         for (String ability : abilities.keySet()) {
-            if (!RelicItem.canUseAbility(stack, ability)) {
+            RelicAbilityEntry abilityData = getAbilityEntryData(stack, ability);
+
+            if (abilityData == null || abilityData.getMaxLevel() == 0) {
                 --size;
 
                 continue;

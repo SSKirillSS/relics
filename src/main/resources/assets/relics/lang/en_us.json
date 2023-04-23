@@ -12,6 +12,7 @@
   "tooltip.relics.relic.ability.tooltip.level": "Level: %1$s/%2$s",
   "tooltip.relics.relic.ability.tooltip.rarity": "Rarity:",
   "tooltip.relics.relic.ability.tooltip.low_level": "To use you need to increase the level of the relic to %1$s %2$s.",
+  "tooltip.relics.relic.ability.tooltip.no_stats": "This ability has no upgradeable stats and does not affect the quality of the relic.",
 
   "tooltip.relics.relic.max_level": "-= MAX =-",
 

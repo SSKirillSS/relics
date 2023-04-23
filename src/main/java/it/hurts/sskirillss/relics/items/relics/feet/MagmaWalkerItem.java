@@ -32,6 +32,7 @@ public class MagmaWalkerItem extends RelicItem {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("heat_resistance", RelicAbilityEntry.builder()
+                                .maxLevel(0)
                                 .build())
                         .ability("pace", RelicAbilityEntry.builder()
                                 .stat("time", RelicAbilityStat.builder()
