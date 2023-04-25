@@ -142,7 +142,7 @@ public class AbilitiesRenderHandler {
         if (entries.isEmpty())
             return null;
 
-        return entries.get(index);
+        return entries.get(Mth.clamp(index, 0, entries.size()));
     }
 
     private static void applyDelta(int delta) {
@@ -165,7 +165,7 @@ public class AbilitiesRenderHandler {
     public static class Events {
         @SubscribeEvent
         public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
-            if (!HotkeyRegistry.ABILITY_LIST.isDown())
+            if (!HotkeyRegistry.ABILITY_LIST.isDown() || entries.isEmpty())
                 return;
 
             int current = selectedIndex;
@@ -225,7 +225,7 @@ public class AbilitiesRenderHandler {
 
             entries = AbilityUtils.getActiveEntries(player);
 
-            if (selectedIndex > entries.size())
+            if (selectedIndex > entries.size() || selectedIndex < 0)
                 selectedIndex = 0;
         }
 
