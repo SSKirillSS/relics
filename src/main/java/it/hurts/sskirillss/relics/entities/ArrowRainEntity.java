@@ -1,16 +1,20 @@
 package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -85,6 +89,7 @@ public class ArrowRainEntity extends ThrowableProjectile {
 
             List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, area).stream()
                     .filter(entry -> entry.hasLineOfSight(arrow))
+                    .filter(entry -> entry.position().distanceTo(this.position()) <= getRadius())
                     .sorted(Comparator.comparing(entry -> entry.position().distanceTo(arrow.position())))
                     .toList();
 
@@ -126,10 +131,16 @@ public class ArrowRainEntity extends ThrowableProjectile {
                     entity.getPersistentData().putString("arrow_rain_owner", player.getStringUUID());
                     entity.setDeltaMovement(0, -0.5F, 0);
                     entity.setOwner(player);
+                    entity.life = 1100;
 
                     entity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
 
                     level.addFreshEntity(entity);
+
+                    if (!level.isClientSide())
+                        ((ServerLevel) level).sendParticles(ParticleTypes.CLOUD, entity.getX(), entity.getY(), entity.getZ(), 5, 0, 0, 0, 0.1F);
+
+                    level.playSound(null, entity.blockPosition(), SoundRegistry.ARROW_RAIN.get(), SoundSource.MASTER, 2F, 1F + random.nextFloat() * 0.25F);
                 }
             }
         }

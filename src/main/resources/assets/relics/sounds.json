@@ -6,5 +6,9 @@
     "throw": {
         "category": "master",
         "sounds": [ { "name": "relics:throw" } ]
+    },
+    "arrow_rain": {
+        "category": "master",
+        "sounds": [ { "name": "relics:arrow_rain" } ]
     }
 }
