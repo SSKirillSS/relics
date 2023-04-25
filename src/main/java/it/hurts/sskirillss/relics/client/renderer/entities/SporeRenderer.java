@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.client.models.SporeModel;
 import it.hurts.sskirillss.relics.entities.SporeEntity;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,12 +29,22 @@ public class SporeRenderer extends EntityRenderer<SporeEntity> {
 
         matrixStackIn.pushPose();
 
-        float speed = 15F;
+        matrixStackIn.translate(0, ((Math.pow(Math.log10(1 + entityIn.getSize()), 1D / 3D))) / 4F, 0);
 
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(time * speed));
-        matrixStackIn.mulPose(Vector3f.XN.rotationDegrees(time * speed));
+        if (!entityIn.isStuck()) {
+            float speed = 15F;
 
-        float scale = entityIn.getSize();
+            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(time * speed));
+            matrixStackIn.mulPose(Vector3f.XN.rotationDegrees(time * speed));
+        }
+
+        double inlinedSize = Math.pow(Math.log10(1 + entityIn.getSize()), 1D / 3D);
+
+        int maxLifetime = (int) Math.round(RelicItem.getAbilityValue(entityIn.getStack(), "spore", "duration") * 20);
+        int lifetime = entityIn.getLifetime();
+
+        float scale = (float) (inlinedSize + (Math.abs(Math.sin((entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks)) * 0.2F)) * 0.05F)
+                + (lifetime >= maxLifetime - 20 ? (float) ((20 - (maxLifetime - lifetime) + (Minecraft.getInstance().isPaused() ? 0 : partialTicks)) * (inlinedSize * 0.035F)) : 0F));
 
         matrixStackIn.scale(scale, scale, scale);
 

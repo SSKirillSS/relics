@@ -15,9 +15,16 @@ public class SporeModel<T extends Entity> extends EntityModel<T> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition spore = partdefinition.addOrReplaceChild("spore", CubeListBuilder.create().texOffs(0, 0).addBox(-2F, -26F, -2F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+        PartDefinition spore = partdefinition.addOrReplaceChild("spore", CubeListBuilder.create().texOffs(20, 20)
+                .addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
+                .addBox(0.0F, -7.0F, -7.0F, 0.0F, 14.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        this.spore = LayerDefinition.create(meshdefinition, 16, 16).bakeRoot().getChild("spore");;
+        PartDefinition cube_r1 = spore.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -21.0F, -7.0F, 0.0F, 14.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 14.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
+        PartDefinition cube_r2 = spore.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -21.0F, -7.0F, 0.0F, 14.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 14.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
+        PartDefinition cube_r3 = spore.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -21.0F, -7.0F, 0.0F, 14.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 14.0F, 0.0F, 0.0F, -1.5708F, 0.0F));
+
+        this.spore = LayerDefinition.create(meshdefinition, 64, 64).bakeRoot().getChild("spore");
+        ;
     }
 
     @Override

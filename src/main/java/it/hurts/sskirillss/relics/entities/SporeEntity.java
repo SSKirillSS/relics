@@ -1,119 +1,206 @@
 package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
-import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.Optional;
 
 public class SporeEntity extends ThrowableProjectile {
-    @Getter
-    @Setter
-    private float size;
+    private static final EntityDataAccessor<Float> SIZE = SynchedEntityData.defineId(SporeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> STUCK = SynchedEntityData.defineId(SporeEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> LIFETIME = SynchedEntityData.defineId(SporeEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<ItemStack> STACK = SynchedEntityData.defineId(SporeEntity.class, EntityDataSerializers.ITEM_STACK);
 
-    @Getter
-    @Setter
-    private ItemStack stack = ItemStack.EMPTY;
-
-    public SporeEntity(EntityType<? extends ThrowableProjectile> entityType, Level level) {
-        super(entityType, level);
-
-        this.size = 0.35F + level.getRandom().nextFloat() * 0.5F;
+    public void setSize(float amount) {
+        this.getEntityData().set(SIZE, amount);
     }
 
-    public SporeEntity(Level level) {
-        super(EntityRegistry.SPORE.get(), level);
+    public float getSize() {
+        return this.getEntityData().get(SIZE);
+    }
 
-        this.size = 0.35F + level.getRandom().nextFloat() * 0.5F;
+    public void setStuck(boolean value) {
+        this.getEntityData().set(STUCK, value);
+    }
+
+    public boolean isStuck() {
+        return this.getEntityData().get(STUCK);
+    }
+
+    public void setLifetime(int amount) {
+        this.getEntityData().set(LIFETIME, amount);
+    }
+
+    public int getLifetime() {
+        return this.getEntityData().get(LIFETIME);
+    }
+
+    public void setStack(ItemStack stack) {
+        this.getEntityData().set(STACK, stack);
+    }
+
+    public ItemStack getStack() {
+        return this.getEntityData().get(STACK);
+    }
+    public SporeEntity(EntityType<? extends ThrowableProjectile> entityType, Level level) {
+        super(entityType, level);
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (this.tickCount > 200)
-            this.discard();
+        if (this.isStuck())
+            this.setDeltaMovement(0, 0, 0);
+
+        if (!level.isClientSide()) {
+            if (isStuck())
+                setLifetime(getLifetime() + 1);
+
+            if (getLifetime() > RelicItem.getAbilityValue(getStack(), "spore", "duration") * 20)
+                this.discard();
+        }
 
         Level level = this.getLevel();
+        RandomSource random = level.getRandom();
 
-        if (level.isClientSide())
+        double inlinedSize = Math.pow(Math.log10(1 + getSize()), 1D / 3D);
+
+        if (isStuck()) {
+            ParticleUtils.createBall(new CircleTintData(new Color(random.nextInt(200), 255, 0), (float) (inlinedSize * 0.25F), 40, 0.95F, false),
+                    this.position().add(0, inlinedSize / 6, 0), level, 0, (float) (inlinedSize * 0.025F));
+        } else {
+            level.addParticle(new CircleTintData(new Color(random.nextInt(200), 255, 0), (float) (inlinedSize * 0.25F), 40, 0.9F, false),
+                    this.getX(), this.getY() + (inlinedSize / 6F), this.getZ(), MathUtils.randomFloat(random) * 0.025F,
+                    MathUtils.randomFloat(random) * 0.025F, MathUtils.randomFloat(random) * 0.025F);
+        }
+
+        if (!(this.getOwner() instanceof Player player))
             return;
 
-        ((ServerLevel) level).sendParticles(new CircleTintData(new Color(level.getRandom().nextInt(200), 255, 0), size * 0.25F, 40, 0.9F, false),
-                this.xo, this.yo, this.zo, 1, 0.025D, 0.025D, 0.025D, 0.01F);
+        if (isStuck()) {
+            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox())) {
+                if (entity.getStringUUID().equals(player.getStringUUID()))
+                    continue;
+
+                setLifetime((int) Math.max(getLifetime(), Math.round(RelicItem.getAbilityValue(getStack(), "spore", "duration") * 20) - 20));
+
+                break;
+            }
+        }
     }
 
     @Override
     protected void onHitBlock(BlockHitResult result) {
-        BlockPos pos = result.getBlockPos();
-        BlockState state = this.level.getBlockState(pos);
+        this.setDeltaMovement(0, 0, 0);
 
-        if (!state.getMaterial().blocksMotion())
-            return;
-
-        this.level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.MASTER, 0.75F, 1.75F);
-
-        if (this.getOwner() instanceof Player player) {
-            Optional<PoisonedPuddleEntity> optional = level.getEntitiesOfClass(PoisonedPuddleEntity.class, this.getBoundingBox().inflate(1)).stream().findFirst();
-
-            if (optional.isEmpty()) {
-                PoisonedPuddleEntity puddle = new PoisonedPuddleEntity(player);
-
-                puddle.setPos(this.position());
-                puddle.setOwner(player);
-                puddle.setStack(stack);
-                puddle.setSize(1F);
-
-                level.addFreshEntity(puddle);
-            } else {
-                PoisonedPuddleEntity puddle = optional.get();
-
-                puddle.addSize((10F - puddle.getSize()) * 0.1F);
-            }
-        }
-
-        this.discard();
+        this.setStuck(true);
     }
 
     @Override
     public void onRemovedFromWorld() {
+        level.playSound(null, this.blockPosition(), SoundEvents.PUFFER_FISH_BLOW_UP, SoundSource.MASTER, 1F, 1F + random.nextFloat());
+
+        double inlinedSize = Math.pow(Math.log10(1 + getSize()), 1D / 3D);
+
         ParticleUtils.createBall(new CircleTintData(new Color(100 + level.getRandom().nextInt(50), 255, 0),
-                0.2F, 40, 0.9F, true), this.position(), level, 1, 0.1F);
+                        (float) (inlinedSize * 0.35F), 40, 0.9F, true),
+                this.position().add(0, inlinedSize / 3, 0), level, (int) Math.ceil(1 + inlinedSize), (float) (inlinedSize / 2D));
+
+        if (this.getOwner() instanceof Player player) {
+            RandomSource random = player.getRandom();
+
+            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1F + (Math.pow(Math.log10(1 + getSize()), 1D / 3D) / 2F)))) {
+                if (entity.getStringUUID().equals(player.getStringUUID()))
+                    continue;
+
+                entity.hurt(DamageSource.playerAttack(player), (float) (getSize() * RelicItem.getAbilityValue(getStack(), "spore", "damage")));
+
+                entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100));
+                entity.addEffect(new MobEffectInstance(EffectRegistry.ANTI_HEAL.get(), 100));
+            }
+
+            if (getSize() >= 1) {
+                int count = (int) Math.ceil(Math.pow(getSize(), RelicItem.getAbilityValue(getStack(), "multiplying", "amount")));
+
+                for (int i = 0; i < count; i++) {
+                    if (random.nextFloat() > RelicItem.getAbilityValue(getStack(), "multiplying", "chance"))
+                        break;
+
+                    float mul = this.getBbHeight() / 1.5F;
+                    float speed = 0.1F + random.nextFloat() * 0.2F;
+                    Vec3 motion = new Vec3(MathUtils.randomFloat(random) * speed, speed, MathUtils.randomFloat(random) * speed);
+
+                    SporeEntity spore = new SporeEntity(EntityRegistry.SPORE.get(), level);
+
+                    spore.setOwner(player);
+                    spore.setStack(getStack());
+                    spore.setDeltaMovement(motion);
+                    spore.setPos(this.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
+                    spore.setSize((float) (this.getSize() * RelicItem.getAbilityValue(getStack(), "multiplying", "size")));
+
+                    level.addFreshEntity(spore);
+
+                    RelicItem.addExperience(player, getStack(), 1);
+                }
+            }
+        }
 
         super.onRemovedFromWorld();
     }
 
     @Override
     protected void defineSynchedData() {
-
+        entityData.define(SIZE, 0.5F);
+        entityData.define(LIFETIME, 0);
+        entityData.define(STUCK, false);
+        entityData.define(STACK, ItemStack.EMPTY);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.size = compound.getFloat("size");
+        setSize(compound.getFloat("size"));
+        setStuck(compound.getBoolean("stuck"));
+        setLifetime(compound.getInt("lifetime"));
+
+        setStack(ItemStack.of(compound.getCompound("stack")));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.putFloat("size", this.size);
+        compound.putFloat("size", getSize());
+        compound.putBoolean("stuck", isStuck());
+        compound.putInt("lifetime", getLifetime());
+
+        getStack().save(compound.getCompound("stack"));
     }
 
     @Override
@@ -121,9 +208,24 @@ public class SporeEntity extends ThrowableProjectile {
         return false;
     }
 
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
+        if (SIZE.equals(pKey))
+            this.refreshDimensions();
+
+        super.onSyncedDataUpdated(pKey);
+    }
+
     @Nonnull
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    @Override
+    public EntityDimensions getDimensions(Pose pPose) {
+        float inlinedSize = (float) Math.pow(Math.log10(1 + getSize()), 1D / 3D);
+
+        return EntityDimensions.scalable(inlinedSize / 2F, inlinedSize / 2F);
     }
 }

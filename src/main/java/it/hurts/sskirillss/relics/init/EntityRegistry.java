@@ -56,7 +56,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<SporeEntity>> SPORE = ENTITIES.register("spore", () ->
             EntityType.Builder.<SporeEntity>of(SporeEntity::new, MobCategory.MISC)
-                    .sized(0.1F, 0.1F)
+                    .sized(0.2F, 0.2F)
                     .build("spore")
     );
 

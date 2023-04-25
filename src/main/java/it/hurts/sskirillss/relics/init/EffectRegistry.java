@@ -18,6 +18,7 @@ public class EffectRegistry {
     public static final RegistryObject<MobEffect> CONFUSION = EFFECTS.register("confusion", ConfusionEffect::new);
     public static final RegistryObject<MobEffect> PARALYSIS = EFFECTS.register("paralysis", ParalysisEffect::new);
     public static final RegistryObject<MobEffect> VANISHING = EFFECTS.register("vanishing", VanishingEffect::new);
+    public static final RegistryObject<MobEffect> ANTI_HEAL = EFFECTS.register("anti_heal", AntiHealEffect::new);
 
     public static void registerEffects() {
         EFFECTS.register(FMLJavaModLoadingContext.get().getModEventBus());
