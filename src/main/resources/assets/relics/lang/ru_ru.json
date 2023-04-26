@@ -305,7 +305,7 @@
   "tooltip.relics.rage_glove.ability.phlebotomy.stat.attack_speed.title": "Множитель скорости атаки:",
   "tooltip.relics.rage_glove.ability.phlebotomy.stat.attack_speed.value": "%1$s%% за 1%%.",
   "tooltip.relics.rage_glove.ability.spurt": "Рывок",
-  "tooltip.relics.rage_glove.ability.spurt.description": "Совершает телепортационный рывок в направлении линии взгляда, поджигая и нанося урон целям на пути, пропорциональный количеству зарядов во внутреннем буфере реликвии от способности «Ярость берсерка». Каждое использование расходует часть зарядов из внутреннего буфера, но их число не может быть меньше 5.",
+  "tooltip.relics.rage_glove.ability.spurt.description": "Совершает рывок в направлении взгляда, поджигая, накладывая кровотечение и атакуя предметом из руки каждую цель на пути. Наносит дополнительный урон, пропорциональный количеству зарядов во внутреннем буфере реликвии от способности «Ярость берсерка». Каждое использование расходует часть зарядов внутреннего буфера, но их число не может быть меньше 5.",
   "tooltip.relics.rage_glove.ability.spurt.stat.percentage.title": "Процент потребляемых зарядов:",
   "tooltip.relics.rage_glove.ability.spurt.stat.percentage.value": "%1$s%% от общего числа.",
   "tooltip.relics.rage_glove.ability.spurt.stat.damage.title": "Наносимый урон:",
@@ -390,6 +390,7 @@
   "effect.relics.confusion": "Запутывание",
   "effect.relics.vanishing": "Исчезновение",
   "effect.relics.anti_heal": "Анти-регенерация",
+  "effect.relics.bleeding": "Кровотечение",
 
   "command.relics.base.not_relic": "Предмет в руке должен являться реликвией!",
 

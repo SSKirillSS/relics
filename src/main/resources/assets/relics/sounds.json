@@ -10,5 +10,9 @@
     "arrow_rain": {
         "category": "master",
         "sounds": [ { "name": "relics:arrow_rain" } ]
+    },
+    "spurt": {
+        "category": "master",
+        "sounds": [ { "name": "relics:spurt" } ]
     }
 }

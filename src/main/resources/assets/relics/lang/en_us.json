@@ -305,7 +305,7 @@
   "tooltip.relics.rage_glove.ability.phlebotomy.stat.attack_speed.title": "Attack speed multiplier:",
   "tooltip.relics.rage_glove.ability.phlebotomy.stat.attack_speed.value": "%1$s%% for 1%%.",
   "tooltip.relics.rage_glove.ability.spurt": "Spurt",
-  "tooltip.relics.rage_glove.ability.spurt.description": "Performs a teleportation dash in the direction of the line of sight, igniting and damaging targets in the path, proportional to the number of charges in the inner relic buffer from the «Berserker Rage» ability. Each use consumes some of the charges from the internal buffer, but their number cannot be less than 5.",
+  "tooltip.relics.rage_glove.ability.spurt.description": "Dashes towards the direction of sight, setting on fire, applying bleeding and attacking each target in its path with the item in the hand. Deals additional damage proportional to the number of charges in the relic's internal buffer from the «Berserker's Rage» ability. Each use consumes a part of internal buffer charges, but its number cannot be less than 5.",
   "tooltip.relics.rage_glove.ability.spurt.stat.percentage.title": "Percentage of charges consumed:",
   "tooltip.relics.rage_glove.ability.spurt.stat.percentage.value": "%1$s%% of the total.",
   "tooltip.relics.rage_glove.ability.spurt.stat.damage.title": "Dealt damage:",
@@ -390,6 +390,7 @@
   "effect.relics.confusion": "Confusion",
   "effect.relics.vanishing": "Vanishing",
   "effect.relics.anti_heal": "Anti-Heal",
+  "effect.relics.bleeding": "Bleeding",
 
   "command.relics.base.not_relic": "Item in hand must be a relic!",
 

@@ -16,6 +16,7 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> RICOCHET = SOUNDS.register("ricochet", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "ricochet")));
     public static final RegistryObject<SoundEvent> THROW = SOUNDS.register("throw", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "throw")));
     public static final RegistryObject<SoundEvent> ARROW_RAIN = SOUNDS.register("arrow_rain", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "arrow_rain")));
+    public static final RegistryObject<SoundEvent> SPURT = SOUNDS.register("spurt", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "spurt")));
 
     public static void registerSounds() {
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());

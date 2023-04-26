@@ -2,7 +2,9 @@ package it.hurts.sskirillss.relics.items.relics.hands;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -14,10 +16,9 @@ import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -35,6 +36,8 @@ import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RageGloveItem extends RelicItem {
     public static final String TAG_STACKS = "stacks";
@@ -91,8 +94,8 @@ public class RageGloveItem extends RelicItem {
                                         .formatValue(value -> MathUtils.round(MathUtils.round(value, 3) * 100, 1))
                                         .build())
                                 .stat("damage", RelicAbilityStat.builder()
-                                        .initialValue(0.25D, 0.5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
+                                        .initialValue(0.1D, 0.25D)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
                                 .stat("distance", RelicAbilityStat.builder()
@@ -146,7 +149,7 @@ public class RageGloveItem extends RelicItem {
 
             player.fallDistance = 0F;
 
-            level.playSound(null, player.blockPosition(), SoundEvents.BLAZE_DEATH, SoundSource.MASTER, 1F, 1.5F + random.nextFloat() * 0.5F);
+            level.playSound(null, player.blockPosition(), SoundRegistry.SPURT.get(), SoundSource.MASTER, 1F, 0.75F + random.nextFloat() * 0.5F);
 
             Vec3 start = current.add(0, 1, 0);
             Vec3 end = target.add(0, 1, 0);
@@ -163,6 +166,8 @@ public class RageGloveItem extends RelicItem {
                         start.z + dir.z * progress, 0, MathUtils.randomFloat(random) * 0.075F, 0);
             }
 
+            List<LivingEntity> targets = new ArrayList<>();
+
             for (int i = 0; i < distance; ++i) {
                 double progress = i * delta.length() / distance;
 
@@ -172,12 +177,25 @@ public class RageGloveItem extends RelicItem {
                             || entity.isDeadOrDying())
                         continue;
 
-                    if (entity.hurt(DamageSource.playerAttack(player), (float) (stacks * getAbilityValue(stack, "spurt", "damage")))) {
-                        addExperience(player, stack, 1);
-
-                        entity.setSecondsOnFire(5);
-                    }
+                    targets.add(entity);
                 }
+            }
+
+            if (!targets.isEmpty()) {
+                EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, Integer.MAX_VALUE, AttributeModifier.Operation.MULTIPLY_BASE);
+                EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_DAMAGE, (float) (getAbilityValue(stack, "spurt", "damage") * stacks), AttributeModifier.Operation.ADDITION);
+
+                for (LivingEntity entity : targets) {
+                    player.attack(entity);
+
+                    addExperience(player, stack, 1);
+
+                    entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 100, 0));
+                    entity.setSecondsOnFire(5);
+                }
+
+                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION);
+                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.MULTIPLY_BASE);
             }
 
             NBTUtils.setInt(stack, TAG_STACKS, stacks - cost);
