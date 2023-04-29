@@ -91,7 +91,7 @@ public class AbilitiesRenderHandler {
         RenderSystem.disableBlend();
 
         AbilityEntry selectedAbility = getAbilityByIndex(selectedIndex);
-        ItemStack stack = AbilityUtils.getStackInCuriosSlot(player, selectedAbility.getSlot());
+        ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, selectedAbility.getSlot());
 
         MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + selectedAbility.getAbility());
 
@@ -106,7 +106,7 @@ public class AbilitiesRenderHandler {
         if (ability == null)
             return;
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(AbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png"));
+        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png"));
 
         RenderSystem.enableBlend();
 
@@ -203,7 +203,7 @@ public class AbilitiesRenderHandler {
                 AbilityEntry ability = getAbilityByIndex(selectedIndex);
 
                 if (ability != null) {
-                    ItemStack stack = AbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
+                    ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
                     if (stack.getItem() instanceof RelicItem relic)
                         relic.tickActiveAbilitySelection(stack, player, ability.getAbility());
@@ -223,7 +223,7 @@ public class AbilitiesRenderHandler {
             if (animationDelta == 0)
                 return;
 
-            entries = AbilityUtils.getActiveEntries(player);
+            entries = ActiveAbilityUtils.getActiveEntries(player);
 
             if (selectedIndex > entries.size() || selectedIndex < 0)
                 selectedIndex = 0;
@@ -250,7 +250,7 @@ public class AbilitiesRenderHandler {
             if (ability == null)
                 return;
 
-            ItemStack stack = AbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
+            ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
             if (!(stack.getItem() instanceof RelicItem relic))
                 return;

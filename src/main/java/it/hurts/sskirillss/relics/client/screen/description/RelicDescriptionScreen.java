@@ -8,6 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.QualityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -105,12 +107,12 @@ public class RelicDescriptionScreen extends Screen {
 
         blit(pPoseStack, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
 
-        int level = RelicItem.getLevel(stack);
+        int level = LevelingUtils.getLevel(stack);
         int maxLevel = relicData.getLevelingData().getMaxLevel();
 
-        int percentage = RelicItem.getExperience(stack) / (RelicItem.getExperienceBetweenLevels(stack, level, level + 1) / 100);
+        int percentage = LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100);
 
-        boolean isMaxLevel = RelicItem.getLevel(stack) >= maxLevel;
+        boolean isMaxLevel = LevelingUtils.getLevel(stack) >= maxLevel;
 
         if (isMaxLevel)
             blit(pPoseStack, x + 57, y + 89, 258, 80, 142, 12, texWidth, texHeight);
@@ -119,7 +121,7 @@ public class RelicDescriptionScreen extends Screen {
 
         int xOff = 0;
 
-        for (int i = 1; i < RelicItem.getRelicQuality(stack) + 1; i++) {
+        for (int i = 1; i < QualityUtils.getRelicQuality(stack) + 1; i++) {
             boolean isAliquot = i % 2 == 1;
 
             blit(pPoseStack, x + 100 + xOff, y + 11, 258 + (isAliquot ? 0 : 5), 94, isAliquot ? 5 : 9, 9, texWidth, texHeight);
@@ -142,7 +144,7 @@ public class RelicDescriptionScreen extends Screen {
         pPoseStack.pushPose();
 
         MutableComponent experience = isMaxLevel ? Component.translatable("tooltip.relics.relic.max_level")
-                : Component.literal(RelicItem.getExperience(stack) + "/" + RelicItem.getExperienceBetweenLevels(stack, level, level + 1) + " [" + percentage + "%]");
+                : Component.literal(LevelingUtils.getExperience(stack) + "/" + LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) + " [" + percentage + "%]");
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
@@ -173,7 +175,7 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.popPose();
 
-        int points = RelicItem.getPoints(stack);
+        int points = LevelingUtils.getPoints(stack);
 
         if (points > 0) {
             manager.bindForSetup(WIDGETS);

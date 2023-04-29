@@ -7,8 +7,9 @@ import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -33,7 +34,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
     @Override
     public boolean isLocked() {
-        return !RelicItem.mayPlayerUpgrade(MC.player, screen.stack, ability);
+        return !AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
         manager.bindForSetup(AbilityDescriptionScreen.TEXTURE);
 
-        if (RelicItem.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
+        if (AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
             blit(poseStack, x, y, 258, 0, 18, 18, 512, 512);
 
             if (isHovered)
@@ -59,22 +60,22 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
         } else {
             blit(poseStack, x, y, 258, 20, 18, 18, 512, 512);
 
-            RelicAbilityEntry abilityData = RelicItem.getAbilityEntryData(screen.stack, ability);
+            RelicAbilityEntry abilityData = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
 
             if (abilityData == null)
                 return;
 
-            if (RelicItem.canUseAbility(screen.stack, ability) && !abilityData.getStats().isEmpty() && isHovered)
+            if (AbilityUtils.canUseAbility(screen.stack, ability) && !abilityData.getStats().isEmpty() && isHovered)
                 blit(poseStack, x - 1, y - 1, 318, 22, 20, 20, 512, 512);
         }
     }
 
     @Override
     public void onHovered(PoseStack poseStack, int mouseX, int mouseY) {
-        if (!RelicItem.canUseAbility(screen.stack, ability))
+        if (!AbilityUtils.canUseAbility(screen.stack, ability))
             return;
 
-        RelicAbilityEntry data = RelicItem.getAbilityEntryData(screen.stack, ability);
+        RelicAbilityEntry data = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
 
         if (data.getStats().isEmpty())
             return;
@@ -85,9 +86,9 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
         int renderWidth = 0;
 
         int requiredPoints = data.getRequiredPoints();
-        int requiredExperience = RelicItem.getUpgradeRequiredExperience(screen.stack, ability);
+        int requiredExperience = AbilityUtils.getUpgradeRequiredExperience(screen.stack, ability);
 
-        int points = RelicItem.getPoints(screen.stack);
+        int points = LevelingUtils.getPoints(screen.stack);
         int experience = MC.player.totalExperience;
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
@@ -97,7 +98,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
                 Component.translatable("tooltip.relics.relic.upgrade.description"),
                 Component.literal(" "));
 
-        if (!RelicItem.isAbilityMaxLevel(screen.stack, ability))
+        if (!AbilityUtils.isAbilityMaxLevel(screen.stack, ability))
             entries.add(Component.translatable("tooltip.relics.relic.upgrade.cost", requiredPoints,
                     (requiredPoints > points ? negativeStatus : positiveStatus), requiredExperience,
                     (requiredExperience > experience ? negativeStatus : positiveStatus)));

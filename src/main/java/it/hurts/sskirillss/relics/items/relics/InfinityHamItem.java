@@ -9,6 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -137,13 +139,13 @@ public class InfinityHamItem extends RelicItem {
         if (pieces > 0) {
             NBTUtils.setInt(stack, TAG_PIECES, --pieces);
 
-            int feed = (int) Math.round(getAbilityValue(stack, "autophagy", "feed"));
+            int feed = (int) Math.round(AbilityUtils.getAbilityValue(stack, "autophagy", "feed"));
 
             player.getFoodData().eat(feed, feed);
 
-            addExperience(player, stack, Math.max(1, Math.min(20 - player.getFoodData().getFoodLevel(), feed)));
+            LevelingUtils.addExperience(player, stack, Math.max(1, Math.min(20 - player.getFoodData().getFoodLevel(), feed)));
 
-            if (!canUseAbility(stack, "infusion") || !nbt.contains(TAG_POTION, 9))
+            if (!AbilityUtils.canUseAbility(stack, "infusion") || !nbt.contains(TAG_POTION, 9))
                 return;
 
             ListTag list = nbt.getList(TAG_POTION, 10);
@@ -198,7 +200,7 @@ public class InfinityHamItem extends RelicItem {
             ItemStack slotStack = event.getSlotStack();
 
             if (!(heldStack.getItem() instanceof PotionItem) || !(slotStack.getItem() instanceof InfinityHamItem)
-                    || !RelicItem.canUseAbility(slotStack, "infusion"))
+                    || !AbilityUtils.canUseAbility(slotStack, "infusion"))
                 return;
 
             CompoundTag tag = slotStack.getOrCreateTag();

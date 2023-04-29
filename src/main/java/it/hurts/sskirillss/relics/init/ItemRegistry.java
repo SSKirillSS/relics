@@ -19,6 +19,7 @@ import it.hurts.sskirillss.relics.items.relics.necklace.ReflectionNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.necklace.SpiderNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.ring.BastionRingItem;
 import it.hurts.sskirillss.relics.items.relics.ring.CamouflageRingItem;
+import it.hurts.sskirillss.relics.items.relics.ring.ChorusInhibitorItem;
 import it.hurts.sskirillss.relics.items.relics.ring.DelayRingItem;
 import it.hurts.sskirillss.relics.items.relics.talisman.*;
 import it.hurts.sskirillss.relics.utils.Reference;

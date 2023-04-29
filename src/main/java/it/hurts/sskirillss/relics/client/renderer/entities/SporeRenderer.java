@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.client.models.SporeModel;
 import it.hurts.sskirillss.relics.entities.SporeEntity;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -40,7 +40,7 @@ public class SporeRenderer extends EntityRenderer<SporeEntity> {
 
         double inlinedSize = Math.pow(Math.log10(1 + entityIn.getSize()), 1D / 3D);
 
-        int maxLifetime = (int) Math.round(RelicItem.getAbilityValue(entityIn.getStack(), "spore", "duration") * 20);
+        int maxLifetime = (int) Math.round(AbilityUtils.getAbilityValue(entityIn.getStack(), "spore", "duration") * 20);
         int lifetime = entityIn.getLifetime();
 
         float scale = (float) (inlinedSize + (Math.abs(Math.sin((entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks)) * 0.2F)) * 0.05F)

@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -146,13 +147,13 @@ public class BastionRingItem extends RelicItem {
             LivingEntity entity = event.getEntity();
 
             if (entity instanceof ZombifiedPiglin)
-                addExperience(player, stack, 1);
+                LevelingUtils.addExperience(player, stack, 1);
 
             if (entity instanceof Piglin)
-                addExperience(player, stack, 5);
+                LevelingUtils.addExperience(player, stack, 5);
 
             if (entity instanceof PiglinBrute)
-                addExperience(player, stack, 10);
+                LevelingUtils.addExperience(player, stack, 10);
         }
     }
 }

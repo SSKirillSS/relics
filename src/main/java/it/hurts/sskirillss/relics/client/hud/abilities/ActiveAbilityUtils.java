@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.client.hud.abilities;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.DataUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AbilityUtils {
+public class ActiveAbilityUtils {
     public static ItemStack getStackInCuriosSlot(Player player, int slot) {
         return CuriosApi.getCuriosHelper().getEquippedCurios(player).map(handler -> handler.getStackInSlot(slot)).orElse(ItemStack.EMPTY);
     }
@@ -35,7 +36,7 @@ public class AbilityUtils {
                     continue;
 
                 for (String ability : abilities) {
-                    if (RelicItem.canUseAbility(stack, ability))
+                    if (AbilityUtils.canUseAbility(stack, ability))
                         entries.add(new AbilitiesRenderHandler.AbilityEntry(slot, ability));
                 }
             }
@@ -47,7 +48,7 @@ public class AbilityUtils {
     public static List<String> getRelicActiveAbilities(ItemStack stack) {
         List<String> abilities = new ArrayList<>();
 
-        RelicAbilityData abilityData = DataUtils.getRelicAbilityData(stack);
+        RelicAbilityData abilityData = DataUtils.getRelicAbilityData(stack.getItem());
 
         if (abilityData == null)
             return abilities;

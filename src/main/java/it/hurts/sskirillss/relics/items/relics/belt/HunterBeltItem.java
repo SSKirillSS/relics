@@ -9,6 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -51,7 +53,7 @@ public class HunterBeltItem extends RelicItem {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(getAbilityValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("talisman", (int) Math.round(AbilityUtils.getAbilityValue(stack, "slots", "talisman"))))
                 .build();
     }
 
@@ -68,9 +70,9 @@ public class HunterBeltItem extends RelicItem {
             if (stack.isEmpty())
                 return;
 
-            addExperience(player, stack, 1);
+            LevelingUtils.addExperience(player, stack, 1);
 
-            event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "training", "damage")));
+            event.setAmount((float) (event.getAmount() * AbilityUtils.getAbilityValue(stack, "training", "damage")));
         }
     }
 }

@@ -57,7 +57,7 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
             tile.setStack(handStack.split(1));
         } else {
             if (player.isShiftKeyDown()) {
-                ResearchUtils.setItemResearched(player, tileStack, true);
+                ResearchUtils.setItemResearched(player, tileStack.getItem(), true);
 
                 if (world.isClientSide())
                     openGui(pos, tileStack);

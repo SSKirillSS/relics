@@ -9,6 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.LivingEntity;
@@ -54,11 +56,11 @@ public class HolyLocketItem extends RelicItem {
             for (Player player : level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(32))) {
                 ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
 
-                if (stack.isEmpty() || getAbilityValue(stack, "steal", "radius") < player.position().distanceTo(entity.position())
+                if (stack.isEmpty() || AbilityUtils.getAbilityValue(stack, "steal", "radius") < player.position().distanceTo(entity.position())
                         || entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
 
-                float amount = (float) (event.getAmount() * getAbilityValue(stack, "steal", "amount"));
+                float amount = (float) (event.getAmount() * AbilityUtils.getAbilityValue(stack, "steal", "amount"));
 
                 LifeEssenceEntity essence = new LifeEssenceEntity(player, amount);
 
@@ -68,7 +70,7 @@ public class HolyLocketItem extends RelicItem {
                 level.addFreshEntity(essence);
 
                 if (event.getAmount() >= 1)
-                    addExperience(player, stack, 1 + Math.round(amount));
+                    LevelingUtils.addExperience(player, stack, 1 + Math.round(amount));
 
                 event.setAmount(event.getAmount() - amount);
             }

@@ -9,6 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -64,7 +66,7 @@ public class ReflectionNecklaceItem extends RelicItem {
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
         double charge = NBTUtils.getDouble(stack, TAG_CHARGE, 0);
 
-        if (time > 0 && charge < getAbilityValue(stack, "explode", "capacity")) {
+        if (time > 0 && charge < AbilityUtils.getAbilityValue(stack, "explode", "capacity")) {
             --time;
 
             NBTUtils.setInt(stack, TAG_TIME, time);
@@ -94,8 +96,8 @@ public class ReflectionNecklaceItem extends RelicItem {
                             continue;
 
                         StalactiteEntity stalactite = new StalactiteEntity(level,
-                                (float) (charge * getAbilityValue(stack, "explode", "damage")),
-                                (float) (charge * getAbilityValue(stack, "explode", "stun")));
+                                (float) (charge * AbilityUtils.getAbilityValue(stack, "explode", "damage")),
+                                (float) (charge * AbilityUtils.getAbilityValue(stack, "explode", "stun")));
 
                         stalactite.setOwner(player);
                         stalactite.setPos(pos);
@@ -106,7 +108,7 @@ public class ReflectionNecklaceItem extends RelicItem {
                 }
             }
 
-            addExperience(player, stack, (int) Math.floor(charge / 10F));
+            LevelingUtils.addExperience(player, stack, (int) Math.floor(charge / 10F));
 
             NBTUtils.setDouble(stack, TAG_CHARGE, 0);
             NBTUtils.setInt(stack, TAG_TIME, 0);
@@ -126,7 +128,7 @@ public class ReflectionNecklaceItem extends RelicItem {
                 return;
 
             double charge = NBTUtils.getDouble(stack, TAG_CHARGE, 0);
-            double capacity = getAbilityValue(stack, "explode", "capacity");
+            double capacity = AbilityUtils.getAbilityValue(stack, "explode", "capacity");
 
             if (charge < capacity) {
                 NBTUtils.setDouble(stack, TAG_CHARGE, Math.min(capacity, charge + (event.getAmount())));

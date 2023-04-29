@@ -7,6 +7,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -131,8 +133,8 @@ public class HorseFluteItem extends RelicItem {
         if (entityIn.tickCount % 20 == 0) {
             AbstractHorse horse = decodeHorseData(stack, level);
             if (horse != null) {
-                if (canUseAbility(stack, "heal")) {
-                    horse.heal((float) getAbilityValue(stack, "heal", "amount"));
+                if (AbilityUtils.canUseAbility(stack, "heal")) {
+                    horse.heal((float) AbilityUtils.getAbilityValue(stack, "heal", "amount"));
 
                     CompoundTag nbt = new CompoundTag();
 
@@ -175,7 +177,7 @@ public class HorseFluteItem extends RelicItem {
         Vec3 pos = horse.position();
 
         if (NBTUtils.getString(stack, TAG_UUID, "").equals(horse.getUUID().toString()) && horse.walkDist > 25) {
-            addExperience(player, stack, Math.round(horse.walkDist / 25));
+            LevelingUtils.addExperience(player, stack, Math.round(horse.walkDist / 25));
 
             horse.walkDist = 0;
         }

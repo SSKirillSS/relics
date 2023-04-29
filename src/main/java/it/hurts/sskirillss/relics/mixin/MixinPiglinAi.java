@@ -1,7 +1,8 @@
 package it.hurts.sskirillss.relics.mixin;
 
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.piglin.Piglin;
@@ -40,11 +41,11 @@ public abstract class MixinPiglinAi {
         ItemStack stack = EntityUtils.findEquippedCurio(optional.get(), ItemRegistry.BASTION_RING.get());
 
         if (!stack.isEmpty()) {
-            for (int i = 0; i < Math.round(RelicItem.getAbilityValue(stack, "trade", "rolls")); i++) {
+            for (int i = 0; i < Math.round(AbilityUtils.getAbilityValue(stack, "trade", "rolls")); i++) {
                 if (piglin.getRandom().nextBoolean()) {
                     throwItems(piglin, getBarterResponseItems(piglin));
 
-                    RelicItem.addExperience(optional.get(), stack, 5);
+                    LevelingUtils.addExperience(optional.get(), stack, 5);
                 }
             }
         } else

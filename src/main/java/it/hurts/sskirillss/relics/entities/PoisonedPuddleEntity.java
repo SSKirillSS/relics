@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
@@ -60,7 +60,7 @@ public class PoisonedPuddleEntity extends ThrowableProjectile {
         super.tick();
 
         if (this.getSize() > 0.5F)
-            this.addSize((float) -Math.max(RelicItem.getAbilityValue(stack, "spore", "resize"), 0.01D));
+            this.addSize((float) -Math.max(AbilityUtils.getAbilityValue(stack, "spore", "resize"), 0.01D));
         else
             this.discard();
 

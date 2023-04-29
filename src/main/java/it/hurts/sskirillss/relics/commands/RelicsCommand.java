@@ -9,6 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -34,7 +36,7 @@ public class RelicsCommand {
                                                 return 0;
                                             }
 
-                                            RelicItem.setLevel(stack, IntegerArgumentType.getInteger(context, "level"));
+                                            LevelingUtils.setLevel(stack, IntegerArgumentType.getInteger(context, "level"));
 
                                             return Command.SINGLE_SUCCESS;
                                         })))
@@ -50,7 +52,7 @@ public class RelicsCommand {
                                                 return 0;
                                             }
 
-                                            RelicItem.addLevel(stack, IntegerArgumentType.getInteger(context, "level"));
+                                            LevelingUtils.addLevel(stack, IntegerArgumentType.getInteger(context, "level"));
 
                                             return Command.SINGLE_SUCCESS;
                                         }))))
@@ -67,7 +69,7 @@ public class RelicsCommand {
                                                 return 0;
                                             }
 
-                                            RelicItem.setExperience(stack, IntegerArgumentType.getInteger(context, "experience"));
+                                            LevelingUtils.setExperience(stack, IntegerArgumentType.getInteger(context, "experience"));
 
                                             return Command.SINGLE_SUCCESS;
                                         })))
@@ -83,7 +85,7 @@ public class RelicsCommand {
                                                 return 0;
                                             }
 
-                                            RelicItem.addExperience(player, stack, IntegerArgumentType.getInteger(context, "experience"));
+                                            LevelingUtils.addExperience(player, stack, IntegerArgumentType.getInteger(context, "experience"));
 
                                             return Command.SINGLE_SUCCESS;
                                         }))))
@@ -100,7 +102,7 @@ public class RelicsCommand {
                                                 return 0;
                                             }
 
-                                            RelicItem.setPoints(stack, IntegerArgumentType.getInteger(context, "points"));
+                                            LevelingUtils.setPoints(stack, IntegerArgumentType.getInteger(context, "points"));
 
                                             return Command.SINGLE_SUCCESS;
                                         })))
@@ -116,7 +118,7 @@ public class RelicsCommand {
                                                 return 0;
                                             }
 
-                                            RelicItem.addPoints(stack, IntegerArgumentType.getInteger(context, "points"));
+                                            LevelingUtils.addPoints(stack, IntegerArgumentType.getInteger(context, "points"));
 
                                             return Command.SINGLE_SUCCESS;
                                         }))))
@@ -135,7 +137,7 @@ public class RelicsCommand {
                                                                 return 0;
                                                             }
 
-                                                            RelicItem.setAbilityPoints(stack, StringArgumentType.getString(context, "ability"),
+                                                            AbilityUtils.setAbilityPoints(stack, StringArgumentType.getString(context, "ability"),
                                                                     IntegerArgumentType.getInteger(context, "points"));
 
                                                             return Command.SINGLE_SUCCESS;
@@ -153,7 +155,7 @@ public class RelicsCommand {
                                                                 return 0;
                                                             }
 
-                                                            RelicItem.addAbilityPoints(stack, StringArgumentType.getString(context, "ability"),
+                                                            AbilityUtils.addAbilityPoints(stack, StringArgumentType.getString(context, "ability"),
                                                                     -IntegerArgumentType.getInteger(context, "points"));
 
                                                             return Command.SINGLE_SUCCESS;
@@ -172,7 +174,7 @@ public class RelicsCommand {
                                                                         return 0;
                                                                     }
 
-                                                                    RelicItem.setAbilityValue(stack, StringArgumentType.getString(context, "ability"),
+                                                                    AbilityUtils.setAbilityValue(stack, StringArgumentType.getString(context, "ability"),
                                                                             StringArgumentType.getString(context, "stat"), DoubleArgumentType.getDouble(context, "value"));
 
                                                                     return Command.SINGLE_SUCCESS;
@@ -189,7 +191,7 @@ public class RelicsCommand {
                                                 return 0;
                                             }
 
-                                            RelicItem.randomizeStats(stack, StringArgumentType.getString(context, "ability"));
+                                            AbilityUtils.randomizeStats(stack, StringArgumentType.getString(context, "ability"));
 
                                             return Command.SINGLE_SUCCESS;
                                         }))
@@ -215,7 +217,7 @@ public class RelicsCommand {
                                                 return 0;
 
                                             for (Map.Entry<String, RelicAbilityEntry> entries : abilities.getAbilities().entrySet())
-                                                RelicItem.randomizeStats(stack, entries.getKey());
+                                                AbilityUtils.randomizeStats(stack, entries.getKey());
 
                                             return Command.SINGLE_SUCCESS;
                                         })))

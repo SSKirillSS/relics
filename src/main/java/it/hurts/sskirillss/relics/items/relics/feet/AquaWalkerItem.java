@@ -9,6 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -60,7 +62,7 @@ public class AquaWalkerItem extends RelicItem {
         ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.AQUA_WALKER.get());
         int drench = NBTUtils.getInt(stack, TAG_DRENCH, 0);
 
-        if (!(event.getEntity() instanceof Player player) || stack.isEmpty() || drench > getAbilityValue(stack, "walking", "time")
+        if (!(event.getEntity() instanceof Player player) || stack.isEmpty() || drench > AbilityUtils.getAbilityValue(stack, "walking", "time")
                 || !event.getFluid().is(FluidTags.WATER) || player.isShiftKeyDown())
             return;
 
@@ -68,7 +70,7 @@ public class AquaWalkerItem extends RelicItem {
             NBTUtils.setInt(stack, TAG_DRENCH, ++drench);
 
             if (drench % 5 == 0)
-                addExperience(player, stack, 1);
+                LevelingUtils.addExperience(player, stack, 1);
         }
 
         event.setCanceled(true);

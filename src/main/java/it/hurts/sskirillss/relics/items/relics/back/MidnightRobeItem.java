@@ -10,6 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -88,7 +90,7 @@ public class MidnightRobeItem extends RelicItem {
         LivingEntity target = getTarget(serverLevel, stack);
 
         if (target != null) {
-            double radius = getAbilityValue(stack, "backstab", "distance");
+            double radius = AbilityUtils.getAbilityValue(stack, "backstab", "distance");
             double step = 0.25D;
             int offset = 16;
 
@@ -149,12 +151,12 @@ public class MidnightRobeItem extends RelicItem {
         if (!canHide(entity)) {
             EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(entity.position()) >= getAbilityValue(stack, "backstab", "distance")))
+            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(entity.position()) >= AbilityUtils.getAbilityValue(stack, "backstab", "distance")))
                 NBTUtils.clearTag(stack, TAG_TARGET);
         } else {
             entity.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
 
-            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, (float) getAbilityValue(stack, "vanish", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, (float) AbilityUtils.getAbilityValue(stack, "vanish", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         }
     }
 
@@ -184,7 +186,7 @@ public class MidnightRobeItem extends RelicItem {
         Level world = entity.getCommandSenderWorld();
         BlockPos position = entity.blockPosition().above();
 
-        double light = getAbilityValue(stack, "vanish", "light");
+        double light = AbilityUtils.getAbilityValue(stack, "vanish", "light");
 
         return !stack.isEmpty() && !DurabilityUtils.isBroken(stack) && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
                 && world.getBrightness(LightLayer.BLOCK, position) + world.getBrightness(LightLayer.SKY, position) / 2D <= (world.isNight() ? light * 1.5D : light);
@@ -209,12 +211,12 @@ public class MidnightRobeItem extends RelicItem {
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.MIDNIGHT_ROBE.get());
 
             if (stack.isEmpty() || !canHide(player) || player.position().distanceTo(new Vec3(target.getX(),
-                    player.getY(), target.getZ())) > getAbilityValue(stack, "backstab", "distance"))
+                    player.getY(), target.getZ())) > AbilityUtils.getAbilityValue(stack, "backstab", "distance"))
                 return;
 
-            addExperience(player, stack, Math.round(event.getAmount() * 0.5F));
+            LevelingUtils.addExperience(player, stack, Math.round(event.getAmount() * 0.5F));
 
-            event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "backstab", "damage")));
+            event.setAmount((float) (event.getAmount() * AbilityUtils.getAbilityValue(stack, "backstab", "damage")));
 
             NBTUtils.setString(stack, TAG_TARGET, target.getStringUUID());
         }

@@ -10,7 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
 import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.feet.AquaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.MagmaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.RollerSkatesItem;
@@ -86,7 +86,7 @@ public class RemoteRegistry {
         ItemProperties.register(ItemRegistry.MAGMA_WALKER.get(), new ResourceLocation(Reference.MODID, "heat"),
                 (stack, world, entity, id) -> {
                     int heat = NBTUtils.getInt(stack, MagmaWalkerItem.TAG_HEAT, 0);
-                    int maxHeat = (int) Math.round(getAbilityValue(stack, "pace", "heat"));
+                    int maxHeat = (int) Math.round(AbilityUtils.getAbilityValue(stack, "pace", "heat"));
 
                     return heat > maxHeat ? 4 : (int) Math.floor(heat / (maxHeat / 4F));
                 });
@@ -94,7 +94,7 @@ public class RemoteRegistry {
                 (stack, world, entity, id) -> {
                     int drench = NBTUtils.getInt(stack, AquaWalkerItem.TAG_DRENCH, 0);
 
-                    return (int) Math.floor(drench / (getAbilityValue(stack, "walking", "time") / 4F));
+                    return (int) Math.floor(drench / (AbilityUtils.getAbilityValue(stack, "walking", "time") / 4F));
                 });
         ItemProperties.register(ItemRegistry.ARROW_QUIVER.get(), new ResourceLocation(Reference.MODID, "fullness"),
                 (stack, world, entity, id) -> {
@@ -107,13 +107,13 @@ public class RemoteRegistry {
                 (stack, world, entity, id) -> {
                     int fuel = NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0);
 
-                    return (int) Math.ceil(fuel / (getAbilityValue(stack, "boost", "capacity") / 5F));
+                    return (int) Math.ceil(fuel / (AbilityUtils.getAbilityValue(stack, "boost", "capacity") / 5F));
                 });
         ItemProperties.register(ItemRegistry.SOLID_SNOWBALL.get(), new ResourceLocation(Reference.MODID, "snow"),
                 (stack, world, entity, id) -> {
                     ItemStack relic = EntityUtils.findEquippedCurio(entity, ItemRegistry.WOOL_MITTEN.get());
 
-                    return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (RelicItem.getAbilityValue(relic, "mold", "size") / 3F));
+                    return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (AbilityUtils.getAbilityValue(relic, "mold", "size") / 3F));
                 });
         ItemProperties.register(ItemRegistry.ROLLER_SKATES.get(), new ResourceLocation(Reference.MODID, "active"),
                 (stack, world, entity, id) -> NBTUtils.getInt(stack, RollerSkatesItem.TAG_SKATING_DURATION, 0) > 0 ? 1 : 0);

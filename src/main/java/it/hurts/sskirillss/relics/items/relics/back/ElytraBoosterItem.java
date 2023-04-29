@@ -8,6 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -55,7 +57,7 @@ public class ElytraBoosterItem extends RelicItem {
     }
 
     public int getBreathCapacity(ItemStack stack) {
-        return (int) Math.round(getAbilityValue(stack, "boost", "capacity"));
+        return (int) Math.round(AbilityUtils.getAbilityValue(stack, "boost", "capacity"));
     }
 
     @Override
@@ -77,7 +79,7 @@ public class ElytraBoosterItem extends RelicItem {
         }
 
         if (player.tickCount % 3 == 0) {
-            double maxSpeed = getAbilityValue(stack, "boost", "speed");
+            double maxSpeed = AbilityUtils.getAbilityValue(stack, "boost", "speed");
 
             if (speed < maxSpeed) {
                 speed = Math.min(maxSpeed, speed + ((maxSpeed - 1D) / 100D));
@@ -133,7 +135,7 @@ public class ElytraBoosterItem extends RelicItem {
 
         int left = sum > capacity ? time - (sum - capacity) : time;
 
-        addExperience(player, slotStack, (int) Math.floor(left / 10F));
+        LevelingUtils.addExperience(player, slotStack, (int) Math.floor(left / 10F));
 
         ItemStack result = heldStack.getCraftingRemainingItem();
 

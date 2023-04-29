@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -64,7 +66,7 @@ public class IceBreakerItem extends RelicItem {
     @Override
     public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, (float) getAbilityValue(stack, "sustainability", "modifier")))
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, (float) AbilityUtils.getAbilityValue(stack, "sustainability", "modifier")))
                 .build();
     }
 
@@ -115,11 +117,11 @@ public class IceBreakerItem extends RelicItem {
             if (distance < 2 || !player.isShiftKeyDown())
                 return;
 
-            addExperience(player, stack, Math.min(10, Math.round(distance / 3F)));
+            LevelingUtils.addExperience(player, stack, Math.min(10, Math.round(distance / 3F)));
 
             ShockwaveEntity shockwave = new ShockwaveEntity(world,
-                    (int) Math.round(Math.min(getAbilityValue(stack, "impact", "size"), distance * 0.25D)),
-                    (float) getAbilityValue(stack, "impact", "damage"));
+                    (int) Math.round(Math.min(AbilityUtils.getAbilityValue(stack, "impact", "size"), distance * 0.25D)),
+                    (float) AbilityUtils.getAbilityValue(stack, "impact", "damage"));
 
             BlockPos pos = player.getBlockPosBelowThatAffectsMyMovement();
 

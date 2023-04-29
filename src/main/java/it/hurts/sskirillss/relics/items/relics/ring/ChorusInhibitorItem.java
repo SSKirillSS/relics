@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.items.relics.talisman;
+package it.hurts.sskirillss.relics.items.relics.ring;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
@@ -9,6 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -82,7 +84,7 @@ public class ChorusInhibitorItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        double distance = getAbilityValue(stack, "blink", "distance");
+        double distance = AbilityUtils.getAbilityValue(stack, "blink", "distance");
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
@@ -125,11 +127,11 @@ public class ChorusInhibitorItem extends RelicItem {
             if (pos == null)
                 return;
 
-            addExperience(player, stack, (int) Math.floor(player.position().distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ())) / 10F));
+            LevelingUtils.addExperience(player, stack, (int) Math.floor(player.position().distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ())) / 10F));
 
             player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
             player.getLevel().playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1F, 1F);
-            player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, Math.max((int) Math.round(getAbilityValue(stack, "blink", "cooldown") * 20D), 0));
+            player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, Math.max((int) Math.round(AbilityUtils.getAbilityValue(stack, "blink", "cooldown") * 20D), 0));
         }
     }
 }

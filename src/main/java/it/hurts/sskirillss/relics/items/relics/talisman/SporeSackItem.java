@@ -10,6 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -109,7 +111,7 @@ public class SporeSackItem extends RelicItem {
     }
 
     public static int getMaxSpores(ItemStack stack) {
-        return (int) Math.round(canUseAbility(stack, "buffer") ? getAbilityValue(stack, "buffer", "capacity") : 1);
+        return (int) Math.round(AbilityUtils.canUseAbility(stack, "buffer") ? AbilityUtils.getAbilityValue(stack, "buffer", "capacity") : 1);
     }
 
     public static int getSpores(ItemStack stack) {
@@ -121,8 +123,8 @@ public class SporeSackItem extends RelicItem {
     }
 
     public static void addSpores(ItemStack stack, int amount) {
-        if (canUseAbility(stack, "buffer") && amount < 0
-                && new Random().nextFloat() <= getAbilityValue(stack, "buffer", "chance"))
+        if (AbilityUtils.canUseAbility(stack, "buffer") && amount < 0
+                && new Random().nextFloat() <= AbilityUtils.getAbilityValue(stack, "buffer", "chance"))
             return;
 
         setSpores(stack, getSpores(stack) + amount);
@@ -149,7 +151,7 @@ public class SporeSackItem extends RelicItem {
                     spore.setStack(stack);
                     spore.setDeltaMovement(motion);
                     spore.setPos(player.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
-                    spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + (player.getMaxHealth() - player.getHealth()) * getAbilityValue(stack, "explosion", "size")));
+                    spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + (player.getMaxHealth() - player.getHealth()) * AbilityUtils.getAbilityValue(stack, "explosion", "size")));
 
                     level.addFreshEntity(spore);
 
@@ -162,7 +164,7 @@ public class SporeSackItem extends RelicItem {
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.level.isClientSide() || getSpores(stack) >= getMaxSpores(stack)
-                || player.tickCount % Math.round(getAbilityValue(stack, "spore", "cooldown") * 20) != 0)
+                || player.tickCount % Math.round(AbilityUtils.getAbilityValue(stack, "spore", "cooldown") * 20) != 0)
             return;
 
         addSpores(stack, 1);
@@ -197,13 +199,13 @@ public class SporeSackItem extends RelicItem {
             spore.setStack(stack.copy());
             spore.setDeltaMovement(motion);
             spore.setPos(player.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
-            spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + event.getAmount() * getAbilityValue(stack, "spore", "size")));
+            spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + event.getAmount() * AbilityUtils.getAbilityValue(stack, "spore", "size")));
 
             level.addFreshEntity(spore);
 
             addSpores(stack, -1);
 
-            RelicItem.addExperience(player, stack, 1);
+            LevelingUtils.addExperience(player, stack, 1);
         }
     }
 }

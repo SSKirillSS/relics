@@ -1,9 +1,10 @@
 package it.hurts.sskirillss.relics.mixin;
 
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,9 +37,9 @@ public abstract class MixinItemStack {
             return;
 
         for (Map.Entry<String, RelicAbilityEntry> entries : abilities.getAbilities().entrySet()) {
-            RelicItem.randomizeStats(stack, entries.getKey());
+            AbilityUtils.randomizeStats(stack, entries.getKey());
 
-            RelicItem.setAbilityPoints(stack, entries.getKey(), 0);
+            AbilityUtils.setAbilityPoints(stack, entries.getKey(), 0);
         }
     }
 }

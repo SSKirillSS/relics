@@ -8,6 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.tags.FluidTags;
@@ -68,11 +70,11 @@ public class JellyfishNecklaceItem extends RelicItem {
             if (entity == player)
                 continue;
 
-            if (entity.hurt(DamageSource.playerAttack(player), (float) getAbilityValue(stack, "shock", "damage"))) {
-                addExperience(player, stack, 1);
+            if (entity.hurt(DamageSource.playerAttack(player), (float) AbilityUtils.getAbilityValue(stack, "shock", "damage"))) {
+                LevelingUtils.addExperience(player, stack, 1);
 
-                if (canUseAbility(stack, "paralysis"))
-                    entity.addEffect(new MobEffectInstance(EffectRegistry.PARALYSIS.get(), (int) Math.round(getAbilityValue(stack, "paralysis", "duration") * 20), 0));
+                if (AbilityUtils.canUseAbility(stack, "paralysis"))
+                    entity.addEffect(new MobEffectInstance(EffectRegistry.PARALYSIS.get(), (int) Math.round(AbilityUtils.getAbilityValue(stack, "paralysis", "duration") * 20), 0));
             }
         }
     }

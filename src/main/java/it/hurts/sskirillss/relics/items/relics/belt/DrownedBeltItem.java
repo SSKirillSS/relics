@@ -10,6 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -80,7 +82,7 @@ public class DrownedBeltItem extends RelicItem {
             return;
 
         if (player.isEyeInFluid(FluidTags.WATER) && !player.isOnGround())
-            EntityUtils.applyAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), (float) getAbilityValue(stack, "anchor", "sinking"), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), (float) AbilityUtils.getAbilityValue(stack, "anchor", "sinking"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         else
             EntityUtils.removeAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
@@ -93,14 +95,14 @@ public class DrownedBeltItem extends RelicItem {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(getAbilityValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("talisman", (int) Math.round(AbilityUtils.getAbilityValue(stack, "slots", "talisman"))))
                 .build();
     }
 
     @Override
     public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(ForgeMod.SWIM_SPEED.get(), (float) -getAbilityValue(stack, "anchor", "slowness")))
+                .attribute(new RelicAttributeModifier.Modifier(ForgeMod.SWIM_SPEED.get(), (float) -AbilityUtils.getAbilityValue(stack, "anchor", "slowness")))
                 .build();
     }
 
@@ -117,7 +119,7 @@ public class DrownedBeltItem extends RelicItem {
             if (stack.isEmpty())
                 return;
 
-            event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "pressure", "damage")));
+            event.setAmount((float) (event.getAmount() * AbilityUtils.getAbilityValue(stack, "pressure", "damage")));
         }
 
         @SubscribeEvent
@@ -148,9 +150,9 @@ public class DrownedBeltItem extends RelicItem {
             if (duration < 10 || enchantment <= 0)
                 return;
 
-            addExperience(player, relic, enchantment);
+            LevelingUtils.addExperience(player, relic, enchantment);
 
-            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getAbilityValue(relic, "riptide", "cooldown") * enchantment * 20));
+            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(AbilityUtils.getAbilityValue(relic, "riptide", "cooldown") * enchantment * 20));
         }
     }
 }

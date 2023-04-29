@@ -10,6 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -71,7 +73,7 @@ public class SpatialSignItem extends RelicItem {
         if (NBTUtils.getInt(stack, TAG_TIME, 0) > 0) {
             NBTUtils.setInt(stack, TAG_TIME, 0);
         } else {
-            NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(getAbilityValue(stack, "seal", "time")));
+            NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(AbilityUtils.getAbilityValue(stack, "seal", "time")));
 
             worldIn.playSound(null, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1F, 2F);
         }
@@ -96,13 +98,13 @@ public class SpatialSignItem extends RelicItem {
             if (player.tickCount % 20 == 0 && !worldIn.isClientSide()) {
                 NBTUtils.setInt(stack, TAG_TIME, --time);
 
-                addExperience(player, stack, 1);
+                LevelingUtils.addExperience(player, stack, 1);
             }
 
             if (time <= 0) {
                 worldIn.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1F, 0.5F);
 
-                player.getCooldowns().addCooldown(this, (int) (Math.ceil(getAbilityValue(stack, "seal", "time")) * 20));
+                player.getCooldowns().addCooldown(this, (int) (Math.ceil(AbilityUtils.getAbilityValue(stack, "seal", "time")) * 20));
 
                 NBTUtils.setInt(stack, TAG_TIME, -1);
 
@@ -143,7 +145,7 @@ public class SpatialSignItem extends RelicItem {
         }
 
         if (player.tickCount % 20 == 0) {
-            if (positions.size() >= 5 * getAbilityValue(stack, "seal", "time"))
+            if (positions.size() >= 5 * AbilityUtils.getAbilityValue(stack, "seal", "time"))
                 positions.remove(0);
 
             if (positions.isEmpty() || player.position().distanceTo(NBTUtils.parsePosition(positions.get(positions.size() - 1))) >= 2) {

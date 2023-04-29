@@ -14,6 +14,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.*;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -126,12 +128,12 @@ public class ArrowQuiverItem extends RelicItem {
 
             Vec3 target = ray.getLocation();
 
-            int duration = (int) Math.round(getAbilityValue(stack, "rain", "duration") * 20);
+            int duration = (int) Math.round(AbilityUtils.getAbilityValue(stack, "rain", "duration") * 20);
 
             ArrowRainEntity rain = new ArrowRainEntity(EntityRegistry.ARROW_RAIN.get(), level);
 
-            rain.setDelay((int) Math.round(getAbilityValue(stack, "rain", "delay") * 20));
-            rain.setRadius((float) getAbilityValue(stack, "rain", "radius"));
+            rain.setDelay((int) Math.round(AbilityUtils.getAbilityValue(stack, "rain", "delay") * 20));
+            rain.setRadius((float) AbilityUtils.getAbilityValue(stack, "rain", "radius"));
             rain.setQuiver(stack.copy());
             rain.setDuration(duration);
             rain.setOwner(player);
@@ -159,7 +161,7 @@ public class ArrowQuiverItem extends RelicItem {
             Vec3 target = ray.getLocation();
 
             ParticleUtils.createCyl(new CircleTintData(new Color(255, 255, 255), 0.2F, 0, 1F, false),
-                    target, level, getAbilityValue(stack, "rain", "radius"), 0.2F);
+                    target, level, AbilityUtils.getAbilityValue(stack, "rain", "radius"), 0.2F);
         }
     }
 
@@ -168,7 +170,7 @@ public class ArrowQuiverItem extends RelicItem {
         if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        if (canUseAbility(stack, "agility") && player.isUsingItem() && player.getMainHandItem().getItem() instanceof BowItem)
+        if (AbilityUtils.canUseAbility(stack, "agility") && player.isUsingItem() && player.getMainHandItem().getItem() instanceof BowItem)
             for (int i = 0; i < 1; i++)
                 player.updatingUsingItem();
     }
@@ -177,14 +179,14 @@ public class ArrowQuiverItem extends RelicItem {
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         int cooldown = NBTUtils.getInt(stack, TAG_COOLDOWN, 0);
 
-        if (canUseAbility(stack, "rain")) {
+        if (AbilityUtils.canUseAbility(stack, "rain")) {
             if (cooldown > 0 && entity.tickCount % 20 == 0)
                 NBTUtils.setInt(stack, TAG_COOLDOWN, --cooldown);
         }
     }
 
     public static int getSlotsAmount(ItemStack stack) {
-        return (int) Math.round(getAbilityValue(stack, "receptacle", "slots"));
+        return (int) Math.round(AbilityUtils.getAbilityValue(stack, "receptacle", "slots"));
     }
 
     @Override
@@ -467,7 +469,7 @@ public class ArrowQuiverItem extends RelicItem {
             int amount = (int) Math.min(10, Math.round(player.position().distanceTo(new Vec3(arrow.getX(), player.getY(), arrow.getZ())) * 0.1));
 
             if (amount > 0)
-                RelicItem.addExperience(player, stack, amount);
+                LevelingUtils.addExperience(player, stack, amount);
         }
     }
 }

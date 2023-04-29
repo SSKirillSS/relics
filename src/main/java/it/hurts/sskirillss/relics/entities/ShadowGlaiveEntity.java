@@ -2,7 +2,8 @@ package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import lombok.Getter;
@@ -61,7 +62,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     }
 
     private void locateNearestTarget() {
-        if (entityData.get(BOUNCES) >= RelicItem.getAbilityValue(stack, "glaive", "bounces")) {
+        if (entityData.get(BOUNCES) >= AbilityUtils.getAbilityValue(stack, "glaive", "bounces")) {
             this.discard();
 
             return;
@@ -69,7 +70,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
 
         List<String> bouncedEntities = Arrays.asList(entityData.get(BOUNCED_ENTITIES).split(","));
         List<LivingEntity> entitiesAround = level.getEntitiesOfClass(LivingEntity.class,
-                this.getBoundingBox().inflate(RelicItem.getAbilityValue(stack, "glaive", "radius")));
+                this.getBoundingBox().inflate(AbilityUtils.getAbilityValue(stack, "glaive", "radius")));
 
         entitiesAround = entitiesAround.stream()
                 .filter(entity -> !bouncedEntities.contains(entity.getUUID().toString()))
@@ -146,7 +147,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
 
-                entity.hurt(this.getOwner() instanceof Player player ? DamageSource.thrown(this, player) : DamageSource.MAGIC, (float) RelicItem.getAbilityValue(stack, "glaive", "damage"));
+                entity.hurt(this.getOwner() instanceof Player player ? DamageSource.thrown(this, player) : DamageSource.MAGIC, (float) AbilityUtils.getAbilityValue(stack, "glaive", "damage"));
 
                 if (!bouncedEntities.contains(entity.getUUID().toString())) {
                     entityData.set(BOUNCED_ENTITIES, bouncedEntitiesString + "," + entity.getUUID());
@@ -171,7 +172,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         if (stack.isEmpty())
             return;
 
-        RelicItem.addExperience(this.getOwner() instanceof Player player ? player : null, stack, (int) Math.floor(entityData.get(BOUNCES) / 2F));
+        LevelingUtils.addExperience(this.getOwner() instanceof Player player ? player : null, stack, (int) Math.floor(entityData.get(BOUNCES) / 2F));
     }
 
     @Override

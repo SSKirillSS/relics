@@ -9,6 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -57,8 +59,8 @@ public class MagmaWalkerItem extends RelicItem {
             return;
 
         if (heat > 0) {
-            if (heat > getAbilityValue(stack, "pace", "time"))
-                player.hurt(DamageSource.HOT_FLOOR, (float) (1F + ((heat - getAbilityValue(stack, "pace", "time")) / 10F)));
+            if (heat > AbilityUtils.getAbilityValue(stack, "pace", "time"))
+                player.hurt(DamageSource.HOT_FLOOR, (float) (1F + ((heat - AbilityUtils.getAbilityValue(stack, "pace", "time")) / 10F)));
 
             if (!level.getFluidState(player.blockPosition().below()).is(FluidTags.LAVA)
                     && !level.getFluidState(player.blockPosition()).is(FluidTags.LAVA))
@@ -71,7 +73,7 @@ public class MagmaWalkerItem extends RelicItem {
         ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
         if (!stack.isEmpty() && event.getSource() == DamageSource.HOT_FLOOR
-                && NBTUtils.getInt(stack, TAG_HEAT, 0) <= getAbilityValue(stack, "pace", "time")) {
+                && NBTUtils.getInt(stack, TAG_HEAT, 0) <= AbilityUtils.getAbilityValue(stack, "pace", "time")) {
             event.setCanceled(true);
         }
     }
@@ -90,7 +92,7 @@ public class MagmaWalkerItem extends RelicItem {
             NBTUtils.setInt(stack, TAG_HEAT, ++heat);
 
             if (heat % 5 == 0)
-                addExperience(player, stack, 1);
+                LevelingUtils.addExperience(player, stack, 1);
         }
 
         event.setCanceled(true);

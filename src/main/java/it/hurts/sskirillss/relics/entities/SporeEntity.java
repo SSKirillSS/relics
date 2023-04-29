@@ -3,7 +3,8 @@ package it.hurts.sskirillss.relics.entities;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -84,7 +85,7 @@ public class SporeEntity extends ThrowableProjectile {
             if (isStuck())
                 setLifetime(getLifetime() + 1);
 
-            if (getLifetime() > RelicItem.getAbilityValue(getStack(), "spore", "duration") * 20)
+            if (getLifetime() > AbilityUtils.getAbilityValue(getStack(), "spore", "duration") * 20)
                 this.discard();
         }
 
@@ -110,7 +111,7 @@ public class SporeEntity extends ThrowableProjectile {
                 if (entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
 
-                setLifetime((int) Math.max(getLifetime(), Math.round(RelicItem.getAbilityValue(getStack(), "spore", "duration") * 20) - 20));
+                setLifetime((int) Math.max(getLifetime(), Math.round(AbilityUtils.getAbilityValue(getStack(), "spore", "duration") * 20) - 20));
 
                 break;
             }
@@ -141,7 +142,7 @@ public class SporeEntity extends ThrowableProjectile {
                 if (entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
 
-                entity.hurt(DamageSource.playerAttack(player), (float) (getSize() * RelicItem.getAbilityValue(getStack(), "spore", "damage")));
+                entity.hurt(DamageSource.playerAttack(player), (float) (getSize() * AbilityUtils.getAbilityValue(getStack(), "spore", "damage")));
 
                 entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
                 entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100));
@@ -149,10 +150,10 @@ public class SporeEntity extends ThrowableProjectile {
             }
 
             if (getSize() >= 1) {
-                int count = (int) Math.ceil(Math.pow(getSize(), RelicItem.getAbilityValue(getStack(), "multiplying", "amount")));
+                int count = (int) Math.ceil(Math.pow(getSize(), AbilityUtils.getAbilityValue(getStack(), "multiplying", "amount")));
 
                 for (int i = 0; i < count; i++) {
-                    if (random.nextFloat() > RelicItem.getAbilityValue(getStack(), "multiplying", "chance"))
+                    if (random.nextFloat() > AbilityUtils.getAbilityValue(getStack(), "multiplying", "chance"))
                         break;
 
                     float mul = this.getBbHeight() / 1.5F;
@@ -165,11 +166,11 @@ public class SporeEntity extends ThrowableProjectile {
                     spore.setStack(getStack());
                     spore.setDeltaMovement(motion);
                     spore.setPos(this.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
-                    spore.setSize((float) (this.getSize() * RelicItem.getAbilityValue(getStack(), "multiplying", "size")));
+                    spore.setSize((float) (this.getSize() * AbilityUtils.getAbilityValue(getStack(), "multiplying", "size")));
 
                     level.addFreshEntity(spore);
 
-                    RelicItem.addExperience(player, getStack(), 1);
+                    LevelingUtils.addExperience(player, getStack(), 1);
                 }
             }
         }

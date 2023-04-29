@@ -7,6 +7,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -53,9 +55,9 @@ public class AmphibianBootItem extends RelicItem {
 
         if (player.isSwimming()) {
             if (player.tickCount % 20 == 0)
-                addExperience(player, stack, 1);
+                LevelingUtils.addExperience(player, stack, 1);
 
-            if (duration < getAbilityValue(stack, "swimming", "duration"))
+            if (duration < AbilityUtils.getAbilityValue(stack, "swimming", "duration"))
                 NBTUtils.setInt(stack, TAG_DURATION, duration + 1);
         } else if (duration > 0)
             NBTUtils.setInt(stack, TAG_DURATION, --duration);
@@ -63,7 +65,7 @@ public class AmphibianBootItem extends RelicItem {
         EntityUtils.removeAttribute(player, stack, ForgeMod.SWIM_SPEED.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         if (duration > 0)
-            EntityUtils.applyAttribute(player, stack, ForgeMod.SWIM_SPEED.get(), (float) (duration * getAbilityValue(stack, "swimming", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.SWIM_SPEED.get(), (float) (duration * AbilityUtils.getAbilityValue(stack, "swimming", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 
     @Override

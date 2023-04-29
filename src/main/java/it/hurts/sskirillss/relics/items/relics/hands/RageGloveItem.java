@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
@@ -119,12 +121,12 @@ public class RageGloveItem extends RelicItem {
 
         if (ability.equals("spurt")) {
             int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
-            int cost = Math.max(((int) Math.ceil(stacks * getAbilityValue(stack, "spurt", "percentage"))), 5);
+            int cost = Math.max(((int) Math.ceil(stacks * AbilityUtils.getAbilityValue(stack, "spurt", "percentage"))), 5);
 
             if (stacks < cost)
                 return;
 
-            double maxDistance = getAbilityValue(stack, "spurt", "distance");
+            double maxDistance = AbilityUtils.getAbilityValue(stack, "spurt", "distance");
 
             Vec3 view = player.getViewVector(0);
             Vec3 eyeVec = player.getEyePosition(0);
@@ -183,12 +185,12 @@ public class RageGloveItem extends RelicItem {
 
             if (!targets.isEmpty()) {
                 EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, Integer.MAX_VALUE, AttributeModifier.Operation.MULTIPLY_BASE);
-                EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_DAMAGE, (float) (getAbilityValue(stack, "spurt", "damage") * stacks), AttributeModifier.Operation.ADDITION);
+                EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_DAMAGE, (float) (AbilityUtils.getAbilityValue(stack, "spurt", "damage") * stacks), AttributeModifier.Operation.ADDITION);
 
                 for (LivingEntity entity : targets) {
                     player.attack(entity);
 
-                    addExperience(player, stack, 1);
+                    LevelingUtils.addExperience(player, stack, 1);
 
                     entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 100, 0));
                     entity.setSecondsOnFire(5);
@@ -207,16 +209,16 @@ public class RageGloveItem extends RelicItem {
         if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        if (canUseAbility(stack, "phlebotomy")) {
+        if (AbilityUtils.canUseAbility(stack, "phlebotomy")) {
             float percentage = 100F - (player.getHealth() / player.getMaxHealth() * 100F);
 
-            player.heal((float) getAbilityValue(stack, "phlebotomy", "heal") * percentage);
+            player.heal((float) AbilityUtils.getAbilityValue(stack, "phlebotomy", "heal") * percentage);
 
-            EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, (float) (getAbilityValue(stack, "phlebotomy", "attack_speed") * percentage), AttributeModifier.Operation.MULTIPLY_TOTAL);
-            EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (getAbilityValue(stack, "phlebotomy", "movement_speed") * percentage), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, (float) (AbilityUtils.getAbilityValue(stack, "phlebotomy", "attack_speed") * percentage), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (AbilityUtils.getAbilityValue(stack, "phlebotomy", "movement_speed") * percentage), AttributeModifier.Operation.MULTIPLY_TOTAL);
         }
 
-        if (canUseAbility(stack, "rage")) {
+        if (AbilityUtils.canUseAbility(stack, "rage")) {
             int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
 
             if (stacks > 0) {
@@ -227,7 +229,7 @@ public class RageGloveItem extends RelicItem {
                 else {
                     NBTUtils.setInt(stack, TAG_STACKS, 0);
 
-                    addExperience(player, stack, (int) Math.floor(stacks / 3F));
+                    LevelingUtils.addExperience(player, stack, (int) Math.floor(stacks / 3F));
                 }
             }
         }
@@ -261,13 +263,13 @@ public class RageGloveItem extends RelicItem {
                 if (stack.isEmpty())
                     return;
 
-                if (canUseAbility(stack, "rage")) {
+                if (AbilityUtils.canUseAbility(stack, "rage")) {
                     int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
 
                     NBTUtils.setInt(stack, TAG_STACKS, ++stacks);
-                    NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(getAbilityValue(stack, "rage", "duration") * 20));
+                    NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(AbilityUtils.getAbilityValue(stack, "rage", "duration") * 20));
 
-                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * getAbilityValue(stack, "rage", "dealt_damage")))));
+                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * AbilityUtils.getAbilityValue(stack, "rage", "dealt_damage")))));
                 }
             } else if (event.getEntity() instanceof Player player){
                 ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.RAGE_GLOVE.get());
@@ -275,13 +277,13 @@ public class RageGloveItem extends RelicItem {
                 if (stack.isEmpty())
                     return;
 
-                if (canUseAbility(stack, "rage")) {
+                if (AbilityUtils.canUseAbility(stack, "rage")) {
                     int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
 
                     if (stacks <= 0)
                         return;
 
-                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * getAbilityValue(stack, "rage", "incoming_damage")))));
+                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * AbilityUtils.getAbilityValue(stack, "rage", "incoming_damage")))));
                 }
             }
         }

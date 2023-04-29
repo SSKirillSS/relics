@@ -4,7 +4,7 @@ import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -87,8 +87,8 @@ public class ShadowSawEntity extends ThrowableProjectile {
 
         for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
             if ((this.getOwner() == null || (this.getOwner() != null && entity != this.getOwner()))
-                    && entity.hurt(DamageSource.MAGIC, (float) Math.max(RelicItem.getAbilityValue(stack, "saw", "damage"), 0.1D))) {
-                entity.invulnerableTime = (int) Math.round(RelicItem.getAbilityValue(stack, "saw", "speed"));
+                    && entity.hurt(DamageSource.MAGIC, (float) Math.max(AbilityUtils.getAbilityValue(stack, "saw", "damage"), 0.1D))) {
+                entity.invulnerableTime = (int) Math.round(AbilityUtils.getAbilityValue(stack, "saw", "speed"));
             }
         }
 

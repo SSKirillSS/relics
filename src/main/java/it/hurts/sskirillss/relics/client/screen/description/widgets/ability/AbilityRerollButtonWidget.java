@@ -7,8 +7,8 @@ import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -34,7 +34,7 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
 
     @Override
     public boolean isLocked() {
-        return !RelicItem.mayPlayerReroll(MC.player, screen.stack, ability);
+        return !AbilityUtils.mayPlayerReroll(MC.player, screen.stack, ability);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
 
         manager.bindForSetup(AbilityDescriptionScreen.TEXTURE);
 
-        if (RelicItem.mayPlayerReroll(MC.player, screen.stack, ability)) {
+        if (AbilityUtils.mayPlayerReroll(MC.player, screen.stack, ability)) {
             blit(poseStack, x, y, 278, 0, 18, 18, 512, 512);
 
             if (isHovered)
@@ -60,22 +60,22 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
         } else {
             blit(poseStack, x, y, 278, 20, 18, 18, 512, 512);
 
-            RelicAbilityEntry abilityData = RelicItem.getAbilityEntryData(screen.stack, ability);
+            RelicAbilityEntry abilityData = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
 
             if (abilityData == null)
                 return;
 
-            if (RelicItem.canUseAbility(screen.stack, ability) && !abilityData.getStats().isEmpty() && isHovered)
+            if (AbilityUtils.canUseAbility(screen.stack, ability) && !abilityData.getStats().isEmpty() && isHovered)
                 blit(poseStack, x - 1, y - 1, 318, 22, 20, 20, 512, 512);
         }
     }
 
     @Override
     public void onHovered(PoseStack poseStack, int mouseX, int mouseY) {
-        if (!RelicItem.canUseAbility(screen.stack, ability))
+        if (!AbilityUtils.canUseAbility(screen.stack, ability))
             return;
 
-        RelicAbilityEntry data = RelicItem.getAbilityEntryData(screen.stack, ability);
+        RelicAbilityEntry data = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
 
         if (data.getStats().isEmpty())
             return;
@@ -85,7 +85,7 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
         int maxWidth = 100;
         int renderWidth = 0;
 
-        int requiredExperience = RelicItem.getRerollRequiredExperience(screen.stack, ability);
+        int requiredExperience = AbilityUtils.getRerollRequiredExperience(screen.stack, ability);
 
         int experience = MC.player.totalExperience;
 

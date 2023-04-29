@@ -3,7 +3,8 @@ package it.hurts.sskirillss.relics.entities;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
@@ -88,8 +89,8 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         ItemStack stack = EntityUtils.findEquippedCurio(this.getOwner(), ItemRegistry.WOOL_MITTEN.get());
 
         if (!stack.isEmpty()) {
-            entity.hurt(DamageSource.thrown(this, this.getOwner()), (float) (getSize() * RelicItem.getAbilityValue(stack, "mold", "damage")));
-            entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) Math.round(getSize() * RelicItem.getAbilityValue(stack, "mold", "stun")) * 20, 0, true, false));
+            entity.hurt(DamageSource.thrown(this, this.getOwner()), (float) (getSize() * AbilityUtils.getAbilityValue(stack, "mold", "damage")));
+            entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) Math.round(getSize() * AbilityUtils.getAbilityValue(stack, "mold", "stun")) * 20, 0, true, false));
         }
 
         this.discard();
@@ -109,13 +110,13 @@ public class SolidSnowballEntity extends ThrowableProjectile {
 
         for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(getSize() / 15F))) {
             if (!entity.getStringUUID().equals(owner.getStringUUID()))
-                entity.setTicksFrozen((int) (100 + Math.round(getSize() * RelicItem.getAbilityValue(EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get()), "mold", "freeze"))));
+                entity.setTicksFrozen((int) (100 + Math.round(getSize() * AbilityUtils.getAbilityValue(EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get()), "mold", "freeze"))));
         }
 
         ItemStack stack = EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get());
 
         if (!stack.isEmpty())
-            RelicItem.addExperience(owner, stack, (int) Math.floor(getSize() / 5F));
+            LevelingUtils.addExperience(owner, stack, (int) Math.floor(getSize() / 5F));
 
         this.level.playSound(null, this.blockPosition(), SoundEvents.SNOW_BREAK, SoundSource.MASTER, 1F, 0.5F);
     }

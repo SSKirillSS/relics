@@ -8,6 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -70,7 +72,7 @@ public class EnderHandItem extends RelicItem {
 
         if (player.isShiftKeyDown()) {
             if (uuid.isEmpty()) {
-                EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(stack, "swap", "distance"));
+                EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), AbilityUtils.getAbilityValue(stack, "swap", "distance"));
 
                 if (result != null && result.getEntity() instanceof LivingEntity entity) {
                     uuid = entity.getStringUUID();
@@ -114,7 +116,7 @@ public class EnderHandItem extends RelicItem {
 
                     int distance = (int) Math.round(targetPos.distanceTo(currentPos));
 
-                    addExperience(player, stack, 1 + Math.round(distance * 0.1F));
+                    LevelingUtils.addExperience(player, stack, 1 + Math.round(distance * 0.1F));
 
                     player.getCooldowns().addCooldown(this, 20);
 

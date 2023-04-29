@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
@@ -110,7 +112,7 @@ public class ShadowGlaiveItem extends RelicItem {
         if (getSaw(stack, worldIn) != null)
             return;
 
-        if (time >= getAbilityValue(stack, "glaive", "recharge")) {
+        if (time >= AbilityUtils.getAbilityValue(stack, "glaive", "recharge")) {
             NBTUtils.setInt(stack, TAG_CHARGES, charges + 1);
             NBTUtils.setInt(stack, TAG_TIME, 0);
         } else
@@ -132,7 +134,7 @@ public class ShadowGlaiveItem extends RelicItem {
             if (!entity.isReturning)
                 entity.isReturning = true;
         } else {
-            if (playerIn.isShiftKeyDown() && getLevel(stack) >= 5) {
+            if (playerIn.isShiftKeyDown() && LevelingUtils.getLevel(stack) >= 5) {
                 if (charges == 8 && getSaw(stack, worldIn) == null) {
                     ShadowSawEntity saw = new ShadowSawEntity(stack, playerIn);
 

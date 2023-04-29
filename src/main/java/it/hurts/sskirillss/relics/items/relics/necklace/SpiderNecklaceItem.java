@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -45,7 +46,7 @@ public class SpiderNecklaceItem extends RelicItem {
 
         if (livingEntity.horizontalCollision && livingEntity.zza > 0) {
             livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().x(),
-                    getAbilityValue(stack, "scramble", "speed"), livingEntity.getDeltaMovement().z());
+                    AbilityUtils.getAbilityValue(stack, "scramble", "speed"), livingEntity.getDeltaMovement().z());
             livingEntity.fallDistance = 0F;
         }
     }
