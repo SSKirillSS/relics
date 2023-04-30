@@ -41,6 +41,10 @@ public class DissectionEntity extends Entity {
     @Setter
     private boolean isMaster = false;
 
+    @Getter
+    @Setter
+    private int maxLifeTime;
+
     public int getLifeTime() {
         return this.getEntityData().get(LIFE_TIME);
     }
@@ -117,7 +121,8 @@ public class DissectionEntity extends Entity {
         DissectionEntity pair = getPair();
 
         if (pair == null) {
-            if (!this.isMaster())
+            if (!this.isMaster() || getMaxLifeTime() == 0
+                    || this.getLifeTime() != this.getMaxLifeTime())
                 this.discard();
 
             return;
@@ -125,6 +130,7 @@ public class DissectionEntity extends Entity {
 
         if (isMaster()) {
             int time = getLifeTime();
+
             if (time > 0) {
                 time--;
 
@@ -235,19 +241,36 @@ public class DissectionEntity extends Entity {
     }
 
     @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+
+        if (this.isMaster())
+            return;
+
+        DissectionEntity pair = this.getPair();
+
+        if (pair == null)
+            return;
+
+        pair.setLifeTime(Math.min(pair.getLifeTime(), 20));
+    }
+
+    @Override
     protected void defineSynchedData() {
         entityData.define(LIFE_TIME, 100);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
+        setMaxLifeTime(compound.getInt("maxLifeTime"));
         setMaster(compound.getBoolean("isMaster"));
         setLifeTime(compound.getInt("lifeTime"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.putBoolean("isMaster", isMaster);
+        compound.putInt("maxLifeTime", getMaxLifeTime());
+        compound.putBoolean("isMaster", isMaster());
         compound.putInt("lifeTime", getLifeTime());
     }
 
