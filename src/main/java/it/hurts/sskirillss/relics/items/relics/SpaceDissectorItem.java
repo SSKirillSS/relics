@@ -91,8 +91,11 @@ public class SpaceDissectorItem extends RelicItem {
 
         DissectionEntity portal = new DissectionEntity(world);
 
-        portal.setLifeTime((int) Math.round(AbilityUtils.getAbilityValue(stack, "dissection", "time")) * 20);
+        int time = (int) Math.round(AbilityUtils.getAbilityValue(stack, "dissection", "time")) * 20;
+
         portal.setPos(ray.getLocation());
+        portal.setMaxLifeTime(time);
+        portal.setLifeTime(time);
         portal.setMaster(true);
 
         world.addFreshEntity(portal);
