@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,7 +33,8 @@ public class DissectionRenderer extends EntityRenderer<DissectionEntity> {
 
         matrixStackIn.translate(0, 1.5, 0);
 
-        float scale = (float) (Math.max(Math.min(entityIn.getLifeTime() > 20 ? (entityIn.tickCount - 5) * 0.075F : entityIn.getLifeTime() * 0.075F, 1F), 0F) + (Math.abs(Math.sin((entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks)) * 0.01F)) * 0.5F));
+        float ticks = (Minecraft.getInstance().isPaused() ? 0 : partialTicks);
+        float scale = (float) (Mth.clamp((entityIn.getLifeTime() > 20 ? (entityIn.tickCount - 5 + ticks) * 0.075F : (entityIn.getLifeTime() + ticks) * 0.075F), 0F, 1F) + (Math.abs(Math.sin((entityIn.tickCount + ticks) * 0.01F)) * 0.5F));
 
         matrixStackIn.scale(scale, scale, scale);
 
