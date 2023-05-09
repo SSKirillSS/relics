@@ -94,7 +94,20 @@ public class AbilityUtils {
     }
 
     public static double getAbilityInitialValue(ItemStack stack, String ability, String stat) {
-        return getAbilityInitialValues(stack, ability).getOrDefault(stat, 0D);
+        double result;
+
+        try {
+            result = getAbilityInitialValues(stack, ability).get(stat);
+        } catch (NullPointerException exception) {
+            if (AbilityUtils.getRelicAbilityStat(stack.getItem(), ability, stat) != null) {
+                randomizeStats(stack, ability);
+
+                result = getAbilityInitialValues(stack, ability).get(stat);
+            } else
+                result = 0D;
+        }
+
+        return result;
     }
 
     public static double getAbilityValue(ItemStack stack, String ability, String stat, int points) {
