@@ -6,8 +6,10 @@ import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.entities.ArrowRainEntity;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -16,6 +18,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -23,10 +27,15 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -40,9 +49,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
@@ -56,6 +68,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ArrowQuiverItem extends RelicItem {
+    private static final String TAG_LEAP = "leap";
     private static final String TAG_ARROWS = "arrows";
     private static final String TAG_COOLDOWN = "cooldown";
 
@@ -71,8 +84,23 @@ public class ArrowQuiverItem extends RelicItem {
                                         .formatValue(value -> (int) Math.round(value))
                                         .build())
                                 .build())
-                        .ability("agility", RelicAbilityEntry.builder()
+                        .ability("leap", RelicAbilityEntry.builder()
                                 .requiredLevel(5)
+                                .maxLevel(10)
+                                .active(true)
+                                .stat("multiplier", RelicAbilityStat.builder()
+                                        .initialValue(0.1, 0.5)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, 0.15)
+                                        .formatValue(value -> (int) (MathUtils.round(value, 2) * 100))
+                                        .build())
+                                .stat("duration", RelicAbilityStat.builder()
+                                        .initialValue(4, 6)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .build())
+                        .ability("agility", RelicAbilityEntry.builder()
+                                .requiredLevel(10)
                                 .requiredPoints(2)
                                 .maxLevel(5)
                                 .stat("modifier", RelicAbilityStat.builder()
@@ -82,7 +110,7 @@ public class ArrowQuiverItem extends RelicItem {
                                         .build())
                                 .build())
                         .ability("rain", RelicAbilityEntry.builder()
-                                .requiredLevel(10)
+                                .requiredLevel(15)
                                 .maxLevel(10)
                                 .active(true)
                                 .stat("radius", RelicAbilityStat.builder()
@@ -112,6 +140,7 @@ public class ArrowQuiverItem extends RelicItem {
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability) {
         Level level = player.getCommandSenderWorld();
+        RandomSource random = level.getRandom();
 
         if (ability.equals("rain")) {
             if (NBTUtils.getInt(stack, TAG_COOLDOWN, 0) > 0
@@ -143,6 +172,37 @@ public class ArrowQuiverItem extends RelicItem {
 
             NBTUtils.setInt(stack, TAG_COOLDOWN, duration / 20);
         }
+
+        if (ability.equals("leap")) {
+            if (player.isOnGround()) {
+                double maxDistance = player.getReachDistance() + 1;
+
+                Vec3 view = player.getViewVector(0);
+                Vec3 eyeVec = player.getEyePosition(0);
+
+                BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * maxDistance, view.y * maxDistance,
+                        view.z * maxDistance), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
+
+                if (ray.getType() != HitResult.Type.MISS) {
+                    Vec3 motion = player.getLookAngle().scale(-1).normalize().scale(2F);
+
+                    for (int i = 0; i < 100; i++) {
+                        level.addParticle(ParticleTypes.SPIT, player.getX(), player.getY(), player.getZ(),
+                                motion.x() + MathUtils.randomFloat(random) * 0.1F,
+                                motion.y() + MathUtils.randomFloat(random) * 0.25F,
+                                motion.z() + MathUtils.randomFloat(random) * 0.1F);
+                    }
+
+                    if (!level.isClientSide()) {
+                        NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) player);
+
+                        NBTUtils.setInt(stack, TAG_LEAP, 0);
+
+                        level.playSound(null, player.blockPosition(), SoundRegistry.LEAP.get(), SoundSource.MASTER, 1F, 1F + random.nextFloat() * 0.5F);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -170,9 +230,38 @@ public class ArrowQuiverItem extends RelicItem {
         if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        if (AbilityUtils.canUseAbility(stack, "agility") && player.isUsingItem() && player.getMainHandItem().getItem() instanceof BowItem)
-            for (int i = 0; i < 1; i++)
-                player.updatingUsingItem();
+        Level level = player.getLevel();
+
+        if (AbilityUtils.canUseAbility(stack, "leap")) {
+            int leap = NBTUtils.getInt(stack, TAG_LEAP, -1);
+
+            if (leap >= 0) {
+                if (!level.isClientSide()) {
+                    NBTUtils.setInt(stack, TAG_LEAP, ++leap);
+
+                    player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
+
+                    player.fallDistance = 0F;
+
+                    if (leap >= 5 && (player.isOnGround() || player.getAbilities().flying
+                            || player.isFallFlying() || player.isInWater() || player.isInLava()
+                            || leap >= AbilityUtils.getAbilityValue(stack, "leap", "duration") * 20)) {
+                        NBTUtils.clearTag(stack, TAG_LEAP);
+                    }
+                }
+
+                if (player.isUsingItem() && player.getMainHandItem().getItem() instanceof BowItem) {
+                    player.setDeltaMovement(player.getDeltaMovement().multiply(0.975F, player.getDeltaMovement().y() > 0 ? 0.9F : 0F, 0.975F));
+                }
+            }
+        }
+
+        if (AbilityUtils.canUseAbility(stack, "agility")) {
+            if (player.isUsingItem() && player.getMainHandItem().getItem() instanceof BowItem) {
+                for (int i = 0; i < 1; i++)
+                    player.updatingUsingItem();
+            }
+        }
     }
 
     @Override
@@ -388,10 +477,9 @@ public class ArrowQuiverItem extends RelicItem {
             ItemStack heldStack = event.getHeldStack();
             ItemStack slotStack = event.getSlotStack();
 
-            if (slotStack.getItem() != ItemRegistry.ARROW_QUIVER.get())
+            if (slotStack.getItem() != ItemRegistry.ARROW_QUIVER.get()
+                    || !AbilityUtils.canUseAbility(slotStack, "receptacle"))
                 return;
-
-            ArrowQuiverItem quiver = (ArrowQuiverItem) slotStack.getItem();
 
             if (event.getAction() == ClickAction.PRIMARY) {
                 if (!(heldStack.getItem() instanceof ArrowItem))
@@ -426,7 +514,7 @@ public class ArrowQuiverItem extends RelicItem {
             Player player = event.getEntity();
             ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-            if (relic.isEmpty() || DurabilityUtils.isBroken(relic)
+            if (relic.isEmpty() || !AbilityUtils.canUseAbility(relic, "receptacle")
                     || getArrows(relic).isEmpty() || player.isCreative())
                 return;
 
@@ -445,7 +533,7 @@ public class ArrowQuiverItem extends RelicItem {
 
             ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-            if (relic.isEmpty() || DurabilityUtils.isBroken(relic))
+            if (relic.isEmpty() || !AbilityUtils.canUseAbility(relic, "receptacle"))
                 return;
 
             List<ItemStack> arrows = getArrows(relic);
@@ -455,21 +543,78 @@ public class ArrowQuiverItem extends RelicItem {
         }
 
         @SubscribeEvent
-        public static void onProjectileImpact(LivingHurtEvent event) {
-            if (!(event.getSource().getEntity() instanceof Player player)
-                    || !(event.getSource().getDirectEntity() instanceof AbstractArrow arrow))
+        public static void onLivingHurt(LivingHurtEvent event) {
+            if (!(event.getSource().getDirectEntity() instanceof AbstractArrow arrow)
+                    || !(arrow.getOwner() instanceof Player player))
                 return;
 
-            ArrowQuiverItem item = (ArrowQuiverItem) ItemRegistry.ARROW_QUIVER.get();
-            ItemStack stack = EntityUtils.findEquippedCurio(player, item);
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-            if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
+            if (stack.isEmpty())
                 return;
 
-            int amount = (int) Math.min(10, Math.round(player.position().distanceTo(new Vec3(arrow.getX(), player.getY(), arrow.getZ())) * 0.1));
+            if (AbilityUtils.canUseAbility(stack, "receptacle")) {
+                int amount = (int) Math.min(10, Math.round(player.position().distanceTo(new Vec3(arrow.getX(), player.getY(), arrow.getZ())) * 0.1));
 
-            if (amount > 0)
-                LevelingUtils.addExperience(player, stack, amount);
+                if (amount > 0)
+                    LevelingUtils.addExperience(player, stack, amount);
+            }
+
+            if (AbilityUtils.canUseAbility(stack, "leap")) {
+                if (arrow.getPersistentData().contains("arrow_quiver_multiplier"))
+                    event.setAmount((float) (event.getAmount() + (event.getAmount() * AbilityUtils.getAbilityValue(stack, "leap", "multiplier"))));
+            }
+        }
+
+        @SubscribeEvent
+        public static void onEntitySpawned(EntityJoinLevelEvent event) {
+            if (event.getLevel().isClientSide()
+                    || !(event.getEntity() instanceof AbstractArrow arrow)
+                    || !(arrow.getOwner() instanceof Player player)
+                    || arrow.position().distanceTo(player.position()) > 16
+                    || arrow.life > 0)
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
+
+            if (stack.isEmpty() || !AbilityUtils.canUseAbility(stack, "leap")
+                    || NBTUtils.getInt(stack, TAG_LEAP, -1) < 0)
+                return;
+
+            NBTUtils.clearTag(stack, TAG_LEAP);
+
+            if (!arrow.isCritArrow())
+                return;
+
+            Level level = player.getCommandSenderWorld();
+
+            level.playSound(null, player.blockPosition(), SoundRegistry.POWERED_ARROW.get(), SoundSource.MASTER, 1F, 1F + player.getRandom().nextFloat() * 0.5F);
+
+            arrow.getPersistentData().putBoolean("arrow_quiver_multiplier", true);
+            arrow.setNoGravity(true);
+
+            Vec3 motion = player.getLookAngle().scale(-1).normalize();
+
+            if (!level.isClientSide())
+                NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) player);
+        }
+
+        @SubscribeEvent
+        public static void onProjectileImpact(ProjectileImpactEvent event) {
+            if (event.getRayTraceResult().getType() != HitResult.Type.BLOCK
+                    || !(event.getEntity() instanceof AbstractArrow arrow)
+                    || !(arrow.getOwner() instanceof Player player))
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
+
+            if (stack.isEmpty() || !AbilityUtils.canUseAbility(stack, "leap"))
+                return;
+
+            CompoundTag data = arrow.getPersistentData();
+
+            if (data.contains("arrow_quiver_multiplier"))
+                data.remove("arrow_quiver_multiplier");
         }
     }
 }

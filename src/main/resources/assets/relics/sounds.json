@@ -14,5 +14,13 @@
     "spurt": {
         "category": "master",
         "sounds": [ { "name": "relics:spurt" } ]
+    },
+    "leap": {
+        "category": "master",
+        "sounds": [ { "name": "relics:leap" } ]
+    },
+    "powered_arrow": {
+        "category": "master",
+        "sounds": [ { "name": "relics:powered_arrow" } ]
     }
 }
