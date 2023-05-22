@@ -4,40 +4,48 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import it.hurts.sskirillss.relics.utils.data.AnimationData;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.awt.*;
 import java.util.Random;
 
 public class RenderUtils {
+    public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texWidth, float texHeight, float scale, AnimationData animation) {
+        ClientLevel level = Minecraft.getInstance().level;
+
+        if (level == null)
+            return;
+
+        renderTextureFromCenter(matrix, centerX, centerY, texWidth, texHeight, scale, animation, level.getGameTime());
+    }
+
+    public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texWidth, float texHeight, float scale, AnimationData animation, long ticks) {
+        long time = ticks % animation.getLength();
+
+        int index = 0;
+
+        while (time > 0) {
+            Pair<Integer, Integer> pair = animation.getFrames().get(index);
+
+            time -= pair.getRight();
+
+            index = (index >= animation.getFrames().size() - 1) ? 0 : index + 1;
+        }
+
+        Pair<Integer, Integer> pair = animation.getFrames().get(index);
+
+        renderTextureFromCenter(matrix, centerX, centerY, 0, texWidth * pair.getKey(), texWidth, texHeight, texWidth, texWidth, scale);
+    }
+
     public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float width, float height, float scale) {
-        BufferBuilder builder = Tesselator.getInstance().getBuilder();
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-
-        matrix.pushPose();
-
-        matrix.translate(centerX, centerY, 0);
-        matrix.scale(scale, scale, scale);
-
-        Matrix4f m = matrix.last().pose();
-
-        float w2 = width / 2;
-        float h2 = height / 2;
-
-        builder.vertex(m, -w2, +h2, 0).uv(0, 1).endVertex();
-        builder.vertex(m, +w2, +h2, 0).uv(1, 1).endVertex();
-        builder.vertex(m, +w2, -h2, 0).uv(1, 0).endVertex();
-        builder.vertex(m, -w2, -h2, 0).uv(0, 0).endVertex();
-
-        matrix.popPose();
-
-        BufferUploader.drawWithShader(builder.end());
+        renderTextureFromCenter(matrix, centerX, centerY, 0, 0, width, height, width, height, scale);
     }
 
     public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texOffX, float texOffY, float texWidth, float texHeight, float width, float height, float scale) {

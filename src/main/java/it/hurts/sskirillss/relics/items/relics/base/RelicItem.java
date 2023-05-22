@@ -21,6 +21,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -99,6 +100,18 @@ public abstract class RelicItem extends Item implements ICurioItem {
         }
 
         return super.onEntityItemUpdate(stack, entity);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
+        for (Map.Entry<String, RelicAbilityEntry> entry : AbilityUtils.getRelicAbilityData(stack.getItem()).getAbilities().entrySet()) {
+            String ability = entry.getKey();
+
+            int cooldown = AbilityUtils.getAbilityCooldown(stack, ability);
+
+            if (cooldown > 0)
+                AbilityUtils.addAbilityCooldown(stack, ability, -1);
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -18,6 +19,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class AbilityUtils {
+    public static final String AFFIX_COOLDOWN = "cooldown";
+
     public static final String TAG_ABILITIES = "abilities";
     public static final String TAG_POINTS = "points";
     public static final String TAG_STATS = "stats";
@@ -264,5 +267,25 @@ public class AbilityUtils {
             return false;
 
         return entry.getStats().size() > 0 && mayReset(stack, ability) && player.totalExperience >= getResetRequiredExperience(stack, ability);
+    }
+
+    public static int getAbilityCooldown(ItemStack stack, String ability) {
+        return NBTUtils.getInt(stack, ability + "_" + AFFIX_COOLDOWN, 0);
+    }
+
+    public static void setAbilityCooldown(ItemStack stack, String ability, int amount) {
+        NBTUtils.setInt(stack, ability + "_" + AFFIX_COOLDOWN, amount);
+    }
+
+    public static void addAbilityCooldown(ItemStack stack, String ability, int amount) {
+        setAbilityCooldown(stack, ability, getAbilityCooldown(stack, ability) + amount);
+    }
+
+    public static boolean isAbilityOnCooldown(ItemStack stack, String ability) {
+        return getAbilityCooldown(stack, ability) > 0;
+    }
+
+    public static boolean canPlayerUseActiveAbility(Player player, ItemStack stack, String ability) {
+        return canUseAbility(stack, ability) && !isAbilityOnCooldown(stack, ability);
     }
 }

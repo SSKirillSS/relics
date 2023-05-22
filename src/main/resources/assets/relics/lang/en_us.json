@@ -101,6 +101,8 @@
   "tooltip.relics.arrow_quiver.ability.leap.stat.multiplier.value": "+%1$s%%.",
   "tooltip.relics.arrow_quiver.ability.leap.stat.duration.title": "Max duration:",
   "tooltip.relics.arrow_quiver.ability.leap.stat.duration.value": "%1$s seconds.",
+  "tooltip.relics.arrow_quiver.ability.leap.stat.cooldown.title": "Cooldown:",
+  "tooltip.relics.arrow_quiver.ability.leap.stat.cooldown.value": "%1$s seconds.",
   "tooltip.relics.arrow_quiver.ability.agility": "Dexterity",
   "tooltip.relics.arrow_quiver.ability.agility.description": "Increases the speed of bowstring tension.",
   "tooltip.relics.arrow_quiver.ability.agility.stat.modifier.title": "Speed multiplier:",

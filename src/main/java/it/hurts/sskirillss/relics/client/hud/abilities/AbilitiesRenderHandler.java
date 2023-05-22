@@ -6,10 +6,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
+import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import net.minecraft.client.Minecraft;
@@ -86,8 +89,6 @@ public class AbilitiesRenderHandler {
         if (mouseDelta > 0)
             RenderUtils.renderTextureFromCenter(poseStack, x + 95, y, 25, 37, 256, 256, 24, 35, 1F + Math.abs(mouseDelta) * 0.01F);
 
-        RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, 2, 256, 256, 6, 11, 1F);
-
         RenderSystem.disableBlend();
 
         AbilityEntry selectedAbility = getAbilityByIndex(selectedIndex);
@@ -106,7 +107,17 @@ public class AbilitiesRenderHandler {
         if (ability == null)
             return;
 
+        ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
+
+        if (!(stack.getItem() instanceof RelicItem relic))
+            return;
+
+        boolean isLocked = AbilityUtils.getAbilityCooldown(stack, ability.getAbility()) > 0;
+
         RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png"));
+
+        if (isLocked)
+            RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
 
         RenderSystem.enableBlend();
 
@@ -119,12 +130,51 @@ public class AbilitiesRenderHandler {
 
         RenderUtils.renderTextureFromCenter(poseStack, x - (1 * scale), y - (1 * scale), width, height, scale);
 
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
+        int cooldown = AbilityUtils.getAbilityCooldown(stack, ability.getAbility());
+
+        if (cooldown > 0) {
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/icons/cooldown.png"));
+
+            RenderUtils.renderTextureFromCenter(poseStack, x - (1 * scale), y - 2 - (1 * scale), 20, 300, scale, AnimationData.builder()
+                    .frame(0, 2)
+                    .frame(1, 2)
+                    .frame(2, 2)
+                    .frame(3, 2)
+                    .frame(4, 2)
+                    .frame(5, 2)
+                    .frame(6, 2)
+                    .frame(7, 2)
+                    .frame(8, 2)
+                    .frame(9, 2)
+                    .frame(10, 8)
+                    .frame(11, 2)
+                    .frame(12, 2)
+                    .frame(13, 2)
+                    .frame(14, 2)
+            );
+        }
+
         RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
 
         width = 28;
         height = 37;
 
-        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, 2, 256, 256, width, height, scale);
+        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, isLocked ? 40 : 2, 256, 256, width, height, scale);
+
+        if (realIndex == 0)
+            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, isLocked ? 14 : 2, 256, 256, 6, 11, scale - 0.1F);
+
+        if (cooldown > 0) {
+            String value = String.valueOf(MathUtils.round(cooldown / 20D, 1));
+
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+
+            MC.font.drawShadow(poseStack, value, (x - 1) * 2F - (MC.font.width(value) / 2F), (y - 6 + scale * 15) * 2F, 0xFFFFFF);
+
+            poseStack.scale(2F, 2F, 2F);
+        }
 
         poseStack.popPose();
     }
@@ -205,7 +255,7 @@ public class AbilitiesRenderHandler {
                 if (ability != null) {
                     ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
-                    if (stack.getItem() instanceof RelicItem relic)
+                    if (stack.getItem() instanceof RelicItem relic && AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility()))
                         relic.tickActiveAbilitySelection(stack, player, ability.getAbility());
                 }
 
@@ -252,7 +302,8 @@ public class AbilitiesRenderHandler {
 
             ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
-            if (!(stack.getItem() instanceof RelicItem relic))
+            if (!(stack.getItem() instanceof RelicItem relic)
+                    || !AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility()))
                 return;
 
             NetworkHandler.sendToServer(new SpellCastPacket(ability.getAbility(), ability.getSlot()));

@@ -101,6 +101,8 @@
   "tooltip.relics.arrow_quiver.ability.leap.stat.multiplier.value": "+%1$s%%.",
   "tooltip.relics.arrow_quiver.ability.leap.stat.duration.title": "Максимальная продолжительность:",
   "tooltip.relics.arrow_quiver.ability.leap.stat.duration.value": "%1$s секунд.",
+  "tooltip.relics.arrow_quiver.ability.leap.stat.cooldown.title": "Время перезарядки:",
+  "tooltip.relics.arrow_quiver.ability.leap.stat.cooldown.value": "%1$s секунд.",
   "tooltip.relics.arrow_quiver.ability.agility": "Ловкость",
   "tooltip.relics.arrow_quiver.ability.agility.description": "Увеличивает скорость натяжения тетивы лука.",
   "tooltip.relics.arrow_quiver.ability.agility.stat.modifier.title": "Множитель скорости:",

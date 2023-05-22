@@ -40,7 +40,7 @@ public class SpellCastPacket {
 
             if (!(stack.getItem() instanceof RelicItem relic)
                     || !ActiveAbilityUtils.getRelicActiveAbilities(stack).contains(ability)
-                    || !AbilityUtils.canUseAbility(stack, ability))
+                    || !AbilityUtils.canPlayerUseActiveAbility(player, stack, ability))
                 return;
 
             relic.castActiveAbility(stack, player, ability);

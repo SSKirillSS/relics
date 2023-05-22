@@ -36,7 +36,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -70,7 +69,6 @@ import java.util.stream.Collectors;
 public class ArrowQuiverItem extends RelicItem {
     private static final String TAG_LEAP = "leap";
     private static final String TAG_ARROWS = "arrows";
-    private static final String TAG_COOLDOWN = "cooldown";
 
     @Override
     public RelicData getRelicData() {
@@ -96,6 +94,11 @@ public class ArrowQuiverItem extends RelicItem {
                                 .stat("duration", RelicAbilityStat.builder()
                                         .initialValue(4, 6)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .stat("cooldown", RelicAbilityStat.builder()
+                                        .initialValue(15, 12)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, -0.1)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -143,8 +146,7 @@ public class ArrowQuiverItem extends RelicItem {
         RandomSource random = level.getRandom();
 
         if (ability.equals("rain")) {
-            if (NBTUtils.getInt(stack, TAG_COOLDOWN, 0) > 0
-                    || getArrows(stack).isEmpty())
+            if (getArrows(stack).isEmpty())
                 return;
 
             double maxDistance = 32;
@@ -170,7 +172,7 @@ public class ArrowQuiverItem extends RelicItem {
 
             level.addFreshEntity(rain);
 
-            NBTUtils.setInt(stack, TAG_COOLDOWN, duration / 20);
+            AbilityUtils.setAbilityCooldown(stack, "rain", duration);
         }
 
         if (ability.equals("leap")) {
@@ -197,6 +199,8 @@ public class ArrowQuiverItem extends RelicItem {
                         NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) player);
 
                         NBTUtils.setInt(stack, TAG_LEAP, 0);
+
+                        AbilityUtils.setAbilityCooldown(stack, "leap", (int) Math.round(AbilityUtils.getAbilityValue(stack, "leap", "cooldown") * 20));
 
                         level.playSound(null, player.blockPosition(), SoundRegistry.LEAP.get(), SoundSource.MASTER, 1F, 1F + random.nextFloat() * 0.5F);
                     }
@@ -261,16 +265,6 @@ public class ArrowQuiverItem extends RelicItem {
                 for (int i = 0; i < 1; i++)
                     player.updatingUsingItem();
             }
-        }
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
-        int cooldown = NBTUtils.getInt(stack, TAG_COOLDOWN, 0);
-
-        if (AbilityUtils.canUseAbility(stack, "rain")) {
-            if (cooldown > 0 && entity.tickCount % 20 == 0)
-                NBTUtils.setInt(stack, TAG_COOLDOWN, --cooldown);
         }
     }
 
