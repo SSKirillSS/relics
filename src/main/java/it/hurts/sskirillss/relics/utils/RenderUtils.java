@@ -67,8 +67,8 @@ public class RenderUtils {
         float v1 = texOffY / texHeight;
         float v2 = (texOffY + height) / texHeight;
 
-        float w2 = width / 2;
-        float h2 = height / 2;
+        float w2 = width / 2F;
+        float h2 = height / 2F;
 
         builder.vertex(m, -w2, +h2, 0).uv(u1, v2).endVertex();
         builder.vertex(m, +w2, +h2, 0).uv(u2, v2).endVertex();

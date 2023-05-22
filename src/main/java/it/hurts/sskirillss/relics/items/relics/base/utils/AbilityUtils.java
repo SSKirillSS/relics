@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class AbilityUtils {
+    public static final String AFFIX_COOLDOWN_CAP = "cooldown_cap";
     public static final String AFFIX_COOLDOWN = "cooldown";
 
     public static final String TAG_ABILITIES = "abilities";
@@ -269,16 +270,26 @@ public class AbilityUtils {
         return entry.getStats().size() > 0 && mayReset(stack, ability) && player.totalExperience >= getResetRequiredExperience(stack, ability);
     }
 
+    public static int getAbilityCooldownCap(ItemStack stack, String ability) {
+        return NBTUtils.getInt(stack, ability + "_" + AFFIX_COOLDOWN_CAP, 0);
+    }
+
+    public static void setAbilityCooldownCap(ItemStack stack, String ability, int amount) {
+        NBTUtils.setInt(stack, ability + "_" + AFFIX_COOLDOWN_CAP, amount);
+    }
+
     public static int getAbilityCooldown(ItemStack stack, String ability) {
         return NBTUtils.getInt(stack, ability + "_" + AFFIX_COOLDOWN, 0);
     }
 
     public static void setAbilityCooldown(ItemStack stack, String ability, int amount) {
         NBTUtils.setInt(stack, ability + "_" + AFFIX_COOLDOWN, amount);
+
+        setAbilityCooldownCap(stack, ability, amount);
     }
 
     public static void addAbilityCooldown(ItemStack stack, String ability, int amount) {
-        setAbilityCooldown(stack, ability, getAbilityCooldown(stack, ability) + amount);
+        NBTUtils.setInt(stack, ability + "_" + AFFIX_COOLDOWN, getAbilityCooldown(stack, ability) + amount);
     }
 
     public static boolean isAbilityOnCooldown(ItemStack stack, String ability) {

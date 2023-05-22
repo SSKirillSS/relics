@@ -104,13 +104,15 @@ public abstract class RelicItem extends Item implements ICurioItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
-        for (Map.Entry<String, RelicAbilityEntry> entry : AbilityUtils.getRelicAbilityData(stack.getItem()).getAbilities().entrySet()) {
-            String ability = entry.getKey();
+        if (!level.isClientSide()) {
+            for (Map.Entry<String, RelicAbilityEntry> entry : AbilityUtils.getRelicAbilityData(stack.getItem()).getAbilities().entrySet()) {
+                String ability = entry.getKey();
 
-            int cooldown = AbilityUtils.getAbilityCooldown(stack, ability);
+                int cooldown = AbilityUtils.getAbilityCooldown(stack, ability);
 
-            if (cooldown > 0)
-                AbilityUtils.addAbilityCooldown(stack, ability, -1);
+                if (cooldown > 0)
+                    AbilityUtils.addAbilityCooldown(stack, ability, -1);
+            }
         }
     }
 

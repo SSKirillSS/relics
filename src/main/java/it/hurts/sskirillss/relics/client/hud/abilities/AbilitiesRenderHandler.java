@@ -114,10 +114,9 @@ public class AbilitiesRenderHandler {
 
         boolean isLocked = AbilityUtils.getAbilityCooldown(stack, ability.getAbility()) > 0;
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png"));
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png");
 
-        if (isLocked)
-            RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
+        RenderSystem.setShaderTexture(0, card);
 
         RenderSystem.enableBlend();
 
@@ -126,34 +125,50 @@ public class AbilitiesRenderHandler {
         int width = 20;
         int height = 29;
 
-        float scale = (float) ((1F + Mth.clamp(Math.pow(13.5F, -Math.abs(realIndex)), 0, 0.2F)) + (realIndex == 0 ? (Math.sin((player.tickCount + partialTicks) * 0.1F) * 0.05F) : 0));
+        float scale = (float) ((1F + Mth.clamp(Math.pow(13.5F, -Math.abs(realIndex)), 0F, 0.2F)) + (realIndex == 0 ? (Math.sin((player.tickCount + partialTicks) * 0.1F) * 0.05F) : 0F));
 
-        RenderUtils.renderTextureFromCenter(poseStack, x - (1 * scale), y - (1 * scale), width, height, scale);
-
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderUtils.renderTextureFromCenter(poseStack, x - scale, y - scale, width, height, scale);
 
         int cooldown = AbilityUtils.getAbilityCooldown(stack, ability.getAbility());
+        int cap = AbilityUtils.getAbilityCooldownCap(stack, ability.getAbility());
+
+        float percentage = cooldown / (cap / 100F) / 100F;
 
         if (cooldown > 0) {
+            RenderSystem.setShaderTexture(0, card);
+
+            RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
+
+            RenderUtils.renderTextureFromCenter(poseStack, x - scale, (y - scale + (height * scale) / 2F) - (height * scale / 2F) * percentage, 0, height - height * percentage, width, height, width, height * percentage, scale);
+
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
             RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/icons/cooldown.png"));
 
-            RenderUtils.renderTextureFromCenter(poseStack, x - (1 * scale), y - 2 - (1 * scale), 20, 300, scale, AnimationData.builder()
-                    .frame(0, 2)
-                    .frame(1, 2)
-                    .frame(2, 2)
-                    .frame(3, 2)
-                    .frame(4, 2)
-                    .frame(5, 2)
-                    .frame(6, 2)
-                    .frame(7, 2)
-                    .frame(8, 2)
-                    .frame(9, 2)
-                    .frame(10, 8)
-                    .frame(11, 2)
-                    .frame(12, 2)
-                    .frame(13, 2)
-                    .frame(14, 2)
-            );
+            RenderSystem.setShaderColor(1F, 1F, 1F, percentage <= 0.1F ? percentage * 10F : 1F);
+
+            RenderUtils.renderTextureFromCenter(poseStack, x - scale, y - 2 - scale, 20, 300, scale, AnimationData.builder()
+                            .frame(0, 2)
+                            .frame(1, 2)
+                            .frame(2, 2)
+                            .frame(3, 2)
+                            .frame(4, 2)
+                            .frame(5, 2)
+                            .frame(6, 2)
+                            .frame(7, 2)
+                            .frame(8, 2)
+                            .frame(9, 2)
+                            .frame(10, 8)
+                            .frame(11, 2)
+                            .frame(12, 2)
+                            .frame(13, 2)
+                            .frame(14, 2),
+                    cap - cooldown);
+
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        } else {
+            if (isLocked)
+                RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
         }
 
         RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
@@ -161,10 +176,27 @@ public class AbilitiesRenderHandler {
         width = 28;
         height = 37;
 
-        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, isLocked ? 40 : 2, 256, 256, width, height, scale);
+        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, 2, 256, 256, width, height, scale);
 
-        if (realIndex == 0)
-            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, isLocked ? 14 : 2, 256, 256, 6, 11, scale - 0.1F);
+        if (cooldown > 0) {
+            RenderSystem.setShaderColor(1F, 1F, 1F, percentage <= 0.1F ? percentage / 0.1F : 1F);
+
+            RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, 40, 256, 256, width, height, scale);
+
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        }
+
+        if (realIndex == 0) {
+            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, 2, 256, 256, 6, 11, scale - 0.1F);
+
+            if (cooldown > 0) {
+                RenderSystem.setShaderColor(1F, 1F, 1F, percentage <= 0.1F ? percentage * 10F : 1F);
+
+                RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, 14, 256, 256, 6, 11, scale - 0.1F);
+
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            }
+        }
 
         if (cooldown > 0) {
             String value = String.valueOf(MathUtils.round(cooldown / 20D, 1));
