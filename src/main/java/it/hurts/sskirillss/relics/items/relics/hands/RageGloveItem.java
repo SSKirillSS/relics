@@ -90,11 +90,6 @@ public class RageGloveItem extends RelicItem {
                                 .requiredLevel(10)
                                 .maxLevel(10)
                                 .active(true)
-                                .stat("percentage", RelicAbilityStat.builder()
-                                        .initialValue(1.0D, 0.75D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, -0.05D)
-                                        .formatValue(value -> MathUtils.round(MathUtils.round(value, 3) * 100, 1))
-                                        .build())
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(0.1D, 0.25D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
@@ -103,6 +98,11 @@ public class RageGloveItem extends RelicItem {
                                 .stat("distance", RelicAbilityStat.builder()
                                         .initialValue(3D, 8D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.3D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .stat("cooldown", RelicAbilityStat.builder()
+                                        .initialValue(20, 15)
+                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, -0.075)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -121,10 +121,6 @@ public class RageGloveItem extends RelicItem {
 
         if (ability.equals("spurt")) {
             int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
-            int cost = Math.max(((int) Math.ceil(stacks * AbilityUtils.getAbilityValue(stack, "spurt", "percentage"))), 5);
-
-            if (stacks < cost)
-                return;
 
             double maxDistance = AbilityUtils.getAbilityValue(stack, "spurt", "distance");
 
@@ -146,8 +142,11 @@ public class RageGloveItem extends RelicItem {
 
             player.teleportTo(target.x, target.y, target.z);
 
-            if (!level.isClientSide())
+            if (!level.isClientSide()) {
                 NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) player);
+
+                AbilityUtils.setAbilityCooldown(stack, "spurt", (int) Math.round(AbilityUtils.getAbilityValue(stack, "spurt", "cooldown") * 20));
+            }
 
             player.fallDistance = 0F;
 
@@ -200,7 +199,7 @@ public class RageGloveItem extends RelicItem {
                 EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.MULTIPLY_BASE);
             }
 
-            NBTUtils.setInt(stack, TAG_STACKS, stacks - cost);
+            NBTUtils.clearTag(stack, TAG_STACKS);
         }
     }
 
