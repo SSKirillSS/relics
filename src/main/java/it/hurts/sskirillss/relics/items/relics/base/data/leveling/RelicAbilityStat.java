@@ -1,8 +1,8 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.leveling;
 
-import it.unimi.dsi.fastutil.Pair;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.function.Function;
 

@@ -103,6 +103,7 @@
   "tooltip.relics.arrow_quiver.ability.leap.stat.duration.value": "%1$s секунд.",
   "tooltip.relics.arrow_quiver.ability.leap.stat.cooldown.title": "Время перезарядки:",
   "tooltip.relics.arrow_quiver.ability.leap.stat.cooldown.value": "%1$s секунд.",
+  "tooltip.relics.arrow_quiver.ability.leap.predicate.target": "Взгляд на блок под ногами",
   "tooltip.relics.arrow_quiver.ability.agility": "Ловкость",
   "tooltip.relics.arrow_quiver.ability.agility.description": "Увеличивает скорость натяжения тетивы лука.",
   "tooltip.relics.arrow_quiver.ability.agility.stat.modifier.title": "Множитель скорости:",
@@ -115,6 +116,7 @@
   "tooltip.relics.arrow_quiver.ability.rain.stat.duration.value": "%1$s секунд.",
   "tooltip.relics.arrow_quiver.ability.rain.stat.delay.title": "Частота спавна стрел:",
   "tooltip.relics.arrow_quiver.ability.rain.stat.delay.value": "%1$s секунд.",
+  "tooltip.relics.arrow_quiver.ability.rain.predicate.arrow": "Стрелы в колчане",
 
   "item.relics.blazing_flask": "Пылающий флакон",
   "tooltip.relics.blazing_flask.leveling": "+1 ед. опыта за каждые 5 секунд полёта внутри области действия способности «Вечный огонь».",
@@ -205,6 +207,7 @@
   "tooltip.relics.spore_sack.ability.explosion.description": "Опустошает буфер реликвии, выбрасывая все накопленные заряды спор в мир. Размер выбрасываемых спор зависит от отсутствующего у носителя здоровья.",
   "tooltip.relics.spore_sack.ability.explosion.stat.size.title": "Размер споры:",
   "tooltip.relics.spore_sack.ability.explosion.stat.size.value": "%1$s за единицу здоровья.",
+  "tooltip.relics.spore_sack.ability.explosion.predicate.spore": "Споры в мешке",
 
   "item.relics.ice_breaker": "Ледоколы",
   "tooltip.relics.ice_breaker.leveling": "+1 ед. опыта за каждые 3 блока в падении перед срабатыванием способности «Землетрясение».",

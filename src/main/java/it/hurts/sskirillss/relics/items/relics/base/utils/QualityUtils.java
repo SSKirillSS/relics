@@ -21,8 +21,8 @@ public class QualityUtils {
 
         double initial = format.apply(AbilityUtils.getAbilityInitialValue(stack, ability, stat)).doubleValue();
 
-        double min = format.apply(statData.getInitialValue().first()).doubleValue();
-        double max = format.apply(statData.getInitialValue().second()).doubleValue();
+        double min = format.apply(statData.getInitialValue().getKey()).doubleValue();
+        double max = format.apply(statData.getInitialValue().getValue()).doubleValue();
 
         if (min == max)
             return MAX_QUALITY;

@@ -6,6 +6,9 @@ import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
@@ -95,7 +98,17 @@ public class SporeSackItem extends RelicItem {
                         .ability("explosion", RelicAbilityEntry.builder()
                                 .requiredLevel(15)
                                 .maxLevel(10)
-                                .active(true)
+                                .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
+                                        .predicate("spore", data -> {
+                                                    int spores = NBTUtils.getInt(data.getStack(), TAG_SPORES, 0);
+
+                                                    return PredicateInfo.builder()
+                                                            .description(spores, 1)
+                                                            .condition(spores > 0)
+                                                            .build();
+                                                }
+                                        )
+                                )
                                 .stat("size", RelicAbilityStat.builder()
                                         .initialValue(0.05D, 0.25D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
@@ -131,7 +144,7 @@ public class SporeSackItem extends RelicItem {
     }
 
     @Override
-    public void castActiveAbility(ItemStack stack, Player player, String ability) {
+    public void endCastActiveAbility(ItemStack stack, Player player, String ability) {
         Level level = player.getCommandSenderWorld();
         RandomSource random = level.getRandom();
 

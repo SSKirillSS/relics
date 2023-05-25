@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.client.hud.abilities;
 
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
@@ -54,7 +55,7 @@ public class ActiveAbilityUtils {
             return abilities;
 
         for (Map.Entry<String, RelicAbilityEntry> ability : abilityData.getAbilities().entrySet()) {
-            if (!ability.getValue().isActive())
+            if (ability.getValue().getCastData().getKey() == AbilityCastType.NONE)
                 continue;
 
             abilities.add(ability.getKey());

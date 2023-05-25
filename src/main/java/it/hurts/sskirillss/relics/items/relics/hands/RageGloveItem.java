@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
@@ -89,7 +90,7 @@ public class RageGloveItem extends RelicItem {
                         .ability("spurt", RelicAbilityEntry.builder()
                                 .requiredLevel(10)
                                 .maxLevel(10)
-                                .active(true)
+                                .active(AbilityCastType.INSTANTANEOUS)
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(0.1D, 0.25D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
@@ -115,7 +116,7 @@ public class RageGloveItem extends RelicItem {
     }
 
     @Override
-    public void castActiveAbility(ItemStack stack, Player player, String ability) {
+    public void endCastActiveAbility(ItemStack stack, Player player, String ability) {
         Level level = player.getCommandSenderWorld();
         RandomSource random = level.getRandom();
 

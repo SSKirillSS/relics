@@ -43,7 +43,7 @@ public class SpellCastPacket {
                     || !AbilityUtils.canPlayerUseActiveAbility(player, stack, ability))
                 return;
 
-            relic.castActiveAbility(stack, player, ability);
+            relic.endCastActiveAbility(stack, player, ability);
         });
 
         return true;

@@ -4,9 +4,15 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.CastUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -15,6 +21,8 @@ import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -35,14 +43,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @OnlyIn(value = Dist.CLIENT)
 public class AbilitiesRenderHandler {
     private static final Minecraft MC = Minecraft.getInstance();
 
     private static List<AbilityEntry> entries = new ArrayList<>();
+    private final static Map<String, AbilityCache> cache = new HashMap<>();
 
     private static int selectedIndex = 0;
 
@@ -50,6 +58,38 @@ public class AbilitiesRenderHandler {
     private static int animationDelta = 0;
 
     private static int mouseDelta = 0;
+
+    private static void updateCaches(Player player) {
+        if (animationDelta == 0)
+            return;
+
+        entries = ActiveAbilityUtils.getActiveEntries(player);
+
+        for (AbilityEntry entry : entries) {
+            cache.putIfAbsent(entry.getAbility(), new AbilityCache());
+
+            AnimationCache animationCache = entry.getCache().getAnimation();
+
+            if (animationCache.iconFadeDelta > 0)
+                animationCache.iconFadeDelta--;
+            if (animationCache.iconShakeDelta > 0)
+                animationCache.iconShakeDelta--;
+
+            String abilityName = entry.ability;
+
+            ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, entry.slot);
+            RelicItem relic = (RelicItem) stack.getItem();
+
+            AbilityCastPredicate predicate = CastUtils.getAbilityCastPredicates(relic, abilityName);
+
+            if (predicate == null)
+                continue;
+
+            for (Map.Entry<String, PredicateEntry> data : predicate.getPredicates().entrySet()) {
+                entry.getCache().predicate.info.put(data.getKey(), data.getValue().getPredicate().apply(new PredicateData(player, stack)));
+            }
+        }
+    }
 
     public static void render(PoseStack poseStack, float partialTicks) {
         if (animationDelta == 0)
@@ -66,8 +106,6 @@ public class AbilitiesRenderHandler {
         int y = -40;
 
         poseStack.pushPose();
-
-        RenderSystem.setShaderColor(1F, 1F, 1F, animationDelta * 0.2F);
 
         poseStack.translate(0, (animationDelta - (animationDelta != 5 ? partialTicks * (animationDown ? -1 : 1) : 0)) * 16, 0);
 
@@ -94,9 +132,40 @@ public class AbilitiesRenderHandler {
         AbilityEntry selectedAbility = getAbilityByIndex(selectedIndex);
         ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, selectedAbility.getSlot());
 
-        MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + selectedAbility.getAbility());
+        String registryName = ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath();
+
+        MutableComponent name = Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.getAbility());
 
         MC.font.drawShadow(poseStack, name, x - MC.font.width(name) / 2F, y - 35, 0xFFFFFF);
+
+        poseStack.popPose();
+
+        poseStack.pushPose();
+
+        poseStack.translate((animationDelta - (animationDelta != 5 ? partialTicks * (animationDown ? -1 : 1) : 0)) * 16, 0, 0);
+
+        int yOff = 0;
+
+        x = -70;
+        y = 25;
+
+        for (Map.Entry<String, PredicateInfo> entry : cache.get(selectedAbility.getAbility()).predicate.info.entrySet()) {
+            String predicateName = entry.getKey();
+            PredicateInfo info = entry.getValue();
+
+            RenderSystem.setShaderTexture(0, info.getCondition() ? new ResourceLocation(Reference.MODID, "textures/gui/description/icons/completed.png")
+                    : info.getIcon() != null ? info.getIcon() : new ResourceLocation(Reference.MODID, "textures/gui/description/icons/" + registryName + "/" + predicateName + ".png"));
+
+            RenderUtils.renderTextureFromCenter(poseStack, x, y + yOff, 0, 0, 16, 16, 16, 16, 0.5F);
+
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+
+            MC.font.drawShadow(poseStack, Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.ability + ".predicate." + predicateName, info.getPlaceholders().toArray()).withStyle(info.getCondition() ? ChatFormatting.STRIKETHROUGH : ChatFormatting.RESET), (x + 7) * 2F, (y - 2 + yOff) * 2F, info.getCondition() ? 0xbeffb8 : 0xf17f9c);
+
+            poseStack.scale(2F, 2F, 2F);
+
+            yOff += 10;
+        }
 
         poseStack.popPose();
     }
@@ -112,7 +181,7 @@ public class AbilitiesRenderHandler {
         if (!(stack.getItem() instanceof RelicItem relic))
             return;
 
-        boolean isLocked = AbilityUtils.getAbilityCooldown(stack, ability.getAbility()) > 0;
+        boolean isLocked = !AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility());
 
         ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png");
 
@@ -134,6 +203,8 @@ public class AbilitiesRenderHandler {
 
         float percentage = cooldown / (cap / 100F) / 100F;
 
+        String iconDescription = "";
+
         if (cooldown > 0) {
             RenderSystem.setShaderTexture(0, card);
 
@@ -143,72 +214,82 @@ public class AbilitiesRenderHandler {
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/icons/cooldown.png"));
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/cooldown.png"));
 
-            RenderSystem.setShaderColor(1F, 1F, 1F, percentage <= 0.1F ? percentage * 10F : 1F);
-
-            RenderUtils.renderTextureFromCenter(poseStack, x - scale, y - 2 - scale, 20, 300, scale, AnimationData.builder()
-                            .frame(0, 2)
-                            .frame(1, 2)
-                            .frame(2, 2)
-                            .frame(3, 2)
-                            .frame(4, 2)
-                            .frame(5, 2)
-                            .frame(6, 2)
-                            .frame(7, 2)
-                            .frame(8, 2)
-                            .frame(9, 2)
-                            .frame(10, 8)
-                            .frame(11, 2)
-                            .frame(12, 2)
-                            .frame(13, 2)
-                            .frame(14, 2),
-                    cap - cooldown);
+            drawAbilityStatusIcon(ability, poseStack, x - scale, y - scale, 20, 300, scale - 0.1F, AnimationData.builder()
+                            .frame(0, 2).frame(1, 2).frame(2, 2)
+                            .frame(3, 2).frame(4, 2).frame(5, 2)
+                            .frame(6, 2).frame(7, 2).frame(8, 2)
+                            .frame(9, 2).frame(10, 8).frame(11, 2)
+                            .frame(12, 2).frame(13, 2).frame(14, 2),
+                    cap - cooldown, partialTicks);
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
+            iconDescription = String.valueOf(MathUtils.round(cooldown / 20D, 1));
         } else {
-            if (isLocked)
-                RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
-        }
+            PredicateCache predicateCache = cache.get(ability.getAbility()).predicate;
+            Collection<PredicateInfo> infoEntries = predicateCache.info.values();
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
+            int successPredicates = 0;
 
-        width = 28;
-        height = 37;
+            for (PredicateInfo info : infoEntries) {
+                if (info.getCondition())
+                    successPredicates++;
+            }
 
-        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, 2, 256, 256, width, height, scale);
+            int failedPredicates = infoEntries.size() - successPredicates;
 
-        if (cooldown > 0) {
-            RenderSystem.setShaderColor(1F, 1F, 1F, percentage <= 0.1F ? percentage / 0.1F : 1F);
+            if (failedPredicates > 0) {
+                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/locked.png"));
 
-            RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, 40, 256, 256, width, height, scale);
+                drawAbilityStatusIcon(ability, poseStack, x - scale, y - scale, 20, 20, scale - 0.1F, null, player.tickCount, partialTicks);
 
-            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        }
-
-        if (realIndex == 0) {
-            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, 2, 256, 256, 6, 11, scale - 0.1F);
-
-            if (cooldown > 0) {
-                RenderSystem.setShaderColor(1F, 1F, 1F, percentage <= 0.1F ? percentage * 10F : 1F);
-
-                RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, 14, 256, 256, 6, 11, scale - 0.1F);
-
-                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                iconDescription = successPredicates + "/" + failedPredicates;
             }
         }
 
-        if (cooldown > 0) {
-            String value = String.valueOf(MathUtils.round(cooldown / 20D, 1));
-
+        if (!iconDescription.isEmpty()) {
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            MC.font.drawShadow(poseStack, value, (x - 1) * 2F - (MC.font.width(value) / 2F), (y - 6 + scale * 15) * 2F, 0xFFFFFF);
+            MC.font.drawShadow(poseStack, iconDescription, (x - 1) * 2F - (MC.font.width(iconDescription) / 2F), (y - 6 + scale * 15) * 2F, 0xFFFFFF);
 
             poseStack.scale(2F, 2F, 2F);
         }
 
+        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
+
+        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, isLocked ? 40 : 2, 256, 256, 28, 37, scale);
+
+        if (realIndex == 0)
+            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, isLocked ? 14 : 2, 256, 256, 6, 11, scale - 0.1F);
+
         poseStack.popPose();
+    }
+
+    public static void drawAbilityStatusIcon(AbilityEntry ability, PoseStack matrix, float x, float y, float texWidth, float texHeight, float scale, @Nullable AnimationData animation, long ticks, float partialTicks) {
+        matrix.pushPose();
+
+        matrix.translate(x, y, 0);
+
+        AnimationCache animationCache = ability.getCache().getAnimation();
+
+        if (animationCache.iconShakeDelta > 0) {
+            float color = animationCache.iconShakeDelta * 0.05F;
+
+            RenderSystem.setShaderColor(1F, 1F - color, 1F - color, 1F);
+
+            matrix.mulPose(Vector3f.ZP.rotation((float) Math.sin((ticks + partialTicks) * 0.5F) * 0.05F));
+
+            scale += (animationCache.iconShakeDelta - partialTicks) * 0.025F;
+        }
+
+        if (animation != null)
+            RenderUtils.renderTextureFromCenter(matrix, 0, 0, texWidth, texHeight, scale, animation, ticks);
+        else
+            RenderUtils.renderTextureFromCenter(matrix, 0, 0, texWidth, texHeight, scale);
+
+        matrix.popPose();
     }
 
     private static int getRelativeIndex(int offset) {
@@ -241,6 +322,36 @@ public class AbilitiesRenderHandler {
         private int slot;
 
         private String ability;
+
+        public AbilityCache getCache() {
+            return cache.get(ability);
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AbilityCache {
+        private AnimationCache animation = new AnimationCache();
+        private PredicateCache predicate = new PredicateCache();
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnimationCache {
+        private boolean shouldIconFade = false;
+
+        private int iconFadeDelta = 0;
+
+        private int iconShakeDelta = 0;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PredicateCache {
+        private Map<String, PredicateInfo> info = new HashMap<>();
     }
 
     @Mod.EventBusSubscriber(value = Dist.CLIENT)
@@ -305,7 +416,7 @@ public class AbilitiesRenderHandler {
             if (animationDelta == 0)
                 return;
 
-            entries = ActiveAbilityUtils.getActiveEntries(player);
+            updateCaches(player);
 
             if (selectedIndex > entries.size() || selectedIndex < 0)
                 selectedIndex = 0;
@@ -334,13 +445,22 @@ public class AbilitiesRenderHandler {
 
             ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
-            if (!(stack.getItem() instanceof RelicItem relic)
-                    || !AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility()))
+            if (!(stack.getItem() instanceof RelicItem relic))
                 return;
+
+            if (!AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility())) {
+                int delta = ability.getCache().getAnimation().iconShakeDelta;
+
+                ability.getCache().getAnimation().setIconShakeDelta(Math.min(15, delta + (delta > 0 ? 5 : 10)));
+
+                event.setCanceled(true);
+
+                return;
+            }
 
             NetworkHandler.sendToServer(new SpellCastPacket(ability.getAbility(), ability.getSlot()));
 
-            relic.castActiveAbility(stack, player, ability.getAbility());
+            relic.endCastActiveAbility(stack, player, ability.getAbility());
 
             event.setCanceled(true);
         }

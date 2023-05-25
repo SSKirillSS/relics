@@ -7,11 +7,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -123,9 +123,9 @@ public class AbilityUtils {
             return result;
 
         double current = getAbilityInitialValue(stack, ability, stat);
-        double step = data.getUpgradeModifier().value();
+        double step = data.getUpgradeModifier().getValue();
 
-        switch (data.getUpgradeModifier().first()) {
+        switch (data.getUpgradeModifier().getKey()) {
             case ADD -> result = current + (points * step);
             case MULTIPLY_BASE -> result = current + ((current * step) * points);
             case MULTIPLY_TOTAL -> result = current * Math.pow(step + 1, points);
@@ -134,7 +134,7 @@ public class AbilityUtils {
         Pair<Double, Double> threshold = data.getThresholdValue();
 
         return threshold == null ? MathUtils.round(result, 5)
-                : MathUtils.round(Math.max(threshold.first(), Math.min(threshold.second(), result)), 5);
+                : MathUtils.round(Math.max(threshold.getKey(), Math.min(threshold.getValue(), result)), 5);
     }
 
     public static double getAbilityValue(ItemStack stack, String ability, String stat) {
@@ -185,7 +185,7 @@ public class AbilityUtils {
         for (Map.Entry<String, RelicAbilityStat> stats : entry.stats.entrySet()) {
             RelicAbilityStat stat = stats.getValue();
 
-            double result = MathUtils.round(MathUtils.randomBetween(new Random(), stat.getInitialValue().first(), stat.getInitialValue().second()), 5);
+            double result = MathUtils.round(MathUtils.randomBetween(new Random(), stat.getInitialValue().getKey(), stat.getInitialValue().getValue()), 5);
 
             setAbilityValue(stack, ability, stats.getKey(), result);
         }
@@ -297,6 +297,7 @@ public class AbilityUtils {
     }
 
     public static boolean canPlayerUseActiveAbility(Player player, ItemStack stack, String ability) {
-        return canUseAbility(stack, ability) && !isAbilityOnCooldown(stack, ability);
+        return canUseAbility(stack, ability) && !isAbilityOnCooldown(stack, ability)
+                && CastUtils.testAbilityCastPredicates(player, stack, ability);
     }
 }

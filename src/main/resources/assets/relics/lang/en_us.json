@@ -103,6 +103,7 @@
   "tooltip.relics.arrow_quiver.ability.leap.stat.duration.value": "%1$s seconds.",
   "tooltip.relics.arrow_quiver.ability.leap.stat.cooldown.title": "Cooldown:",
   "tooltip.relics.arrow_quiver.ability.leap.stat.cooldown.value": "%1$s seconds.",
+  "tooltip.relics.arrow_quiver.ability.leap.predicate.target": "Looking at the block underfoot",
   "tooltip.relics.arrow_quiver.ability.agility": "Dexterity",
   "tooltip.relics.arrow_quiver.ability.agility.description": "Increases the speed of bowstring tension.",
   "tooltip.relics.arrow_quiver.ability.agility.stat.modifier.title": "Speed multiplier:",
@@ -115,6 +116,7 @@
   "tooltip.relics.arrow_quiver.ability.rain.stat.duration.value": "%1$s seconds.",
   "tooltip.relics.arrow_quiver.ability.rain.stat.delay.title": "Arrow summon frequency:",
   "tooltip.relics.arrow_quiver.ability.rain.stat.delay.value": "%1$s seconds.",
+  "tooltip.relics.arrow_quiver.ability.rain.predicate.arrow": "Arrows in the quiver",
 
   "item.relics.blazing_flask": "Blazing Flask",
   "tooltip.relics.blazing_flask.leveling": "+1 experience point for every 5 seconds of flight within the scope of the ability «Eternal Fire».",
@@ -205,6 +207,7 @@
   "tooltip.relics.spore_sack.ability.explosion.description": "Empties the relic's buffer, releasing all accumulated spore charges into the world. The size of the released spores depends on the wearer's missing health.",
   "tooltip.relics.spore_sack.ability.explosion.stat.size.title": "Spore size:",
   "tooltip.relics.spore_sack.ability.explosion.stat.size.value": "%1$s per missing health point.",
+  "tooltip.relics.spore_sack.ability.explosion.predicate.spore": "Spores in the sack",
 
   "item.relics.ice_breaker": "Ice Breaker",
   "tooltip.relics.ice_breaker.leveling": "+1 experience point for every 3 blocks in the fall before triggering the ability «Earthquake».",

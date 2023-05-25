@@ -12,6 +12,9 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
@@ -85,7 +88,26 @@ public class ArrowQuiverItem extends RelicItem {
                         .ability("leap", RelicAbilityEntry.builder()
                                 .requiredLevel(5)
                                 .maxLevel(10)
-                                .active(true)
+                                .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
+                                        .predicate("target", data -> {
+                                            Player player = data.getPlayer();
+                                            Level level = player.getLevel();
+
+                                            double maxDistance = player.getReachDistance() + 1;
+
+                                            Vec3 view = player.getViewVector(0);
+                                            Vec3 eyeVec = player.getEyePosition(0);
+
+                                            BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * maxDistance, view.y * maxDistance,
+                                                    view.z * maxDistance), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
+
+                                            boolean isCorrect = ray.getType() != HitResult.Type.MISS && ray.getLocation().y() < player.getEyePosition().y();
+
+                                            return PredicateInfo.builder()
+                                                    .condition(isCorrect)
+                                                    .build();
+                                        })
+                                )
                                 .stat("multiplier", RelicAbilityStat.builder()
                                         .initialValue(0.1, 0.5)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, 0.15)
@@ -115,7 +137,19 @@ public class ArrowQuiverItem extends RelicItem {
                         .ability("rain", RelicAbilityEntry.builder()
                                 .requiredLevel(15)
                                 .maxLevel(10)
-                                .active(true)
+                                .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
+                                        .predicate("arrow", data -> {
+                                                    int count = 0;
+
+                                                    for (ItemStack stack : getArrows(data.getStack()))
+                                                        count += stack.getCount();
+
+                                                    return PredicateInfo.builder()
+                                                            .condition(count > 0)
+                                                            .build();
+                                                }
+                                        )
+                                )
                                 .stat("radius", RelicAbilityStat.builder()
                                         .initialValue(3, 5)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15)
@@ -141,7 +175,7 @@ public class ArrowQuiverItem extends RelicItem {
     }
 
     @Override
-    public void castActiveAbility(ItemStack stack, Player player, String ability) {
+    public void endCastActiveAbility(ItemStack stack, Player player, String ability) {
         Level level = player.getCommandSenderWorld();
         RandomSource random = level.getRandom();
 
@@ -176,34 +210,32 @@ public class ArrowQuiverItem extends RelicItem {
         }
 
         if (ability.equals("leap")) {
-            if (player.isOnGround()) {
-                double maxDistance = player.getReachDistance() + 1;
+            double maxDistance = player.getReachDistance() + 1;
 
-                Vec3 view = player.getViewVector(0);
-                Vec3 eyeVec = player.getEyePosition(0);
+            Vec3 view = player.getViewVector(0);
+            Vec3 eyeVec = player.getEyePosition(0);
 
-                BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * maxDistance, view.y * maxDistance,
-                        view.z * maxDistance), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
+            BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * maxDistance, view.y * maxDistance,
+                    view.z * maxDistance), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
 
-                if (ray.getType() != HitResult.Type.MISS) {
-                    Vec3 motion = player.getLookAngle().scale(-1).normalize().scale(2F);
+            if (ray.getType() != HitResult.Type.MISS && ray.getLocation().y() < player.getEyePosition().y()) {
+                Vec3 motion = player.getLookAngle().scale(-1).normalize().scale(2F);
 
-                    for (int i = 0; i < 100; i++) {
-                        level.addParticle(ParticleTypes.SPIT, player.getX(), player.getY(), player.getZ(),
-                                motion.x() + MathUtils.randomFloat(random) * 0.1F,
-                                motion.y() + MathUtils.randomFloat(random) * 0.25F,
-                                motion.z() + MathUtils.randomFloat(random) * 0.1F);
-                    }
+                for (int i = 0; i < 100; i++) {
+                    level.addParticle(ParticleTypes.SPIT, player.getX(), player.getY(), player.getZ(),
+                            motion.x() + MathUtils.randomFloat(random) * 0.1F,
+                            motion.y() + MathUtils.randomFloat(random) * 0.25F,
+                            motion.z() + MathUtils.randomFloat(random) * 0.1F);
+                }
 
-                    if (!level.isClientSide()) {
-                        NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) player);
+                if (!level.isClientSide()) {
+                    NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) player);
 
-                        NBTUtils.setInt(stack, TAG_LEAP, 0);
+                    NBTUtils.setInt(stack, TAG_LEAP, 0);
 
-                        AbilityUtils.setAbilityCooldown(stack, "leap", (int) Math.round(AbilityUtils.getAbilityValue(stack, "leap", "cooldown") * 20));
+                    AbilityUtils.setAbilityCooldown(stack, "leap", (int) Math.round(AbilityUtils.getAbilityValue(stack, "leap", "cooldown") * 20));
 
-                        level.playSound(null, player.blockPosition(), SoundRegistry.LEAP.get(), SoundSource.MASTER, 1F, 1F + random.nextFloat() * 0.5F);
-                    }
+                    level.playSound(null, player.blockPosition(), SoundRegistry.LEAP.get(), SoundSource.MASTER, 1F, 1F + random.nextFloat() * 0.5F);
                 }
             }
         }
