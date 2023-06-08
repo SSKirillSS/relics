@@ -148,6 +148,8 @@ public class InfinityHamItem extends RelicItem {
             if (!AbilityUtils.canUseAbility(stack, "infusion") || !nbt.contains(TAG_POTION, 9))
                 return;
 
+            int duration = (int) Math.round(AbilityUtils.getAbilityValue(stack, "infusion", "duration") * 20);
+
             ListTag list = nbt.getList(TAG_POTION, 10);
 
             for (int i = 0; i < list.size(); ++i) {
@@ -158,7 +160,7 @@ public class InfinityHamItem extends RelicItem {
 
                 MobEffectInstance currentEffect = player.getEffect(effect.getEffect());
 
-                player.addEffect(new MobEffectInstance(effect.getEffect(), currentEffect == null ? 100 : currentEffect.getDuration() + 100, effect.getAmplifier()));
+                player.addEffect(new MobEffectInstance(effect.getEffect(), currentEffect == null ? duration : currentEffect.getDuration() + duration, effect.getAmplifier()));
             }
 
             if (pieces <= 0 && nbt.contains(TAG_POTION))
