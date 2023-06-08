@@ -155,7 +155,7 @@ public class InfinityHamItem extends RelicItem {
             for (int i = 0; i < list.size(); ++i) {
                 MobEffectInstance effect = MobEffectInstance.load(list.getCompound(i));
 
-                if (effect == null)
+                if (effect == null || effect.getEffect().isInstantenous())
                     continue;
 
                 MobEffectInstance currentEffect = player.getEffect(effect.getEffect());
@@ -213,6 +213,11 @@ public class InfinityHamItem extends RelicItem {
             if (effects.isEmpty()) {
                 NBTUtils.clearTag(slotStack, TAG_POTION);
             } else {
+                effects = effects.stream().filter(effect -> effect != null && !effect.getEffect().isInstantenous()).toList();
+
+                if (effects.isEmpty())
+                    return;
+
                 for (MobEffectInstance effect : effects)
                     list.add(effect.save(new CompoundTag()));
 
