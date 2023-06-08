@@ -8,9 +8,12 @@ import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.CastUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
@@ -57,6 +60,8 @@ public class AbilitiesRenderHandler {
     private static boolean animationDown = false;
     private static int animationDelta = 0;
 
+    private static int castShakeDelta = 0;
+
     private static int mouseDelta = 0;
 
     private static void updateCaches(Player player) {
@@ -70,8 +75,6 @@ public class AbilitiesRenderHandler {
 
             AnimationCache animationCache = entry.getCache().getAnimation();
 
-            if (animationCache.iconFadeDelta > 0)
-                animationCache.iconFadeDelta--;
             if (animationCache.iconShakeDelta > 0)
                 animationCache.iconShakeDelta--;
 
@@ -109,23 +112,25 @@ public class AbilitiesRenderHandler {
 
         poseStack.translate(0, (animationDelta - (animationDelta != 5 ? partialTicks * (animationDown ? -1 : 1) : 0)) * 16, 0);
 
-        drawAbility(poseStack, player, -2, x - 65, y, partialTicks);
-        drawAbility(poseStack, player, -1, x - 34, y, partialTicks);
+        float shakeOffset = castShakeDelta > 0 ? ((castShakeDelta - partialTicks) * 0.25F) : 0;
+
+        drawAbility(poseStack, player, -2, x - 65 - shakeOffset, y, partialTicks);
+        drawAbility(poseStack, player, -1, x - 34 - shakeOffset, y, partialTicks);
         drawAbility(poseStack, player, 0, x, y, partialTicks);
-        drawAbility(poseStack, player, 1, x + 34, y, partialTicks);
-        drawAbility(poseStack, player, 2, x + 65, y, partialTicks);
+        drawAbility(poseStack, player, 1, x + 34 + shakeOffset, y, partialTicks);
+        drawAbility(poseStack, player, 2, x + 65 + shakeOffset, y, partialTicks);
 
         RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
 
         RenderSystem.enableBlend();
 
-        RenderUtils.renderTextureFromCenter(poseStack, x - 95, y, 2, 2, 256, 256, 18, 29, 1F + (mouseDelta < 0 ? Math.abs(mouseDelta) * 0.01F : 0));
+        RenderUtils.renderTextureFromCenter(poseStack, x - 95 - shakeOffset, y, 2, 2, 256, 256, 18, 29, 1F + (mouseDelta < 0 ? Math.abs(mouseDelta) * 0.01F : 0));
         if (mouseDelta < 0)
-            RenderUtils.renderTextureFromCenter(poseStack, x - 95, y, 25, 1, 256, 256, 24, 35, 1F + Math.abs(mouseDelta) * 0.01F);
+            RenderUtils.renderTextureFromCenter(poseStack, x - 95 - shakeOffset, y, 25, 1, 256, 256, 24, 35, 1F + Math.abs(mouseDelta) * 0.01F);
 
-        RenderUtils.renderTextureFromCenter(poseStack, x + 95, y, 2, 38, 256, 256, 18, 29, 1F + (mouseDelta > 0 ? Math.abs(mouseDelta) * 0.01F : 0));
+        RenderUtils.renderTextureFromCenter(poseStack, x + 95 + shakeOffset, y, 2, 38, 256, 256, 18, 29, 1F + (mouseDelta > 0 ? Math.abs(mouseDelta) * 0.01F : 0));
         if (mouseDelta > 0)
-            RenderUtils.renderTextureFromCenter(poseStack, x + 95, y, 25, 37, 256, 256, 24, 35, 1F + Math.abs(mouseDelta) * 0.01F);
+            RenderUtils.renderTextureFromCenter(poseStack, x + 95 + shakeOffset, y, 25, 37, 256, 256, 24, 35, 1F + Math.abs(mouseDelta) * 0.01F);
 
         RenderSystem.disableBlend();
 
@@ -136,7 +141,7 @@ public class AbilitiesRenderHandler {
 
         MutableComponent name = Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.getAbility());
 
-        MC.font.drawShadow(poseStack, name, x - MC.font.width(name) / 2F, y - 35, 0xFFFFFF);
+        MC.font.drawShadow(poseStack, name, x - MC.font.width(name) / 2F, y - 37, 0xFFFFFF);
 
         poseStack.popPose();
 
@@ -194,14 +199,12 @@ public class AbilitiesRenderHandler {
         int width = 20;
         int height = 29;
 
-        float scale = (float) ((1F + Mth.clamp(Math.pow(13.5F, -Math.abs(realIndex)), 0F, 0.2F)) + (realIndex == 0 ? (Math.sin((player.tickCount + partialTicks) * 0.1F) * 0.05F) : 0F));
+        float scale = (float) ((1F + Mth.clamp(Math.pow(13.5F, -Math.abs(realIndex)), 0F, 0.2F)) + (realIndex == 0 ? (Math.sin((player.tickCount + partialTicks) * 0.1F) * 0.05F + (castShakeDelta > 0 ? ((castShakeDelta - partialTicks) * 0.02F) : 0F)) : 0F));
 
         RenderUtils.renderTextureFromCenter(poseStack, x - scale, y - scale, width, height, scale);
 
         int cooldown = AbilityUtils.getAbilityCooldown(stack, ability.getAbility());
         int cap = AbilityUtils.getAbilityCooldownCap(stack, ability.getAbility());
-
-        float percentage = cooldown / (cap / 100F) / 100F;
 
         String iconDescription = "";
 
@@ -210,11 +213,50 @@ public class AbilitiesRenderHandler {
 
             RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
 
+            float percentage = cooldown / (cap / 100F) / 100F;
+
             RenderUtils.renderTextureFromCenter(poseStack, x - scale, (y - scale + (height * scale) / 2F) - (height * scale / 2F) * percentage, 0, height - height * percentage, width, height, width, height * percentage, scale);
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        }
 
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/cooldown.png"));
+        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
+
+        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, isLocked ? 40 : 2, 256, 256, 28, 37, scale);
+
+        if (AbilityUtils.isAbilityTicking(stack, ability.getAbility())) {
+            AbilityCastType type = AbilityUtils.getRelicAbilityEntry(relic, ability.getAbility()).getCastData().getKey();
+
+            if (type == AbilityCastType.TOGGLEABLE) {
+                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png"));
+
+                RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 1, 30, 624, 30, 39, scale, AnimationData.builder()
+                        .frame(0, 1).frame(1, 1).frame(2, 1)
+                        .frame(3, 1).frame(4, 1).frame(5, 1)
+                        .frame(6, 1).frame(7, 1).frame(8, 1)
+                        .frame(9, 1).frame(10, 1).frame(11, 1)
+                        .frame(12, 1).frame(13, 1).frame(14, 1)
+                        .frame(15, 1));
+
+            } else {
+                RenderSystem.setShaderColor(1F, 1F, 1F, (float) ((Math.sin(player.tickCount * 0.2F) * 0.25F) + 0.5F));
+
+                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/cyclical.png"));
+
+                RenderUtils.renderTextureFromCenter(poseStack, x - scale / 2F, y - scale / 2F, 29, 38, scale);
+
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            }
+        }
+
+        if (realIndex == 0) {
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
+
+            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, isLocked ? 14 : 2, 256, 256, 6, 11, scale - 0.1F);
+        }
+
+        if (cooldown > 0) {
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/cooldown.png"));
 
             drawAbilityStatusIcon(ability, poseStack, x - scale, y - scale, 20, 300, scale - 0.1F, AnimationData.builder()
                             .frame(0, 2).frame(1, 2).frame(2, 2)
@@ -228,7 +270,7 @@ public class AbilitiesRenderHandler {
 
             iconDescription = String.valueOf(MathUtils.round(cooldown / 20D, 1));
         } else {
-            PredicateCache predicateCache = cache.get(ability.getAbility()).predicate;
+            PredicateCache predicateCache = ability.getCache().predicate;
             Collection<PredicateInfo> infoEntries = predicateCache.info.values();
 
             int successPredicates = 0;
@@ -241,11 +283,11 @@ public class AbilitiesRenderHandler {
             int failedPredicates = infoEntries.size() - successPredicates;
 
             if (failedPredicates > 0) {
-                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/locked.png"));
+                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/locked.png"));
 
                 drawAbilityStatusIcon(ability, poseStack, x - scale, y - scale, 20, 20, scale - 0.1F, null, player.tickCount, partialTicks);
 
-                iconDescription = successPredicates + "/" + failedPredicates;
+                iconDescription = successPredicates + "/" + infoEntries.size();
             }
         }
 
@@ -257,27 +299,22 @@ public class AbilitiesRenderHandler {
             poseStack.scale(2F, 2F, 2F);
         }
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
-
-        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, isLocked ? 40 : 2, 256, 256, 28, 37, scale);
-
-        if (realIndex == 0)
-            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, isLocked ? 14 : 2, 256, 256, 6, 11, scale - 0.1F);
-
         poseStack.popPose();
     }
 
-    public static void drawAbilityStatusIcon(AbilityEntry ability, PoseStack matrix, float x, float y, float texWidth, float texHeight, float scale, @Nullable AnimationData animation, long ticks, float partialTicks) {
+    private static void drawAbilityStatusIcon(AbilityEntry ability, PoseStack matrix, float x, float y, float texWidth, float texHeight, float scale, @Nullable AnimationData animation, long ticks, float partialTicks) {
         matrix.pushPose();
 
         matrix.translate(x, y, 0);
 
         AnimationCache animationCache = ability.getCache().getAnimation();
 
-        if (animationCache.iconShakeDelta > 0) {
+        float[] shaderColor = RenderSystem.getShaderColor();
+
+        if (animationCache.iconShakeDelta != 0) {
             float color = animationCache.iconShakeDelta * 0.05F;
 
-            RenderSystem.setShaderColor(1F, 1F - color, 1F - color, 1F);
+            RenderSystem.setShaderColor(shaderColor[0], shaderColor[1] - color, shaderColor[2] - color, shaderColor[3]);
 
             matrix.mulPose(Vector3f.ZP.rotation((float) Math.sin((ticks + partialTicks) * 0.5F) * 0.05F));
 
@@ -285,7 +322,7 @@ public class AbilitiesRenderHandler {
         }
 
         if (animation != null)
-            RenderUtils.renderTextureFromCenter(matrix, 0, 0, texWidth, texHeight, scale, animation, ticks);
+            RenderUtils.renderTextureFromCenter(matrix, 0, 0, texWidth, texHeight, texWidth, texWidth, scale, animation, ticks);
         else
             RenderUtils.renderTextureFromCenter(matrix, 0, 0, texWidth, texHeight, scale);
 
@@ -340,10 +377,6 @@ public class AbilitiesRenderHandler {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnimationCache {
-        private boolean shouldIconFade = false;
-
-        private int iconFadeDelta = 0;
-
         private int iconShakeDelta = 0;
     }
 
@@ -355,7 +388,7 @@ public class AbilitiesRenderHandler {
     }
 
     @Mod.EventBusSubscriber(value = Dist.CLIENT)
-    public static class Events {
+    public static class GeneralEvents {
         @SubscribeEvent
         public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
             if (!HotkeyRegistry.ABILITY_LIST.isDown() || entries.isEmpty())
@@ -386,6 +419,9 @@ public class AbilitiesRenderHandler {
 
             if (player == null)
                 return;
+
+            if (castShakeDelta > 0)
+                castShakeDelta--;
 
             if (mouseDelta > 0)
                 mouseDelta--;
@@ -421,7 +457,10 @@ public class AbilitiesRenderHandler {
             if (selectedIndex > entries.size() || selectedIndex < 0)
                 selectedIndex = 0;
         }
+    }
 
+    @Mod.EventBusSubscriber(value = Dist.CLIENT)
+    public static class CastEvents {
         @SubscribeEvent
         public static void onKeyPressed(InputEvent.MouseButton.Pre event) {
             if (animationDelta == 0 || event.getAction() != InputConstants.PRESS
@@ -458,11 +497,101 @@ public class AbilitiesRenderHandler {
                 return;
             }
 
-            NetworkHandler.sendToServer(new SpellCastPacket(ability.getAbility(), ability.getSlot()));
+            boolean isTicking = AbilityUtils.isAbilityTicking(stack, ability.getAbility());
 
-            relic.endCastActiveAbility(stack, player, ability.getAbility());
+            AbilityCastType type = AbilityUtils.getRelicAbilityEntry(relic, ability.getAbility()).getCastData().getKey();
 
-            event.setCanceled(true);
+            switch (type) {
+                case INSTANTANEOUS -> {
+                    NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.INSTANTANEOUS, AbilityCastStage.END, ability.getAbility(), ability.getSlot()));
+
+                    relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.END);
+                }
+                case CYCLICAL -> {
+                    NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.CYCLICAL, AbilityCastStage.START, ability.getAbility(), ability.getSlot()));
+
+                    relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.START);
+                }
+                case INTERRUPTIBLE -> {
+                    AbilityCastStage stage = isTicking ? AbilityCastStage.END : AbilityCastStage.START;
+
+                    NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.INTERRUPTIBLE, stage, ability.getAbility(), ability.getSlot()));
+
+                    relic.castActiveAbility(stack, player, ability.getAbility(), type, stage);
+                }
+                case TOGGLEABLE -> {
+                    AbilityCastStage stage = isTicking ? AbilityCastStage.END : AbilityCastStage.START;
+
+                    NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.TOGGLEABLE, stage, ability.getAbility(), ability.getSlot()));
+
+                    relic.castActiveAbility(stack, player, ability.getAbility(), type, stage);
+                }
+            }
+
+            castShakeDelta = 5;
+
+            Minecraft.getInstance().mouseHandler.releaseMouse();
+        }
+
+        @SubscribeEvent
+        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+            if (event.side != LogicalSide.CLIENT || event.phase != TickEvent.Phase.END)
+                return;
+
+            Player player = event.player;
+
+            if (player == null)
+                return;
+
+            AbilityEntry ability = getAbilityByIndex(selectedIndex);
+
+            if (ability == null)
+                return;
+
+            ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
+
+            if (!(stack.getItem() instanceof RelicItem relic))
+                return;
+
+            boolean isTicking = AbilityUtils.isAbilityTicking(stack, ability.getAbility());
+            boolean isCasting = Minecraft.getInstance().mouseHandler.isLeftPressed();
+
+            RelicAbilityEntry entry = AbilityUtils.getRelicAbilityEntry(relic, ability.getAbility());
+
+            if (entry == null)
+                return;
+
+            AbilityCastType type = entry.getCastData().getKey();
+
+            switch (type) {
+                case CYCLICAL -> {
+                    if (isTicking) {
+                        if (isCasting) {
+                            NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.CYCLICAL, AbilityCastStage.TICK, ability.getAbility(), ability.getSlot()));
+
+                            relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.TICK);
+                        } else {
+                            NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.CYCLICAL, AbilityCastStage.END, ability.getAbility(), ability.getSlot()));
+
+                            relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.END);
+                        }
+                    }
+                }
+                case INTERRUPTIBLE -> {
+                    if (isTicking) {
+                        NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.INTERRUPTIBLE, AbilityCastStage.TICK, ability.getAbility(), ability.getSlot()));
+
+                        relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.TICK);
+                    }
+                }
+                case TOGGLEABLE -> {
+                    if (isTicking) {
+                        NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.TOGGLEABLE, AbilityCastStage.TICK, ability.getAbility(), ability.getSlot()));
+
+                        relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.TICK);
+                    }
+                }
+            }
         }
     }
 }

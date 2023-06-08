@@ -7,6 +7,8 @@ import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
@@ -217,15 +219,7 @@ public abstract class RelicItem extends Item implements ICurioItem {
         tooltip.add(Component.literal(" "));
     }
 
-    public void startCastActiveAbility(ItemStack stack, Player player, String ability) {
-
-    }
-
-    public void tickCastActiveAbility(ItemStack stack, Player player, String ability) {
-
-    }
-
-    public void endCastActiveAbility(ItemStack stack, Player player, String ability) {
+    public void castActiveAbility(ItemStack stack, Player player, String ability, AbilityCastType type, AbilityCastStage stage) {
 
     }
 

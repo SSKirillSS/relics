@@ -6,7 +6,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -19,12 +18,14 @@ import java.util.Map;
 import java.util.Random;
 
 public class AbilityUtils {
-    public static final String AFFIX_COOLDOWN_CAP = "cooldown_cap";
-    public static final String AFFIX_COOLDOWN = "cooldown";
+    public static final String TAG_COOLDOWN_CAP = "cooldown_cap";
+    public static final String TAG_COOLDOWN = "cooldown";
+    public static final String TAG_TICKING = "ticking";
 
     public static final String TAG_ABILITIES = "abilities";
     public static final String TAG_POINTS = "points";
     public static final String TAG_STATS = "stats";
+    public static final String TAG_TEMP = "temp";
 
     @Nullable
     public static RelicAbilityData getRelicAbilityData(Item item) {
@@ -77,6 +78,31 @@ public class AbilityUtils {
             return new CompoundTag();
 
         return data.getCompound(ability);
+    }
+
+    public static void setAbilityTag(ItemStack stack, String ability, CompoundTag nbt) {
+        CompoundTag data = getAbilitiesTag(stack);
+
+        data.put(ability, nbt);
+
+        setAbilitiesTag(stack, data);
+    }
+
+    public static CompoundTag getAbilityTempTag(ItemStack stack, String ability) {
+        CompoundTag data = getAbilityTag(stack, ability);
+
+        if (data.isEmpty())
+            return new CompoundTag();
+
+        return data.getCompound(TAG_TEMP);
+    }
+
+    public static void setAbilityTempTag(ItemStack stack, String ability, CompoundTag nbt) {
+        CompoundTag data = getAbilityTag(stack, ability);
+
+        data.put(TAG_TEMP, nbt);
+
+        setAbilityTag(stack, ability, data);
     }
 
     public static Map<String, Double> getAbilityInitialValues(ItemStack stack, String ability) {
@@ -271,25 +297,48 @@ public class AbilityUtils {
     }
 
     public static int getAbilityCooldownCap(ItemStack stack, String ability) {
-        return NBTUtils.getInt(stack, ability + "_" + AFFIX_COOLDOWN_CAP, 0);
+        return getAbilityTempTag(stack, ability).getInt(TAG_COOLDOWN_CAP);
     }
 
     public static void setAbilityCooldownCap(ItemStack stack, String ability, int amount) {
-        NBTUtils.setInt(stack, ability + "_" + AFFIX_COOLDOWN_CAP, amount);
+        CompoundTag data = getAbilityTempTag(stack, ability);
+
+        data.putInt(TAG_COOLDOWN_CAP, amount);
+
+        setAbilityTempTag(stack, ability, data);
     }
 
     public static int getAbilityCooldown(ItemStack stack, String ability) {
-        return NBTUtils.getInt(stack, ability + "_" + AFFIX_COOLDOWN, 0);
+        return getAbilityTempTag(stack, ability).getInt(TAG_COOLDOWN);
     }
 
     public static void setAbilityCooldown(ItemStack stack, String ability, int amount) {
-        NBTUtils.setInt(stack, ability + "_" + AFFIX_COOLDOWN, amount);
+        CompoundTag data = getAbilityTempTag(stack, ability);
 
-        setAbilityCooldownCap(stack, ability, amount);
+        data.putInt(TAG_COOLDOWN, amount);
+        data.putInt(TAG_COOLDOWN_CAP, amount);
+
+        setAbilityTempTag(stack, ability, data);
     }
 
     public static void addAbilityCooldown(ItemStack stack, String ability, int amount) {
-        NBTUtils.setInt(stack, ability + "_" + AFFIX_COOLDOWN, getAbilityCooldown(stack, ability) + amount);
+        CompoundTag data = getAbilityTempTag(stack, ability);
+
+        data.putInt(TAG_COOLDOWN, getAbilityCooldown(stack, ability) + amount);
+
+        setAbilityTempTag(stack, ability, data);
+    }
+
+    public static void setAbilityTicking(ItemStack stack, String ability, boolean ticking) {
+        CompoundTag data = getAbilityTempTag(stack, ability);
+
+        data.putBoolean(TAG_TICKING, ticking);
+
+        setAbilityTempTag(stack, ability, data);
+    }
+
+    public static boolean isAbilityTicking(ItemStack stack, String ability) {
+        return getAbilityTempTag(stack, ability).getBoolean(TAG_TICKING);
     }
 
     public static boolean isAbilityOnCooldown(ItemStack stack, String ability) {

@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -144,7 +145,7 @@ public class SporeSackItem extends RelicItem {
     }
 
     @Override
-    public void endCastActiveAbility(ItemStack stack, Player player, String ability) {
+    public void castActiveAbility(ItemStack stack, Player player, String ability, AbilityCastType type, AbilityCastStage stage) {
         Level level = player.getCommandSenderWorld();
         RandomSource random = level.getRandom();
 

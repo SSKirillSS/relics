@@ -4,7 +4,9 @@ public enum AbilityCastType {
     NONE,
     INSTANTANEOUS,
     INTERRUPTIBLE,
-    TOGGLEABLE;
+    CYCLICAL,
+    TOGGLEABLE,
+    CHARGEABLE;
 
     public static AbilityCastType getByName(String name) {
         return AbilityCastType.valueOf(name.toUpperCase());

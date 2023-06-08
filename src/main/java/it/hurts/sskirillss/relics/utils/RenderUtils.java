@@ -17,16 +17,16 @@ import java.awt.*;
 import java.util.Random;
 
 public class RenderUtils {
-    public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texWidth, float texHeight, float scale, AnimationData animation) {
+    public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texWidth, float texHeight, float patternWidth, float patternHeight, float scale, AnimationData animation) {
         ClientLevel level = Minecraft.getInstance().level;
 
         if (level == null)
             return;
 
-        renderTextureFromCenter(matrix, centerX, centerY, texWidth, texHeight, scale, animation, level.getGameTime());
+        renderTextureFromCenter(matrix, centerX, centerY, texWidth, texHeight, patternWidth, patternHeight, scale, animation, level.getGameTime());
     }
 
-    public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texWidth, float texHeight, float scale, AnimationData animation, long ticks) {
+    public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texWidth, float texHeight, float patternWidth, float patternHeight, float scale, AnimationData animation, long ticks) {
         long time = ticks % animation.getLength();
 
         int index = 0;
@@ -41,7 +41,7 @@ public class RenderUtils {
 
         Pair<Integer, Integer> pair = animation.getFrames().get(index);
 
-        renderTextureFromCenter(matrix, centerX, centerY, 0, texWidth * pair.getKey(), texWidth, texHeight, texWidth, texWidth, scale);
+        renderTextureFromCenter(matrix, centerX, centerY, 0, patternHeight * pair.getKey(), texWidth, texHeight, patternWidth, patternHeight, scale);
     }
 
     public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float width, float height, float scale) {

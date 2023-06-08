@@ -7,16 +7,17 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -32,6 +33,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 public class IceBreakerItem extends RelicItem {
+    public static final String TAG_FALLING = "falling";
+
     @Override
     public RelicData getRelicData() {
         return RelicData.builder()
@@ -44,6 +47,17 @@ public class IceBreakerItem extends RelicItem {
                                         .build())
                                 .build())
                         .ability("impact", RelicAbilityEntry.builder()
+                                .maxLevel(10)
+                                .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
+                                        .predicate("falling", data -> {
+                                                    Player player = data.getPlayer();
+
+                                                    return PredicateInfo.builder()
+                                                            .condition(!(player.isOnGround() || player.isSpectator()))
+                                                            .build();
+                                                }
+                                        )
+                                )
                                 .stat("size", RelicAbilityStat.builder()
                                         .initialValue(2.5D, 5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.3D)
@@ -71,17 +85,34 @@ public class IceBreakerItem extends RelicItem {
     }
 
     @Override
+    public void castActiveAbility(ItemStack stack, Player player, String ability, AbilityCastType type, AbilityCastStage stage) {
+        if (ability.equals("impact")) {
+            NBTUtils.setBoolean(stack, TAG_FALLING, true);
+        }
+    }
+
+    @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
         if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        Vec3 motion = player.getDeltaMovement();
+        boolean isFalling = NBTUtils.getBoolean(stack, TAG_FALLING, false);
 
-        if (player.isOnGround() || player.getAbilities().flying || motion.y() > 0
-                || player.isFallFlying() || player.isSpectator())
+        if (!isFalling)
             return;
 
-        player.setDeltaMovement(motion.x(), motion.y() * 1.075F, motion.z());
+        Vec3 motion = player.getDeltaMovement();
+
+        if (player.isOnGround() || player.isSpectator()) {
+            NBTUtils.setBoolean(stack, TAG_FALLING, false);
+
+            return;
+        }
+
+        player.stopFallFlying();
+        player.getAbilities().flying = false;
+
+        player.setDeltaMovement(motion.x(), Math.min(-0.01F, motion.y() * 1.075F), motion.z());
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
@@ -114,7 +145,7 @@ public class IceBreakerItem extends RelicItem {
 
             Level world = player.getCommandSenderWorld();
 
-            if (distance < 2 || !player.isShiftKeyDown())
+            if (distance < 2 || !NBTUtils.getBoolean(stack, TAG_FALLING, false))
                 return;
 
             LevelingUtils.addExperience(player, stack, Math.min(10, Math.round(distance / 3F)));
