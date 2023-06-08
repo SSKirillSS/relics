@@ -9,7 +9,6 @@ import it.hurts.sskirillss.relics.utils.TickerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,11 +22,13 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 
 public class ResearchingTableBlock extends Block implements EntityBlock {
@@ -37,42 +38,6 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
                 .strength(1.5F)
                 .sound(SoundType.WOOD)
                 .noOcclusion());
-    }
-
-    @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (handIn != InteractionHand.MAIN_HAND)
-            return InteractionResult.FAIL;
-
-        if (!(world.getBlockEntity(pos) instanceof ResearchingTableTile tile))
-            return InteractionResult.FAIL;
-
-        ItemStack handStack = player.getMainHandItem();
-        ItemStack tileStack = tile.getStack();
-
-        if (tileStack.isEmpty()) {
-            if (!(handStack.getItem() instanceof RelicItem))
-                return InteractionResult.FAIL;
-
-            tile.setStack(handStack.split(1));
-        } else {
-            if (player.isShiftKeyDown()) {
-                ResearchUtils.setItemResearched(player, tileStack.getItem(), true);
-
-                if (world.isClientSide())
-                    openGui(pos, tileStack);
-            } else {
-                world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), tileStack));
-
-                tile.setStack(ItemStack.EMPTY);
-            }
-        }
-
-        tile.setChanged();
-
-        world.sendBlockUpdated(pos, state, world.getBlockState(pos), 3);
-
-        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -107,5 +72,51 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ResearchingTableTile(pos, state);
+    }
+
+    @Mod.EventBusSubscriber
+    public static class Events {
+        @SubscribeEvent
+        public static void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
+            InteractionHand hand = event.getHand();
+
+            if (hand != InteractionHand.MAIN_HAND)
+                return;
+
+            Level level = event.getLevel();
+            BlockPos pos = event.getPos();
+
+            if (!(level.getBlockEntity(pos) instanceof ResearchingTableTile tile))
+                return;
+
+            Player player = event.getEntity();
+
+            ItemStack handStack = player.getMainHandItem();
+            ItemStack tileStack = tile.getStack();
+
+            BlockState oldState = level.getBlockState(pos);
+
+            if (tileStack.isEmpty()) {
+                if (!(handStack.getItem() instanceof RelicItem))
+                    return;
+
+                tile.setStack(handStack.split(1));
+            } else {
+                if (player.isShiftKeyDown()) {
+                    ResearchUtils.setItemResearched(player, tileStack.getItem(), true);
+
+                    if (level.isClientSide())
+                        openGui(pos, tileStack);
+                } else {
+                    level.addFreshEntity(new ItemEntity(level, player.getX(), player.getY(), player.getZ(), tileStack));
+
+                    tile.setStack(ItemStack.EMPTY);
+                }
+            }
+
+            tile.setChanged();
+
+            level.sendBlockUpdated(pos, oldState, level.getBlockState(pos), 3);
+        }
     }
 }
