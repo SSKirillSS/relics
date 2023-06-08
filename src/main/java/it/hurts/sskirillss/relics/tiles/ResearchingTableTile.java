@@ -98,7 +98,7 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
         int scale = 2;
 
         if (!stack.isEmpty()) {
-            ResourceLocation texture = new ResourceLocation(Reference.MODID, "textures/hud/info/shift_rmb.png");
+            ResourceLocation texture = new ResourceLocation(Reference.MODID, "textures/hud/info/crouch_rmb.png");
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.setShaderTexture(0, texture);
@@ -107,7 +107,7 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
 
             poseStack.pushPose();
 
-            int width = 97;
+            int width = 99;
             int height = 20;
 
             int x = window.getGuiScaledWidth() / 2 - width / 2 / scale;
