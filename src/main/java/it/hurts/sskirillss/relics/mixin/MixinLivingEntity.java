@@ -2,12 +2,9 @@ package it.hurts.sskirillss.relics.mixin;
 
 import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketSyncEntityEffects;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,14 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity {
-    @Inject(at = @At("HEAD"), method = "checkTotemDeathProtection", cancellable = true)
-    protected void preventTotemUse(DamageSource source, CallbackInfoReturnable<Boolean> info) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-
-        if (!EntityUtils.findEquippedCurio(entity, ItemRegistry.DELAY_RING.get()).isEmpty())
-            info.setReturnValue(false);
-    }
-
     @ModifyVariable(method = "travel", index = 8, ordinal = 0, at = @At("STORE"))
     protected float setBlockFriction(float original) {
         LivingEntity entity = (LivingEntity) (Object) this;

@@ -12,12 +12,6 @@ import net.minecraftforge.registries.RegistryObject;
 public class EntityRegistry {
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Reference.MODID);
 
-    public static final RegistryObject<EntityType<FallingStarEntity>> STELLAR_CATALYST_PROJECTILE = ENTITIES.register("falling_star", () ->
-            EntityType.Builder.<FallingStarEntity>of(FallingStarEntity::new, MobCategory.MISC)
-                    .sized(1.0F, 1.0F)
-                    .build("falling_star")
-    );
-
     public static final RegistryObject<EntityType<ShadowGlaiveEntity>> SHADOW_GLAIVE = ENTITIES.register("shadow_glaive", () ->
             EntityType.Builder.<ShadowGlaiveEntity>of(ShadowGlaiveEntity::new, MobCategory.MISC)
                     .sized(0.9F, 0.1F)
@@ -64,12 +58,6 @@ public class EntityRegistry {
             EntityType.Builder.<ShadowSawEntity>of(ShadowSawEntity::new, MobCategory.MISC)
                     .sized(2F, 0.5F)
                     .build("shadow_saw")
-    );
-
-    public static final RegistryObject<EntityType<PoisonedPuddleEntity>> POISONED_PUDDLE = ENTITIES.register("poisoned_puddle", () ->
-            EntityType.Builder.<PoisonedPuddleEntity>of(PoisonedPuddleEntity::new, MobCategory.MISC)
-                    .sized(1F, 0.5F)
-                    .build("poisoned_puddle")
     );
 
     public static final RegistryObject<EntityType<SolidSnowballEntity>> SOLID_SNOWBALL = ENTITIES.register("solid_snowball", () ->

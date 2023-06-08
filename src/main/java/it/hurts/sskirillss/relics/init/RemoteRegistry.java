@@ -124,7 +124,6 @@ public class RemoteRegistry {
 
     @SubscribeEvent
     public static void entityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(EntityRegistry.STELLAR_CATALYST_PROJECTILE.get(), new StellarCatalystProjectileRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.SHADOW_GLAIVE.get(), new ShadowGlaiveRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.BLOCK_SIMULATION.get(), new BlockSimulationRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.SHOCKWAVE.get(), new NullRenderer.RenderFactory());
@@ -133,7 +132,6 @@ public class RemoteRegistry {
         event.registerEntityRenderer(EntityRegistry.DISSECTION.get(), new DissectionRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.SPORE.get(), new SporeRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.SHADOW_SAW.get(), new ShadowSawRenderer.RenderFactory());
-        event.registerEntityRenderer(EntityRegistry.POISONED_PUDDLE.get(), new NullRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.SOLID_SNOWBALL.get(), new SolidSnowballRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.ARROW_RAIN.get(), new NullRenderer.RenderFactory());
 
