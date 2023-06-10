@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "relics:old_boot",
     "relics:magma_walker",
     "relics:aqua_walker",
     "relics:ice_skates",
