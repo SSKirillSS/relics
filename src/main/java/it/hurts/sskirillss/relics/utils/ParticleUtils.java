@@ -53,7 +53,7 @@ public class ParticleUtils {
 
             for (tries = 0; tries < offset * 2; tries++) {
                 Vec3 vec = new Vec3(extraX, extraY, extraZ);
-                BlockPos pos = new BlockPos(vec);
+                BlockPos pos = new BlockPos((int) vec.x, (int) vec.y, (int) vec.z);
 
                 BlockState state = level.getBlockState(pos);
                 VoxelShape shape = state.getCollisionShape(level, pos);

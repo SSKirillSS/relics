@@ -6,8 +6,8 @@ import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -55,7 +55,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
         super.tick();
 
         BlockPos center = this.blockPosition();
-        Level level = this.getLevel();
+        Level level = level();
 
         if (poses.isEmpty()) {
             for (int i = -(int) radius; i <= radius; i++) {
@@ -82,7 +82,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
                         if (owner != null && entity.getStringUUID().equals(owner.getStringUUID()))
                             continue;
 
-                        entity.hurt(owner instanceof Player player ? DamageSource.playerAttack(player) : DamageSource.GENERIC, radius * damage / step);
+                        entity.hurt(owner instanceof Player player ? level().damageSources().playerAttack(player) : level().damageSources().generic(), radius * damage / step);
 
                         entity.setDeltaMovement(entity.position().add(0, 1, 0).subtract(centerVec).normalize().multiply(2, 1, 2));
                     }
@@ -90,7 +90,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
 
                 BlockState state = level.getBlockState(p);
 
-                if (!state.getMaterial().blocksMotion() || level.getBlockState(p.above()).getMaterial().blocksMotion())
+                if (!state.blocksMotion() || level.getBlockState(p.above()).blocksMotion())
                     continue;
 
                 BlockSimulationEntity entity = new BlockSimulationEntity(level, state);
@@ -134,7 +134,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
 
     @Nonnull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

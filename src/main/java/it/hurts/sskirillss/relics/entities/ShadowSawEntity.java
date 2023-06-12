@@ -10,9 +10,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -38,7 +38,7 @@ public class ShadowSawEntity extends ThrowableProjectile {
     }
 
     public ShadowSawEntity(ItemStack stack, LivingEntity owner) {
-        super(EntityRegistry.SHADOW_SAW.get(), owner.getLevel());
+        super(EntityRegistry.SHADOW_SAW.get(), owner.getCommandSenderWorld());
 
         setStack(stack);
     }
@@ -47,7 +47,7 @@ public class ShadowSawEntity extends ThrowableProjectile {
     public void tick() {
         this.move(MoverType.SELF, this.getDeltaMovement());
 
-        if (level.isClientSide())
+        if (level().isClientSide())
             return;
 
         if (this.tickCount >= 1200)
@@ -79,20 +79,20 @@ public class ShadowSawEntity extends ThrowableProjectile {
             } else
                 this.discard();
         } else {
-            if (this.isOnGround())
+            if (this.onGround())
                 this.setDeltaMovement(this.getDeltaMovement().multiply(0.75F, 0.75F, 0.75F));
             else
                 this.setDeltaMovement(this.getDeltaMovement().add(0F, -0.05F, 0F));
         }
 
-        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
+        for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
             if ((this.getOwner() == null || (this.getOwner() != null && entity != this.getOwner()))
-                    && entity.hurt(DamageSource.MAGIC, (float) Math.max(AbilityUtils.getAbilityValue(stack, "saw", "damage"), 0.1D))) {
+                    && entity.hurt(level().damageSources().magic(), (float) Math.max(AbilityUtils.getAbilityValue(stack, "saw", "damage"), 0.1D))) {
                 entity.invulnerableTime = (int) Math.round(AbilityUtils.getAbilityValue(stack, "saw", "speed"));
             }
         }
 
-        ServerLevel serverLevel = (ServerLevel) level;
+        ServerLevel serverLevel = (ServerLevel) level();
 
         double radius = 1.5D;
 
@@ -142,7 +142,7 @@ public class ShadowSawEntity extends ThrowableProjectile {
 
     @Nonnull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

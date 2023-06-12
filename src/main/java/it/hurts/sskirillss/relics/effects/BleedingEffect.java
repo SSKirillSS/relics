@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.effects;
 
 import it.hurts.sskirillss.relics.init.EffectRegistry;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,7 +20,7 @@ public class BleedingEffect extends MobEffect {
             LivingEntity entity = event.getEntity();
 
             if (entity.hasEffect(EffectRegistry.BLEEDING.get()))
-                entity.hurt(DamageSource.MAGIC, (entity.getHealth() * 0.05F));
+                entity.hurt(entity.level().damageSources().magic(), (entity.getHealth() * 0.05F));
         }
     }
 }

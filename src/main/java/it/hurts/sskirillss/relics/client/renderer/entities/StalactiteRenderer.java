@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.models.StalactiteModel;
 import it.hurts.sskirillss.relics.entities.StalactiteEntity;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -31,10 +31,10 @@ public class StalactiteRenderer extends EntityRenderer<StalactiteEntity> {
 
         matrixStackIn.translate(0, 0.25, 0.25);
 
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 90.0F));
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot()) + 90.0F));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 90.0F));
+        matrixStackIn.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot()) + 90.0F));
 
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(time * 10F));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(time * 10F));
 
         matrixStackIn.scale(0.35F, 0.35F, 0.35F);
 

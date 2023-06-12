@@ -20,11 +20,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity {
-    @ModifyVariable(method = "travel", index = 8, ordinal = 0, at = @At("STORE"))
+    @ModifyVariable(method = "travel", name = "f2", index = 8, ordinal = 0, at = @At("STORE"))
     protected float setBlockFriction(float original) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        LivingSlippingEvent event = new LivingSlippingEvent(entity, entity.level.getBlockState(entity.getBlockPosBelowThatAffectsMyMovement()), original);
+        LivingSlippingEvent event = new LivingSlippingEvent(entity, entity.getCommandSenderWorld().getBlockState(entity.getOnPos()), original);
 
         MinecraftForge.EVENT_BUS.post(event);
 

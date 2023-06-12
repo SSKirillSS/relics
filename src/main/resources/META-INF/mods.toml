@@ -1,32 +1,26 @@
 modLoader = "javafml"
-loaderVersion = "[35,)"
-license = "GNU GPL V3"
+loaderVersion = "[46,)"
+license = "All Rights Reserved"
 issueTrackerURL = "https://discord.gg/pHren9yxzW"
 logoFile = "logo.png"
 
 [[mods]]
-modId = "relics"
-version = "0.4.7"
-displayName = "Relics"
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/relics-mod"
-authors = "SSKirillSS"
-description = "Just a mod about useful relics with unique mechanics ;)"
+authors = "${mod_authors}"
+description = '''Just a mod about useful relics with unique mechanics ;)'''
 
-[[dependencies.relics]]
+[[dependencies.${mod_id}]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.19.2,1.20)"
+    versionRange = "[1.20,1.21)"
     ordering = "NONE"
     side = "BOTH"
-[[dependencies.relics]]
+[[dependencies.${mod_id}]]
     modId = "forge"
     mandatory = true
-    versionRange = "[43.1.52,)"
-    ordering = "NONE"
-    side = "BOTH"
-[[dependencies.relics]]
-    modId = "curios"
-    mandatory = true
-    versionRange = "[1.19.2-5.1.1.0,)"
+    versionRange = "[46,)"
     ordering = "NONE"
     side = "BOTH"

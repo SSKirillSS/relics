@@ -10,10 +10,10 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -69,7 +69,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         }
 
         List<String> bouncedEntities = Arrays.asList(entityData.get(BOUNCED_ENTITIES).split(","));
-        List<LivingEntity> entitiesAround = level.getEntitiesOfClass(LivingEntity.class,
+        List<LivingEntity> entitiesAround = level().getEntitiesOfClass(LivingEntity.class,
                 this.getBoundingBox().inflate(AbilityUtils.getAbilityValue(stack, "glaive", "radius")));
 
         entitiesAround = entitiesAround.stream()
@@ -117,10 +117,10 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         super.tick();
 
         for (int i = 0; i < 3; i++)
-            level.addParticle(new SparkTintData(new Color(255, random.nextInt(100), 255), 0.2F, 30),
+            level().addParticle(new SparkTintData(new Color(255, random.nextInt(100), 255), 0.2F, 30),
                     this.xo, this.yo, this.zo, MathUtils.randomFloat(random) * 0.01F, 0, MathUtils.randomFloat(random) * 0.01F);
 
-        if (level.isClientSide())
+        if (level().isClientSide())
             return;
 
         if (!isBounced && target == null && this.tickCount > 30)
@@ -139,7 +139,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
             EntityUtils.moveTowardsPosition(this, target.position()
                     .add(0D, target.getBbHeight() * 0.5D, 0D), 0.75F);
 
-            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class,
+            for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class,
                     this.getBoundingBox().inflate(0.3D, 3D, 0.3D))) {
                 if (this.getOwner() instanceof Player player && entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
@@ -147,7 +147,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
 
-                entity.hurt(this.getOwner() instanceof Player player ? DamageSource.thrown(this, player) : DamageSource.MAGIC, (float) AbilityUtils.getAbilityValue(stack, "glaive", "damage"));
+                entity.hurt(this.getOwner() instanceof Player player ? level().damageSources().thrown(this, player) : level().damageSources().magic(), (float) AbilityUtils.getAbilityValue(stack, "glaive", "damage"));
 
                 if (!bouncedEntities.contains(entity.getUUID().toString())) {
                     entityData.set(BOUNCED_ENTITIES, bouncedEntitiesString + "," + entity.getUUID());
@@ -212,7 +212,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
 
     @Nonnull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

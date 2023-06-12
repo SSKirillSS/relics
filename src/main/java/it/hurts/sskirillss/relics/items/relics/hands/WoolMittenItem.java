@@ -75,7 +75,7 @@ public class WoolMittenItem extends RelicItem {
             if (!player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty() || relic.isEmpty())
                 return;
 
-            Level level = player.getLevel();
+            Level level = player.level();
             BlockPos pos = event.getPos();
             BlockState state = level.getBlockState(pos);
             Block block = state.getBlock();

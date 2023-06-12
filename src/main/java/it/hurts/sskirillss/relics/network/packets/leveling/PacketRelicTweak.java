@@ -45,7 +45,7 @@ public class PacketRelicTweak {
             if (player == null)
                 return;
 
-            Level world = player.level;
+            Level world = player.level();
 
             if (!(world.getBlockEntity(pos) instanceof ResearchingTableTile tile))
                 return;

@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.models.ShadowSawModel;
 import it.hurts.sskirillss.relics.entities.ShadowSawEntity;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -30,9 +30,9 @@ public class ShadowSawRenderer extends EntityRenderer<ShadowSawEntity> {
 
         matrixStackIn.translate(0, 1, 0);
 
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(time * 30F));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(time * 30F));
 
-        matrixStackIn.mulPose(Vector3f.ZP.rotation((float) (Math.sin(time) * 0.3F) * 0.1F));
+        matrixStackIn.mulPose(Axis.ZP.rotation((float) (Math.sin(time) * 0.3F) * 0.1F));
 
         matrixStackIn.translate(0, Math.sin(time * 0.1F) * 0.05F, 0);
 

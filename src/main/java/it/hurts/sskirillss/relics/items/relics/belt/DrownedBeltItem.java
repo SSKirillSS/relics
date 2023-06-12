@@ -81,7 +81,7 @@ public class DrownedBeltItem extends RelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        if (player.isEyeInFluid(FluidTags.WATER) && !player.isOnGround())
+        if (player.isEyeInFluid(FluidTags.WATER) && !player.onGround())
             EntityUtils.applyAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), (float) AbilityUtils.getAbilityValue(stack, "anchor", "sinking"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         else
             EntityUtils.removeAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);

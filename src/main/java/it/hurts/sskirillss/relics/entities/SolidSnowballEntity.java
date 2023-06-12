@@ -11,13 +11,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -58,7 +58,7 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         if (this.tickCount > 300)
             this.discard();
 
-        Level level = this.getLevel();
+        Level level = level();
 
         if (level.isClientSide())
             return;
@@ -72,9 +72,9 @@ public class SolidSnowballEntity extends ThrowableProjectile {
     @Override
     protected void onHitBlock(BlockHitResult result) {
         BlockPos pos = result.getBlockPos();
-        BlockState state = this.level.getBlockState(pos);
+        BlockState state = level().getBlockState(pos);
 
-        if (!state.getMaterial().blocksMotion())
+        if (!state.blocksMotion())
             return;
 
         this.discard();
@@ -82,14 +82,14 @@ public class SolidSnowballEntity extends ThrowableProjectile {
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
-        if (level.isClientSide() || !(result.getEntity() instanceof LivingEntity entity)
+        if (level().isClientSide() || !(result.getEntity() instanceof LivingEntity entity)
                 || (this.getOwner() != null && entity.getStringUUID().equals(this.getOwner().getStringUUID())))
             return;
 
         ItemStack stack = EntityUtils.findEquippedCurio(this.getOwner(), ItemRegistry.WOOL_MITTEN.get());
 
         if (!stack.isEmpty()) {
-            entity.hurt(DamageSource.thrown(this, this.getOwner()), (float) (getSize() * AbilityUtils.getAbilityValue(stack, "mold", "damage")));
+            entity.hurt(level().damageSources().thrown(this, this.getOwner()), (float) (getSize() * AbilityUtils.getAbilityValue(stack, "mold", "damage")));
             entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) Math.round(getSize() * AbilityUtils.getAbilityValue(stack, "mold", "stun")) * 20, 0, true, false));
         }
 
@@ -98,9 +98,9 @@ public class SolidSnowballEntity extends ThrowableProjectile {
 
     @Override
     public void onRemovedFromWorld() {
-        ParticleUtils.createBall(ParticleTypes.SNOWFLAKE, this.position(), this.level, 1 + (getSize() / 10), 0.1F + getSize() * 0.005F);
+        ParticleUtils.createBall(ParticleTypes.SNOWFLAKE, this.position(), level(), 1 + (getSize() / 10), 0.1F + getSize() * 0.005F);
 
-        if (this.level.isClientSide())
+        if (level().isClientSide())
             return;
 
         Entity owner = this.getOwner();
@@ -108,7 +108,7 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         if (owner == null)
             return;
 
-        for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(getSize() / 15F))) {
+        for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(getSize() / 15F))) {
             if (!entity.getStringUUID().equals(owner.getStringUUID()))
                 entity.setTicksFrozen((int) (100 + Math.round(getSize() * AbilityUtils.getAbilityValue(EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get()), "mold", "freeze"))));
         }
@@ -118,7 +118,7 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         if (!stack.isEmpty())
             LevelingUtils.addExperience(owner, stack, (int) Math.floor(getSize() / 5F));
 
-        this.level.playSound(null, this.blockPosition(), SoundEvents.SNOW_BREAK, SoundSource.MASTER, 1F, 0.5F);
+        level().playSound(null, this.blockPosition(), SoundEvents.SNOW_BREAK, SoundSource.MASTER, 1F, 0.5F);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class SolidSnowballEntity extends ThrowableProjectile {
 
     @Nonnull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

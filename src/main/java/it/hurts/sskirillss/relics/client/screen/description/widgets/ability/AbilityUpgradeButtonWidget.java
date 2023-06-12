@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -44,7 +45,9 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+
         TextureManager manager = MC.getTextureManager();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -53,12 +56,12 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
         manager.bindForSetup(AbilityDescriptionScreen.TEXTURE);
 
         if (AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
-            blit(poseStack, x, y, 258, 0, 18, 18, 512, 512);
+            guiGraphics.blit(AbilityDescriptionScreen.TEXTURE, getX(), getY(), 258, 0, 18, 18, 512, 512);
 
             if (isHovered)
-                blit(poseStack, x - 1, y - 1, 318, 0, 20, 20, 512, 512);
+                guiGraphics.blit(AbilityDescriptionScreen.TEXTURE, getX() - 1, getY() - 1, 318, 0, 20, 20, 512, 512);
         } else {
-            blit(poseStack, x, y, 258, 20, 18, 18, 512, 512);
+            guiGraphics.blit(AbilityDescriptionScreen.TEXTURE, getX(), getY(), 258, 20, 18, 18, 512, 512);
 
             RelicAbilityEntry abilityData = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
 
@@ -66,12 +69,12 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
                 return;
 
             if (AbilityUtils.canUseAbility(screen.stack, ability) && !abilityData.getStats().isEmpty() && isHovered)
-                blit(poseStack, x - 1, y - 1, 318, 22, 20, 20, 512, 512);
+                guiGraphics.blit(AbilityDescriptionScreen.TEXTURE, getX() - 1, getY() - 1, 318, 22, 20, 20, 512, 512);
         }
     }
 
     @Override
-    public void onHovered(PoseStack poseStack, int mouseX, int mouseY) {
+    public void onHovered(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (!AbilityUtils.canUseAbility(screen.stack, ability))
             return;
 
@@ -81,6 +84,8 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
             return;
 
         List<FormattedCharSequence> tooltip = Lists.newArrayList();
+
+        PoseStack poseStack = guiGraphics.pose();
 
         int maxWidth = 100;
         int renderWidth = 0;
@@ -103,7 +108,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
                     (requiredPoints > points ? negativeStatus : positiveStatus), requiredExperience,
                     (requiredExperience > experience ? negativeStatus : positiveStatus)));
         else
-                entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.upgrade.locked")));
+            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.upgrade.locked")));
 
         for (MutableComponent entry : entries) {
             int entryWidth = (MC.font.width(entry) + 4) / 2;
@@ -116,10 +121,10 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
         int height = tooltip.size() * 4;
 
-        int renderX = x + width + 3;
-        int renderY = y - height / 2;
+        int renderX = getX() + width + 3;
+        int renderY = getY() - height / 2;
 
-        ScreenUtils.drawTexturedTooltipBorder(poseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+        ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                 renderWidth, height, renderX, renderY);
 
         int yOff = 0;
@@ -127,7 +132,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
         for (FormattedCharSequence entry : tooltip) {
-            MC.font.draw(poseStack, entry, (renderX + 9) * 2, (renderY + 9 + yOff) * 2, 0x412708);
+            guiGraphics.drawString(MC.font, entry, (renderX + 9) * 2, (renderY + 9 + yOff) * 2, 0x412708, false);
 
             yOff += 4;
         }

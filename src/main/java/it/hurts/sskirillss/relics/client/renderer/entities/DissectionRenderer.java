@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.models.DissectionModel;
 import it.hurts.sskirillss.relics.entities.DissectionEntity;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -43,8 +43,8 @@ public class DissectionRenderer extends EntityRenderer<DissectionEntity> {
         double angleY = Math.toDegrees(Math.atan2(angle.x, angle.z));
         double angleZ = Math.toDegrees(Math.atan2(Math.sqrt(angle.x * angle.x + angle.z * angle.z), angle.y));
 
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees((float) angleY));
-        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees((float) angleZ + 90F));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees((float) angleY));
+        matrixStackIn.mulPose(Axis.XP.rotationDegrees((float) angleZ + 90F));
 
         new DissectionModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Reference.MODID,
                 "textures/entities/dissection.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);

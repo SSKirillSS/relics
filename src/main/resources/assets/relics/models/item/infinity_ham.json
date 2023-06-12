@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/infinity_ham_3"
+        "layer0": "relics:item/infinity_ham_3"
     },
     "overrides": [
         { "predicate": { "relics:broken": 1 }, "model": "relics:item/infinity_ham_broken" },

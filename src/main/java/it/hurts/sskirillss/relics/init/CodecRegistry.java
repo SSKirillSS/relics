@@ -16,7 +16,7 @@ public class CodecRegistry {
 
     public static final RegistryObject<Codec<RelicLootModifier>> RELIC_LOOT = CODECS.register("relic_gen", () -> RelicLootModifier.CODEC);
 
-    public static void registerCodecs() {
+    public static void register() {
         CODECS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

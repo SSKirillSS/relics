@@ -10,6 +10,7 @@ import lombok.Setter;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -68,12 +69,12 @@ public class ArrowRainEntity extends ThrowableProjectile {
     public void tick() {
         super.tick();
 
-        RandomSource random = level.getRandom();
+        RandomSource random = level().getRandom();
 
         ParticleUtils.createCyl(new CircleTintData(new Color(255, 255, 255), 0.2F, 1, 1F, false),
-                this.position(), level, getRadius(), 0.2F);
+                this.position(), level(), getRadius(), 0.2F);
 
-        if (!level.isClientSide()) {
+        if (!level().isClientSide()) {
             if (getDelay() == 0 || getRadius() == 0 || quiver.isEmpty() || getDuration() < this.tickCount) {
                 this.discard();
 
@@ -83,11 +84,11 @@ public class ArrowRainEntity extends ThrowableProjectile {
 
         AABB area = this.getBoundingBox().inflate(getRadius(), getRadius() * 2, getRadius());
 
-        for (AbstractArrow arrow : level.getEntitiesOfClass(AbstractArrow.class, area)) {
-            if (arrow.isOnGround())
+        for (AbstractArrow arrow : level().getEntitiesOfClass(AbstractArrow.class, area)) {
+            if (arrow.onGround())
                 continue;
 
-            List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, area).stream()
+            List<LivingEntity> entities = level().getEntitiesOfClass(LivingEntity.class, area).stream()
                     .filter(entry -> entry.hasLineOfSight(arrow))
                     .filter(entry -> entry.position().distanceTo(this.position()) <= getRadius())
                     .sorted(Comparator.comparing(entry -> entry.position().distanceTo(arrow.position())))
@@ -119,7 +120,7 @@ public class ArrowRainEntity extends ThrowableProjectile {
                 ItemStack arrow = arrows.get(random.nextInt(arrows.size()));
 
                 if (arrow.getItem() instanceof ArrowItem item) {
-                    AbstractArrow entity = item.createArrow(level, arrow, player);
+                    AbstractArrow entity = item.createArrow(level(), arrow, player);
 
                     double theta = MathUtils.randomFloat(random) * 2 * Math.PI;
                     double r = random.nextFloat() * getRadius();
@@ -135,12 +136,12 @@ public class ArrowRainEntity extends ThrowableProjectile {
 
                     entity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
 
-                    level.addFreshEntity(entity);
+                    level().addFreshEntity(entity);
 
-                    if (!level.isClientSide())
-                        ((ServerLevel) level).sendParticles(ParticleTypes.CLOUD, entity.getX(), entity.getY(), entity.getZ(), 5, 0, 0, 0, 0.1F);
+                    if (!level().isClientSide())
+                        ((ServerLevel) level()).sendParticles(ParticleTypes.CLOUD, entity.getX(), entity.getY(), entity.getZ(), 5, 0, 0, 0, 0.1F);
 
-                    level.playSound(null, entity.blockPosition(), SoundRegistry.ARROW_RAIN.get(), SoundSource.MASTER, 2F, 1F + random.nextFloat() * 0.25F);
+                    level().playSound(null, entity.blockPosition(), SoundRegistry.ARROW_RAIN.get(), SoundSource.MASTER, 2F, 1F + random.nextFloat() * 0.25F);
                 }
             }
         }
@@ -181,7 +182,7 @@ public class ArrowRainEntity extends ThrowableProjectile {
 
     @Nonnull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

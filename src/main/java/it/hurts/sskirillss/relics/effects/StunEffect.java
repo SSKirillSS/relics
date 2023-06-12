@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.models.effects.StunStarModel;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -68,9 +68,9 @@ public class StunEffect extends MobEffect {
 
                 poseStack.translate(0, Mth.sin(entity.tickCount * 0.1F + i * 20) * 0.2F, 0);
 
-                poseStack.mulPose(Vector3f.ZP.rotationDegrees((Mth.cos(entity.tickCount / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
-                poseStack.mulPose(Vector3f.YP.rotationDegrees((entity.tickCount / 20.0F) * (180F / (float) Math.PI) + (i * (360F / stars))));
-                poseStack.mulPose(Vector3f.XP.rotationDegrees((Mth.sin(entity.tickCount / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
+                poseStack.mulPose(Axis.ZP.rotationDegrees((Mth.cos(entity.tickCount / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
+                poseStack.mulPose(Axis.YP.rotationDegrees((entity.tickCount / 20.0F) * (180F / (float) Math.PI) + (i * (360F / stars))));
+                poseStack.mulPose(Axis.XP.rotationDegrees((Mth.sin(entity.tickCount / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
 
                 poseStack.translate(0, 0, 1F + stars * 0.15F);
 

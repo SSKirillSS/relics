@@ -44,11 +44,13 @@ public class MixinEntity {
         points.put(new Vec3(box.maxX, box.minY, box.maxZ), null);
 
         boolean cancelled = false;
-        double fluidStepHeight = entity.isOnGround() ? Math.max(1F, entity.maxUpStep) : 0F;
+        double fluidStepHeight = entity.onGround() ? Math.max(1F, entity.maxUpStep) : 0F;
 
         for (Map.Entry<Vec3, Double> entry : points.entrySet()) {
             for (int i = 0; ; i++) {
-                BlockPos landingPos = new BlockPos(entry.getKey()).offset(0, fluidStepHeight - i, 0);
+                Vec3 vec = entry.getKey();
+
+                BlockPos landingPos = new BlockPos((int) vec.x, (int) vec.y, (int) vec.z).offset(0, (int) (fluidStepHeight - i), 0);
                 FluidState landingState = entity.getCommandSenderWorld().getFluidState(landingPos);
 
                 double distanceToFluidSurface = landingPos.getY() + landingState.getOwnHeight() - entity.getY();
@@ -138,7 +140,7 @@ public class MixinEntity {
     public void getBlockSpeedFactor(CallbackInfoReturnable<Float> cir) {
         Entity entity = (Entity) (Object) this;
 
-        EntityBlockSpeedFactorEvent event = new EntityBlockSpeedFactorEvent(entity, entity.level.getBlockState(entity.getBlockPosBelowThatAffectsMyMovement()), cir.getReturnValue());
+        EntityBlockSpeedFactorEvent event = new EntityBlockSpeedFactorEvent(entity, entity.level().getBlockState(entity.getOnPos()), cir.getReturnValue());
 
         MinecraftForge.EVENT_BUS.post(event);
 

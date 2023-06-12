@@ -53,7 +53,7 @@ public class AquaWalkerItem extends RelicItem {
         if (!(entity instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
-        if (drench > 0 && !player.isInWater() && !player.level.getFluidState(player.blockPosition().below()).is(FluidTags.WATER))
+        if (drench > 0 && !player.isInWater() && !player.level().getFluidState(player.blockPosition().below()).is(FluidTags.WATER))
             NBTUtils.setInt(stack, TAG_DRENCH, --drench);
     }
 

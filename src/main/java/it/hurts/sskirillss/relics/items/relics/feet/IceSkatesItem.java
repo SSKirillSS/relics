@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -91,7 +90,7 @@ public class IceSkatesItem extends RelicItem {
                 if (entity == player || entity.hurtTime > 0)
                     continue;
 
-                entity.hurt(DamageSource.playerAttack(player), (float) (duration * AbilityUtils.getAbilityValue(stack, "ram", "damage")));
+                entity.hurt(level.damageSources().playerAttack(player), (float) (duration * AbilityUtils.getAbilityValue(stack, "ram", "damage")));
 
                 double factor = Mth.clamp(duration * 0.025D, 1D, 2D);
 

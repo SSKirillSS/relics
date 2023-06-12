@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/soul_devourer_broken"
+        "layer0": "relics:item/soul_devourer_broken"
     }
 }
 

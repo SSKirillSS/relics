@@ -1,10 +1,19 @@
 package it.hurts.sskirillss.relics.items;
 
-import it.hurts.sskirillss.relics.utils.RelicsTab;
+import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.items.relics.base.ICreativeTabEntry;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
-public class ItemBase extends Item {
-    public ItemBase() {
-        super(new Item.Properties().tab(RelicsTab.RELICS_TAB));
+import java.util.List;
+
+public class ItemBase extends Item implements ICreativeTabEntry {
+    public ItemBase(Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    public List<ItemStack> processCreativeTab() {
+        return Lists.newArrayList(this.getDefaultInstance());
     }
 }

@@ -101,7 +101,7 @@ public class MagicMirrorItem extends RelicItem {
         Vec3 pos = data.getRight();
 
         LevelingUtils.addExperience(player, stack, (int) (1 + (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
-                * DimensionType.getTeleportationScale(player.level.dimensionType(), data.getLeft().dimensionType()))) / 50)));
+                * DimensionType.getTeleportationScale(player.level().dimensionType(), data.getLeft().dimensionType()))) / 50)));
 
         player.teleportTo(data.getLeft(), pos.x() + 0.5F, pos.y() + 1.0F, pos.z() + 0.5F, player.getYRot(), player.getXRot());
 
@@ -115,14 +115,14 @@ public class MagicMirrorItem extends RelicItem {
 
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        if (player.level.isClientSide())
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int count) {
+        if (level.isClientSide())
             return;
 
-        ServerLevel level = (ServerLevel) player.level;
+        ServerLevel serverLevel = (ServerLevel) level;
 
         float radius = count * 0.075F;
-        double extraY = player.getY() + 1.5F - Math.log((count + getUseDuration(stack) * 0.075F) * 0.1F);
+        double extraY = entity.getY() + 1.5F - Math.log((count + getUseDuration(stack) * 0.075F) * 0.1F);
 
         RandomSource random = level.getRandom();
 
@@ -136,16 +136,16 @@ public class MagicMirrorItem extends RelicItem {
         for (int i = 0; i < 5; i++) {
             float angle = (0.01F * (count * 3 + i * 125));
 
-            double extraX = (double) (radius * Mth.sin((float) (Math.PI + angle))) + player.getX();
-            double extraZ = (double) (radius * Mth.cos(angle)) + player.getZ();
+            double extraX = (double) (radius * Mth.sin((float) (Math.PI + angle))) + entity.getX();
+            double extraZ = (double) (radius * Mth.cos(angle)) + entity.getZ();
 
-            level.sendParticles(new CircleTintData(color, Math.max(0.2F, (getUseDuration(stack) - count) * 0.015F),
+            serverLevel.sendParticles(new CircleTintData(color, Math.max(0.2F, (getUseDuration(stack) - count) * 0.015F),
                     40, 0.92F, false), extraX, extraY, extraZ, 1, 0F, 0F, 0F, 0F);
         }
 
-        level.sendParticles(new CircleTintData(color, (getUseDuration(stack) - count) * 0.005F, 10 + random.nextInt(50),
-                        0.95F, false), player.getX(), player.getY() + player.getBbHeight() * 0.5F, player.getZ(),
-                (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, player.getBbHeight() * 0.4F, 0.25F, 0.025F);
+        serverLevel.sendParticles(new CircleTintData(color, (getUseDuration(stack) - count) * 0.005F, 10 + random.nextInt(50),
+                        0.95F, false), entity.getX(), entity.getY() + entity.getBbHeight() * 0.5F, entity.getZ(),
+                (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, entity.getBbHeight() * 0.4F, 0.25F, 0.025F);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class MagicMirrorItem extends RelicItem {
 
     @Nullable
     private Pair<ServerLevel, Vec3> getHomePos(ServerPlayer player, boolean useAnchor) {
-        if (player.level.isClientSide())
+        if (player.level().isClientSide())
             return null;
 
         BlockPos pos = player.getRespawnPosition();
@@ -196,7 +196,7 @@ public class MagicMirrorItem extends RelicItem {
         Vec3 pos = data.getRight();
         ServerLevel level = data.getLeft();
 
-        return !(player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.level.dimensionType(),
+        return !(player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.level().dimensionType(),
                 level.dimensionType()) > AbilityUtils.getAbilityValue(stack, "teleport", "distance"));
     }
 

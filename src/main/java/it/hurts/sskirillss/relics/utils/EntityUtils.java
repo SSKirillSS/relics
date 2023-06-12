@@ -53,7 +53,7 @@ public class EntityUtils {
     }
 
     public static EntityHitResult rayTraceEntity(Entity shooter, Predicate<? super Entity> filter, double distance) {
-        Level world = shooter.level;
+        Level world = shooter.level();
 
         Vec3 startVec = shooter.getEyePosition(1.0F);
         Vec3 endVec = shooter.getEyePosition(1.0F).add(shooter.getViewVector(1.0F).scale(distance));

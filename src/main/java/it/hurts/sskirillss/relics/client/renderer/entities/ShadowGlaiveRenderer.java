@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.models.ShadowGlaiveModel;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -30,9 +30,9 @@ public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
         matrixStackIn.pushPose();
 
         matrixStackIn.translate(0, -0.2F, 0);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.getYRot(), entityIn.getYRot()) - 90.0F));
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entityIn.getXRot(), entityIn.getXRot())));
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(time * 40F));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.getYRot(), entityIn.getYRot()) - 90.0F));
+        matrixStackIn.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entityIn.getXRot(), entityIn.getXRot())));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(time * 40F));
         matrixStackIn.scale(0.35F, 0.35F, 0.35F);
 
         new ShadowGlaiveModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Reference.MODID,

@@ -22,7 +22,7 @@ public class NetworkHandler {
         return ID++;
     }
 
-    public static void registerMessages() {
+    public static void register() {
         INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MODID, "network"),
                 () -> "1.0",
                 s -> true,
@@ -31,32 +31,32 @@ public class NetworkHandler {
         INSTANCE.messageBuilder(PacketPlayerMotion.class, nextID())
                 .encoder(PacketPlayerMotion::toBytes)
                 .decoder(PacketPlayerMotion::new)
-                .consumer(PacketPlayerMotion::handle)
+                .consumerMainThread(PacketPlayerMotion::handle)
                 .add();
         INSTANCE.messageBuilder(PacketItemActivation.class, nextID())
                 .encoder(PacketItemActivation::toBytes)
                 .decoder(PacketItemActivation::new)
-                .consumer(PacketItemActivation::handle)
+                .consumerMainThread(PacketItemActivation::handle)
                 .add();
         INSTANCE.messageBuilder(PacketRelicTweak.class, nextID())
                 .encoder(PacketRelicTweak::toBytes)
                 .decoder(PacketRelicTweak::new)
-                .consumer(PacketRelicTweak::handle)
+                .consumerMainThread(PacketRelicTweak::handle)
                 .add();
         INSTANCE.messageBuilder(PacketSyncEntityEffects.class, nextID())
                 .encoder(PacketSyncEntityEffects::toBytes)
                 .decoder(PacketSyncEntityEffects::new)
-                .consumer(PacketSyncEntityEffects::handle)
+                .consumerMainThread(PacketSyncEntityEffects::handle)
                 .add();
         INSTANCE.messageBuilder(CapabilitySyncPacket.class, nextID())
                 .encoder(CapabilitySyncPacket::toBytes)
                 .decoder(CapabilitySyncPacket::new)
-                .consumer(CapabilitySyncPacket::handle)
+                .consumerMainThread(CapabilitySyncPacket::handle)
                 .add();
         INSTANCE.messageBuilder(SpellCastPacket.class, nextID())
                 .encoder(SpellCastPacket::toBytes)
                 .decoder(SpellCastPacket::new)
-                .consumer(SpellCastPacket::handle)
+                .consumerMainThread(SpellCastPacket::handle)
                 .add();
     }
 

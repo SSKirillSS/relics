@@ -8,10 +8,10 @@ import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,7 +52,7 @@ public class StalactiteEntity extends ThrowableProjectile {
         if (this.tickCount > 200)
             this.discard();
 
-        Level level = this.getLevel();
+        Level level = level();
 
         if (level.isClientSide())
             return;
@@ -64,23 +64,23 @@ public class StalactiteEntity extends ThrowableProjectile {
     @Override
     protected void onHitBlock(BlockHitResult result) {
         BlockPos pos = result.getBlockPos();
-        BlockState state = this.level.getBlockState(pos);
+        BlockState state = level().getBlockState(pos);
 
-        if (!state.getMaterial().blocksMotion())
+        if (!state.blocksMotion())
             return;
 
-        this.level.playSound(null, pos, SoundEvents.BASALT_BREAK, SoundSource.MASTER, 0.75F, 1.75F);
+        level().playSound(null, pos, SoundEvents.BASALT_BREAK, SoundSource.MASTER, 0.75F, 1.75F);
 
         this.discard();
     }
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
-        if (level.isClientSide() || !(result.getEntity() instanceof LivingEntity entity)
+        if (level().isClientSide() || !(result.getEntity() instanceof LivingEntity entity)
                 || (this.getOwner() != null && entity.getStringUUID().equals(this.getOwner().getStringUUID())))
             return;
 
-        entity.hurt(DamageSource.thrown(this, this.getOwner()), damage);
+        entity.hurt(level().damageSources().thrown(this, this.getOwner()), damage);
 
         entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), Math.round(stun), 0, true, false));
 
@@ -111,7 +111,7 @@ public class StalactiteEntity extends ThrowableProjectile {
 
     @Nonnull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

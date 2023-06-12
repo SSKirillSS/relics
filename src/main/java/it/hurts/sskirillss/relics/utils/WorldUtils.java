@@ -12,7 +12,7 @@ public class WorldUtils {
     @Nullable
     public static BlockPos getSolidBlockUnderFeet(Level world, BlockPos blockPos) {
         for (BlockPos pos = blockPos.below(); pos.getY() > world.getMinBuildHeight(); pos = pos.below())
-            if (world.getBlockState(pos).getMaterial().blocksMotion())
+            if (world.getBlockState(pos).blocksMotion())
                 return pos;
 
         return null;

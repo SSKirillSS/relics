@@ -6,6 +6,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -39,14 +40,14 @@ public class LifeEssenceEntity extends ThrowableProjectile {
     public void tick() {
         super.tick();
 
-        if (level.isClientSide())
+        if (level().isClientSide())
             return;
 
-        RandomSource random = level.getRandom();
+        RandomSource random = level().getRandom();
 
         double size = 0.02D + heal * 0.001D;
 
-        ((ServerLevel) level).sendParticles(new CircleTintData(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.1F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F, false),
+        ((ServerLevel) level()).sendParticles(new CircleTintData(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.1F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F, false),
                 this.xo, this.yo, this.zo, 1, size, size, size, 0.01F + heal * 0.0001F);
 
         if (!(getOwner() instanceof Player player) || player.isDeadOrDying()) {
@@ -55,7 +56,7 @@ public class LifeEssenceEntity extends ThrowableProjectile {
             return;
         }
 
-        for (LifeEssenceEntity essence : level.getEntitiesOfClass(LifeEssenceEntity.class, this.getBoundingBox().inflate(heal * 0.05F))) {
+        for (LifeEssenceEntity essence : level().getEntitiesOfClass(LifeEssenceEntity.class, this.getBoundingBox().inflate(heal * 0.05F))) {
             if (essence.getStringUUID().equals(this.getStringUUID()) || (essence.getOwner() instanceof Player p1
                     && this.getOwner() instanceof Player p2 && !p1.getStringUUID().equals(p2.getStringUUID())))
                 continue;
@@ -88,7 +89,7 @@ public class LifeEssenceEntity extends ThrowableProjectile {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

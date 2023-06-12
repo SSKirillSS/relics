@@ -31,7 +31,7 @@ public class AbstractDescriptionWidget extends AbstractButton {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 
     }
 }

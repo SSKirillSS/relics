@@ -11,7 +11,7 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
@@ -90,6 +90,8 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
         Minecraft MC = Minecraft.getInstance();
         LocalPlayer player = MC.player;
 
+        GuiGraphics gui = new GuiGraphics(MC, MC.renderBuffers().bufferSource());
+
         if (player == null)
             return;
 
@@ -114,7 +116,7 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
             int y = window.getGuiScaledHeight() / 2 + 10;
 
             manager.bindForSetup(texture);
-            Gui.blit(poseStack, x, y, width / scale, height / scale, 0, 0, width, height, width, height);
+            gui.blit(texture, x, y, width / scale, height / scale, 0, 0, width, height, width, height);
 
             poseStack.popPose();
 
@@ -136,7 +138,7 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
             int y = window.getGuiScaledHeight() / 2 + 10;
 
             manager.bindForSetup(texture);
-            Gui.blit(poseStack, x, y, width / scale, height / scale, 0, 0, width, height, width, height);
+            gui.blit(texture, x, y, width / scale, height / scale, 0, 0, width, height, width, height);
 
             poseStack.popPose();
 

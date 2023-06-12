@@ -29,11 +29,11 @@ public class BlockSimulationRenderer extends EntityRenderer<BlockSimulationEntit
             return;
 
         if (blockstate.getRenderShape() == RenderShape.MODEL) {
-            Level level = pEntity.getLevel();
+            Level level = pEntity.getCommandSenderWorld();
 
             pMatrixStack.pushPose();
 
-            BlockPos blockpos = new BlockPos(pEntity.getX(), pEntity.getBoundingBox().maxY, pEntity.getZ());
+            BlockPos blockpos = new BlockPos((int) pEntity.getX(), (int) pEntity.getBoundingBox().maxY, (int) pEntity.getZ());
 
             pMatrixStack.translate(-0.5D, 0.0D, -0.5D);
 

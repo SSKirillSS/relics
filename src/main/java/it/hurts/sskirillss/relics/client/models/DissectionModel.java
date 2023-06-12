@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.client.models;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -53,7 +53,7 @@ public class DissectionModel<T extends Entity> extends EntityModel<T> {
 
         poseStack.pushPose();
 
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(time));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(time));
 
         ring1.render(poseStack, buffer, packedLight, packedOverlay);
         ring4.render(poseStack, buffer, packedLight, packedOverlay);
@@ -62,7 +62,7 @@ public class DissectionModel<T extends Entity> extends EntityModel<T> {
 
         poseStack.pushPose();
 
-        poseStack.mulPose(Vector3f.ZN.rotationDegrees(time));
+        poseStack.mulPose(Axis.ZN.rotationDegrees(time));
 
         ring2.render(poseStack, buffer, packedLight, packedOverlay);
         ring3.render(poseStack, buffer, packedLight, packedOverlay);
@@ -71,7 +71,7 @@ public class DissectionModel<T extends Entity> extends EntityModel<T> {
 
         poseStack.pushPose();
 
-        poseStack.mulPose(Vector3f.ZN.rotationDegrees(time));
+        poseStack.mulPose(Axis.ZN.rotationDegrees(time));
 
         center.render(poseStack, buffer, packedLight, packedOverlay);
 

@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/aqua_walker_0"
+        "layer0": "relics:item/aqua_walker_0"
     },
     "overrides": [
         { "predicate": { "relics:broken": 1 }, "model": "relics:item/aqua_walker_broken" },

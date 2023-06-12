@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.screen.base;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 public interface IHoverableWidget {
-    void onHovered(PoseStack poseStack, int mouseX, int mouseY);
+    void onHovered(GuiGraphics guiGraphics, int mouseX, int mouseY);
 }

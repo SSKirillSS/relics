@@ -93,7 +93,7 @@ public class BlazingFlaskItem extends RelicItem {
                     double speed = AbilityUtils.getAbilityValue(stack, "bonfire", "speed");
 
                     if (world.isClientSide()) {
-                        if (!player.isOnGround() && (player.zza != 0 || player.xxa != 0))
+                        if (!player.onGround() && (player.zza != 0 || player.xxa != 0))
                             player.move(MoverType.SELF, player.getDeltaMovement().multiply(speed, 0, speed));
 
                         if (player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
@@ -145,7 +145,7 @@ public class BlazingFlaskItem extends RelicItem {
     }
 
     protected double getGroundHeight(Player player) {
-        HitResult result = player.level.clip(new ClipContext(player.position(), player.position().add(0, -64, 0),
+        HitResult result = player.level().clip(new ClipContext(player.position(), player.position().add(0, -64, 0),
                 ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
 
         if (result.getType() == HitResult.Type.BLOCK)
@@ -190,7 +190,7 @@ public class BlazingFlaskItem extends RelicItem {
     }
 
     public int getFireAround(ItemStack stack, Vec3 center, Level level) {
-        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos(center), AbilityUtils.getAbilityValue(stack, "bonfire", "step"))
+        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos((int) center.x, (int) center.y, (int) center.z), AbilityUtils.getAbilityValue(stack, "bonfire", "step"))
                 .stream().filter(pos -> (level.getBlockState(pos).getBlock() instanceof BaseFireBlock)).toList();
 
         return positions.size();

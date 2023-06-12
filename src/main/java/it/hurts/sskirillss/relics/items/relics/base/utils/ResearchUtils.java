@@ -18,7 +18,7 @@ public class ResearchUtils {
     public static void setResearchData(Player player, CompoundTag data) {
         CapabilityUtils.getRelicsCapability(player).setResearchData(data);
 
-        if (!player.level.isClientSide())
+        if (!player.level().isClientSide())
             NetworkHandler.sendToClient(new CapabilitySyncPacket(CapabilityUtils.getRelicsCapability(player).serializeNBT()), (ServerPlayer) player);
     }
 
@@ -29,7 +29,7 @@ public class ResearchUtils {
     public static void setItemResearched(Player player, Item item, boolean researched) {
         getResearchData(player).putBoolean(ForgeRegistries.ITEMS.getKey(item).getPath() + "_researched", researched);
 
-        if (!player.level.isClientSide())
+        if (!player.level().isClientSide())
             NetworkHandler.sendToClient(new CapabilitySyncPacket(CapabilityUtils.getRelicsCapability(player).serializeNBT()), (ServerPlayer) player);
     }
 }

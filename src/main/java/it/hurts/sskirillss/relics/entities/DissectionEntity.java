@@ -12,6 +12,7 @@ import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -73,10 +74,10 @@ public class DissectionEntity extends Entity {
 
     @Nullable
     public DissectionEntity getPair() {
-        if (pair == null || level.isClientSide())
+        if (pair == null || level().isClientSide())
             return null;
 
-        return ((ServerLevel) level).getEntity(pair) instanceof DissectionEntity dissection ? dissection : null;
+        return ((ServerLevel) level()).getEntity(pair) instanceof DissectionEntity dissection ? dissection : null;
     }
 
     public void setPair(Entity entity) {
@@ -90,7 +91,7 @@ public class DissectionEntity extends Entity {
     public void tick() {
         super.tick();
 
-        RandomSource random = level.getRandom();
+        RandomSource random = level().getRandom();
 
         clearFire();
 
@@ -105,18 +106,18 @@ public class DissectionEntity extends Entity {
                                 MathUtils.randomFloat(random) * step);
                 Vec3 angle = this.getLookAngle().normalize().multiply(mul, mul, mul);
 
-                level.addParticle(new CircleTintData(new Color(150 + random.nextInt(100), 100, 0),
+                level().addParticle(new CircleTintData(new Color(150 + random.nextInt(100), 100, 0),
                                 0.2F + random.nextFloat() * 0.1F, 10 + random.nextInt(20), 0.9F, true),
                         pos.x(), pos.y(), pos.z(), angle.x(), angle.y(), angle.z());
             }
         }
 
-        if (level.isClientSide())
+        if (level().isClientSide())
             return;
 
         locked = false;
 
-        ServerLevel serverLevel = (ServerLevel) level;
+        ServerLevel serverLevel = (ServerLevel) level();
 
         DissectionEntity pair = getPair();
 
@@ -158,8 +159,8 @@ public class DissectionEntity extends Entity {
             float y = (float) (((finalVec.y - currentVec.y) * j / distance) + currentVec.y);
             float z = (float) (((finalVec.z - currentVec.z) * j / distance) + currentVec.z);
 
-            BlockPos.betweenClosedStream(new AABB(new BlockPos(x, y, z))).forEach(pos -> {
-                if (serverLevel.getBlockState(pos).getMaterial().blocksMotion()) {
+            BlockPos.betweenClosedStream(new AABB(new BlockPos((int) x, (int) y, (int) z))).forEach(pos -> {
+                if (serverLevel.getBlockState(pos).blocksMotion()) {
                     locked = true;
 
                     serverLevel.sendParticles(new CircleTintData(new Color(255, random.nextInt(50), 0), 0.1F, 10, 0.9F, true),
@@ -281,7 +282,7 @@ public class DissectionEntity extends Entity {
 
     @Nonnull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

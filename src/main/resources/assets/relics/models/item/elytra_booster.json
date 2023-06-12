@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/elytra_booster_0"
+        "layer0": "relics:item/elytra_booster_0"
     },
     "overrides": [
         { "predicate": { "relics:broken": 1 }, "model": "relics:item/elytra_booster_broken" },

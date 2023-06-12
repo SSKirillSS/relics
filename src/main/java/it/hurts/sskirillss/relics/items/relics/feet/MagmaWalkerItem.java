@@ -16,7 +16,6 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +59,7 @@ public class MagmaWalkerItem extends RelicItem {
 
         if (heat > 0) {
             if (heat > AbilityUtils.getAbilityValue(stack, "pace", "time"))
-                player.hurt(DamageSource.HOT_FLOOR, (float) (1F + ((heat - AbilityUtils.getAbilityValue(stack, "pace", "time")) / 10F)));
+                player.hurt(level.damageSources().hotFloor(), (float) (1F + ((heat - AbilityUtils.getAbilityValue(stack, "pace", "time")) / 10F)));
 
             if (!level.getFluidState(player.blockPosition().below()).is(FluidTags.LAVA)
                     && !level.getFluidState(player.blockPosition()).is(FluidTags.LAVA))
@@ -72,7 +71,7 @@ public class MagmaWalkerItem extends RelicItem {
     public static void onLivingAttack(LivingAttackEvent event) {
         ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
-        if (!stack.isEmpty() && event.getSource() == DamageSource.HOT_FLOOR
+        if (!stack.isEmpty() && event.getSource() == event.getEntity().level().damageSources().hotFloor()
                 && NBTUtils.getInt(stack, TAG_HEAT, 0) <= AbilityUtils.getAbilityValue(stack, "pace", "time")) {
             event.setCanceled(true);
         }

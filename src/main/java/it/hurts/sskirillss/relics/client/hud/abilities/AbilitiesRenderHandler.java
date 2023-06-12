@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
@@ -27,6 +27,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -94,12 +95,12 @@ public class AbilitiesRenderHandler {
         }
     }
 
-    public static void render(PoseStack poseStack, float partialTicks) {
+    public static void render(GuiGraphics guiGraphics, float partialTicks) {
         if (animationDelta == 0)
             return;
 
+        PoseStack poseStack = guiGraphics.pose();
         Window window = MC.getWindow();
-
         LocalPlayer player = MC.player;
 
         if (player == null || entries.isEmpty())
@@ -114,11 +115,11 @@ public class AbilitiesRenderHandler {
 
         float shakeOffset = castShakeDelta > 0 ? ((castShakeDelta - partialTicks) * 0.25F) : 0;
 
-        drawAbility(poseStack, player, -2, x - 65 - shakeOffset, y, partialTicks);
-        drawAbility(poseStack, player, -1, x - 34 - shakeOffset, y, partialTicks);
-        drawAbility(poseStack, player, 0, x, y, partialTicks);
-        drawAbility(poseStack, player, 1, x + 34 + shakeOffset, y, partialTicks);
-        drawAbility(poseStack, player, 2, x + 65 + shakeOffset, y, partialTicks);
+        drawAbility(guiGraphics, player, -2, x - 65 - shakeOffset, y, partialTicks);
+        drawAbility(guiGraphics, player, -1, x - 34 - shakeOffset, y, partialTicks);
+        drawAbility(guiGraphics, player, 0, x, y, partialTicks);
+        drawAbility(guiGraphics, player, 1, x + 34 + shakeOffset, y, partialTicks);
+        drawAbility(guiGraphics, player, 2, x + 65 + shakeOffset, y, partialTicks);
 
         RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
 
@@ -141,7 +142,7 @@ public class AbilitiesRenderHandler {
 
         MutableComponent name = Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.getAbility());
 
-        MC.font.drawShadow(poseStack, name, x - MC.font.width(name) / 2F, y - 37, 0xFFFFFF);
+        guiGraphics.drawString(MC.font, name, x - MC.font.width(name) / 2, y - 37, 0xFFFFFF, true);
 
         poseStack.popPose();
 
@@ -165,7 +166,7 @@ public class AbilitiesRenderHandler {
 
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            MC.font.drawShadow(poseStack, Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.ability + ".predicate." + predicateName, info.getPlaceholders().toArray()).withStyle(info.getCondition() ? ChatFormatting.STRIKETHROUGH : ChatFormatting.RESET), (x + 7) * 2F, (y - 2 + yOff) * 2F, info.getCondition() ? 0xbeffb8 : 0xf17f9c);
+            guiGraphics.drawString(MC.font, Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.ability + ".predicate." + predicateName, info.getPlaceholders().toArray()).withStyle(info.getCondition() ? ChatFormatting.STRIKETHROUGH : ChatFormatting.RESET), (x + 7) * 2, (y - 2 + yOff) * 2, info.getCondition() ? 0xbeffb8 : 0xf17f9c, true);
 
             poseStack.scale(2F, 2F, 2F);
 
@@ -175,7 +176,7 @@ public class AbilitiesRenderHandler {
         poseStack.popPose();
     }
 
-    private static void drawAbility(PoseStack poseStack, LocalPlayer player, int realIndex, float x, float y, float partialTicks) {
+    private static void drawAbility(GuiGraphics guiGraphics, LocalPlayer player, int realIndex, float x, float y, float partialTicks) {
         AbilityEntry ability = getAbilityByIndex(getRelativeIndex(realIndex));
 
         if (ability == null)
@@ -185,6 +186,8 @@ public class AbilitiesRenderHandler {
 
         if (!(stack.getItem() instanceof RelicItem relic))
             return;
+
+        PoseStack poseStack = guiGraphics.pose();
 
         boolean isLocked = !AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility());
 
@@ -258,7 +261,7 @@ public class AbilitiesRenderHandler {
         if (cooldown > 0) {
             RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/cooldown.png"));
 
-            drawAbilityStatusIcon(ability, poseStack, x - scale, y - scale, 20, 300, scale - 0.1F, AnimationData.builder()
+            drawAbilityStatusIcon(ability, guiGraphics, x - scale, y - scale, 20, 300, scale - 0.1F, AnimationData.builder()
                             .frame(0, 2).frame(1, 2).frame(2, 2)
                             .frame(3, 2).frame(4, 2).frame(5, 2)
                             .frame(6, 2).frame(7, 2).frame(8, 2)
@@ -285,7 +288,7 @@ public class AbilitiesRenderHandler {
             if (failedPredicates > 0) {
                 RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/locked.png"));
 
-                drawAbilityStatusIcon(ability, poseStack, x - scale, y - scale, 20, 20, scale - 0.1F, null, player.tickCount, partialTicks);
+                drawAbilityStatusIcon(ability, guiGraphics, x - scale, y - scale, 20, 20, scale - 0.1F, null, player.tickCount, partialTicks);
 
                 iconDescription = successPredicates + "/" + infoEntries.size();
             }
@@ -294,7 +297,7 @@ public class AbilitiesRenderHandler {
         if (!iconDescription.isEmpty()) {
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            MC.font.drawShadow(poseStack, iconDescription, (x - 1) * 2F - (MC.font.width(iconDescription) / 2F), (y - 6 + scale * 15) * 2F, 0xFFFFFF);
+            guiGraphics.drawString(MC.font, iconDescription, (x - 1) * 2F - (MC.font.width(iconDescription) / 2F), (y - 6 + scale * 15) * 2F, 0xFFFFFF, true);
 
             poseStack.scale(2F, 2F, 2F);
         }
@@ -302,10 +305,12 @@ public class AbilitiesRenderHandler {
         poseStack.popPose();
     }
 
-    private static void drawAbilityStatusIcon(AbilityEntry ability, PoseStack matrix, float x, float y, float texWidth, float texHeight, float scale, @Nullable AnimationData animation, long ticks, float partialTicks) {
-        matrix.pushPose();
+    private static void drawAbilityStatusIcon(AbilityEntry ability, GuiGraphics guiGraphics, float x, float y, float texWidth, float texHeight, float scale, @Nullable AnimationData animation, long ticks, float partialTicks) {
+        PoseStack poseStack = guiGraphics.pose();
 
-        matrix.translate(x, y, 0);
+        poseStack.pushPose();
+
+        poseStack.translate(x, y, 0);
 
         AnimationCache animationCache = ability.getCache().getAnimation();
 
@@ -316,17 +321,17 @@ public class AbilitiesRenderHandler {
 
             RenderSystem.setShaderColor(shaderColor[0], shaderColor[1] - color, shaderColor[2] - color, shaderColor[3]);
 
-            matrix.mulPose(Vector3f.ZP.rotation((float) Math.sin((ticks + partialTicks) * 0.5F) * 0.05F));
+            poseStack.mulPose(Axis.ZP.rotation((float) Math.sin((ticks + partialTicks) * 0.5F) * 0.05F));
 
             scale += (animationCache.iconShakeDelta - partialTicks) * 0.025F;
         }
 
         if (animation != null)
-            RenderUtils.renderTextureFromCenter(matrix, 0, 0, texWidth, texHeight, texWidth, texWidth, scale, animation, ticks);
+            RenderUtils.renderTextureFromCenter(poseStack, 0, 0, texWidth, texHeight, texWidth, texWidth, scale, animation, ticks);
         else
-            RenderUtils.renderTextureFromCenter(matrix, 0, 0, texWidth, texHeight, scale);
+            RenderUtils.renderTextureFromCenter(poseStack, 0, 0, texWidth, texHeight, scale);
 
-        matrix.popPose();
+        poseStack.popPose();
     }
 
     private static int getRelativeIndex(int offset) {
@@ -404,7 +409,7 @@ public class AbilitiesRenderHandler {
                 LocalPlayer player = Minecraft.getInstance().player;
 
                 if (player != null)
-                    player.playSound(SoundEvents.UI_BUTTON_CLICK, 0.5F, 1.5F + player.getRandom().nextFloat() * 0.25F);
+                    player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 0.5F, 1.5F + player.getRandom().nextFloat() * 0.25F);
             }
 
             event.setCanceled(true);

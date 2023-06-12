@@ -1,9 +1,9 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.entities.ShadowSawEntity;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -13,8 +13,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.*;
-import net.minecraft.core.NonNullList;
+import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -24,13 +26,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import top.theillusivec4.curios.api.SlotContext;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.UUID;
 
 public class ShadowGlaiveItem extends RelicItem {
@@ -86,15 +88,12 @@ public class ShadowGlaiveItem extends RelicItem {
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (group != RelicsTab.RELICS_TAB)
-            return;
-
-        ItemStack stack = new ItemStack(ItemRegistry.SHADOW_GLAIVE.get());
+    public List<ItemStack> processCreativeTab() {
+        ItemStack stack = this.getDefaultInstance();
 
         NBTUtils.setInt(stack, TAG_CHARGES, 8);
 
-        items.add(stack);
+        return Lists.newArrayList(stack);
     }
 
     @Override

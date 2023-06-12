@@ -1,9 +1,8 @@
 package it.hurts.sskirillss.relics.init;
 
 import it.hurts.sskirillss.relics.blocks.ResearchingTableBlock;
+import it.hurts.sskirillss.relics.items.BlockItemBase;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.common.Mod;
@@ -19,11 +18,11 @@ public class BlockRegistry {
 
     public static final RegistryObject<ResearchingTableBlock> RESEARCHING_TABLE = BLOCKS.register("researching_table", ResearchingTableBlock::new);
 
-    public static void registerBlocks() {
+    public static void register() {
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         for (RegistryObject<? extends Block> block : BLOCKS.getEntries())
-            ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties().tab(RelicsTab.RELICS_TAB)));
+            ITEMS.register(block.getId().getPath(), () -> new BlockItemBase(block.get(), new Item.Properties()));
 
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

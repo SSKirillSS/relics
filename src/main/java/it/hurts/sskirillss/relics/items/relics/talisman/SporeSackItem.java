@@ -177,7 +177,7 @@ public class SporeSackItem extends RelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.level.isClientSide() || getSpores(stack) >= getMaxSpores(stack)
+        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide() || getSpores(stack) >= getMaxSpores(stack)
                 || player.tickCount % Math.round(AbilityUtils.getAbilityValue(stack, "spore", "cooldown") * 20) != 0)
             return;
 
@@ -196,7 +196,7 @@ public class SporeSackItem extends RelicItem {
             if (stack.isEmpty() || getSpores(stack) < 1)
                 return;
 
-            Level level = player.getLevel();
+            Level level = player.level();
 
             if (level.isClientSide())
                 return;

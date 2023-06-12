@@ -13,14 +13,14 @@ import net.minecraftforge.registries.RegistryObject;
 public class SoundRegistry {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Reference.MODID);
 
-    public static final RegistryObject<SoundEvent> RICOCHET = SOUNDS.register("ricochet", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "ricochet")));
-    public static final RegistryObject<SoundEvent> THROW = SOUNDS.register("throw", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "throw")));
-    public static final RegistryObject<SoundEvent> ARROW_RAIN = SOUNDS.register("arrow_rain", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "arrow_rain")));
-    public static final RegistryObject<SoundEvent> SPURT = SOUNDS.register("spurt", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "spurt")));
-    public static final RegistryObject<SoundEvent> POWERED_ARROW = SOUNDS.register("powered_arrow", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "powered_arrow")));
-    public static final RegistryObject<SoundEvent> LEAP = SOUNDS.register("leap", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "leap")));
+    public static final RegistryObject<SoundEvent> RICOCHET = SOUNDS.register("ricochet", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "ricochet")));
+    public static final RegistryObject<SoundEvent> THROW = SOUNDS.register("throw", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "throw")));
+    public static final RegistryObject<SoundEvent> ARROW_RAIN = SOUNDS.register("arrow_rain", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "arrow_rain")));
+    public static final RegistryObject<SoundEvent> SPURT = SOUNDS.register("spurt", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "spurt")));
+    public static final RegistryObject<SoundEvent> POWERED_ARROW = SOUNDS.register("powered_arrow", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "powered_arrow")));
+    public static final RegistryObject<SoundEvent> LEAP = SOUNDS.register("leap", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "leap")));
 
-    public static void registerSounds() {
+    public static void register() {
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

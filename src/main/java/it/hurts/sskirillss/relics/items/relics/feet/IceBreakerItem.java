@@ -53,7 +53,7 @@ public class IceBreakerItem extends RelicItem {
                                                     Player player = data.getPlayer();
 
                                                     return PredicateInfo.builder()
-                                                            .condition(!(player.isOnGround() || player.isSpectator()))
+                                                            .condition(!(player.onGround() || player.isSpectator()))
                                                             .build();
                                                 }
                                         )
@@ -103,7 +103,7 @@ public class IceBreakerItem extends RelicItem {
 
         Vec3 motion = player.getDeltaMovement();
 
-        if (player.isOnGround() || player.isSpectator()) {
+        if (player.onGround() || player.isSpectator()) {
             NBTUtils.setBoolean(stack, TAG_FALLING, false);
 
             return;
@@ -154,7 +154,7 @@ public class IceBreakerItem extends RelicItem {
                     (int) Math.round(Math.min(AbilityUtils.getAbilityValue(stack, "impact", "size"), distance * 0.25D)),
                     (float) AbilityUtils.getAbilityValue(stack, "impact", "damage"));
 
-            BlockPos pos = player.getBlockPosBelowThatAffectsMyMovement();
+            BlockPos pos = player.getOnPos();
 
             shockwave.setOwner(player);
             shockwave.setPos(pos.getX(), pos.getY(), pos.getZ());

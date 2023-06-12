@@ -64,7 +64,7 @@ public class EnderHandItem extends RelicItem {
             if (player.getCooldowns().isOnCooldown(stack.getItem()))
                 return;
 
-            Level level = player.getLevel();
+            Level level = player.level();
 
             EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), AbilityUtils.getAbilityValue(stack, "swap", "distance"));
 

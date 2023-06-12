@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.init;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.hud.abilities.AbilitiesRenderHandler;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintFactory;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintFactory;
@@ -23,7 +24,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -32,7 +32,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -41,24 +44,6 @@ import static it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem.*;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class RemoteRegistry {
-    public static final ResourceLocation CIRCLE = new ResourceLocation(Reference.MODID, "particle/circle_tint");
-    public static final ResourceLocation SPARK = new ResourceLocation(Reference.MODID, "particle/spark_tint");
-
-    @SubscribeEvent
-    public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        ResourceLocation location = event.getAtlas().location();
-
-        if (location.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            event.addSprite(new ResourceLocation(Reference.MODID, "gui/curios/empty_talisman_slot"));
-            event.addSprite(new ResourceLocation(Reference.MODID, "gui/curios/empty_feet_slot"));
-        }
-
-        if (location.equals(TextureAtlas.LOCATION_PARTICLES)) {
-            event.addSprite(CIRCLE);
-            event.addSprite(SPARK);
-        }
-    }
-
     @SubscribeEvent
     public static void setupClient(final FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.RESEARCHING_TABLE.get(), RenderType.cutout());
@@ -74,7 +59,7 @@ public class RemoteRegistry {
                     if (e == null)
                         return 0;
 
-                    return switch (e.getLevel().dimension().location().getPath()) {
+                    return switch (e.getCommandSenderWorld().dimension().location().getPath()) {
                         case "overworld" -> 1;
                         case "the_nether" -> 2;
                         case "the_end" -> 3;
@@ -145,15 +130,16 @@ public class RemoteRegistry {
 
     @SubscribeEvent
     public static void onParticleRegistry(RegisterParticleProvidersEvent event) {
-        event.register(ParticleRegistry.CIRCLE_TINT.get(), CircleTintFactory::new);
-        event.register(ParticleRegistry.SPARK_TINT.get(), SparkTintFactory::new);
+        event.registerSpriteSet(ParticleRegistry.CIRCLE_TINT.get(), CircleTintFactory::new);
+        event.registerSpriteSet(ParticleRegistry.SPARK_TINT.get(), SparkTintFactory::new);
     }
 
     @SubscribeEvent
     public static void onOverlayRegistry(RegisterGuiOverlaysEvent event) {
-        event.registerBelowAll("researching_hint", (ForgeGui, poseStack, partialTick, screenWidth, screenHeight) -> {
+        event.registerBelowAll("researching_hint", (forgeGui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
             Minecraft MC = Minecraft.getInstance();
             ClientLevel level = MC.level;
+            PoseStack poseStack = guiGraphics.pose();
 
             if (level == null)
                 return;
@@ -172,8 +158,8 @@ public class RemoteRegistry {
             infoTile.renderHUDInfo(poseStack, MC.getWindow());
         });
 
-        event.registerBelowAll("active_abilities", (ForgeGui, poseStack, partialTick, screenWidth, screenHeight) -> {
-            AbilitiesRenderHandler.render(poseStack, partialTick);
+        event.registerBelowAll("active_abilities", (ForgeGui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+            AbilitiesRenderHandler.render(guiGraphics, partialTick);
         });
     }
 }

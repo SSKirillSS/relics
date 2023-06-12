@@ -13,7 +13,6 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -70,7 +69,7 @@ public class JellyfishNecklaceItem extends RelicItem {
             if (entity == player)
                 continue;
 
-            if (entity.hurt(DamageSource.playerAttack(player), (float) AbilityUtils.getAbilityValue(stack, "shock", "damage"))) {
+            if (entity.hurt(level.damageSources().playerAttack(player), (float) AbilityUtils.getAbilityValue(stack, "shock", "damage"))) {
                 LevelingUtils.addExperience(player, stack, 1);
 
                 if (AbilityUtils.canUseAbility(stack, "paralysis"))

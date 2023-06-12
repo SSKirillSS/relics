@@ -63,7 +63,7 @@ public class ChorusInhibitorItem extends RelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack)
                 || player.getItemInHand(InteractionHand.MAIN_HAND).getItem() != Items.CHORUS_FRUIT
-                || player.getCooldowns().isOnCooldown(Items.CHORUS_FRUIT) || !player.getLevel().isClientSide())
+                || player.getCooldowns().isOnCooldown(Items.CHORUS_FRUIT) || !player.level().isClientSide())
             return;
 
         BlockPos pos = getEyesPos(player, stack);
@@ -75,7 +75,7 @@ public class ChorusInhibitorItem extends RelicItem {
         Vec3 end = new Vec3(pos.getX() + 0.5F, pos.getY() - 0.5F, pos.getZ() + 0.5F);
 
         ParticleUtils.createLine(new CircleTintData(new Color(20, 0, 80), 0.15F, 0, 0.5F, false),
-                player.getLevel(), start, end, (int) Math.round(start.distanceTo(end) * 5));
+                player.level(), start, end, (int) Math.round(start.distanceTo(end) * 5));
     }
 
     @Nullable
@@ -90,13 +90,13 @@ public class ChorusInhibitorItem extends RelicItem {
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
         BlockPos pos = ray.getBlockPos();
 
-        if (!world.getBlockState(pos).getMaterial().isSolid())
+        if (!world.getBlockState(pos).blocksMotion())
             return null;
 
         pos = pos.above();
 
         for (int i = 0; i < 10; i++) {
-            if (world.getBlockState(pos).getMaterial().blocksMotion() || world.getBlockState(pos.above()).getMaterial().blocksMotion()) {
+            if (world.getBlockState(pos).blocksMotion() || world.getBlockState(pos.above()).blocksMotion()) {
                 pos = pos.above();
 
                 continue;
@@ -130,7 +130,7 @@ public class ChorusInhibitorItem extends RelicItem {
             LevelingUtils.addExperience(player, stack, (int) Math.floor(player.position().distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ())) / 10F));
 
             player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
-            player.getLevel().playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1F, 1F);
+            player.level().playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1F, 1F);
             player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, Math.max((int) Math.round(AbilityUtils.getAbilityValue(stack, "blink", "cooldown") * 20D), 0));
         }
     }

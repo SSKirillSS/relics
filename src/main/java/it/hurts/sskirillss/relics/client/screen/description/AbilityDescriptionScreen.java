@@ -18,6 +18,7 @@ import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -84,7 +85,7 @@ public class AbilityDescriptionScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         ClientLevel world = MC.level;
 
         if (world == null || !(world.getBlockEntity(pos) instanceof ResearchingTableTile tile))
@@ -105,9 +106,10 @@ public class AbilityDescriptionScreen extends Screen {
         if (abilityData == null)
             return;
 
+        PoseStack pPoseStack = guiGraphics.pose();
         TextureManager manager = MC.getTextureManager();
 
-        this.renderBackground(pPoseStack);
+        this.renderBackground(guiGraphics);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, TEXTURE);
@@ -120,7 +122,7 @@ public class AbilityDescriptionScreen extends Screen {
         int x = (this.width - backgroundWidth) / 2;
         int y = (this.height - backgroundHeight) / 2;
 
-        blit(pPoseStack, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
+        guiGraphics.blit(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
 
         pPoseStack.pushPose();
 
@@ -134,12 +136,12 @@ public class AbilityDescriptionScreen extends Screen {
         if (abilityData.getStats().size() > 0)
             name.append(Component.translatable("tooltip.relics.relic.ability.level", level, maxLevel == -1 ? "∞" : maxLevel));
 
-        MC.font.draw(pPoseStack, name.withStyle(ChatFormatting.BOLD), x * 2 + 71 * 2, y * 2 + 26 * 2 - 1, 0x412708);
+        guiGraphics.drawString(MC.font, name.withStyle(ChatFormatting.BOLD), x * 2 + 71 * 2, y * 2 + 26 * 2 - 1, 0x412708, false);
 
         List<FormattedCharSequence> lines = MC.font.split(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 305);
 
         for (int i = 0; i < lines.size(); i++) {
-            MC.font.draw(pPoseStack, lines.get(i), x * 2 + 71 * 2, y * 2 + i * 9 + 35 * 2, 0x412708);
+            guiGraphics.drawString(MC.font, lines.get(i), x * 2 + 71 * 2, y * 2 + i * 9 + 35 * 2, 0x412708, false);
         }
 
         pPoseStack.popPose();
@@ -161,12 +163,12 @@ public class AbilityDescriptionScreen extends Screen {
 
                 manager.bindForSetup(TEXTURE);
 
-                blit(pPoseStack, x + 32, y + 103 + yOff / 2, 302, 44, 36, 8, texWidth, texHeight);
+                guiGraphics.blit(TEXTURE, x + 32, y + 103 + yOff / 2, 302, 44, 36, 8, texWidth, texHeight);
 
                 for (int i = 1; i < QualityUtils.getStatQuality(stack, ability, stat) + 1; i++) {
                     boolean isAliquot = i % 2 == 1;
 
-                    blit(pPoseStack, x + 33 + xOff, y + 104 + yOff / 2, (isLocked ? 312 : 303) + (isAliquot ? 0 : 4), 54, isAliquot ? 4 : 3, 7, texWidth, texHeight);
+                    guiGraphics.blit(TEXTURE, x + 33 + xOff, y + 104 + yOff / 2, (isLocked ? 312 : 303) + (isAliquot ? 0 : 4), 54, isAliquot ? 4 : 3, 7, texWidth, texHeight);
 
                     xOff += isAliquot ? 4 : 3;
                 }
@@ -189,11 +191,11 @@ public class AbilityDescriptionScreen extends Screen {
 
                 pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-                MC.font.draw(pPoseStack, Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title"), x * 2 + 94 * 2, y * 2 + yOff + 102 * 2, 0x412708);
+                guiGraphics.drawString(MC.font, Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title"), x * 2 + 94 * 2, y * 2 + yOff + 102 * 2, 0x412708, false);
 
                 yOff += 10;
 
-                MC.font.draw(pPoseStack, Component.literal(" ● ").append(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), x * 2 + 94 * 2, y * 2 + yOff + 102 * 2, 0x412708);
+                guiGraphics.drawString(MC.font, Component.literal(" ● ").append(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), x * 2 + 94 * 2, y * 2 + yOff + 102 * 2, 0x412708, false);
 
                 pPoseStack.popPose();
 
@@ -210,12 +212,12 @@ public class AbilityDescriptionScreen extends Screen {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.setShaderTexture(0, WIDGETS);
 
-            blit(pPoseStack, x + backgroundWidth - 3, y + 17, 0, 0, 40, 25, texWidth, texHeight);
-            blit(pPoseStack, x + backgroundWidth + 16, y + 22, 0, 27, 16, 13, texWidth, texHeight);
+            guiGraphics.blit(WIDGETS, x + backgroundWidth - 3, y + 17, 0, 0, 40, 25, texWidth, texHeight);
+            guiGraphics.blit(WIDGETS, x + backgroundWidth + 16, y + 22, 0, 27, 16, 13, texWidth, texHeight);
 
             String value = String.valueOf(points);
 
-            MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 25, 0xFFFFFF);
+            guiGraphics.drawString(MC.font, value, x + backgroundWidth + 7 - font.width(value) / 2, y + 25, 0xFFFFFF);
         }
 
         ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + ability + ".png");
@@ -228,7 +230,7 @@ public class AbilityDescriptionScreen extends Screen {
             if (isLocked)
                 RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
 
-            blit(pPoseStack, x + 29, y + 19, 30, 43, 0, 0, 20, 29, 20, 29);
+            guiGraphics.blit(card, x + 29, y + 19, 30, 43, 0, 0, 20, 29, 20, 29);
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         }
@@ -237,31 +239,31 @@ public class AbilityDescriptionScreen extends Screen {
 
         manager.bindForSetup(TEXTURE);
 
-        blit(pPoseStack, x + 26, y + 25, 356, 0, 38, 48, texWidth, texHeight);
+        guiGraphics.blit(TEXTURE, x + 26, y + 25, 356, 0, 38, 48, texWidth, texHeight);
 
         RenderSystem.setShaderTexture(0, TEXTURE);
 
         manager.bindForSetup(TEXTURE);
 
         if (isLocked)
-            blit(pPoseStack, x + 24, y + 16, 258, 101, 42, 59, texWidth, texHeight);
+            guiGraphics.blit(TEXTURE, x + 24, y + 16, 258, 101, 42, 59, texWidth, texHeight);
         else
-            blit(pPoseStack, x + 24, y + 16, 258, 40, 42, 59, texWidth, texHeight);
+            guiGraphics.blit(TEXTURE, x + 24, y + 16, 258, 40, 42, 59, texWidth, texHeight);
 
         for (int i = 1; i < QualityUtils.getAbilityQuality(stack, ability) + 1; i++) {
             boolean isAliquot = i % 2 == 1;
 
-            blit(pPoseStack, x + 27 + xOff, y + 63, (isLocked ? 312 : 303) + (isAliquot ? 0 : 4), 54, isAliquot ? 4 : 3, 7, texWidth, texHeight);
+            guiGraphics.blit(TEXTURE, x + 27 + xOff, y + 63, (isLocked ? 312 : 303) + (isAliquot ? 0 : 4), 54, isAliquot ? 4 : 3, 7, texWidth, texHeight);
 
             xOff += isAliquot ? 4 : 3;
         }
 
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         for (GuiEventListener listener : this.children()) {
-            if (listener instanceof AbstractButton button && button.isHoveredOrFocused()
+            if (listener instanceof AbstractButton button && button.isHovered()
                     && button instanceof IHoverableWidget widget)
-                widget.onHovered(pPoseStack, pMouseX, pMouseY);
+                widget.onHovered(guiGraphics, pMouseX, pMouseY);
         }
     }
 

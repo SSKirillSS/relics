@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.models.SolidSnowballModel;
 import it.hurts.sskirillss.relics.entities.SolidSnowballEntity;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -32,8 +32,8 @@ public class SolidSnowballRenderer extends EntityRenderer<SolidSnowballEntity> {
 
         float speed = 20F;
 
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(time * speed));
-        matrixStackIn.mulPose(Vector3f.XN.rotationDegrees(time * speed));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(time * speed));
+        matrixStackIn.mulPose(Axis.XN.rotationDegrees(time * speed));
 
         float scale = 0.1F + entityIn.getSize() * 0.009F;
 

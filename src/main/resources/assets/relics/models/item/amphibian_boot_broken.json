@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/amphibian_boot_broken"
+        "layer0": "relics:item/amphibian_boot_broken"
     }
 }
 

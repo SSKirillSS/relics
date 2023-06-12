@@ -61,7 +61,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> WOOL_MITTEN = ITEMS.register("wool_mitten", WoolMittenItem::new);
     public static final RegistryObject<Item> AMPHIBIAN_BOOT = ITEMS.register("amphibian_boot", AmphibianBootItem::new);
 
-    public static void registerItems() {
+    public static void register() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

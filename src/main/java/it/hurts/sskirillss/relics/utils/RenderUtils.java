@@ -2,8 +2,7 @@ package it.hurts.sskirillss.relics.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.tuple.Pair;
+import org.joml.Matrix4f;
 
 import java.awt.*;
 import java.util.Random;
@@ -86,9 +86,9 @@ public class RenderUtils {
         Random random = new Random(1488);
 
         for (int i = 1; i < amount; ++i) {
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
-            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
+            matrixStack.mulPose(Axis.XP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
+            matrixStack.mulPose(Axis.YP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
+            matrixStack.mulPose(Axis.ZP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
 
             renderBeam(matrixStack, bufferIn, partialTicks, size, color);
         }

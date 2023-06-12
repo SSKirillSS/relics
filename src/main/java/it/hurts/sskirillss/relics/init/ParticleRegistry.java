@@ -17,12 +17,7 @@ public class ParticleRegistry {
     public static final RegistryObject<ParticleType<CircleTintData>> CIRCLE_TINT = PARTICLES.register("circle_tint", CircleTintFactory.CircleTintType::new);
     public static final RegistryObject<ParticleType<SparkTintData>> SPARK_TINT = PARTICLES.register("spark_tint", SparkTintFactory.SparkTintType::new);
 
-    public static void registerParticles() {
+    public static void register() {
         PARTICLES.register(FMLJavaModLoadingContext.get().getModEventBus());
-    }
-
-
-    public static class ClientEvents {
-
     }
 }

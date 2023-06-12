@@ -28,9 +28,8 @@ import it.hurts.sskirillss.relics.utils.*;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -92,9 +91,9 @@ public class ArrowQuiverItem extends RelicItem {
                                 .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
                                         .predicate("target", data -> {
                                             Player player = data.getPlayer();
-                                            Level level = player.getLevel();
+                                            Level level = player.level();
 
-                                            double maxDistance = player.getReachDistance() + 1;
+                                            double maxDistance = player.getBlockReach() + 1;
 
                                             Vec3 view = player.getViewVector(0);
                                             Vec3 eyeVec = player.getEyePosition(0);
@@ -211,7 +210,7 @@ public class ArrowQuiverItem extends RelicItem {
         }
 
         if (ability.equals("leap")) {
-            double maxDistance = player.getReachDistance() + 1;
+            double maxDistance = player.getBlockReach() + 1;
 
             Vec3 view = player.getViewVector(0);
             Vec3 eyeVec = player.getEyePosition(0);
@@ -267,7 +266,7 @@ public class ArrowQuiverItem extends RelicItem {
         if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
             return;
 
-        Level level = player.getLevel();
+        Level level = player.level();
 
         if (AbilityUtils.canUseAbility(stack, "leap")) {
             int leap = NBTUtils.getInt(stack, TAG_LEAP, -1);
@@ -280,7 +279,7 @@ public class ArrowQuiverItem extends RelicItem {
 
                     player.fallDistance = 0F;
 
-                    if (leap >= 5 && (player.isOnGround() || player.getAbilities().flying
+                    if (leap >= 5 && (player.onGround() || player.getAbilities().flying
                             || player.isFallFlying() || player.isInWater() || player.isInLava()
                             || leap >= AbilityUtils.getAbilityValue(stack, "leap", "duration") * 20)) {
                         NBTUtils.clearTag(stack, TAG_LEAP);
@@ -460,23 +459,27 @@ public class ArrowQuiverItem extends RelicItem {
         }
 
         @Override
-        public void renderImage(Font font, int mouseX, int mouseY, PoseStack poseStack, ItemRenderer itemRenderer, int blitOffset) {
+        public void renderImage(Font font, int mouseX, int mouseY, GuiGraphics guiGraphics) {
+            Minecraft MC = Minecraft.getInstance();
+            PoseStack poseStack = guiGraphics.pose();
+
             poseStack.pushPose();
 
             poseStack.translate(0, 0, 410);
-            poseStack.scale(0.5F, 0.5F, 0.5F);
 
             int step = 0;
 
             for (ItemStack stack : tooltip.getItems()) {
-                font.draw(poseStack, String.valueOf(stack.getCount()), ((mouseX + step) * 2) + ((16 - font.width(String.valueOf(stack.getCount()))) / 2F), (mouseY + 16) * 2, 0xFFFFFF);
+                guiGraphics.renderItem(stack, mouseX + step, mouseY);
 
-                itemRenderer.renderAndDecorateFakeItem(stack, mouseX + step, mouseY);
+                poseStack.scale(0.5F, 0.5F, 0.5F);
+
+                guiGraphics.drawString(MC.font, String.valueOf(stack.getCount()), ((mouseX + step) * 2) + ((16 - font.width(String.valueOf(stack.getCount()))) / 2), (mouseY + 16) * 2, 0xFFFFFF);
+
+                poseStack.scale(2F, 2F, 2F);
 
                 step += 10;
             }
-
-            poseStack.scale(2F, 2F, 2F);
 
             for (int i = step / 10; i < tooltip.getMaxAmount(); i++) {
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -484,7 +487,7 @@ public class ArrowQuiverItem extends RelicItem {
 
                 Minecraft.getInstance().getTextureManager().getTexture(TEXTURE).bind();
 
-                Gui.blit(poseStack, mouseX + step, mouseY, 16, 16, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(TEXTURE, mouseX + step, mouseY, 16, 16, 0, 0, 16, 16, 16, 16);
 
                 step += 10;
             }

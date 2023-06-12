@@ -71,7 +71,7 @@ public class ReflectionNecklaceItem extends RelicItem {
 
             NBTUtils.setInt(stack, TAG_TIME, time);
         } else if (charge > 0) {
-            Level level = player.getLevel();
+            Level level = player.level();
             RandomSource random = player.getRandom();
 
             float size = (float) (Math.log(charge) * 0.6F);
@@ -92,7 +92,7 @@ public class ReflectionNecklaceItem extends RelicItem {
 
                         Vec3 pos = player.position().add(0, mul, 0).add(motion.normalize().multiply(mul, mul, mul));
 
-                        if (level.getBlockState(new BlockPos(pos)).getMaterial().blocksMotion())
+                        if (level.getBlockState(new BlockPos((int) pos.x, (int) pos.y, (int) pos.z)).blocksMotion())
                             continue;
 
                         StalactiteEntity stalactite = new StalactiteEntity(level,

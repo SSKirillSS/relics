@@ -9,13 +9,13 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityDimensions;
@@ -70,6 +70,7 @@ public class SporeEntity extends ThrowableProjectile {
     public ItemStack getStack() {
         return this.getEntityData().get(STACK);
     }
+
     public SporeEntity(EntityType<? extends ThrowableProjectile> entityType, Level level) {
         super(entityType, level);
     }
@@ -81,6 +82,8 @@ public class SporeEntity extends ThrowableProjectile {
         if (this.isStuck())
             this.setDeltaMovement(0, 0, 0);
 
+        Level level = level();
+
         if (!level.isClientSide()) {
             if (isStuck())
                 setLifetime(getLifetime() + 1);
@@ -89,7 +92,6 @@ public class SporeEntity extends ThrowableProjectile {
                 this.discard();
         }
 
-        Level level = this.getLevel();
         RandomSource random = level.getRandom();
 
         double inlinedSize = Math.pow(Math.log10(1 + getSize()), 1D / 3D);
@@ -127,22 +129,22 @@ public class SporeEntity extends ThrowableProjectile {
 
     @Override
     public void onRemovedFromWorld() {
-        level.playSound(null, this.blockPosition(), SoundEvents.PUFFER_FISH_BLOW_UP, SoundSource.MASTER, 1F, 1F + random.nextFloat());
+        level().playSound(null, this.blockPosition(), SoundEvents.PUFFER_FISH_BLOW_UP, SoundSource.MASTER, 1F, 1F + random.nextFloat());
 
         double inlinedSize = Math.pow(Math.log10(1 + getSize()), 1D / 3D);
 
-        ParticleUtils.createBall(new CircleTintData(new Color(100 + level.getRandom().nextInt(50), 255, 0),
+        ParticleUtils.createBall(new CircleTintData(new Color(100 + level().getRandom().nextInt(50), 255, 0),
                         (float) (inlinedSize * 0.35F), 40, 0.9F, true),
-                this.position().add(0, inlinedSize / 3, 0), level, (int) Math.ceil(1 + inlinedSize), (float) (inlinedSize / 2D));
+                this.position().add(0, inlinedSize / 3, 0), level(), (int) Math.ceil(1 + inlinedSize), (float) (inlinedSize / 2D));
 
         if (this.getOwner() instanceof Player player) {
             RandomSource random = player.getRandom();
 
-            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1F + (Math.pow(Math.log10(1 + getSize()), 1D / 3D) / 2F)))) {
+            for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1F + (Math.pow(Math.log10(1 + getSize()), 1D / 3D) / 2F)))) {
                 if (entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
 
-                entity.hurt(DamageSource.playerAttack(player), (float) (getSize() * AbilityUtils.getAbilityValue(getStack(), "spore", "damage")));
+                entity.hurt(level().damageSources().playerAttack(player), (float) (getSize() * AbilityUtils.getAbilityValue(getStack(), "spore", "damage")));
 
                 entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
                 entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100));
@@ -160,7 +162,7 @@ public class SporeEntity extends ThrowableProjectile {
                     float speed = 0.1F + random.nextFloat() * 0.2F;
                     Vec3 motion = new Vec3(MathUtils.randomFloat(random) * speed, speed, MathUtils.randomFloat(random) * speed);
 
-                    SporeEntity spore = new SporeEntity(EntityRegistry.SPORE.get(), level);
+                    SporeEntity spore = new SporeEntity(EntityRegistry.SPORE.get(), level());
 
                     spore.setOwner(player);
                     spore.setStack(getStack());
@@ -168,7 +170,7 @@ public class SporeEntity extends ThrowableProjectile {
                     spore.setPos(this.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
                     spore.setSize((float) (this.getSize() * AbilityUtils.getAbilityValue(getStack(), "multiplying", "size")));
 
-                    level.addFreshEntity(spore);
+                    level().addFreshEntity(spore);
 
                     LevelingUtils.addExperience(player, getStack(), 1);
                 }
@@ -219,7 +221,7 @@ public class SporeEntity extends ThrowableProjectile {
 
     @Nonnull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

@@ -1,8 +1,8 @@
 package it.hurts.sskirillss.relics.items.relics;
 
+import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -14,8 +14,6 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.sounds.SoundEvents;
@@ -42,7 +40,6 @@ public class InfinityHamItem extends RelicItem {
 
     public InfinityHamItem() {
         super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
                 .stacksTo(1)
                 .rarity(Rarity.RARE));
     }
@@ -75,15 +72,12 @@ public class InfinityHamItem extends RelicItem {
     }
 
     @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
-        if (group != RelicsTab.RELICS_TAB)
-            return;
-
-        ItemStack stack = new ItemStack(ItemRegistry.INFINITY_HAM.get());
+    public List<ItemStack> processCreativeTab() {
+        ItemStack stack = this.getDefaultInstance();
 
         NBTUtils.setInt(stack, TAG_PIECES, 10);
 
-        items.add(stack);
+        return Lists.newArrayList(stack);
     }
 
     @Override
@@ -120,7 +114,7 @@ public class InfinityHamItem extends RelicItem {
     }
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity entity, int count) {
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int count) {
         if (!(entity instanceof Player player))
             return;
 

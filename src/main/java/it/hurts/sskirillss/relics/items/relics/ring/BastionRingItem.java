@@ -17,7 +17,7 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -85,10 +85,10 @@ public class BastionRingItem extends RelicItem {
 
         ServerLevel serverLevel = (ServerLevel) world;
 
-        ResourceKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation("bastion_remnant"));
+        ResourceKey.create(Registries.STRUCTURE, new ResourceLocation("bastion_remnant"));
 
-        Optional<HolderSet<Structure>> optional = serverLevel.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY)
-                .getHolder(ResourceKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation("bastion_remnant")))
+        Optional<HolderSet<Structure>> optional = serverLevel.registryAccess().registryOrThrow(Registries.STRUCTURE)
+                .getHolder(ResourceKey.create(Registries.STRUCTURE, new ResourceLocation("bastion_remnant")))
                 .map(HolderSet::direct);
 
         if (optional.isEmpty())

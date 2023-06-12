@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/amphibian_boot"
+        "layer0": "relics:item/amphibian_boot"
     },
     "overrides": [
         { "predicate": { "relics:broken": 1 }, "model": "relics:item/amphibian_boot_broken" }

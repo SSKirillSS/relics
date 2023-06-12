@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.models.SporeModel;
 import it.hurts.sskirillss.relics.entities.SporeEntity;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
@@ -34,8 +34,8 @@ public class SporeRenderer extends EntityRenderer<SporeEntity> {
         if (!entityIn.isStuck()) {
             float speed = 15F;
 
-            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(time * speed));
-            matrixStackIn.mulPose(Vector3f.XN.rotationDegrees(time * speed));
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees(time * speed));
+            matrixStackIn.mulPose(Axis.XN.rotationDegrees(time * speed));
         }
 
         double inlinedSize = Math.pow(Math.log10(1 + entityIn.getSize()), 1D / 3D);

@@ -2,7 +2,7 @@
   "type": "relics:relic_gen",
   "conditions": [
     {
-      "condition": "minecraft:alternative",
+      "condition": "minecraft:any_of",
       "terms": [
         {
           "condition": "forge:loot_table_id",

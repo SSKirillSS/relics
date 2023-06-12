@@ -174,8 +174,8 @@ public class RageGloveItem extends RelicItem {
             for (int i = 0; i < distance; ++i) {
                 double progress = i * delta.length() / distance;
 
-                for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(new BlockPos(start.x + dir.x * progress,
-                        start.y + dir.y * progress, start.z + dir.z * progress)).inflate(0.5, 1, 0.5))) {
+                for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(new BlockPos((int) (start.x + dir.x * progress),
+                        (int) (start.y + dir.y * progress), (int) (start.z + dir.z * progress))).inflate(0.5, 1, 0.5))) {
                     if (entity.getStringUUID().equals(player.getStringUUID())
                             || entity.isDeadOrDying())
                         continue;

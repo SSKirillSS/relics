@@ -4,6 +4,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.items.ItemBase;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -15,7 +16,6 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -49,14 +49,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class RelicItem extends Item implements ICurioItem {
+public abstract class RelicItem extends ItemBase implements ICurioItem {
     public RelicItem(Item.Properties properties) {
         super(properties);
     }
 
     public RelicItem() {
         super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
                 .rarity(Rarity.RARE)
                 .stacksTo(1));
     }

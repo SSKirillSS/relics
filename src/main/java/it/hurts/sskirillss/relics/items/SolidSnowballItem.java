@@ -15,7 +15,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
-public class SolidSnowballItem extends Item {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SolidSnowballItem extends ItemBase {
     public static final String TAG_SNOW = "snow";
 
     public SolidSnowballItem() {
@@ -23,6 +26,11 @@ public class SolidSnowballItem extends Item {
                 .stacksTo(1)
                 .rarity(Rarity.UNCOMMON)
         );
+    }
+
+    @Override
+    public List<ItemStack> processCreativeTab() {
+        return new ArrayList<>();
     }
 
     @Override

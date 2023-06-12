@@ -16,6 +16,7 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.QualityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -45,7 +46,9 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+
         TextureManager manager = MC.getTextureManager();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -54,15 +57,15 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         manager.bindForSetup(RelicDescriptionScreen.TEXTURE);
 
         if (AbilityUtils.canUseAbility(screen.stack, ability)) {
-            blit(poseStack, x, y, 258, 0, 28, 37, 512, 512);
+            guiGraphics.blit(RelicDescriptionScreen.TEXTURE, getX(), getY(), 258, 0, 28, 37, 512, 512);
 
             if (isHovered)
-                blit(poseStack, x - 1, y - 1, 318, 0, 30, 39, 512, 512);
+                guiGraphics.blit(RelicDescriptionScreen.TEXTURE, getX() - 1, getY() - 1, 318, 0, 30, 39, 512, 512);
         } else {
-            blit(poseStack, x, y, 258, 39, 28, 37, 512, 512);
+            guiGraphics.blit(RelicDescriptionScreen.TEXTURE, getX(), getY(), 258, 39, 28, 37, 512, 512);
 
             if (isHovered)
-                blit(poseStack, x - 1, y - 1, 318, 39, 30, 39, 512, 512);
+                guiGraphics.blit(RelicDescriptionScreen.TEXTURE, getX() - 1, getY() - 1, 318, 39, 30, 39, 512, 512);
         }
 
         ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + "/" + ability + ".png");
@@ -75,7 +78,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
             if (!AbilityUtils.canUseAbility(screen.stack, ability))
                 RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1F);
 
-            blit(poseStack, x + 3, y + 3, 0, 0, 20, 29, 20, 29);
+            guiGraphics.blit(card, getX() + 3, getY() + 3, 0, 0, 20, 29, 20, 29);
         }
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -84,13 +87,13 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         manager.bindForSetup(RelicDescriptionScreen.TEXTURE);
 
         if (AbilityUtils.canUseAbility(screen.stack, ability))
-            blit(poseStack, x, y, 288, 0, 28, 38, 512, 512);
+            guiGraphics.blit(RelicDescriptionScreen.TEXTURE, getX(), getY(), 288, 0, 28, 38, 512, 512);
         else
-            blit(poseStack, x, y, 288, 39, 28, 38, 512, 512);
+            guiGraphics.blit(RelicDescriptionScreen.TEXTURE, getX(), getY(), 288, 39, 28, 38, 512, 512);
     }
 
     @Override
-    public void onHovered(PoseStack poseStack, int mouseX, int mouseY) {
+    public void onHovered(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (!(screen.stack.getItem() instanceof RelicItem relic))
             return;
 
@@ -98,6 +101,8 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         if (relicData == null)
             return;
+
+        PoseStack poseStack = guiGraphics.pose();
 
         RelicAbilityEntry abilityData = AbilityUtils.getRelicAbilityEntry(relic, ability);
 
@@ -138,15 +143,15 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
             description.add(rarity);
         }
 
-        int renderX = x + 29;
-        int renderY = y;
+        int renderX = getX() + 29;
+        int renderY = getY();
 
-        ScreenUtils.drawTexturedTooltipBorder(poseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+        ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                 width, height, renderX, renderY);
 
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
-        MC.font.draw(poseStack, name, (renderX + 9) * 2 + width - MC.font.width(name) / 2F, (renderY + 7) * 2, 0x412708);
+        guiGraphics.drawString(MC.font, name, (renderX + 9) * 2 + width - MC.font.width(name) / 2, (renderY + 7) * 2, 0x412708, false);
 
         for (MutableComponent entry : description) {
             if (entry == rarity) {
@@ -162,12 +167,12 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
                 manager.bindForSetup(AbilityDescriptionScreen.TEXTURE);
 
-                blit(poseStack, (x + 39) * 2 + MC.font.width(rarity), (renderY + 14) * 2 - 1 + yOff, 302, 44, 36, 8, texWidth, texHeight);
+                guiGraphics.blit(AbilityDescriptionScreen.TEXTURE, (getX() + 39) * 2 + MC.font.width(rarity), (renderY + 14) * 2 - 1 + yOff, 302, 44, 36, 8, texWidth, texHeight);
 
                 for (int i = 1; i < QualityUtils.getAbilityQuality(screen.stack, ability) + 1; i++) {
                     boolean isAliquot = i % 2 == 1;
 
-                    blit(poseStack, (x + 39) * 2 + MC.font.width(rarity) + xOff + 1, (renderY + 14) * 2 - 1 + yOff + 1, (AbilityUtils.canUseAbility(screen.stack, ability) ? 303 : 312) + (isAliquot ? 0 : 4), 54, isAliquot ? 4 : 3, 7, texWidth, texHeight);
+                    guiGraphics.blit(AbilityDescriptionScreen.TEXTURE, (getX() + 39) * 2 + MC.font.width(rarity) + xOff + 1, (renderY + 14) * 2 - 1 + yOff + 1, (AbilityUtils.canUseAbility(screen.stack, ability) ? 303 : 312) + (isAliquot ? 0 : 4), 54, isAliquot ? 4 : 3, 7, texWidth, texHeight);
 
                     xOff += isAliquot ? 4 : 3;
                 }
@@ -176,7 +181,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
             List<FormattedCharSequence> lines = MC.font.split(entry, 210);
 
             for (FormattedCharSequence line : lines) {
-                MC.font.draw(poseStack, line, (renderX + 9) * 2, (renderY + 14) * 2 + yOff, 0x412708);
+                guiGraphics.drawString(MC.font, line, (renderX + 9) * 2, (renderY + 14) * 2 + yOff, 0x412708, false);
 
                 yOff += 9;
             }

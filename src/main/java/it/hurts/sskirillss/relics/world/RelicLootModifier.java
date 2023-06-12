@@ -58,7 +58,7 @@ public class RelicLootModifier extends LootModifier {
                                         } catch (JsonSyntaxException e) {
                                             LootModifierManager.LOGGER.warn("Unable to decode loot item", e);
 
-                                            return DataResult.error(e.getMessage());
+                                            return DataResult.error(e::getMessage);
                                         }
                                     },
                                     item ->
@@ -70,7 +70,7 @@ public class RelicLootModifier extends LootModifier {
                                         } catch (JsonSyntaxException e) {
                                             LootModifierManager.LOGGER.warn("Unable to encode loot item", e);
 
-                                            return DataResult.error(e.getMessage());
+                                            return DataResult.error(e::getMessage);
                                         }
                                     }
                             ).fieldOf("entry").forGetter(m -> m.entry),
@@ -82,7 +82,7 @@ public class RelicLootModifier extends LootModifier {
                                         } catch (JsonSyntaxException e) {
                                             LootModifierManager.LOGGER.warn("Unable to decode loot functions", e);
 
-                                            return DataResult.error(e.getMessage());
+                                            return DataResult.error(e::getMessage);
                                         }
                                     },
                                     function ->
@@ -94,7 +94,7 @@ public class RelicLootModifier extends LootModifier {
                                         } catch (JsonSyntaxException e) {
                                             LootModifierManager.LOGGER.warn("Unable to encode loot functions", e);
 
-                                            return DataResult.error(e.getMessage());
+                                            return DataResult.error(e::getMessage);
                                         }
                                     }
                             ).fieldOf("functions").forGetter(m -> m.functions)

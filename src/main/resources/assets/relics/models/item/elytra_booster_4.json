@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/elytra_booster_4"
+        "layer0": "relics:item/elytra_booster_4"
     }
 }
 

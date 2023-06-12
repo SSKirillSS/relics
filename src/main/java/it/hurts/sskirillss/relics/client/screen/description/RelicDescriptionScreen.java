@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.QualityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -81,7 +82,7 @@ public class RelicDescriptionScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         if (!(stack.getItem() instanceof RelicItem relic))
             return;
 
@@ -90,9 +91,10 @@ public class RelicDescriptionScreen extends Screen {
         if (relicData == null)
             return;
 
+        PoseStack pPoseStack = guiGraphics.pose();
         TextureManager manager = MC.getTextureManager();
 
-        this.renderBackground(pPoseStack);
+        this.renderBackground(guiGraphics);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, TEXTURE);
@@ -105,7 +107,7 @@ public class RelicDescriptionScreen extends Screen {
         int x = (this.width - backgroundWidth) / 2;
         int y = (this.height - backgroundHeight) / 2;
 
-        blit(pPoseStack, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
+        guiGraphics.blit(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
 
         int level = LevelingUtils.getLevel(stack);
         int maxLevel = relicData.getLevelingData().getMaxLevel();
@@ -115,16 +117,16 @@ public class RelicDescriptionScreen extends Screen {
         boolean isMaxLevel = LevelingUtils.getLevel(stack) >= maxLevel;
 
         if (isMaxLevel)
-            blit(pPoseStack, x + 57, y + 89, 258, 80, 142, 12, texWidth, texHeight);
+            guiGraphics.blit(TEXTURE, x + 57, y + 89, 258, 80, 142, 12, texWidth, texHeight);
         else
-            blit(pPoseStack, x + 74, y + 89, 275, 80, (int) Math.ceil(percentage / 100F * 109F), 10, texWidth, texHeight);
+            guiGraphics.blit(TEXTURE, x + 74, y + 89, 275, 80, (int) Math.ceil(percentage / 100F * 109F), 10, texWidth, texHeight);
 
         int xOff = 0;
 
         for (int i = 1; i < QualityUtils.getRelicQuality(stack) + 1; i++) {
             boolean isAliquot = i % 2 == 1;
 
-            blit(pPoseStack, x + 100 + xOff, y + 11, 258 + (isAliquot ? 0 : 5), 94, isAliquot ? 5 : 9, 9, texWidth, texHeight);
+            guiGraphics.blit(TEXTURE, x + 100 + xOff, y + 11, 258 + (isAliquot ? 0 : 5), 94, isAliquot ? 5 : 9, 9, texWidth, texHeight);
 
             xOff += isAliquot ? 5 : 6;
         }
@@ -137,7 +139,7 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
-        MC.font.draw(pPoseStack, name, (x * 2 + ((backgroundWidth - MC.font.width(name) / 2F))), (y + 34) * 2, 0x412708);
+        guiGraphics.drawString(MC.font, name, (x * 2 + ((backgroundWidth - MC.font.width(name) / 2))), (y + 34) * 2, 0x412708, false);
 
         pPoseStack.popPose();
 
@@ -148,13 +150,13 @@ public class RelicDescriptionScreen extends Screen {
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
-        MC.font.drawShadow(pPoseStack, experience, (x + 128 - font.width(experience) / 4F) * 2, (y + 85) * 2, 0xFFFFFF);
+        guiGraphics.drawString(MC.font, experience, (x + 128 - font.width(experience) / 4) * 2, (y + 85) * 2, 0xFFFFFF);
 
         pPoseStack.popPose();
 
         if (!isMaxLevel) {
-            MC.font.drawShadow(pPoseStack, String.valueOf(level), x + 66 - MC.font.width(String.valueOf(level)) / 2F, y + 91, 0xFFFFFF);
-            MC.font.drawShadow(pPoseStack, String.valueOf(level + 1), x + 190 - MC.font.width(String.valueOf(level + 1)) / 2F, y + 91, 0xFFFFFF);
+            guiGraphics.drawString(MC.font, String.valueOf(level), x + 66 - MC.font.width(String.valueOf(level)) / 2, y + 91, 0xFFFFFF);
+            guiGraphics.drawString(MC.font, String.valueOf(level + 1), x + 190 - MC.font.width(String.valueOf(level + 1)) / 2, y + 91, 0xFFFFFF);
         }
 
         String registryName = ForgeRegistries.ITEMS.getKey(relic).getPath();
@@ -168,7 +170,7 @@ public class RelicDescriptionScreen extends Screen {
         List<FormattedCharSequence> lines = MC.font.split(Component.translatable("tooltip.relics." + registryName + ".leveling"), 255);
 
         for (FormattedCharSequence line : lines) {
-            MC.font.draw(pPoseStack, line, x * 2 + 61 * 2 + (265 - MC.font.width(line)) / 2F, (y + 43) * 2 + yOff, 0x412708);
+            guiGraphics.drawString(MC.font, line, x * 2 + 61 * 2 + (265 - MC.font.width(line)) / 2, (y + 43) * 2 + yOff, 0x412708, false);
 
             yOff += 9;
         }
@@ -183,20 +185,20 @@ public class RelicDescriptionScreen extends Screen {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.setShaderTexture(0, WIDGETS);
 
-            blit(pPoseStack, x + backgroundWidth - 3, y + 17, 0, 0, 40, 25, texWidth, texHeight);
-            blit(pPoseStack, x + backgroundWidth + 16, y + 22, 0, 27, 16, 13, texWidth, texHeight);
+            guiGraphics.blit(WIDGETS, x + backgroundWidth - 3, y + 17, 0, 0, 40, 25, texWidth, texHeight);
+            guiGraphics.blit(WIDGETS, x + backgroundWidth + 16, y + 22, 0, 27, 16, 13, texWidth, texHeight);
 
             String value = String.valueOf(points);
 
-            MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 25, 0xFFFFFF);
+            guiGraphics.drawString(MC.font, value, x + backgroundWidth + 7 - font.width(value) / 2, y + 25, 0xFFFFFF);
         }
 
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         for (GuiEventListener listener : this.children()) {
-            if (listener instanceof AbstractButton button && button.isHoveredOrFocused()
+            if (listener instanceof AbstractButton button && button.isHovered()
                     && button instanceof IHoverableWidget widget)
-                widget.onHovered(pPoseStack, pMouseX, pMouseY);
+                widget.onHovered(guiGraphics, pMouseX, pMouseY);
         }
     }
 

@@ -150,17 +150,16 @@ public class SpaceDissectorItem extends RelicItem {
     }
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        Level level = player.getLevel();
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int count) {
         RandomSource random = level.getRandom();
 
-        Vec3 view = player.getViewVector(0);
-        Vec3 eyeVec = player.getEyePosition(0);
+        Vec3 view = entity.getViewVector(0);
+        Vec3 eyeVec = entity.getEyePosition(0);
 
         float distance = Math.round(AbilityUtils.getAbilityValue(stack, "dissection", "distance"));
 
         BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
-                view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+                view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity));
         Vec3 targetVec = ray.getLocation();
 
         ParticleUtils.createBall(new CircleTintData(new Color(150 + random.nextInt(100), 100, 0),

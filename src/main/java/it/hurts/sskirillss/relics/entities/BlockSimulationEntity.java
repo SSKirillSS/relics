@@ -1,9 +1,11 @@
 package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.init.EntityRegistry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,10 +19,9 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 public class BlockSimulationEntity extends Entity {
-    private static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(BlockSimulationEntity.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<BlockState> BLOCK_STATE = SynchedEntityData.defineId(BlockSimulationEntity.class, EntityDataSerializers.BLOCK_STATE);
 
     public BlockSimulationEntity(EntityType<?> pEntityType, Level level) {
         super(pEntityType, level);
@@ -42,27 +43,27 @@ public class BlockSimulationEntity extends Entity {
 
         this.move(MoverType.SELF, this.getDeltaMovement());
 
-        if (this.tickCount % 100 == 0 || (this.tickCount > 10 && this.level.getBlockState(this.blockPosition().above()).getMaterial().blocksMotion()))
+        if (this.tickCount % 100 == 0 || (this.tickCount > 10 && this.getCommandSenderWorld().getBlockState(this.blockPosition().above()).blocksMotion()))
             this.remove(RemovalReason.KILLED);
     }
 
     public void setBlockState(@Nullable BlockState state) {
-        this.entityData.set(BLOCK_STATE, Optional.ofNullable(state));
+        this.entityData.set(BLOCK_STATE, state);
     }
 
     @Nullable
     public BlockState getBlockState() {
-        return this.entityData.get(BLOCK_STATE).orElse(null);
+        return this.entityData.get(BLOCK_STATE);
     }
 
     @Override
     protected void defineSynchedData() {
-        this.entityData.define(BLOCK_STATE, Optional.of(Blocks.AIR.defaultBlockState()));
+        this.entityData.define(BLOCK_STATE, Blocks.AIR.defaultBlockState());
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        setBlockState(NbtUtils.readBlockState(compound.getCompound("BlockState")));
+        setBlockState(NbtUtils.readBlockState(this.getCommandSenderWorld().holderLookup(Registries.BLOCK), compound.getCompound("BlockState")));
     }
 
     @Override
@@ -80,7 +81,7 @@ public class BlockSimulationEntity extends Entity {
 
     @Nonnull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

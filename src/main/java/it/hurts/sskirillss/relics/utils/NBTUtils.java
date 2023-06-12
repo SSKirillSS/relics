@@ -3,7 +3,7 @@ package it.hurts.sskirillss.relics.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -123,7 +123,7 @@ public class NBTUtils {
 
     @Nullable
     public static ServerLevel parseLevel(Level world, String value) {
-        return world.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(value)));
+        return world.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(value)));
     }
 
     private static final Gson LIST_SERIALIZER = new GsonBuilder()
