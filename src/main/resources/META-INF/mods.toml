@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[46,)"
+loaderVersion = "[47,)"
 license = "All Rights Reserved"
 issueTrackerURL = "https://discord.gg/pHren9yxzW"
 logoFile = "logo.png"
@@ -15,12 +15,12 @@ description = '''Just a mod about useful relics with unique mechanics ;)'''
 [[dependencies.${mod_id}]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.20,1.21)"
+    versionRange = "[1.20.1,1.21)"
     ordering = "NONE"
     side = "BOTH"
 [[dependencies.${mod_id}]]
     modId = "forge"
     mandatory = true
-    versionRange = "[46,)"
+    versionRange = "[47,)"
     ordering = "NONE"
     side = "BOTH"

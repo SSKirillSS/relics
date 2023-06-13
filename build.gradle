@@ -28,7 +28,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: "io.freefair.lombok"
 apply plugin: 'java'
 
-version = mod_version
+version = minecraft_version + "-" + mod_version
 group = mod_group_id
 
 base {
@@ -112,13 +112,8 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.2+1.20")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.2+1.20:api")
-
-    compileOnly(fg.deobf("mezz.jei:jei-1.20-common-api:14.0.0.11"))
-    compileOnly(fg.deobf("mezz.jei:jei-1.20-forge-api:14.0.0.11"))
-
-    runtimeOnly(fg.deobf("mezz.jei:jei-1.20-forge:14.0.0.11"))
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.3+1.20.1")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.3+1.20.1:api")
 }
 
 def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
