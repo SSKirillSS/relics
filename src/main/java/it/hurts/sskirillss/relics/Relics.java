@@ -22,6 +22,7 @@ public class Relics {
         EffectRegistry.register();
         CodecRegistry.register();
         SoundRegistry.register();
+        CommandRegistry.register();
         ParticleRegistry.register();
         CreativeTabRegistry.register();
     }
