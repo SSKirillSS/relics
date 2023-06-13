@@ -193,7 +193,7 @@ public class AbilityUtils {
     }
 
     public static void setAbilityPoints(ItemStack stack, String ability, int amount) {
-        getAbilityTag(stack, ability).putInt(TAG_POINTS, amount);
+        getAbilityTag(stack, ability).putInt(TAG_POINTS, Math.max(0, amount));
     }
 
     public static void addAbilityPoints(ItemStack stack, String ability, int amount) {

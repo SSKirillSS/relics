@@ -42,10 +42,10 @@ public class LevelingUtils {
         return getLevelingTag(stack).getInt(TAG_POINTS);
     }
 
-    public static void setPoints(ItemStack stack, int level) {
+    public static void setPoints(ItemStack stack, int amount) {
         CompoundTag tag = getLevelingTag(stack);
 
-        tag.putInt(TAG_POINTS, level);
+        tag.putInt(TAG_POINTS, Math.max(0, amount));
 
         setLevelingTag(stack, tag);
     }
@@ -77,7 +77,8 @@ public class LevelingUtils {
         if (levelingData == null)
             return;
 
-        addPoints(stack, Mth.clamp(amount, 0, levelingData.getMaxLevel() - getLevel(stack)));
+        if (amount > 0)
+            addPoints(stack, Mth.clamp(amount, 0, levelingData.getMaxLevel() - getLevel(stack)));
 
         setLevel(stack, getLevel(stack) + amount);
     }
@@ -102,13 +103,13 @@ public class LevelingUtils {
             int sumExp = getTotalExperienceForLevel(stack, level) + experience;
             int resultLevel = getLevelFromExperience(stack, sumExp);
 
-            data.putInt(TAG_EXPERIENCE, sumExp - getTotalExperienceForLevel(stack, resultLevel));
+            data.putInt(TAG_EXPERIENCE, Math.max(0, sumExp - getTotalExperienceForLevel(stack, resultLevel)));
 
             setLevelingTag(stack, data);
             addPoints(stack, resultLevel - level);
             setLevel(stack, resultLevel);
         } else {
-            data.putInt(TAG_EXPERIENCE, experience);
+            data.putInt(TAG_EXPERIENCE, Math.max(0, experience));
 
             setLevelingTag(stack, data);
         }
