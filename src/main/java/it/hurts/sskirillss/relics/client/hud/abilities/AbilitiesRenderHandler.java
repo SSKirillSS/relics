@@ -314,12 +314,10 @@ public class AbilitiesRenderHandler {
 
         AnimationCache animationCache = ability.getCache().getAnimation();
 
-        float[] shaderColor = RenderSystem.getShaderColor();
-
         if (animationCache.iconShakeDelta != 0) {
             float color = animationCache.iconShakeDelta * 0.05F;
 
-            RenderSystem.setShaderColor(shaderColor[0], shaderColor[1] - color, shaderColor[2] - color, shaderColor[3]);
+            RenderSystem.setShaderColor(1, 1 - color, 1 - color, 1);
 
             poseStack.mulPose(Axis.ZP.rotation((float) Math.sin((ticks + partialTicks) * 0.5F) * 0.05F));
 
@@ -330,6 +328,8 @@ public class AbilitiesRenderHandler {
             RenderUtils.renderTextureFromCenter(poseStack, 0, 0, texWidth, texHeight, texWidth, texWidth, scale, animation, ticks);
         else
             RenderUtils.renderTextureFromCenter(poseStack, 0, 0, texWidth, texHeight, scale);
+
+        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         poseStack.popPose();
     }
