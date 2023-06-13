@@ -151,9 +151,9 @@ public class AbilityDescriptionScreen extends Screen {
 
         boolean isLocked = !AbilityUtils.canUseAbility(stack, ability);
 
-        boolean isHoveredUpgrade = !isLocked && upgradeButton.isHoveredOrFocused();
-        boolean isHoveredReroll = !isLocked && rerollButton.isHoveredOrFocused();
-        boolean isHoveredReset = !isLocked && resetButton.isHoveredOrFocused();
+        boolean isHoveredUpgrade = !isLocked && upgradeButton.isHovered();
+        boolean isHoveredReroll = !isLocked && rerollButton.isHovered();
+        boolean isHoveredReset = !isLocked && resetButton.isHovered();
 
         for (String stat : AbilityUtils.getAbilityInitialValues(stack, ability).keySet()) {
             RelicAbilityStat statData = AbilityUtils.getRelicAbilityStat(relic, ability, stat);
