@@ -48,63 +48,65 @@ public class RemoteRegistry {
     public static void setupClient(final FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.RESEARCHING_TABLE.get(), RenderType.cutout());
 
-        ItemProperties.register(ItemRegistry.INFINITY_HAM.get(), new ResourceLocation(Reference.MODID, "pieces"),
-                (stack, world, entity, id) -> Math.min(10, NBTUtils.getInt(stack, InfinityHamItem.TAG_PIECES, 0)));
-        ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
-                (stack, world, entity, id) -> Math.min(8, NBTUtils.getInt(stack, ShadowGlaiveItem.TAG_CHARGES, 0)));
-        ItemProperties.register(ItemRegistry.MAGIC_MIRROR.get(), new ResourceLocation(Reference.MODID, "world"),
-                (stack, world, entity, id) -> {
-                    Entity e = Minecraft.getInstance().getCameraEntity();
+        event.enqueueWork(() -> {
+            ItemProperties.register(ItemRegistry.INFINITY_HAM.get(), new ResourceLocation(Reference.MODID, "pieces"),
+                    (stack, world, entity, id) -> Math.min(10, NBTUtils.getInt(stack, InfinityHamItem.TAG_PIECES, 0)));
+            ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
+                    (stack, world, entity, id) -> Math.min(8, NBTUtils.getInt(stack, ShadowGlaiveItem.TAG_CHARGES, 0)));
+            ItemProperties.register(ItemRegistry.MAGIC_MIRROR.get(), new ResourceLocation(Reference.MODID, "world"),
+                    (stack, world, entity, id) -> {
+                        Entity e = Minecraft.getInstance().getCameraEntity();
 
-                    if (e == null)
-                        return 0;
+                        if (e == null)
+                            return 0;
 
-                    return switch (e.getCommandSenderWorld().dimension().location().getPath()) {
-                        case "overworld" -> 1;
-                        case "the_nether" -> 2;
-                        case "the_end" -> 3;
-                        default -> 0;
-                    };
-                });
-        ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
-                (stack, world, entity, id) -> Math.min(8, NBTUtils.getInt(stack, ShadowGlaiveItem.TAG_CHARGES, 0)));
-        ItemProperties.register(ItemRegistry.MAGMA_WALKER.get(), new ResourceLocation(Reference.MODID, "heat"),
-                (stack, world, entity, id) -> {
-                    int heat = NBTUtils.getInt(stack, MagmaWalkerItem.TAG_HEAT, 0);
-                    int maxHeat = (int) Math.round(AbilityUtils.getAbilityValue(stack, "pace", "heat"));
+                        return switch (e.getCommandSenderWorld().dimension().location().getPath()) {
+                            case "overworld" -> 1;
+                            case "the_nether" -> 2;
+                            case "the_end" -> 3;
+                            default -> 0;
+                        };
+                    });
+            ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
+                    (stack, world, entity, id) -> Math.min(8, NBTUtils.getInt(stack, ShadowGlaiveItem.TAG_CHARGES, 0)));
+            ItemProperties.register(ItemRegistry.MAGMA_WALKER.get(), new ResourceLocation(Reference.MODID, "heat"),
+                    (stack, world, entity, id) -> {
+                        int heat = NBTUtils.getInt(stack, MagmaWalkerItem.TAG_HEAT, 0);
+                        int maxHeat = (int) Math.round(AbilityUtils.getAbilityValue(stack, "pace", "heat"));
 
-                    return heat > maxHeat ? 4 : (int) Math.floor(heat / (maxHeat / 4F));
-                });
-        ItemProperties.register(ItemRegistry.AQUA_WALKER.get(), new ResourceLocation(Reference.MODID, "drench"),
-                (stack, world, entity, id) -> {
-                    int drench = NBTUtils.getInt(stack, AquaWalkerItem.TAG_DRENCH, 0);
+                        return heat > maxHeat ? 4 : (int) Math.floor(heat / (maxHeat / 4F));
+                    });
+            ItemProperties.register(ItemRegistry.AQUA_WALKER.get(), new ResourceLocation(Reference.MODID, "drench"),
+                    (stack, world, entity, id) -> {
+                        int drench = NBTUtils.getInt(stack, AquaWalkerItem.TAG_DRENCH, 0);
 
-                    return (int) Math.floor(drench / (AbilityUtils.getAbilityValue(stack, "walking", "time") / 4F));
-                });
-        ItemProperties.register(ItemRegistry.ARROW_QUIVER.get(), new ResourceLocation(Reference.MODID, "fullness"),
-                (stack, world, entity, id) -> {
-                    int maxAmount = getSlotsAmount(stack);
-                    int amount = getArrows(stack).size();
+                        return (int) Math.floor(drench / (AbilityUtils.getAbilityValue(stack, "walking", "time") / 4F));
+                    });
+            ItemProperties.register(ItemRegistry.ARROW_QUIVER.get(), new ResourceLocation(Reference.MODID, "fullness"),
+                    (stack, world, entity, id) -> {
+                        int maxAmount = getSlotsAmount(stack);
+                        int amount = getArrows(stack).size();
 
-                    return amount > 0 ? (int) Math.floor(amount / (maxAmount / 2F)) + 1 : 0;
-                });
-        ItemProperties.register(ItemRegistry.ELYTRA_BOOSTER.get(), new ResourceLocation(Reference.MODID, "fuel"),
-                (stack, world, entity, id) -> {
-                    int fuel = NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0);
+                        return amount > 0 ? (int) Math.floor(amount / (maxAmount / 2F)) + 1 : 0;
+                    });
+            ItemProperties.register(ItemRegistry.ELYTRA_BOOSTER.get(), new ResourceLocation(Reference.MODID, "fuel"),
+                    (stack, world, entity, id) -> {
+                        int fuel = NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0);
 
-                    return (int) Math.ceil(fuel / (AbilityUtils.getAbilityValue(stack, "boost", "capacity") / 5F));
-                });
-        ItemProperties.register(ItemRegistry.SOLID_SNOWBALL.get(), new ResourceLocation(Reference.MODID, "snow"),
-                (stack, world, entity, id) -> {
-                    ItemStack relic = EntityUtils.findEquippedCurio(entity, ItemRegistry.WOOL_MITTEN.get());
+                        return (int) Math.ceil(fuel / (AbilityUtils.getAbilityValue(stack, "boost", "capacity") / 5F));
+                    });
+            ItemProperties.register(ItemRegistry.SOLID_SNOWBALL.get(), new ResourceLocation(Reference.MODID, "snow"),
+                    (stack, world, entity, id) -> {
+                        ItemStack relic = EntityUtils.findEquippedCurio(entity, ItemRegistry.WOOL_MITTEN.get());
 
-                    return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (AbilityUtils.getAbilityValue(relic, "mold", "size") / 3F));
-                });
-        ItemProperties.register(ItemRegistry.ROLLER_SKATES.get(), new ResourceLocation(Reference.MODID, "active"),
-                (stack, world, entity, id) -> NBTUtils.getInt(stack, RollerSkatesItem.TAG_SKATING_DURATION, 0) > 0 ? 1 : 0);
+                        return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (AbilityUtils.getAbilityValue(relic, "mold", "size") / 3F));
+                    });
+            ItemProperties.register(ItemRegistry.ROLLER_SKATES.get(), new ResourceLocation(Reference.MODID, "active"),
+                    (stack, world, entity, id) -> NBTUtils.getInt(stack, RollerSkatesItem.TAG_SKATING_DURATION, 0) > 0 ? 1 : 0);
 
-        ItemProperties.register(ItemRegistry.BLAZING_FLASK.get(), new ResourceLocation(Reference.MODID, "active"),
-                (stack, world, entity, id) -> NBTUtils.getString(stack, BlazingFlaskItem.TAG_POSITION, "").isEmpty() ? 0 : 1);
+            ItemProperties.register(ItemRegistry.BLAZING_FLASK.get(), new ResourceLocation(Reference.MODID, "active"),
+                    (stack, world, entity, id) -> NBTUtils.getString(stack, BlazingFlaskItem.TAG_POSITION, "").isEmpty() ? 0 : 1);
+        });
     }
 
     @SubscribeEvent
