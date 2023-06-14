@@ -44,7 +44,7 @@
   "tooltip.relics.infinity_ham.ability.infusion.stat.duration.value": "%1$s seconds per charge.",
 
   "item.relics.enders_hand": "Ender Hand",
-  "tooltip.relics.enders_hand.leveling": "+1 experience point for using the ability «Edge Transposition» +1 experience point for every 10 blocks from the distance to the target when using.",
+  "tooltip.relics.enders_hand.leveling": "+1 experience point for using the ability «End Transposition» +1 experience point for every 10 blocks from the distance to the target when using.",
   "tooltip.relics.enders_hand.ability.neutrality": "Neutrality",
   "tooltip.relics.enders_hand.ability.neutrality.description": "Makes endermen neutral with respect to the wearer.",
   "tooltip.relics.enders_hand.ability.swap": "End Transposition",
