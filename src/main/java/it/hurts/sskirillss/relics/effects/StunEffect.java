@@ -63,14 +63,16 @@ public class StunEffect extends MobEffect {
 
             int stars = 10;
 
+            float ticks = entity.tickCount + event.getPartialTick();
+
             for (int i = 0; i < stars; i++) {
                 poseStack.pushPose();
 
-                poseStack.translate(0, Mth.sin(entity.tickCount * 0.1F + i * 20) * 0.2F, 0);
+                poseStack.translate(0, Mth.sin(ticks * 0.1F + i * 20) * 0.2F, 0);
 
-                poseStack.mulPose(Axis.ZP.rotationDegrees((Mth.cos(entity.tickCount / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
-                poseStack.mulPose(Axis.YP.rotationDegrees((entity.tickCount / 20.0F) * (180F / (float) Math.PI) + (i * (360F / stars))));
-                poseStack.mulPose(Axis.XP.rotationDegrees((Mth.sin(entity.tickCount / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
+                poseStack.mulPose(Axis.ZP.rotationDegrees((Mth.cos(ticks / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
+                poseStack.mulPose(Axis.YP.rotationDegrees((ticks / 20.0F) * (180F / (float) Math.PI) + (i * (360F / stars))));
+                poseStack.mulPose(Axis.XP.rotationDegrees((Mth.sin(ticks / 10.0F) / 7.0F) * (180F / (float) Math.PI)));
 
                 poseStack.translate(0, 0, 1F + stars * 0.15F);
 
