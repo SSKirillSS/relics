@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.client.screen.description;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.client.screen.base.IAutoScaled;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.card.AbilityCardIconWidget;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class RelicDescriptionScreen extends Screen {
+public class RelicDescriptionScreen extends Screen implements IAutoScaled {
     private final Minecraft MC = Minecraft.getInstance();
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/relic_background.png");
@@ -205,5 +206,10 @@ public class RelicDescriptionScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    @Override
+    public int getAutoScale() {
+        return 0;
     }
 }

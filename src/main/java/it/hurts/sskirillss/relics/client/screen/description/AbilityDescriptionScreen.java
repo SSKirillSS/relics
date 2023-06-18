@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.client.screen.description;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.client.screen.base.IAutoScaled;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityRerollButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityResetButtonWidget;
@@ -38,7 +39,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class AbilityDescriptionScreen extends Screen {
+public class AbilityDescriptionScreen extends Screen implements IAutoScaled {
     private final Minecraft MC = Minecraft.getInstance();
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/ability_background.png");
@@ -275,5 +276,10 @@ public class AbilityDescriptionScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    @Override
+    public int getAutoScale() {
+        return 0;
     }
 }

@@ -17,6 +17,7 @@
   "client": [
     "MixinCamera",
     "MixinKeyboardHandler",
-    "MixinMouseHandler"
+    "MixinMouseHandler",
+    "MixinWindow"
   ]
 }
