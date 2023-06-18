@@ -18,6 +18,8 @@
     "MixinCamera",
     "MixinKeyboardHandler",
     "MixinMouseHandler",
-    "MixinScreen"
+    "MixinScreen",
+    "MixinMouseHandler",
+    "MixinWindow"
   ]
 }

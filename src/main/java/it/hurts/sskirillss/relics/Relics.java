@@ -13,9 +13,13 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(Reference.MODID)
 public class Relics {
+    public static final Logger LOGGER = LogManager.getLogger(Reference.MODID);
+
     public Relics() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupCommon);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueue);
