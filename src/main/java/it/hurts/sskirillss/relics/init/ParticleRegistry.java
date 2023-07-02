@@ -20,9 +20,4 @@ public class ParticleRegistry {
     public static void registerParticles() {
         PARTICLES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
-
-
-    public static class ClientEvents {
-
-    }
 }
