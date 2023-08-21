@@ -6,7 +6,7 @@ logoFile = "logo.png"
 
 [[mods]]
 modId = "relics"
-version = "0.4.7.2"
+version = "0.4.7.3"
 displayName = "Relics"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/relics-mod"
 authors = "SSKirillSS"
