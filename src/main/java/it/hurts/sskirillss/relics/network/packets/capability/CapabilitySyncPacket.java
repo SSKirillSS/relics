@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.network.packets.capability;
 
+import it.hurts.sskirillss.relics.capability.entries.IRelicsCapability;
 import it.hurts.sskirillss.relics.capability.utils.CapabilityUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -9,6 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class CapabilitySyncPacket {
@@ -39,6 +41,11 @@ public class CapabilitySyncPacket {
         if (player == null)
             return;
 
-        CapabilityUtils.getRelicsCapability(player).deserializeNBT(data);
+        Optional<IRelicsCapability> capability = CapabilityUtils.getRelicsCapability(player).resolve();
+
+        if (capability.isEmpty())
+            return;
+
+        capability.get().deserializeNBT(data);
     }
 }
