@@ -1,8 +1,8 @@
-package it.hurts.sskirillss.relics.client.renderer.items.handlers;
+package it.hurts.sskirillss.relics.client.renderer.items;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.hurts.sskirillss.relics.client.models.items.DrownedBeltModel;
+import it.hurts.sskirillss.relics.client.models.items.HunterBeltModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -17,13 +17,13 @@ import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
-public class DrownedBeltRenderer implements ICurioRenderer {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/models/items/drowned_belt.png");
+public class HunterBeltRenderer implements ICurioRenderer {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/models/items/hunter_belt.png");
 
-    private final DrownedBeltModel model;
+    private final HunterBeltModel model;
 
-    public DrownedBeltRenderer() {
-        this.model = new DrownedBeltModel(Minecraft.getInstance().getEntityModels().bakeLayer(DrownedBeltModel.LAYER));
+    public HunterBeltRenderer() {
+        this.model = new HunterBeltModel(Minecraft.getInstance().getEntityModels().bakeLayer(HunterBeltModel.LAYER));
     }
 
     @Override
