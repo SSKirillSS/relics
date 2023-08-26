@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import it.hurts.sskirillss.relics.client.models.SporeModel;
+import it.hurts.sskirillss.relics.client.models.entities.SporeModel;
 import it.hurts.sskirillss.relics.entities.SporeEntity;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
