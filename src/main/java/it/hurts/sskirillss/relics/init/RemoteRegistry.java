@@ -2,9 +2,11 @@ package it.hurts.sskirillss.relics.init;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.hud.abilities.AbilitiesRenderHandler;
+import it.hurts.sskirillss.relics.client.models.items.DrownedBeltModel;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintFactory;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintFactory;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
+import it.hurts.sskirillss.relics.client.renderer.items.handlers.DrownedBeltRenderer;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
@@ -39,6 +41,7 @@ import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 import static it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem.*;
 
@@ -107,6 +110,13 @@ public class RemoteRegistry {
             ItemProperties.register(ItemRegistry.BLAZING_FLASK.get(), new ResourceLocation(Reference.MODID, "active"),
                     (stack, world, entity, id) -> NBTUtils.getString(stack, BlazingFlaskItem.TAG_POSITION, "").isEmpty() ? 0 : 1);
         });
+
+        CuriosRendererRegistry.register(ItemRegistry.DROWNED_BELT.get(), DrownedBeltRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerLayers(final EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(DrownedBeltModel.LAYER, DrownedBeltModel::createLayer);
     }
 
     @SubscribeEvent

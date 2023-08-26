@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import it.hurts.sskirillss.relics.client.models.StalactiteModel;
+import it.hurts.sskirillss.relics.client.models.entities.StalactiteModel;
 import it.hurts.sskirillss.relics.entities.StalactiteEntity;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;

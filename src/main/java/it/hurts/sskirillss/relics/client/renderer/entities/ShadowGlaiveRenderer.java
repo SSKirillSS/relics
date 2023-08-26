@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import it.hurts.sskirillss.relics.client.models.ShadowGlaiveModel;
+import it.hurts.sskirillss.relics.client.models.entities.ShadowGlaiveModel;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
