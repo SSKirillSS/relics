@@ -4,11 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.hud.abilities.AbilitiesRenderHandler;
 import it.hurts.sskirillss.relics.client.models.items.DrownedBeltModel;
 import it.hurts.sskirillss.relics.client.models.items.HunterBeltModel;
+import it.hurts.sskirillss.relics.client.models.items.LeatherBeltModel;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintFactory;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintFactory;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
 import it.hurts.sskirillss.relics.client.renderer.items.DrownedBeltRenderer;
 import it.hurts.sskirillss.relics.client.renderer.items.HunterBeltRenderer;
+import it.hurts.sskirillss.relics.client.renderer.items.LeatherBeltRenderer;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
@@ -115,12 +117,14 @@ public class RemoteRegistry {
 
         CuriosRendererRegistry.register(ItemRegistry.DROWNED_BELT.get(), DrownedBeltRenderer::new);
         CuriosRendererRegistry.register(ItemRegistry.HUNTER_BELT.get(), HunterBeltRenderer::new);
+        CuriosRendererRegistry.register(ItemRegistry.LEATHER_BELT.get(), LeatherBeltRenderer::new);
     }
 
     @SubscribeEvent
     public static void registerLayers(final EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(DrownedBeltModel.LAYER, DrownedBeltModel::createLayer);
         event.registerLayerDefinition(HunterBeltModel.LAYER, HunterBeltModel::createLayer);
+        event.registerLayerDefinition(LeatherBeltModel.LAYER, LeatherBeltModel::createLayer);
     }
 
     @SubscribeEvent
