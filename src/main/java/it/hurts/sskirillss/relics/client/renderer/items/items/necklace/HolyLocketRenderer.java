@@ -1,8 +1,8 @@
-package it.hurts.sskirillss.relics.client.renderer.items;
+package it.hurts.sskirillss.relics.client.renderer.items.items.necklace;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.hurts.sskirillss.relics.client.models.items.DrownedBeltModel;
+import it.hurts.sskirillss.relics.client.models.items.necklace.HolyLocketModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -17,17 +17,19 @@ import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
-public class DrownedBeltRenderer implements ICurioRenderer {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/models/items/drowned_belt.png");
+public class HolyLocketRenderer implements ICurioRenderer {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/models/items/holy_locket.png");
 
-    private final DrownedBeltModel model;
+    private final HolyLocketModel model;
 
-    public DrownedBeltRenderer() {
-        this.model = new DrownedBeltModel(Minecraft.getInstance().getEntityModels().bakeLayer(DrownedBeltModel.LAYER));
+    public HolyLocketRenderer() {
+        this.model = new HolyLocketModel(Minecraft.getInstance().getEntityModels().bakeLayer(HolyLocketModel.LAYER));
     }
 
     @Override
     public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        matrixStack.pushPose();
+
         LivingEntity entity = slotContext.entity();
 
         this.model.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
@@ -40,6 +42,12 @@ public class DrownedBeltRenderer implements ICurioRenderer {
 
         VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(TEXTURE), false, stack.hasFoil());
 
+        matrixStack.scale(0.5F, 0.5F, 0.5F);
+
         this.model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        matrixStack.scale(2F, 2F, 2F);
+
+        matrixStack.popPose();
     }
 }
