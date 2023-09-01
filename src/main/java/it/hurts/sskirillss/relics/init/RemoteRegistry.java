@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.client.models.items.belt.DrownedBeltModel;
 import it.hurts.sskirillss.relics.client.models.items.belt.HunterBeltModel;
 import it.hurts.sskirillss.relics.client.models.items.belt.LeatherBeltModel;
 import it.hurts.sskirillss.relics.client.models.items.necklace.HolyLocketModel;
+import it.hurts.sskirillss.relics.client.models.items.necklace.ReflectionNecklaceModel;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintFactory;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintFactory;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
@@ -12,6 +13,7 @@ import it.hurts.sskirillss.relics.client.renderer.items.items.belt.DrownedBeltRe
 import it.hurts.sskirillss.relics.client.renderer.items.items.belt.HunterBeltRenderer;
 import it.hurts.sskirillss.relics.client.renderer.items.items.belt.LeatherBeltRenderer;
 import it.hurts.sskirillss.relics.client.renderer.items.items.necklace.HolyLocketRenderer;
+import it.hurts.sskirillss.relics.client.renderer.items.items.necklace.ReflectionNecklaceRenderer;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
@@ -128,6 +130,7 @@ public class RemoteRegistry {
         CuriosRendererRegistry.register(ItemRegistry.HUNTER_BELT.get(), HunterBeltRenderer::new);
         CuriosRendererRegistry.register(ItemRegistry.LEATHER_BELT.get(), LeatherBeltRenderer::new);
         CuriosRendererRegistry.register(ItemRegistry.HOLY_LOCKET.get(), HolyLocketRenderer::new);
+        CuriosRendererRegistry.register(ItemRegistry.REFLECTION_NECKLACE.get(), ReflectionNecklaceRenderer::new);
     }
 
     @SubscribeEvent
@@ -136,6 +139,7 @@ public class RemoteRegistry {
         event.registerLayerDefinition(HunterBeltModel.LAYER, HunterBeltModel::createLayer);
         event.registerLayerDefinition(LeatherBeltModel.LAYER, LeatherBeltModel::createLayer);
         event.registerLayerDefinition(HolyLocketModel.LAYER, HolyLocketModel::createLayer);
+        event.registerLayerDefinition(ReflectionNecklaceModel.LAYER, ReflectionNecklaceModel::createLayer);
     }
 
     @SubscribeEvent
