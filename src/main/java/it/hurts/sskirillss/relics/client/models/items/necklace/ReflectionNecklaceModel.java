@@ -30,10 +30,10 @@ public class ReflectionNecklaceModel extends HumanoidModel<LivingEntity> {
         PartDefinition part = mesh.getRoot();
 
         PartDefinition bone = part.addOrReplaceChild("bone", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, 0.0F, -4.15F, 16.0F, 7.0F, 8.0F, new CubeDeformation(0.5F))
-                .texOffs(0, 0).addBox(-1.5F, 6.25F, -5.15F, 3.0F, 5.0F, 1.0F, new CubeDeformation(-0.075F))
-                .texOffs(0, 15).addBox(-1.0F, 7.5F, -5.775F, 2.0F, 3.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+                .texOffs(0, 0).addBox(-1.5F, 5.125F, -5.15F, 3.0F, 5.0F, 1.0F, new CubeDeformation(-0.075F))
+                .texOffs(0, 15).addBox(-1.0F, 6.375F, -5.775F, 2.0F, 3.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        bone.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(6, 15).addBox(-0.675F, -1.325F, -0.5F, 2.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 11.6F, -4.65F, 0.0F, 0.0F, -0.7854F));
+        bone.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(6, 15).addBox(-0.675F, -1.325F, -0.5F, 2.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.475F, -4.65F, 0.0F, 0.0F, -0.7854F));
 
         return LayerDefinition.create(mesh, 64, 64);
     }
