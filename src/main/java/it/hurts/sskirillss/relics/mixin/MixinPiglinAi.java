@@ -12,7 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,15 +29,12 @@ public abstract class MixinPiglinAi {
         return null;
     }
 
-    @Redirect(method = "stopHoldingOffHandItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;throwItems(Lnet/minecraft/world/entity/monster/piglin/Piglin;Ljava/util/List;)V", ordinal = 0))
-    private static void tweakBartering(Piglin piglin, List<ItemStack> items) {
+    @Inject(method = "stopHoldingOffHandItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;throwItems(Lnet/minecraft/world/entity/monster/piglin/Piglin;Ljava/util/List;)V", ordinal = 0), cancellable = true)
+    private static void tweakBartering(Piglin piglin, boolean bool, CallbackInfo ci) {
         Optional<Player> optional = piglin.getBrain().getMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER);
 
-        if (optional.isEmpty()) {
-            throwItems(piglin, getBarterResponseItems(piglin));
-
+        if (optional.isEmpty())
             return;
-        }
 
         ItemStack stack = EntityUtils.findEquippedCurio(optional.get(), ItemRegistry.BASTION_RING.get());
 
@@ -48,7 +46,8 @@ public abstract class MixinPiglinAi {
                     LevelingUtils.addExperience(optional.get(), stack, 5);
                 }
             }
-        } else
-            throwItems(piglin, getBarterResponseItems(piglin));
+
+            ci.cancel();
+        }
     }
 }
