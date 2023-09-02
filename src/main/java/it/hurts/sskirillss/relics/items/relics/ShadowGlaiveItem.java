@@ -13,7 +13,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -103,7 +102,7 @@ public class ShadowGlaiveItem extends RelicItem {
 
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
-        if (DurabilityUtils.isBroken(stack) || entityIn.tickCount % 20 != 0 || charges >= 8)
+        if (entityIn.tickCount % 20 != 0 || charges >= 8)
             return;
 
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
@@ -124,7 +123,7 @@ public class ShadowGlaiveItem extends RelicItem {
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
         RandomSource random = playerIn.getRandom();
 
-        if (DurabilityUtils.isBroken(stack) || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
+        if (playerIn.getCooldowns().isOnCooldown(stack.getItem()))
             return InteractionResultHolder.fail(stack);
 
         ShadowSawEntity entity = getSaw(stack, worldIn);

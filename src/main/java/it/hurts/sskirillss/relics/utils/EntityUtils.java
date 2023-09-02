@@ -155,8 +155,6 @@ public class EntityUtils {
         if (optional.isEmpty())
             return ItemStack.EMPTY;
 
-        ItemStack stack = optional.get().getRight();
-
-        return DurabilityUtils.isBroken(stack) ? ItemStack.EMPTY : stack;
+        return optional.get().getRight();
     }
 }

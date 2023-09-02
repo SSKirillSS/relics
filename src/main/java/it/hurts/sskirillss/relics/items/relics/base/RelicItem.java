@@ -14,17 +14,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -38,13 +35,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -64,9 +61,6 @@ public abstract class RelicItem extends ItemBase implements ICurioItem {
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> modifiers = LinkedHashMultimap.create();
 
-        if (DurabilityUtils.isBroken(stack))
-            return modifiers;
-
         RelicAttributeModifier attributes = getAttributeModifiers(stack);
         RelicSlotModifier slots = getSlotModifiers(stack);
 
@@ -78,26 +72,24 @@ public abstract class RelicItem extends ItemBase implements ICurioItem {
 
         if (slots != null)
             slots.getModifiers().forEach(slot ->
-                    CuriosApi.getCuriosHelper().addSlotModifier(modifiers, slot.getLeft(), uuid, slot.getRight(), AttributeModifier.Operation.ADDITION));
+                    CuriosApi.addSlotModifier(modifiers, slot.getLeft(), uuid, slot.getRight(), AttributeModifier.Operation.ADDITION));
 
         return modifiers;
     }
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        if (!DurabilityUtils.isBroken(stack)) {
-            Vec3 pos = entity.position();
-            RandomSource random = entity.getCommandSenderWorld().getRandom();
+        Vec3 pos = entity.position();
+        RandomSource random = entity.getCommandSenderWorld().getRandom();
 
-            if (getStyle(stack) != null) {
-                String hex = getStyle(stack).getParticles();
+        if (getStyle(stack) != null) {
+            String hex = getStyle(stack).getParticles();
 
-                Color color = hex == null || hex.isEmpty() ? new Color(stack.getRarity().color.getColor()) : Color.decode(hex);
+            Color color = hex == null || hex.isEmpty() ? new Color(stack.getRarity().color.getColor()) : Color.decode(hex);
 
-                entity.getCommandSenderWorld().addParticle(new CircleTintData(color, random.nextFloat() * 0.025F + 0.04F, 25, 0.97F, true),
-                        pos.x() + MathUtils.randomFloat(random) * 0.25F, pos.y() + 0.1F,
-                        pos.z() + MathUtils.randomFloat(random) * 0.25F, 0, random.nextFloat() * 0.05D, 0);
-            }
+            entity.getCommandSenderWorld().addParticle(new CircleTintData(color, random.nextFloat() * 0.025F + 0.04F, 25, 0.97F, true),
+                    pos.x() + MathUtils.randomFloat(random) * 0.25F, pos.y() + 0.1F,
+                    pos.z() + MathUtils.randomFloat(random) * 0.25F, 0, random.nextFloat() * 0.05D, 0);
         }
 
         return super.onEntityItemUpdate(stack, entity);
@@ -118,52 +110,18 @@ public abstract class RelicItem extends ItemBase implements ICurioItem {
     }
 
     @Override
-    public boolean showAttributesTooltip(String identifier, ItemStack stack) {
-        return false;
+    public List<Component> getAttributesTooltip(List<Component> tooltips, ItemStack stack) {
+        return new ArrayList<>();
     }
 
     @Override
-    public boolean canEquip(String identifier, LivingEntity livingEntity, ItemStack stack) {
-        return !DurabilityUtils.isBroken(stack);
+    public boolean canEquip(SlotContext slotContext, ItemStack stack) {
+        return true;
     }
 
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
-        return !DurabilityUtils.isBroken(stack);
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        return switch (stack.getRarity()) {
-            case COMMON -> 100;
-            case UNCOMMON -> 150;
-            case RARE -> 200;
-            case EPIC -> 250;
-        };
-    }
-
-    @Override
-    public boolean isDamageable(ItemStack stack) {
-        return stack.getMaxDamage() > 0;
-    }
-
-    // Mojank moment
-
-    @Override
-    public int getBarWidth(ItemStack stack) {
-        return Math.round(13.0F - (float) stack.getDamageValue() * 13.0F / (float) getMaxDamage(stack));
-    }
-
-    @Override
-    public int getBarColor(@NotNull ItemStack stack) {
-//        Triple<String, String, String> color = getStyle(stack).getDurability();
-//
-//        if (color == null)
-        return Mth.hsvToRgb(Math.max(0F, ((float) getMaxDamage(stack) - (float) stack.getDamageValue()) / (float) getMaxDamage(stack)) / 3F, 1F, 1F);
-//
-//        float percentage = stack.getDamageValue() * 100F / getMaxDamage(stack);
-//
-//        return Color.decode(percentage < 33.3F ? color.getLeft() : percentage < 66.6F ? color.getMiddle() : color.getRight()).getRGB();
+        return true;
     }
 
     public RelicStyleData getStyle(ItemStack stack) {

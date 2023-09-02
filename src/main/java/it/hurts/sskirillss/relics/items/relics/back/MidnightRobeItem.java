@@ -12,7 +12,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -83,7 +82,7 @@ public class MidnightRobeItem extends RelicItem {
     public void curioTick(String identifier, int index, LivingEntity entity, ItemStack stack) {
         Level level = entity.getCommandSenderWorld();
 
-        if (DurabilityUtils.isBroken(stack) || level.isClientSide())
+        if (level.isClientSide())
             return;
 
         ServerLevel serverLevel = (ServerLevel) level;
@@ -188,7 +187,7 @@ public class MidnightRobeItem extends RelicItem {
 
         double light = AbilityUtils.getAbilityValue(stack, "vanish", "light");
 
-        return !stack.isEmpty() && !DurabilityUtils.isBroken(stack) && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
+        return !stack.isEmpty() && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
                 && world.getBrightness(LightLayer.BLOCK, position) + world.getBrightness(LightLayer.SKY, position) / 2D <= (world.isNight() ? light * 1.5D : light);
     }
 

@@ -17,7 +17,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -93,7 +96,7 @@ public class IceBreakerItem extends RelicItem {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
+        if (!(livingEntity instanceof Player player))
             return;
 
         boolean isFalling = NBTUtils.getBoolean(stack, TAG_FALLING, false);
@@ -125,7 +128,7 @@ public class IceBreakerItem extends RelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_BREAKER.get());
 
-            if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
+            if (stack.isEmpty())
                 return;
 
             event.setFriction(0.6F);

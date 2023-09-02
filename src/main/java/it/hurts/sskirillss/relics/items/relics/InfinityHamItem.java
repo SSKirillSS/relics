@@ -11,7 +11,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -83,7 +82,7 @@ public class InfinityHamItem extends RelicItem {
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected) {
         if (entityIn.tickCount % 20 != 0 || !(entityIn instanceof Player player)
-                || player.isUsingItem() || DurabilityUtils.isBroken(stack))
+                || player.isUsingItem())
             return;
 
         int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
@@ -106,7 +105,7 @@ public class InfinityHamItem extends RelicItem {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!DurabilityUtils.isBroken(stack) && NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
+        if (NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
                 && (player.getFoodData().needsFood() || player.isCreative()))
             player.startUsingItem(hand);
 

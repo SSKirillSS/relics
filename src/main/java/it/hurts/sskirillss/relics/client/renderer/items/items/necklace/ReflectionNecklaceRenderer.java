@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.client.renderer.items.items.necklace;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.hurts.sskirillss.relics.client.models.items.necklace.HolyLocketModel;
 import it.hurts.sskirillss.relics.client.models.items.necklace.ReflectionNecklaceModel;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;

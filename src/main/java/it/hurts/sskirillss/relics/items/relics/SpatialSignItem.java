@@ -12,7 +12,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -66,7 +65,7 @@ public class SpatialSignItem extends RelicItem {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
-        if (DurabilityUtils.isBroken(stack) || NBTUtils.getList(stack, TAG_POSITION, String.class).size() < 2
+        if (NBTUtils.getList(stack, TAG_POSITION, String.class).size() < 2
                 || worldIn.isClientSide())
             return InteractionResultHolder.fail(stack);
 
@@ -83,7 +82,7 @@ public class SpatialSignItem extends RelicItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (DurabilityUtils.isBroken(stack) || !(entityIn instanceof Player player))
+        if (!(entityIn instanceof Player player))
             return;
 
         RandomSource random = worldIn.getRandom();

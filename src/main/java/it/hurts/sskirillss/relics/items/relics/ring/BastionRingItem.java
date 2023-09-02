@@ -11,7 +11,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.core.BlockPos;
@@ -74,7 +73,7 @@ public class BastionRingItem extends RelicItem {
 
         Level world = player.getCommandSenderWorld();
 
-        if (world.isClientSide() || world.dimension() != Level.NETHER || DurabilityUtils.isBroken(stack))
+        if (world.isClientSide() || world.dimension() != Level.NETHER)
             return;
 
         Piglin piglin = world.getNearestEntity(Piglin.class, TargetingConditions.DEFAULT, player,

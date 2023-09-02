@@ -6,7 +6,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.DataUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -27,8 +26,7 @@ public class ActiveAbilityUtils {
             for (int slot = 0; slot < handler.getSlots(); slot++) {
                 ItemStack stack = handler.getStackInSlot(slot);
 
-                if (!(stack.getItem() instanceof RelicItem)
-                        || DurabilityUtils.isBroken(stack))
+                if (!(stack.getItem() instanceof RelicItem))
                     continue;
 
                 List<String> abilities = getRelicActiveAbilities(stack);

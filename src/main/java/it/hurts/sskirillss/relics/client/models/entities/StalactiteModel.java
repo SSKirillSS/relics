@@ -21,7 +21,8 @@ public class StalactiteModel<T extends Entity> extends EntityModel<T> {
         PartDefinition g4_r1 = stone.addOrReplaceChild("g4_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, -10.0F, 0.0F, 16.0F, 20.0F, 0.0F, new CubeDeformation(0.0F))
                 .texOffs(0, -16).addBox(0.0F, -10.0F, -8.0F, 0.0F, 20.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
 
-        this.stone = LayerDefinition.create(meshdefinition, 64, 64).bakeRoot().getChild("stone");;
+        this.stone = LayerDefinition.create(meshdefinition, 64, 64).bakeRoot().getChild("stone");
+        ;
     }
 
     @Override

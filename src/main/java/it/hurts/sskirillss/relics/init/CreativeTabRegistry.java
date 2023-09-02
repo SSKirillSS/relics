@@ -34,7 +34,7 @@ public class CreativeTabRegistry {
         if (event.getTab() == RELICS_TAB.get()) {
             for (RegistryObject<Item> object : ItemRegistry.ITEMS.getEntries()) {
                 if (object.get() instanceof ICreativeTabEntry entry)
-                        event.acceptAll(entry.processCreativeTab());
+                    event.acceptAll(entry.processCreativeTab());
             }
 
             for (RegistryObject<Item> object : BlockRegistry.ITEMS.getEntries()) {

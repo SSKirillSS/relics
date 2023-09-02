@@ -117,7 +117,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD);
 
-        int width = Mth.clamp(MC.font.width(name) / 2 + 12,60, 100);
+        int width = Mth.clamp(MC.font.width(name) / 2 + 12, 60, 100);
         int height = this.height / 2 + 1;
 
         List<MutableComponent> description = new ArrayList<>();

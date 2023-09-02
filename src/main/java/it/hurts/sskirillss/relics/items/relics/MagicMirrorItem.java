@@ -11,7 +11,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.BlockPos;
@@ -73,7 +72,7 @@ public class MagicMirrorItem extends RelicItem {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
         if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get())
-                || DurabilityUtils.isBroken(stack) || worldIn.isClientSide())
+                || worldIn.isClientSide())
             return InteractionResultHolder.fail(stack);
 
         ServerPlayer serverPlayer = (ServerPlayer) playerIn;

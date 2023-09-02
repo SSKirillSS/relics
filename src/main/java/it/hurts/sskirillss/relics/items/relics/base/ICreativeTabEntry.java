@@ -8,5 +8,7 @@ import java.util.List;
 public interface ICreativeTabEntry {
     default List<ItemStack> processCreativeTab() {
         return new ArrayList<>();
-    };
+    }
+
+    ;
 }

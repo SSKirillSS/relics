@@ -15,7 +15,7 @@ public class SolidSnowballModel<T extends Entity> extends EntityModel<T> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-       PartDefinition snowball = partdefinition.addOrReplaceChild("snowball", CubeListBuilder.create().texOffs(0, 0).addBox(-7.0F, -15.0F, -7.0F, 14.0F, 14.0F, 14.0F, new CubeDeformation(0.0F))
+        PartDefinition snowball = partdefinition.addOrReplaceChild("snowball", CubeListBuilder.create().texOffs(0, 0).addBox(-7.0F, -15.0F, -7.0F, 14.0F, 14.0F, 14.0F, new CubeDeformation(0.0F))
                 .texOffs(22, 40).addBox(7.0F, -13.0F, -5.0F, 1.0F, 10.0F, 10.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 39).addBox(-8.0F, -13.0F, -5.0F, 1.0F, 10.0F, 10.0F, new CubeDeformation(0.0F))
                 .texOffs(44, 40).addBox(-5.0F, -13.0F, -8.0F, 10.0F, 10.0F, 1.0F, new CubeDeformation(0.0F))
