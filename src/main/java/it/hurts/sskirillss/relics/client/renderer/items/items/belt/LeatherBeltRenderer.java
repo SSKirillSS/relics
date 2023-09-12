@@ -28,6 +28,8 @@ public class LeatherBeltRenderer implements ICurioRenderer {
 
     @Override
     public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        matrixStack.pushPose();
+
         LivingEntity entity = slotContext.entity();
 
         this.model.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
@@ -41,5 +43,7 @@ public class LeatherBeltRenderer implements ICurioRenderer {
         VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(TEXTURE), false, stack.hasFoil());
 
         this.model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        matrixStack.popPose();
     }
 }
