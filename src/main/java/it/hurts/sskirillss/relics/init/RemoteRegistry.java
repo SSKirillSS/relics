@@ -55,6 +55,7 @@ public class RemoteRegistry {
     public static void setupClient(final FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.RESEARCHING_TABLE.get(), RenderType.cutout());
 
+        event.enqueueWork(() -> {
         ItemProperties.register(ItemRegistry.INFINITY_HAM.get(), new ResourceLocation(Reference.MODID, "pieces"),
                 (stack, world, entity, id) -> Math.min(10, NBTUtils.getInt(stack, InfinityHamItem.TAG_PIECES, 0)));
         ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
@@ -66,7 +67,7 @@ public class RemoteRegistry {
                     if (e == null)
                         return 0;
 
-                    return switch (e.getLevel().dimension().location().getPath()) {
+                    return switch (e.getCommandSenderWorld().dimension().location().getPath()) {
                         case "overworld" -> 1;
                         case "the_nether" -> 2;
                         case "the_end" -> 3;
@@ -112,6 +113,7 @@ public class RemoteRegistry {
 
         ItemProperties.register(ItemRegistry.BLAZING_FLASK.get(), new ResourceLocation(Reference.MODID, "active"),
                 (stack, world, entity, id) -> NBTUtils.getString(stack, BlazingFlaskItem.TAG_POSITION, "").isEmpty() ? 0 : 1);
+        });
     }
 
     @SubscribeEvent

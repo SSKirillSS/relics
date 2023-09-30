@@ -42,9 +42,6 @@ public class ResearchUtils {
     public static void setItemResearched(Player player, Item item, boolean researched) {
         CompoundTag data = getResearchData(player);
 
-        if (data.isEmpty())
-            return;
-
         data.putBoolean(ForgeRegistries.ITEMS.getKey(item).getPath() + "_researched", researched);
 
         setResearchData(player, data);

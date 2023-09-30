@@ -28,7 +28,7 @@ public class MixinScreen extends AbstractContainerEventHandler {
 
     @Final
     @Shadow
-    private final List<GuiEventListener> children = Lists.newArrayList();
+    private List<GuiEventListener> children;
 
     @Inject(method = "renderTooltipInternal", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;blitOffset:F", ordinal = 2, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     private void renderTooltipInternal(PoseStack matrix, List<ClientTooltipComponent> components, int preX, int preY, CallbackInfo info, RenderTooltipEvent.Pre pre, int width, int height, int postX, int postY) {

@@ -179,6 +179,10 @@ public class AbilityUtils {
         setAbilitiesTag(stack, data);
     }
 
+    public static void addAbilityValue(ItemStack stack, String ability, String stat, double value) {
+        setAbilityValue(stack, ability, stat, getAbilityValue(stack, ability, stat) + value);
+    }
+
     public static int getAbilityPoints(ItemStack stack, String ability) {
         CompoundTag tag = getAbilityTag(stack, ability);
 
@@ -189,7 +193,7 @@ public class AbilityUtils {
     }
 
     public static void setAbilityPoints(ItemStack stack, String ability, int amount) {
-        getAbilityTag(stack, ability).putInt(TAG_POINTS, amount);
+        getAbilityTag(stack, ability).putInt(TAG_POINTS, Math.max(0, amount));
     }
 
     public static void addAbilityPoints(ItemStack stack, String ability, int amount) {
@@ -202,19 +206,27 @@ public class AbilityUtils {
         return entry != null && LevelingUtils.getLevel(stack) >= entry.getRequiredLevel();
     }
 
+    public static boolean randomizeStat(ItemStack stack, String ability, String stat) {
+        RelicAbilityStat entry = getRelicAbilityStat(stack.getItem(), ability, stat);
+
+        if (entry == null)
+            return false;
+
+        double result = MathUtils.round(MathUtils.randomBetween(new Random(), entry.getInitialValue().getKey(), entry.getInitialValue().getValue()), 5);
+
+        setAbilityValue(stack, ability, stat, result);
+
+        return true;
+    }
+
     public static boolean randomizeStats(ItemStack stack, String ability) {
         RelicAbilityEntry entry = getRelicAbilityEntry(stack.getItem(), ability);
 
         if (entry == null)
             return false;
 
-        for (Map.Entry<String, RelicAbilityStat> stats : entry.stats.entrySet()) {
-            RelicAbilityStat stat = stats.getValue();
-
-            double result = MathUtils.round(MathUtils.randomBetween(new Random(), stat.getInitialValue().getKey(), stat.getInitialValue().getValue()), 5);
-
-            setAbilityValue(stack, ability, stats.getKey(), result);
-        }
+        for (String stat : entry.stats.keySet())
+            randomizeStat(stack, ability, stat);
 
         return true;
     }

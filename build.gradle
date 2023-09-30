@@ -69,8 +69,8 @@ repositories {
         url = "https://maven.theillusivec4.top/"
     }
     maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
+        name 'Blamejared Maven'
+        url 'https://maven.blamejared.com'
     }
     maven {
         name = "ModMaven"

@@ -417,7 +417,7 @@ public class AbilitiesRenderHandler {
 
             Player player = event.player;
 
-            if (player == null)
+            if (!(player instanceof LocalPlayer))
                 return;
 
             if (castShakeDelta > 0)
