@@ -24,3 +24,15 @@ description = '''Just a mod about useful relics with unique mechanics ;)'''
     versionRange = "[47,)"
     ordering = "NONE"
     side = "BOTH"
+[[dependencies.${mod_id}]]
+    modId = "curios"
+    mandatory = true
+    versionRange = "[5.2.0+1.20.1,)"
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.${mod_id}]]
+    modId = "octolib"
+    mandatory = true
+    versionRange = "[0.1,)"
+    ordering = "NONE"
+    side = "BOTH"
