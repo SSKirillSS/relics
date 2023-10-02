@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -41,10 +42,10 @@ public class LevelingUtils {
         return getLevelingTag(stack).getInt(TAG_POINTS);
     }
 
-    public static void setPoints(ItemStack stack, int level) {
+    public static void setPoints(ItemStack stack, int amount) {
         CompoundTag tag = getLevelingTag(stack);
 
-        tag.putInt(TAG_POINTS, level);
+        tag.putInt(TAG_POINTS, Math.max(0, amount));
 
         setLevelingTag(stack, tag);
     }
@@ -60,18 +61,24 @@ public class LevelingUtils {
     public static void setLevel(ItemStack stack, int level) {
         RelicLevelingData levelingData = getRelicLevelingData(stack.getItem());
 
-        if (levelingData == null || level > levelingData.getMaxLevel())
+        if (levelingData == null)
             return;
 
         CompoundTag tag = getLevelingTag(stack);
 
-        tag.putInt(TAG_LEVEL, Math.min(levelingData.getMaxLevel(), level));
+        tag.putInt(TAG_LEVEL, Mth.clamp(level, 0, levelingData.getMaxLevel()));
 
         setLevelingTag(stack, tag);
     }
 
     public static void addLevel(ItemStack stack, int amount) {
-        addPoints(stack, amount);
+        RelicLevelingData levelingData = getRelicLevelingData(stack.getItem());
+
+        if (levelingData == null)
+            return;
+
+        if (amount > 0)
+            addPoints(stack, Mth.clamp(amount, 0, levelingData.getMaxLevel() - getLevel(stack)));
 
         setLevel(stack, getLevel(stack) + amount);
     }
@@ -96,13 +103,13 @@ public class LevelingUtils {
             int sumExp = getTotalExperienceForLevel(stack, level) + experience;
             int resultLevel = getLevelFromExperience(stack, sumExp);
 
-            data.putInt(TAG_EXPERIENCE, sumExp - getTotalExperienceForLevel(stack, resultLevel));
+            data.putInt(TAG_EXPERIENCE, Math.max(0, sumExp - getTotalExperienceForLevel(stack, resultLevel)));
 
             setLevelingTag(stack, data);
             addPoints(stack, resultLevel - level);
             setLevel(stack, resultLevel);
         } else {
-            data.putInt(TAG_EXPERIENCE, experience);
+            data.putInt(TAG_EXPERIENCE, Math.max(0, experience));
 
             setLevelingTag(stack, data);
         }

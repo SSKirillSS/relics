@@ -20,8 +20,8 @@ public class BleedingEffect extends MobEffect {
         public static void onLivingUpdate(LivingEvent.LivingTickEvent event) {
             LivingEntity entity = event.getEntity();
 
-            if (entity.hasEffect(EffectRegistry.BLEEDING.get()))
-                entity.hurt(DamageSource.MAGIC, (entity.getHealth() * 0.05F));
+            if (entity.tickCount % 20 == 0 && entity.hasEffect(EffectRegistry.BLEEDING.get()))
+                entity.hurt(DamageSource.MAGIC, Math.min(10, entity.getHealth() * 0.05F));
         }
     }
 }
