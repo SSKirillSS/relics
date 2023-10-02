@@ -39,7 +39,7 @@ public class IceBreakerItem extends RelicItem {
     public static final String TAG_FALLING = "falling";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("sustainability", RelicAbilityEntry.builder()

@@ -2,8 +2,11 @@ package it.hurts.sskirillss.relics.items.relics.base;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
+import it.hurts.sskirillss.octolib.config.data.ConfigContext;
+import it.hurts.sskirillss.octolib.config.data.OctoConfig;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.items.ItemBase;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
@@ -15,6 +18,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -47,14 +52,30 @@ import java.util.Map;
 import java.util.UUID;
 
 public abstract class RelicItem extends ItemBase implements ICurioItem {
+    @Getter
+    @Setter
+    private RelicData relicData;
+
     public RelicItem(Item.Properties properties) {
         super(properties);
+
+        setRelicData(constructRelicData());
     }
 
     public RelicItem() {
         super(new Item.Properties()
                 .rarity(Rarity.RARE)
                 .stacksTo(1));
+
+        setRelicData(constructRelicData());
+    }
+
+    public final OctoConfig getConfig() {
+        return ConfigHelper.getConfig(this);
+    }
+
+    public void appendConfig(ConfigContext context) {
+
     }
 
     @Override
@@ -193,7 +214,7 @@ public abstract class RelicItem extends ItemBase implements ICurioItem {
     }
 
     @Nullable
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return null;
     }
 }

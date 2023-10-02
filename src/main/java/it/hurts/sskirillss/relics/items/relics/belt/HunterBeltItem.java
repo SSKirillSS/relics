@@ -24,7 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class HunterBeltItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("slots", RelicAbilityEntry.builder()

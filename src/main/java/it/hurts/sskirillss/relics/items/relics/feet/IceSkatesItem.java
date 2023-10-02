@@ -30,7 +30,7 @@ public class IceSkatesItem extends RelicItem {
     private static final String TAG_SKATING_DURATION = "duration";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("skating", RelicAbilityEntry.builder()

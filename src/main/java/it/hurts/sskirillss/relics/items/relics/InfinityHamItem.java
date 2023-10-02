@@ -44,7 +44,7 @@ public class InfinityHamItem extends RelicItem {
     }
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("autophagy", RelicAbilityEntry.builder()

@@ -22,7 +22,7 @@ public class AmphibianBootItem extends RelicItem {
     private static final String TAG_DURATION = "duration";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("swimming", RelicAbilityEntry.builder()

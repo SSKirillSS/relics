@@ -35,7 +35,7 @@ import java.awt.*;
 
 public class ChorusInhibitorItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("blink", RelicAbilityEntry.builder()

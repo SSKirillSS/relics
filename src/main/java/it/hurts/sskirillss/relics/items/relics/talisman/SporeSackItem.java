@@ -37,7 +37,7 @@ public class SporeSackItem extends RelicItem {
     private static final String TAG_SPORES = "spores";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("spore", RelicAbilityEntry.builder()

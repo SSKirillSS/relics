@@ -44,7 +44,7 @@ import java.awt.*;
 
 public class MagicMirrorItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("teleport", RelicAbilityEntry.builder()

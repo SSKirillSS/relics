@@ -39,7 +39,7 @@ public class HorseFluteItem extends RelicItem {
     private static final String TAG_UUID = "uuid";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("paddock", RelicAbilityEntry.builder()

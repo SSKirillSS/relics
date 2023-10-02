@@ -37,7 +37,7 @@ public class BlazingFlaskItem extends RelicItem {
     public static final String TAG_RADIUS = "radius";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("bonfire", RelicAbilityEntry.builder()

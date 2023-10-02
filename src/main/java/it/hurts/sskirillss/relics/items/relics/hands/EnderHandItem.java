@@ -26,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class EnderHandItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("neutrality", RelicAbilityEntry.builder()

@@ -42,7 +42,7 @@ public class MidnightRobeItem extends RelicItem {
     private static final String TAG_TARGET = "target";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("vanish", RelicAbilityEntry.builder()

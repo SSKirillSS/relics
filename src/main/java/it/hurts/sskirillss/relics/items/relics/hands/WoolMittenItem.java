@@ -31,7 +31,7 @@ import java.util.Optional;
 
 public class WoolMittenItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("mold", RelicAbilityEntry.builder()

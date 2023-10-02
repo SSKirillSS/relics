@@ -31,7 +31,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 public class DrownedBeltItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("slots", RelicAbilityEntry.builder()

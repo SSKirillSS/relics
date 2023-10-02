@@ -28,7 +28,7 @@ public class AquaWalkerItem extends RelicItem {
     public static final String TAG_DRENCH = "drench";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("walking", RelicAbilityEntry.builder()

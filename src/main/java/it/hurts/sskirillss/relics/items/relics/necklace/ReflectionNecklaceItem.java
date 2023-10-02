@@ -32,7 +32,7 @@ public class ReflectionNecklaceItem extends RelicItem {
     public static final String TAG_TIME = "time";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("explode", RelicAbilityEntry.builder()

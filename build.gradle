@@ -80,6 +80,9 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    flatDir {
+        dirs 'libs'
+    }
     maven {
         url = "https://maven.theillusivec4.top/"
     }
@@ -109,6 +112,26 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:15.2.0.27"))
 
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:15.2.0.27"))
+
+    if (file("libs").isDirectory()) {
+        file("libs").eachFile { file ->
+            def splitPos = file.name.lastIndexOf("-")
+
+            if (file.name != "desktop.ini") {
+                println file.name
+
+                def modartifact = file.name.substring(0, splitPos)
+                def modversion = file.name.substring(splitPos + 1, file.name.length() - 4)
+                def modreference = "lib:$modartifact:$modversion"
+
+                dependencies {
+                    implementation fg.deobf(project.dependencies.create(modreference) {
+                        transitive = false
+                    })
+                }
+            }
+        }
+    } else file("libs").mkdir()
 }
 
 def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']

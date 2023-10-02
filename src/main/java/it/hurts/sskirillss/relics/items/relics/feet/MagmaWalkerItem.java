@@ -29,7 +29,7 @@ public class MagmaWalkerItem extends RelicItem {
     public static final String TAG_HEAT = "heat";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("heat_resistance", RelicAbilityEntry.builder()

@@ -24,7 +24,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 public class JellyfishNecklaceItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("unsinkable", RelicAbilityEntry.builder()

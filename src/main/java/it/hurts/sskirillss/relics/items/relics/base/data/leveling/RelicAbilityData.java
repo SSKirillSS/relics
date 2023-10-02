@@ -10,5 +10,5 @@ import java.util.Map;
 @Builder
 public class RelicAbilityData {
     @Singular("ability")
-    public Map<String, RelicAbilityEntry> abilities;
+    private Map<String, RelicAbilityEntry> abilities;
 }

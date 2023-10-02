@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 public class RelicData {
-    public RelicAbilityData abilityData;
-    public RelicLevelingData levelingData;
-    public RelicStyleData styleData;
+    private RelicAbilityData abilityData;
+    private RelicLevelingData levelingData;
+    private RelicStyleData styleData;
 }

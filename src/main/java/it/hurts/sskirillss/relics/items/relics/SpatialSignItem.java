@@ -43,7 +43,7 @@ public class SpatialSignItem extends RelicItem {
     public static final String TAG_WORLD = "world";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("seal", RelicAbilityEntry.builder()

@@ -36,7 +36,7 @@ public class ElytraBoosterItem extends RelicItem {
     public static final String TAG_SPEED = "speed";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("boost", RelicAbilityEntry.builder()

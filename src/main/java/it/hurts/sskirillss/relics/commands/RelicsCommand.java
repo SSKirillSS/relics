@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityArgument;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityStatArgument;
+import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
@@ -22,6 +23,13 @@ import net.minecraftforge.server.command.EnumArgument;
 public class RelicsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("relics").requires(sender -> sender.hasPermission(2))
+                .then(Commands.literal("config")
+                        .then(Commands.literal("reload")
+                                .executes(context -> {
+                                    ConfigHelper.readConfigs();
+
+                                    return Command.SINGLE_SUCCESS;
+                                })))
                 .then(Commands.literal("level")
                         .then(Commands.argument("action", EnumArgument.enumArgument(CommandAction.class))
                                 .then(Commands.argument("level", IntegerArgumentType.integer())

@@ -13,7 +13,7 @@ import java.util.Map;
 @Builder
 public class RelicAbilityEntry {
     @Singular("stat")
-    public Map<String, RelicAbilityStat> stats;
+    private Map<String, RelicAbilityStat> stats;
 
     @Builder.Default
     private int maxLevel = 10;

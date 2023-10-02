@@ -74,7 +74,7 @@ public class ArrowQuiverItem extends RelicItem {
     private static final String TAG_ARROWS = "arrows";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("receptacle", RelicAbilityEntry.builder()

@@ -43,7 +43,7 @@ import java.util.Optional;
 
 public class BastionRingItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("compass", RelicAbilityEntry.builder()

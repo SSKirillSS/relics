@@ -225,7 +225,7 @@ public class AbilityUtils {
         if (entry == null)
             return false;
 
-        for (String stat : entry.stats.keySet())
+        for (String stat : entry.getStats().keySet())
             randomizeStat(stack, ability, stat);
 
         return true;
