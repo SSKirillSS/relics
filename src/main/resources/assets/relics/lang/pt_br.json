@@ -41,7 +41,7 @@
   "tooltip.relics.infinity_ham.ability.infusion": "Alquimia",
   "tooltip.relics.infinity_ham.ability.infusion.description": "O uso de uma poção na relíquia no inventário a faz lembrar de seu efeito, gastando a poção. O uso subsequente da habilidade «Regeneração» imporá um efeito acumulativo da poção associada ao usuário. Na completa ausência de cargas, a relíquia perde as propriedades da poção associada.",
   "tooltip.relics.infinity_ham.ability.infusion.stat.duration.title": "Duração do efeito:",
-  "tooltip.relics.infinity_ham.ability.infusion.stat.duration.value": "%1$s segundos por carga."
+  "tooltip.relics.infinity_ham.ability.infusion.stat.duration.value": "%1$s segundos por carga.",
 
   "item.relics.enders_hand": "Mão de Ender",
   "tooltip.relics.enders_hand.leveling": "+1 ponto de experiência ao usar a habilidade «Transposição Ender» +1 ponto de experiência a cada 10 blocos de distância até o alvo ao usar.",
@@ -396,7 +396,7 @@
   "tooltip.relics.space_dissector.ability.dissection.stat.distance.title": "Distância Máxima:",
   "tooltip.relics.space_dissector.ability.dissection.stat.distance.value": "%1$s blocos.",
   "tooltip.relics.space_dissector.ability.dissection.stat.time.title": "Tempo de Vida do Portal:",
-  "tooltip.relics.space_dissector.ability.dissection.stat.time.value": "%1$s segundos."
+  "tooltip.relics.space_dissector.ability.dissection.stat.time.value": "%1$s segundos.",
 
   "block.relics.researching_table": "Mesa de Pesquisa",
 
