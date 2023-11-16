@@ -11,7 +11,8 @@
     "MixinItemStack",
     "MixinLivingEntity",
     "MixinPiglinAi",
-    "MixinPowderSnowBlock"
+    "MixinPowderSnowBlock",
+    "MixinScreen"
   ],
   "minVersion": "0.8",
   "client": [

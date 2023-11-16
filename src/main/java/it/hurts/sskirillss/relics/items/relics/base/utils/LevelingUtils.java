@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics.base.utils;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -16,6 +17,7 @@ import javax.annotation.Nullable;
 
 public class LevelingUtils {
     public static final String TAG_EXPERIENCE = "experience";
+    public static final String TAG_EXCHANGES = "exchanges";
     public static final String TAG_LEVELING = "leveling";
     public static final String TAG_POINTS = "points";
     public static final String TAG_LEVEL = "level";
@@ -109,7 +111,7 @@ public class LevelingUtils {
             addPoints(stack, resultLevel - level);
             setLevel(stack, resultLevel);
         } else {
-            data.putInt(TAG_EXPERIENCE, Math.max(0, experience));
+            data.putInt(TAG_EXPERIENCE, Mth.clamp(experience, 0, requiredExp));
 
             setLevelingTag(stack, data);
         }
@@ -166,5 +168,29 @@ public class LevelingUtils {
         } while (amount <= experience);
 
         return result - 1;
+    }
+
+    public static boolean isMaxLevel(ItemStack stack) {
+        return getLevel(stack) >= getRelicLevelingData(stack.getItem()).getMaxLevel();
+    }
+
+    public static int getExchanges(ItemStack stack) {
+        return NBTUtils.getInt(stack, TAG_EXCHANGES, 0);
+    }
+
+    public static void setExchanges(ItemStack stack, int amount) {
+        NBTUtils.setInt(stack, TAG_EXCHANGES, Math.max(0, amount));
+    }
+
+    public static void addExchanges(ItemStack stack, int amount) {
+        setExchanges(stack, getExchanges(stack) + amount);
+    }
+
+    public static int getExchangeCost(ItemStack stack) {
+        return (int) (5 + (5 * ((LevelingUtils.getExchanges(stack)) * 0.01F)));
+    }
+
+    public static boolean isExchangeAvailable(Player player, ItemStack stack) {
+        return getExchangeCost(stack) <= EntityUtils.getPlayerTotalExperience(player);
     }
 }

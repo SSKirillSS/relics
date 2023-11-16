@@ -1,9 +1,12 @@
 buildscript {
     repositories {
         mavenCentral()
+
+        maven { url = 'https://maven.parchmentmc.org' }
     }
     dependencies {
         classpath 'io.freefair.gradle:lombok-plugin:6.6'
+        classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 
@@ -15,6 +18,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: "io.freefair.lombok"
 apply plugin: 'java'
 
@@ -38,7 +42,7 @@ mixin {
 }
 
 minecraft {
-    mappings channel: mapping_channel, version: mapping_version
+    mappings channel: 'parchment', version: '2023.09.03-1.20.1'
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 

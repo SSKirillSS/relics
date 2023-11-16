@@ -27,19 +27,7 @@ public class RenderUtils {
     }
 
     public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texWidth, float texHeight, float patternWidth, float patternHeight, float scale, AnimationData animation, long ticks) {
-        long time = ticks % animation.getLength();
-
-        int index = 0;
-
-        while (time > 0) {
-            Pair<Integer, Integer> pair = animation.getFrames().get(index);
-
-            time -= pair.getRight();
-
-            index = (index >= animation.getFrames().size() - 1) ? 0 : index + 1;
-        }
-
-        Pair<Integer, Integer> pair = animation.getFrames().get(index);
+        Pair<Integer, Integer> pair = animation.getFrameByTime(ticks);
 
         renderTextureFromCenter(matrix, centerX, centerY, 0, patternHeight * pair.getKey(), texWidth, texHeight, patternWidth, patternHeight, scale);
     }
