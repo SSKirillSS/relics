@@ -157,4 +157,28 @@ public class EntityUtils {
 
         return optional.get().getRight();
     }
+
+    public static int getExperienceForLevel(int level) {
+        return level >= 30 ? 112 + (level - 30) * 9 : level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2;
+    }
+
+    public static int getTotalExperienceForLevel(int level) {
+        int result = 0;
+
+        for (int i = 0; i < level; i++) {
+            result += getExperienceForLevel(i);
+        }
+
+        return result;
+    }
+
+    public static int getPlayerTotalExperience(Player player) {
+        int result = player.totalExperience;
+
+        for (int level = 0; level < player.experienceLevel; level++) {
+            result += getExperienceForLevel(level);
+        }
+
+        return result;
+    }
 }

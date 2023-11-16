@@ -9,17 +9,29 @@
 
   "tooltip.relics.relic.tooltip.abilities": "Abilities:",
 
-  "tooltip.relics.relic.ability.tooltip.level": "Level: %1$s/%2$s",
-  "tooltip.relics.relic.ability.tooltip.rarity": "Rarity:",
   "tooltip.relics.relic.ability.tooltip.low_level": "To use you need to increase level of the relic to %1$s %2$s.",
-  "tooltip.relics.relic.ability.tooltip.no_stats": "This ability has no upgradeable stats and does not affect the quality of the relic.",
+  "tooltip.relics.relic.ability.tooltip.no_stats": "Ability has no upgradeable stats and does not affect the quality of the relic.",
+  "tooltip.relics.relic.ability.tooltip.ready_to_upgrade": "Ability has ready to upgrade %1$s .",
 
-  "tooltip.relics.relic.max_level": "-= MAX =-",
+  "tooltip.relics.relic.leveling_points.title": "Leveling points",
+
+  "tooltip.relics.relic.vanilla_experience.title": "Vanilla Minecraft experience",
+  "tooltip.relics.relic.vanilla_experience.current_amount": "Current amount: %1$s/%2$s [%3$s%%]",
+  "tooltip.relics.relic.vanilla_experience.total_amount": "Total amount: %1$s",
+
+  "tooltip.relics.relic.relic_experience.title": "Relic experience",
+  "tooltip.relics.relic.relic_experience.current_amount": "Current amount: %1$s/%2$s [%3$s%%]",
+
+  "tooltip.relics.relic.max_level": "MAX",
 
   "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
 
   "tooltip.relics.relic.status.positive": "§2§l[§2§l✔§2§l]",
   "tooltip.relics.relic.status.negative": "§4§l[§4§l✘§4§l]",
+
+  "tooltip.relics.relic.exchange.description": "Experience exchange",
+  "tooltip.relics.relic.exchange.cost": "Convert %1$s Vanilla Minecraft experience to 1%% of max experience of the current relic level. Exchange cost increases after each use %2$s.",
+  "tooltip.relics.relic.exchange.locked": "Реликвия достигла максимального уровня.",
 
   "tooltip.relics.relic.upgrade.description": "Level-up",
   "tooltip.relics.relic.upgrade.cost": "Cost: %1$s leveling points %2$s, %3$s experience points %4$s.",

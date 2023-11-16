@@ -1,5 +1,5 @@
 package it.hurts.sskirillss.relics.client.screen.base;
 
-public interface IAutoScaled {
+public interface IAutoScaledScreen {
     int getAutoScale();
 }
