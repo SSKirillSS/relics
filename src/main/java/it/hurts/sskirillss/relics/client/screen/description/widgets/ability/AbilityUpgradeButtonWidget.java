@@ -4,8 +4,11 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
+import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
+import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
+import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
@@ -13,20 +16,25 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RenderUtils;
+import it.hurts.sskirillss.relics.utils.data.AnimationData;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.RandomSource;
 
+import java.awt.*;
 import java.util.List;
 
-public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implements IHoverableWidget {
+public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implements IHoverableWidget, ITickingWidget {
     private final AbilityDescriptionScreen screen;
     private final String ability;
 
     public AbilityUpgradeButtonWidget(int x, int y, AbilityDescriptionScreen screen, String ability) {
-        super(x, y, 18, 18);
+        super(x, y, 17, 17);
 
         this.screen = screen;
         this.ability = ability;
@@ -52,21 +60,41 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
         manager.bindForSetup(AbilityDescriptionScreen.TEXTURE);
 
-        if (AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
-            blit(poseStack, x, y, 258, 0, 18, 18, 512, 512);
+        blit(poseStack, x, y, isLocked() ? 320 : 302, 70, width, height, 512, 512);
 
-            if (isHovered)
-                blit(poseStack, x - 1, y - 1, 318, 0, 20, 20, 512, 512);
-        } else {
-            blit(poseStack, x, y, 258, 20, 18, 18, 512, 512);
+        if (isHovered) {
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/upgrade_highlight_" + (isLocked() ? "locked" : "unlocked") + ".png"));
 
-            RelicAbilityEntry abilityData = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
+            RenderSystem.enableBlend();
 
-            if (abilityData == null)
-                return;
+            RenderUtils.renderTextureFromCenter(poseStack, x + width / 2F, y + height / 2F, 32, 384, 32, 32, 1F, AnimationData.builder()
+                    .frame(0, 2)
+                    .frame(1, 2)
+                    .frame(2, 2)
+                    .frame(3, 2)
+                    .frame(4, 2)
+                    .frame(5, 2)
+                    .frame(6, 2)
+                    .frame(7, 2)
+                    .frame(8, 2)
+                    .frame(9, 2)
+                    .frame(10, 2)
+                    .frame(11, 2)
+            );
+        }
+    }
 
-            if (AbilityUtils.canUseAbility(screen.stack, ability) && !abilityData.getStats().isEmpty() && isHovered)
-                blit(poseStack, x - 1, y - 1, 318, 22, 20, 20, 512, 512);
+    @Override
+    public void onTick() {
+        RandomSource random = MC.player.getRandom();
+
+        if (isHoveredOrFocused()) {
+            if (screen.ticksExisted % 10 == 0)
+                ParticleStorage.addParticle(screen, new ExperienceParticleData(isLocked()
+                        ? new Color(100 + random.nextInt(100), 100 + random.nextInt(100), 100 + random.nextInt(100))
+                        : new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
+                        x + random.nextInt(width), y + random.nextInt(height),
+                        0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
         }
     }
 
@@ -95,7 +123,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
 
         List<MutableComponent> entries = Lists.newArrayList(
-                Component.translatable("tooltip.relics.relic.upgrade.description"),
+                Component.translatable("tooltip.relics.relic.upgrade.description").withStyle(ChatFormatting.BOLD),
                 Component.literal(" "));
 
         if (!AbilityUtils.isAbilityMaxLevel(screen.stack, ability))
@@ -114,10 +142,10 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
             tooltip.addAll(MC.font.split(entry, maxWidth * 2));
         }
 
-        int height = tooltip.size() * 4;
+        int height = Math.round(tooltip.size() * 4.5F);
 
-        int renderX = x + width + 3;
-        int renderY = y - height / 2;
+        int renderX = x + width + 1;
+        int renderY = mouseY - (height / 2) - 9;
 
         ScreenUtils.drawTexturedTooltipBorder(poseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                 renderWidth, height, renderX, renderY);
@@ -129,7 +157,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
         for (FormattedCharSequence entry : tooltip) {
             MC.font.draw(poseStack, entry, (renderX + 9) * 2, (renderY + 9 + yOff) * 2, 0x412708);
 
-            yOff += 4;
+            yOff += 5;
         }
 
         poseStack.scale(1F, 1F, 1F);

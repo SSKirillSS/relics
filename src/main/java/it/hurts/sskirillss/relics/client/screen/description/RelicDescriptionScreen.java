@@ -1,53 +1,83 @@
 package it.hurts.sskirillss.relics.client.screen.description;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.hurts.sskirillss.relics.client.screen.base.IAutoScaled;
+import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.card.AbilityCardIconWidget;
+import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParticleData;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.AbilityCardIconWidget;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.ExperienceExchangeWidget;
+import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
+import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.QualityUtils;
+import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RenderUtils;
+import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class RelicDescriptionScreen extends Screen implements IAutoScaled {
+public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen {
     private final Minecraft MC = Minecraft.getInstance();
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/relic_background.png");
-    public static final ResourceLocation WIDGETS = new ResourceLocation(Reference.MODID, "textures/gui/description/relic_widgets.png");
 
     public final BlockPos pos;
-    public final ItemStack stack;
+    public ItemStack stack;
 
-    public int backgroundHeight = 177;
-    public int backgroundWidth = 256;
+    public int backgroundHeight = 171;
+    public int backgroundWidth = 268;
 
-    public RelicDescriptionScreen(BlockPos pos, ItemStack stack) {
+    public int ticksExisted;
+
+    public RelicDescriptionScreen(BlockPos pos) {
         super(Component.empty());
 
         this.pos = pos;
+
+        gatherData();
+    }
+
+    public void gatherData() {
+        Level level = MC.level;
+
+        if (!(level.getBlockEntity(pos) instanceof ResearchingTableTile tile))
+            return;
+
+        ItemStack stack = tile.getStack();
+
+        if (!(stack.getItem() instanceof RelicItem relic))
+            return;
+
         this.stack = stack;
     }
 
@@ -65,6 +95,9 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaled {
 
         RelicData relicData = relic.getRelicData();
 
+        int x = (this.width - backgroundWidth) / 2;
+        int y = (this.height - backgroundHeight) / 2;
+
         if (relicData == null)
             return;
 
@@ -74,16 +107,79 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaled {
             int step = 0;
 
             for (Map.Entry<String, RelicAbilityEntry> ability : abilityData.getAbilities().entrySet()) {
-                this.addRenderableWidget(new AbilityCardIconWidget(((this.width - backgroundWidth) / 2) + 54 + step, ((this.height - backgroundHeight) / 2) + 124, this, ability.getKey()));
+                this.addRenderableWidget(new AbilityCardIconWidget(x + 41 + step, y + 105, this, ability.getKey()));
 
-                step += 30;
+                step += 39;
+            }
+        }
+
+        this.addRenderableWidget(new ExperienceExchangeWidget(x + 239, y + 72, this));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        LocalPlayer player = MC.player;
+
+        ticksExisted++;
+
+        RandomSource random = MC.player.getRandom();
+
+        int x = (this.width - backgroundWidth) / 2;
+        int y = (this.height - backgroundHeight) / 2;
+
+        if (ticksExisted % 3 == 0) {
+            {
+                int level = LevelingUtils.getLevel(stack);
+
+                int percentage = LevelingUtils.isMaxLevel(stack) ? 100 : LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100);
+
+                int sourceWidth = 206;
+                int maxWidth = (int) (sourceWidth * (percentage / 100F));
+
+                if (maxWidth > 0) {
+                    int xOff = random.nextInt(sourceWidth);
+
+                    if (xOff <= maxWidth)
+                        ParticleStorage.addParticle(this, new ExperienceParticleData(new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
+                                x + 30 + xOff, y + 73, 0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
+                }
+            }
+
+            {
+                int percentage = (int) (player.totalExperience / ((player.totalExperience / player.experienceProgress) / 100));
+
+                int sourceWidth = 206;
+                int maxWidth = (int) (sourceWidth * (percentage / 100F));
+
+                if (maxWidth > 0) {
+                    int xOff = random.nextInt(sourceWidth);
+
+                    if (xOff <= maxWidth)
+                        ParticleStorage.addParticle(this, new ExperienceParticleData(new Color(100 + random.nextInt(50), 200 + random.nextInt(50), 0),
+                                x + 30 + xOff, y + 86, 0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
+                }
+            }
+        }
+
+        if (this.ticksExisted % 10 == 0) {
+            {
+                if (LevelingUtils.getPoints(stack) > 0) {
+                    ParticleStorage.addParticle(this, new ExperienceParticleData(
+                            new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
+                            x + backgroundWidth + 15 + random.nextInt(16), y + 8 + random.nextInt(10),
+                            0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
+                }
             }
         }
     }
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        if (!(stack.getItem() instanceof RelicItem relic))
+        LocalPlayer player = MC.player;
+
+        if (player == null || !(stack.getItem() instanceof RelicItem relic))
             return;
 
         RelicData relicData = relic.getRelicData();
@@ -109,25 +205,92 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaled {
         blit(pPoseStack, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
 
         int level = LevelingUtils.getLevel(stack);
-        int maxLevel = relicData.getLevelingData().getMaxLevel();
 
         int percentage = LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100);
 
-        boolean isMaxLevel = LevelingUtils.getLevel(stack) >= maxLevel;
+        boolean isMaxLevel = LevelingUtils.isMaxLevel(stack);
 
-        if (isMaxLevel)
-            blit(pPoseStack, x + 57, y + 89, 258, 80, 142, 12, texWidth, texHeight);
-        else
-            blit(pPoseStack, x + 74, y + 89, 275, 80, (int) Math.ceil(percentage / 100F * 109F), 10, texWidth, texHeight);
+        blit(pPoseStack, x + 30, y + 72, 302, 144, isMaxLevel ? 206 : (int) Math.ceil(percentage / 100F * 206), 3, texWidth, texHeight);
+
+        boolean hoveredRelicExperience = ScreenUtils.isHovered(x + 30, y + 72, 206, 3, pMouseX, pMouseY);
+
+        if (hoveredRelicExperience) {
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/relic_experience_highlight.png"));
+
+            RenderSystem.enableBlend();
+
+            RenderUtils.renderTextureFromCenter(pPoseStack, x + 133F, y + 73.5F, 210, 98, 210, 7, 1F, AnimationData.builder()
+                    .frame(0, 2)
+                    .frame(1, 2)
+                    .frame(2, 2)
+                    .frame(3, 2)
+                    .frame(4, 2)
+                    .frame(5, 2)
+                    .frame(6, 2)
+                    .frame(7, 2)
+                    .frame(8, 2)
+                    .frame(9, 2)
+                    .frame(10, 2)
+                    .frame(11, 2)
+                    .frame(12, 2)
+                    .frame(13, 2)
+            );
+
+            RenderSystem.disableBlend();
+        }
+
+        percentage = (int) (player.totalExperience / ((player.totalExperience / player.experienceProgress) / 100));
+
+        blit(pPoseStack, x + 30, y + 85, 302, 148, (int) Math.ceil(percentage / 100F * 206), 3, texWidth, texHeight);
+
+        boolean hoveredVanillaExperience = ScreenUtils.isHovered(x + 30, y + 85, 206, 3, pMouseX, pMouseY);
+
+        if (hoveredVanillaExperience) {
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/experience_highlight.png"));
+
+            RenderSystem.enableBlend();
+
+            RenderUtils.renderTextureFromCenter(pPoseStack, x + 133F, y + 86.5F, 210, 98, 210, 7, 1F, AnimationData.builder()
+                    .frame(0, 2)
+                    .frame(1, 2)
+                    .frame(2, 2)
+                    .frame(3, 2)
+                    .frame(4, 2)
+                    .frame(5, 2)
+                    .frame(6, 2)
+                    .frame(7, 2)
+                    .frame(8, 2)
+                    .frame(9, 2)
+                    .frame(10, 2)
+                    .frame(11, 2)
+                    .frame(12, 2)
+                    .frame(13, 2)
+            );
+
+            RenderSystem.disableBlend();
+        }
+
+        blit(pPoseStack, x + 15, y + 12, 353, 14, 40, 40, texWidth, texHeight);
+        blit(pPoseStack, x + 13, y + 10, 302, 5, 46, 55, texWidth, texHeight);
+
+        pPoseStack.pushPose();
+
+        pPoseStack.scale(2F, 2F, 2F);
+        pPoseStack.translate(0.5F, 0, 0);
+
+        // FIXME 1.19.2 :: Check
+        Minecraft.getInstance().getItemRenderer().renderGuiItem(stack, (x + 19) / 2, (y + 17) / 2);
+
+        pPoseStack.popPose();
 
         int xOff = 0;
 
         for (int i = 1; i < QualityUtils.getRelicQuality(stack) + 1; i++) {
             boolean isAliquot = i % 2 == 1;
 
-            blit(pPoseStack, x + 100 + xOff, y + 11, 258 + (isAliquot ? 0 : 5), 94, isAliquot ? 5 : 9, 9, texWidth, texHeight);
+            blit(pPoseStack, x + 15 + xOff, y + 51, 353 + (isAliquot ? 0 : 5), 3, isAliquot ? 5 : 4, 9, texWidth, texHeight);
 
-            xOff += isAliquot ? 5 : 6;
+            xOff += isAliquot ? 5 : 3;
         }
 
         MutableComponent name = Component.literal(stack.getDisplayName().getString()
@@ -138,25 +301,33 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaled {
 
         pPoseStack.scale(0.5F, 0.5F, 1F);
 
-        MC.font.draw(pPoseStack, name, (x * 2 + ((backgroundWidth - MC.font.width(name) / 2F))), (y + 34) * 2, 0x412708);
+        MC.font.draw(pPoseStack, name, (x + 62) * 2, (y + 21) * 2, 0x412708);
 
         pPoseStack.popPose();
 
         pPoseStack.pushPose();
 
-        MutableComponent experience = isMaxLevel ? Component.translatable("tooltip.relics.relic.max_level")
-                : Component.literal(LevelingUtils.getExperience(stack) + "/" + LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) + " [" + percentage + "%]");
+        pPoseStack.scale(0.75F, 0.75F, 0.75F);
 
-        pPoseStack.scale(0.5F, 0.5F, 1F);
+        MutableComponent experience = isMaxLevel ? Component.translatable("tooltip.relics.relic.max_level") : Component.literal(String.valueOf(level));
 
-        MC.font.drawShadow(pPoseStack, experience, (x + 128 - font.width(experience) / 4F) * 2, (y + 85) * 2, 0xFFFFFF);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 136) * 1.33F), (int) ((y + 71) * 1.33F), 0x793300, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 134) * 1.33F), (int) ((y + 71) * 1.33F), 0x793300, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 72) * 1.33F), 0x793300, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 70.5F) * 1.33F), 0x793300, false);
+
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 71) * 1.33F), 0xfff500, false);
+
+        experience = Component.literal(String.valueOf(player.experienceLevel));
+
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 136) * 1.33F), (int) ((y + 84) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 134) * 1.33F), (int) ((y + 84) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 85) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 83.5F) * 1.33F), 0x054503, false);
+
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 84) * 1.33F), 0x7efc20, false);
 
         pPoseStack.popPose();
-
-        if (!isMaxLevel) {
-            MC.font.drawShadow(pPoseStack, String.valueOf(level), x + 66 - MC.font.width(String.valueOf(level)) / 2F, y + 91, 0xFFFFFF);
-            MC.font.drawShadow(pPoseStack, String.valueOf(level + 1), x + 190 - MC.font.width(String.valueOf(level + 1)) / 2F, y + 91, 0xFFFFFF);
-        }
 
         String registryName = ForgeRegistries.ITEMS.getKey(relic).getPath();
 
@@ -166,10 +337,10 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaled {
 
         int yOff = 9;
 
-        List<FormattedCharSequence> lines = MC.font.split(Component.translatable("tooltip.relics." + registryName + ".leveling"), 255);
+        List<FormattedCharSequence> lines = MC.font.split(Component.literal("● ").append(Component.translatable("tooltip.relics." + registryName + ".leveling")), 350);
 
         for (FormattedCharSequence line : lines) {
-            MC.font.draw(pPoseStack, line, x * 2 + 61 * 2 + (265 - MC.font.width(line)) / 2F, (y + 43) * 2 + yOff, 0x412708);
+            MC.font.draw(pPoseStack, line, (x + 62) * 2, (y + 26) * 2 + yOff, 0x412708);
 
             yOff += 9;
         }
@@ -179,20 +350,193 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaled {
         int points = LevelingUtils.getPoints(stack);
 
         if (points > 0) {
-            manager.bindForSetup(WIDGETS);
+            pPoseStack.pushPose();
+
+            MutableComponent value = Component.literal(String.valueOf(points)).withStyle(ChatFormatting.BOLD);
+
+            ResourceLocation icon = new ResourceLocation(Reference.MODID, "textures/gui/description/leveling_point.png");
+
+            manager.bindForSetup(icon);
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-            RenderSystem.setShaderTexture(0, WIDGETS);
+            RenderSystem.setShaderTexture(0, icon);
 
-            blit(pPoseStack, x + backgroundWidth - 3, y + 17, 0, 0, 40, 25, texWidth, texHeight);
-            blit(pPoseStack, x + backgroundWidth + 16, y + 22, 0, 27, 16, 13, texWidth, texHeight);
+            blit(pPoseStack, x + backgroundWidth + 5, y - 2, 0, 0, 50, 31, 50, 31);
 
-            String value = String.valueOf(points);
+            MC.font.draw(pPoseStack, value, x + backgroundWidth + 39 - (MC.font.width(value) / 2), y + 10, 0xffce96);
 
-            MC.font.draw(pPoseStack, value, x + backgroundWidth + 7 - font.width(value) / 2F, y + 25, 0xFFFFFF);
+            pPoseStack.popPose();
         }
 
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+
+        if (hoveredRelicExperience) {
+            pPoseStack.pushPose();
+
+            pPoseStack.translate(0, 0, 10);
+
+            List<FormattedCharSequence> tooltip = Lists.newArrayList();
+
+            int maxWidth = 200;
+            int renderWidth = 0;
+
+            List<MutableComponent> entries = Lists.newArrayList(
+                    Component.translatable("tooltip.relics.relic.relic_experience.title").withStyle(ChatFormatting.BOLD),
+                    Component.literal(" "),
+                    Component.literal("● ").append(Component.translatable("tooltip.relics.relic.relic_experience.current_amount", LevelingUtils.getExperience(stack),
+                            LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1),
+                            MathUtils.round((LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100)), 1)))
+            );
+
+            for (MutableComponent entry : entries) {
+                int entryWidth = (MC.font.width(entry)) / 2;
+
+                if (entryWidth > renderWidth)
+                    renderWidth = Math.min(entryWidth, maxWidth);
+
+                tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            }
+
+            int height = Math.round(tooltip.size() * 4.5F);
+
+            int renderX = pMouseX - 9 - (renderWidth / 2);
+            int renderY = y + 77;
+
+            ScreenUtils.drawTexturedTooltipBorder(pPoseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+                    renderWidth, height, renderX, renderY);
+
+            yOff = 0;
+
+            pPoseStack.scale(0.5F, 0.5F, 0.5F);
+
+            for (FormattedCharSequence entry : tooltip) {
+                MC.font.draw(pPoseStack, entry, (renderX + 9) * 2, (renderY + 9 + yOff) * 2, 0x412708);
+
+                yOff += 5;
+            }
+
+            pPoseStack.scale(1F, 1F, 1F);
+
+            pPoseStack.popPose();
+        }
+
+        if (hoveredVanillaExperience) {
+            pPoseStack.pushPose();
+
+            pPoseStack.translate(0, 0, 10);
+
+            List<FormattedCharSequence> tooltip = Lists.newArrayList();
+
+            int maxWidth = 200;
+            int renderWidth = 0;
+
+            List<MutableComponent> entries = Lists.newArrayList(
+                    Component.translatable("tooltip.relics.relic.vanilla_experience.title").withStyle(ChatFormatting.BOLD),
+                    Component.literal(" "),
+                    Component.literal("● ").append(Component.translatable("tooltip.relics.relic.vanilla_experience.current_amount", (player.totalExperience - EntityUtils.getTotalExperienceForLevel(player.experienceLevel)),
+                            (EntityUtils.getTotalExperienceForLevel(player.experienceLevel + 1) - EntityUtils.getTotalExperienceForLevel(player.experienceLevel)),
+                            MathUtils.round(player.experienceProgress * 100F, 1))),
+                    Component.literal("● ").append(Component.translatable("tooltip.relics.relic.vanilla_experience.total_amount", player.totalExperience))
+            );
+
+            for (MutableComponent entry : entries) {
+                int entryWidth = (MC.font.width(entry)) / 2;
+
+                if (entryWidth > renderWidth)
+                    renderWidth = Math.min(entryWidth, maxWidth);
+
+                tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            }
+
+            int height = Math.round(tooltip.size() * 4.5F);
+
+            int renderX = pMouseX - 9 - (renderWidth / 2);
+            int renderY = y + 90;
+
+            ScreenUtils.drawTexturedTooltipBorder(pPoseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+                    renderWidth, height, renderX, renderY);
+
+            yOff = 0;
+
+            pPoseStack.scale(0.5F, 0.5F, 0.5F);
+
+            for (FormattedCharSequence entry : tooltip) {
+                MC.font.draw(pPoseStack, entry, (renderX + 9) * 2, (renderY + 9 + yOff) * 2, 0x412708);
+
+                yOff += 5;
+            }
+
+            pPoseStack.scale(1F, 1F, 1F);
+
+            pPoseStack.popPose();
+        }
+
+        if (points > 0 && ScreenUtils.isHovered(x + backgroundWidth + 5, y - 2, 50, 31, pMouseX, pMouseY)) {
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/leveling_point_highlight.png"));
+
+            RenderSystem.enableBlend();
+
+            RenderUtils.renderTextureFromCenter(pPoseStack, x + backgroundWidth + 5 + (50 / 2), y - 2 + (31 / 2), 64, 768, 64, 64, 1F, AnimationData.builder()
+                    .frame(0, 2)
+                    .frame(1, 2)
+                    .frame(2, 2)
+                    .frame(3, 2)
+                    .frame(4, 2)
+                    .frame(5, 2)
+                    .frame(6, 2)
+                    .frame(7, 2)
+                    .frame(8, 2)
+                    .frame(9, 2)
+                    .frame(10, 2)
+                    .frame(11, 2)
+            );
+
+            RenderSystem.disableBlend();
+
+            pPoseStack.pushPose();
+
+            pPoseStack.translate(0, 0, 10);
+
+            List<FormattedCharSequence> tooltip = Lists.newArrayList();
+
+            int maxWidth = 200;
+            int renderWidth = 0;
+
+            List<MutableComponent> entries = Lists.newArrayList(
+                    Component.translatable("tooltip.relics.relic.leveling_points.title").withStyle(ChatFormatting.BOLD)
+            );
+
+            for (MutableComponent entry : entries) {
+                int entryWidth = (MC.font.width(entry)) / 2;
+
+                if (entryWidth > renderWidth)
+                    renderWidth = Math.min(entryWidth, maxWidth);
+
+                tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            }
+
+            int height = Math.round(tooltip.size() * 4.5F);
+
+            int renderX = pMouseX + 1;
+            int renderY = pMouseY + 1;
+
+            ScreenUtils.drawTexturedTooltipBorder(pPoseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+                    renderWidth, height, renderX, renderY);
+
+            yOff = 0;
+
+            pPoseStack.scale(0.5F, 0.5F, 0.5F);
+
+            for (FormattedCharSequence entry : tooltip) {
+                MC.font.draw(pPoseStack, entry, (renderX + 9) * 2, (renderY + 9 + yOff) * 2, 0x412708);
+
+                yOff += 5;
+            }
+
+            pPoseStack.scale(1F, 1F, 1F);
+
+            pPoseStack.popPose();
+        }
 
         for (GuiEventListener listener : this.children()) {
             if (listener instanceof AbstractButton button && button.isHoveredOrFocused()

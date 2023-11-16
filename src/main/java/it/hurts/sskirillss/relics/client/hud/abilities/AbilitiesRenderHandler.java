@@ -106,7 +106,7 @@ public class AbilitiesRenderHandler {
             return;
 
         int x = (window.getGuiScaledWidth()) / 2;
-        int y = -40;
+        int y = -38;
 
         poseStack.pushPose();
 
@@ -114,23 +114,23 @@ public class AbilitiesRenderHandler {
 
         float shakeOffset = castShakeDelta > 0 ? ((castShakeDelta - partialTicks) * 0.25F) : 0;
 
-        drawAbility(poseStack, player, -2, x - 65 - shakeOffset, y, partialTicks);
-        drawAbility(poseStack, player, -1, x - 34 - shakeOffset, y, partialTicks);
+        drawAbility(poseStack, player, -2, x - 70 - shakeOffset, y, partialTicks);
+        drawAbility(poseStack, player, -1, x - 37 - shakeOffset, y, partialTicks);
         drawAbility(poseStack, player, 0, x, y, partialTicks);
-        drawAbility(poseStack, player, 1, x + 34 + shakeOffset, y, partialTicks);
-        drawAbility(poseStack, player, 2, x + 65 + shakeOffset, y, partialTicks);
+        drawAbility(poseStack, player, 1, x + 37 + shakeOffset, y, partialTicks);
+        drawAbility(poseStack, player, 2, x + 70 + shakeOffset, y, partialTicks);
 
         RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
 
         RenderSystem.enableBlend();
 
-        RenderUtils.renderTextureFromCenter(poseStack, x - 95 - shakeOffset, y, 2, 2, 256, 256, 18, 29, 1F + (mouseDelta < 0 ? Math.abs(mouseDelta) * 0.01F : 0));
+        RenderUtils.renderTextureFromCenter(poseStack, x - 96 - shakeOffset, y + 2, 43, 2, 256, 256, 11, 30, 1F + (mouseDelta < 0 ? Math.abs(mouseDelta) * 0.01F : 0));
         if (mouseDelta < 0)
-            RenderUtils.renderTextureFromCenter(poseStack, x - 95 - shakeOffset, y, 25, 1, 256, 256, 24, 35, 1F + Math.abs(mouseDelta) * 0.01F);
+            RenderUtils.renderTextureFromCenter(poseStack, x - 96 - shakeOffset, y + 2, 72, 0, 256, 256, 15, 34, 1F + Math.abs(mouseDelta) * 0.01F);
 
-        RenderUtils.renderTextureFromCenter(poseStack, x + 95 + shakeOffset, y, 2, 38, 256, 256, 18, 29, 1F + (mouseDelta > 0 ? Math.abs(mouseDelta) * 0.01F : 0));
+        RenderUtils.renderTextureFromCenter(poseStack, x + 96 + shakeOffset, y + 2, 31, 2, 256, 256, 11, 30, 1F + (mouseDelta > 0 ? Math.abs(mouseDelta) * 0.01F : 0));
         if (mouseDelta > 0)
-            RenderUtils.renderTextureFromCenter(poseStack, x + 95 + shakeOffset, y, 25, 37, 256, 256, 24, 35, 1F + Math.abs(mouseDelta) * 0.01F);
+            RenderUtils.renderTextureFromCenter(poseStack, x + 96 + shakeOffset, y + 2, 56, 0, 256, 256, 15, 34, 1F + Math.abs(mouseDelta) * 0.01F);
 
         RenderSystem.disableBlend();
 
@@ -141,7 +141,7 @@ public class AbilitiesRenderHandler {
 
         MutableComponent name = Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.getAbility());
 
-        MC.font.drawShadow(poseStack, name, x - MC.font.width(name) / 2F, y - 37, 0xFFFFFF);
+        MC.font.drawShadow(poseStack, name, x - MC.font.width(name) / 2F, y - 38, 0xFFFFFF);
 
         poseStack.popPose();
 
@@ -201,7 +201,7 @@ public class AbilitiesRenderHandler {
 
         float scale = (float) ((1F + Mth.clamp(Math.pow(13.5F, -Math.abs(realIndex)), 0F, 0.2F)) + (realIndex == 0 ? (Math.sin((player.tickCount + partialTicks) * 0.1F) * 0.05F + (castShakeDelta > 0 ? ((castShakeDelta - partialTicks) * 0.02F) : 0F)) : 0F));
 
-        RenderUtils.renderTextureFromCenter(poseStack, x - scale, y - scale, width, height, scale);
+        RenderUtils.renderTextureFromCenter(poseStack, x - scale, y - scale + 2, width, height, scale + 0.025F);
 
         int cooldown = AbilityUtils.getAbilityCooldown(stack, ability.getAbility());
         int cap = AbilityUtils.getAbilityCooldownCap(stack, ability.getAbility());
@@ -215,14 +215,14 @@ public class AbilitiesRenderHandler {
 
             float percentage = cooldown / (cap / 100F) / 100F;
 
-            RenderUtils.renderTextureFromCenter(poseStack, x - scale, (y - scale + (height * scale) / 2F) - (height * scale / 2F) * percentage, 0, height - height * percentage, width, height, width, height * percentage, scale);
+            RenderUtils.renderTextureFromCenter(poseStack, x - scale, ((y + 2) - scale + (height * scale) / 2F) - (height * scale / 2F) * percentage, 0, height - height * percentage, width, height, width, height * percentage, scale + 0.025F);
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         }
 
         RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
 
-        RenderUtils.renderTextureFromCenter(poseStack, x, y, 66, isLocked ? 40 : 2, 256, 256, 28, 37, scale);
+        RenderUtils.renderTextureFromCenter(poseStack, x, y, 0, isLocked ? 43 : 0, 256, 256, 30, 42, scale);
 
         if (AbilityUtils.isAbilityTicking(stack, ability.getAbility())) {
             AbilityCastType type = AbilityUtils.getRelicAbilityEntry(relic, ability.getAbility()).getCastData().getKey();
@@ -252,7 +252,7 @@ public class AbilitiesRenderHandler {
         if (realIndex == 0) {
             RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
 
-            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 20, 53, isLocked ? 14 : 2, 256, 256, 6, 11, scale - 0.1F);
+            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 21, isLocked ? 38 : 31, 33, 256, 256, 6, 11, scale);
         }
 
         if (cooldown > 0) {
@@ -528,7 +528,7 @@ public class AbilitiesRenderHandler {
                 }
             }
 
-            castShakeDelta = 5;
+            castShakeDelta = 10;
 
             Minecraft.getInstance().mouseHandler.releaseMouse();
         }

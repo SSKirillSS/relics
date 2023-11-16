@@ -53,8 +53,8 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void openGui(BlockPos pos, ItemStack stack) {
-        Minecraft.getInstance().setScreen(new RelicDescriptionScreen(pos, stack));
+    public static void openGui(BlockPos pos) {
+        Minecraft.getInstance().setScreen(new RelicDescriptionScreen(pos));
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ResearchingTableBlock extends Block implements EntityBlock {
                     ResearchUtils.setItemResearched(player, tileStack.getItem(), true);
 
                     if (level.isClientSide())
-                        openGui(pos, tileStack);
+                        openGui(pos);
                 } else {
                     level.addFreshEntity(new ItemEntity(level, player.getX(), player.getY(), player.getZ(), tileStack));
 
