@@ -385,12 +385,16 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             int renderWidth = 0;
 
             List<MutableComponent> entries = Lists.newArrayList(
-                    Component.translatable("tooltip.relics.relic.relic_experience.title").withStyle(ChatFormatting.BOLD),
-                    Component.literal(" "),
-                    Component.literal("● ").append(Component.translatable("tooltip.relics.relic.relic_experience.current_amount", LevelingUtils.getExperience(stack),
-                            LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1),
-                            MathUtils.round((LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100F)), 1)))
+                    Component.translatable("tooltip.relics.relic.relic_experience.title").withStyle(ChatFormatting.BOLD)
             );
+
+            if (!isMaxLevel) {
+                entries.add(Component.literal(" "));
+
+                entries.add(Component.literal("● ").append(Component.translatable("tooltip.relics.relic.relic_experience.current_amount", LevelingUtils.getExperience(stack),
+                        LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1),
+                        MathUtils.round((LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100F)), 1))));
+            }
 
             for (MutableComponent entry : entries) {
                 int entryWidth = (MC.font.width(entry)) / 2;
