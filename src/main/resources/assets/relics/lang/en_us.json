@@ -31,7 +31,7 @@
 
   "tooltip.relics.relic.exchange.description": "Experience exchange",
   "tooltip.relics.relic.exchange.cost": "Convert %1$s Vanilla Minecraft experience to 1%% of max experience of the current relic level. Exchange cost increases after each use %2$s.",
-  "tooltip.relics.relic.exchange.locked": "Реликвия достигла максимального уровня.",
+  "tooltip.relics.relic.exchange.locked": "Relic was reached its max level.",
 
   "tooltip.relics.relic.upgrade.description": "Level-up",
   "tooltip.relics.relic.upgrade.cost": "Cost: %1$s leveling points %2$s, %3$s experience points %4$s.",
