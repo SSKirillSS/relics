@@ -20,6 +20,10 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> POWERED_ARROW = SOUNDS.register("powered_arrow", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "powered_arrow")));
     public static final RegistryObject<SoundEvent> LEAP = SOUNDS.register("leap", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "leap")));
 
+    public static final RegistryObject<SoundEvent> TABLE_UPGRADE = SOUNDS.register("table_upgrade", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "table_upgrade")));
+    public static final RegistryObject<SoundEvent> TABLE_REROLL = SOUNDS.register("table_reroll", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "table_reroll")));
+    public static final RegistryObject<SoundEvent> TABLE_RESET = SOUNDS.register("table_reset", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "table_reset")));
+
     public static void register() {
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

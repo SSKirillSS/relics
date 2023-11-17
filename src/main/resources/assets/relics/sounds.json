@@ -22,5 +22,17 @@
     "powered_arrow": {
         "category": "master",
         "sounds": [ { "name": "relics:powered_arrow" } ]
+    },
+    "table_upgrade": {
+        "category": "master",
+        "sounds": [ { "name": "relics:table_upgrade" } ]
+    },
+    "table_reroll": {
+        "category": "master",
+        "sounds": [ { "name": "relics:table_reroll" } ]
+    },
+    "table_reset": {
+        "category": "master",
+        "sounds": [ { "name": "relics:table_reset" } ]
     }
 }
