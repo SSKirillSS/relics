@@ -40,6 +40,16 @@ public class ScreenUtils {
         }
     }
 
+    public static void drawCenteredString(PoseStack pose, Font font, Component text, float x, float y, int color, boolean dropShadow) {
+        FormattedCharSequence sequence = text.getVisualOrderText();
+
+        if (dropShadow) {
+            font.drawShadow(pose, sequence, x - font.width(sequence) / 2F, y, color);
+        } else {
+            font.draw(pose, sequence, x - font.width(sequence) / 2F, y, color);
+        }
+    }
+
     public static void drawCenteredString(PoseStack pose, Font font, String text, int x, int y, int color, boolean dropShadow) {
         if (dropShadow) {
             font.drawShadow(pose, text, x - font.width(text) / 2F, y, color);

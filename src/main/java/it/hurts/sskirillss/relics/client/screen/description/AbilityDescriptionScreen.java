@@ -209,12 +209,12 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         MutableComponent experience = Component.literal(String.valueOf(player.experienceLevel));
 
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 136) * 1.33F), (int) ((y + 81) * 1.33F), 0x054503, false);
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 134) * 1.33F), (int) ((y + 81) * 1.33F), 0x054503, false);
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 82) * 1.33F), 0x054503, false);
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 80.5F) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135.75F) * 1.33F), ((y + 81) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 134.25F) * 1.33F), ((y + 81) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135) * 1.33F), ((y + 81.75F) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135) * 1.33F), ((y + 80.25F) * 1.33F), 0x054503, false);
 
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 81) * 1.33F), 0x7efc20, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135) * 1.33F), ((y + 81) * 1.33F), 0x7efc20, false);
 
         pPoseStack.popPose();
 

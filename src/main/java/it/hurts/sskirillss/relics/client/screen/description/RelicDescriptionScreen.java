@@ -318,21 +318,21 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         MutableComponent experience = isMaxLevel ? Component.translatable("tooltip.relics.relic.max_level") : Component.literal(String.valueOf(level));
 
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 136) * 1.33F), (int) ((y + 71) * 1.33F), 0x793300, false);
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 134) * 1.33F), (int) ((y + 71) * 1.33F), 0x793300, false);
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 72) * 1.33F), 0x793300, false);
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 70.5F) * 1.33F), 0x793300, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135.75F) * 1.33F), ((y + 71) * 1.33F), 0x793300, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 134.25F) * 1.33F), ((y + 71) * 1.33F), 0x793300, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135) * 1.33F), ((y + 71.75F) * 1.33F), 0x793300, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135) * 1.33F), ((y + 70.25F) * 1.33F), 0x793300, false);
 
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 71) * 1.33F), 0xfff500, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135) * 1.33F), ((y + 71) * 1.33F), 0xfff500, false);
 
         experience = Component.literal(String.valueOf(player.experienceLevel));
 
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 136) * 1.33F), (int) ((y + 84) * 1.33F), 0x054503, false);
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 134) * 1.33F), (int) ((y + 84) * 1.33F), 0x054503, false);
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 85) * 1.33F), 0x054503, false);
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 83.5F) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135.75F) * 1.33F), ((y + 84) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 134.25F) * 1.33F), ((y + 84) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135) * 1.33F), ((y + 84.75F) * 1.33F), 0x054503, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135) * 1.33F), ((y + 83.25F) * 1.33F), 0x054503, false);
 
-        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, (int) ((x + 135) * 1.33F), (int) ((y + 84) * 1.33F), 0x7efc20, false);
+        ScreenUtils.drawCenteredString(pPoseStack, MC.font, experience, ((x + 135) * 1.33F), ((y + 84) * 1.33F), 0x7efc20, false);
 
         pPoseStack.popPose();
 
