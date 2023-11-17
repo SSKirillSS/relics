@@ -35,6 +35,12 @@ public class ScreenUtils {
         guiGraphics.drawString(font, sequence, x - font.width(sequence) / 2, y, color, dropShadow);
     }
 
+    public static void drawCenteredString(GuiGraphics guiGraphics, Font font, Component text, float x, float y, int color, boolean dropShadow) {
+        FormattedCharSequence sequence = text.getVisualOrderText();
+
+        guiGraphics.drawString(font, sequence, x - font.width(sequence) / 2F, y, color, dropShadow);
+    }
+
     public static void drawCenteredString(GuiGraphics guiGraphics, Font font, String text, int x, int y, int color, boolean dropShadow) {
         guiGraphics.drawString(font, text, x - font.width(text) / 2, y, color, dropShadow);
     }
