@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParti
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
@@ -21,6 +22,8 @@ import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -44,6 +47,16 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
     @Override
     public boolean isLocked() {
         return !AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability);
+    }
+
+    @Override
+    public void playDownSound(SoundManager handler) {
+        if (!isLocked()) {
+            int level = AbilityUtils.getAbilityPoints(screen.stack, ability);
+            int maxLevel = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability).getMaxLevel();
+
+            handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_UPGRADE.get(), 1F + ((float) level / maxLevel)));
+        }
     }
 
     @Override
