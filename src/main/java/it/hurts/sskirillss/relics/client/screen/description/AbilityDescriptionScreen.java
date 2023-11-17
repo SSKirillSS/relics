@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.client.screen.description;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
@@ -475,6 +476,17 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
                     && button instanceof IHoverableWidget widget)
                 widget.onHovered(pPoseStack, pMouseX, pMouseY);
         }
+    }
+
+    @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        if (MC.options.keyInventory.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
+            this.onClose();
+
+            return true;
+        }
+
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
     @Override
