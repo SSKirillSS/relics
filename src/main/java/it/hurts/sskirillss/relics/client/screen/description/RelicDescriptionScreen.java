@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.client.screen.description;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
@@ -387,7 +388,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
             if (!isMaxLevel) {
                 entries.add(Component.literal(" "));
-                
+
                 entries.add(Component.literal("● ").append(Component.translatable("tooltip.relics.relic.relic_experience.current_amount", LevelingUtils.getExperience(stack),
                         LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1),
                         MathUtils.round((LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100)), 1))));
@@ -548,6 +549,17 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
                     && button instanceof IHoverableWidget widget)
                 widget.onHovered(guiGraphics, pMouseX, pMouseY);
         }
+    }
+
+    @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        if (MC.options.keyInventory.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
+            this.onClose();
+
+            return true;
+        }
+
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
     @Override
