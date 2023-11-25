@@ -34,5 +34,17 @@
     "table_reset": {
         "category": "master",
         "sounds": [ { "name": "relics:table_reset" } ]
+    },
+    "ability_locked": {
+        "category": "master",
+        "sounds": [ { "name": "relics:ability_locked" } ]
+    },
+    "ability_cooldown": {
+        "category": "master",
+        "sounds": [ { "name": "relics:ability_cooldown" } ]
+    },
+    "ability_cast": {
+        "category": "master",
+        "sounds": [ { "name": "relics:ability_cast" } ]
     }
 }

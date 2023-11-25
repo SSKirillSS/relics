@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
@@ -29,6 +30,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -328,11 +330,11 @@ public class AbilitiesRenderHandler {
         AnimationCache animationCache = ability.getCache().getAnimation();
 
         if (animationCache.iconShakeDelta != 0) {
-            float color = animationCache.iconShakeDelta * 0.05F;
+            float color = animationCache.iconShakeDelta * 0.04F;
 
             RenderSystem.setShaderColor(1, 1 - color, 1 - color, 1);
 
-            poseStack.mulPose(Axis.ZP.rotation((float) Math.sin((ticks + partialTicks) * 0.5F) * 0.05F));
+            poseStack.mulPose(Axis.ZP.rotation((float) Math.sin((ticks + partialTicks) * 0.75F) * 0.1F));
 
             scale += (animationCache.iconShakeDelta - partialTicks) * 0.025F;
         }
@@ -508,7 +510,10 @@ public class AbilitiesRenderHandler {
             if (!AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility())) {
                 int delta = ability.getCache().getAnimation().iconShakeDelta;
 
-                ability.getCache().getAnimation().setIconShakeDelta(Math.min(15, delta + (delta > 0 ? 5 : 10)));
+                ability.getCache().getAnimation().setIconShakeDelta(Math.min(20, delta + (delta > 0 ? 5 : 15)));
+
+                MC.getSoundManager().play(SimpleSoundInstance.forUI(AbilityUtils.isAbilityOnCooldown(stack, ability.getAbility())
+                        ? SoundRegistry.ABILITY_COOLDOWN.get() : SoundRegistry.ABILITY_LOCKED.get(), 1F));
 
                 event.setCanceled(true);
 
@@ -518,6 +523,8 @@ public class AbilitiesRenderHandler {
             boolean isTicking = AbilityUtils.isAbilityTicking(stack, ability.getAbility());
 
             AbilityCastType type = AbilityUtils.getRelicAbilityEntry(relic, ability.getAbility()).getCastData().getKey();
+
+            MC.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.ABILITY_CAST.get(), 1F));
 
             switch (type) {
                 case INSTANTANEOUS -> {
