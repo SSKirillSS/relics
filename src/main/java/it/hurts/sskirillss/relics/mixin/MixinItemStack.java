@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.mixin;
 
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
@@ -36,10 +37,14 @@ public abstract class MixinItemStack {
         if (abilities == null)
             return;
 
-        for (Map.Entry<String, RelicAbilityEntry> entries : abilities.getAbilities().entrySet()) {
-            AbilityUtils.randomizeStats(stack, entries.getKey());
+        for (Map.Entry<String, RelicAbilityEntry> entry : abilities.getAbilities().entrySet()) {
+            String id = entry.getKey();
 
-            AbilityUtils.setAbilityPoints(stack, entries.getKey(), 0);
+            AbilityUtils.randomizeStats(stack, id);
+            AbilityUtils.setAbilityPoints(stack, id, 0);
+
+            if (entry.getValue().getCastData().getKey() == AbilityCastType.TOGGLEABLE)
+                AbilityUtils.setAbilityTicking(stack, id, true);
         }
     }
 }
