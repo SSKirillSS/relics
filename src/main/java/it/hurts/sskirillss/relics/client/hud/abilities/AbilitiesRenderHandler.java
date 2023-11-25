@@ -357,7 +357,7 @@ public class AbilitiesRenderHandler {
         if (entries.isEmpty())
             return null;
 
-        return entries.get(Mth.clamp(index, 0, entries.size()));
+        return entries.get(Mth.clamp(index, 0, entries.size() - 1));
     }
 
     private static void applyDelta(int delta) {
