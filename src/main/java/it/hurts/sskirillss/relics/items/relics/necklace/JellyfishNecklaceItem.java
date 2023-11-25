@@ -4,6 +4,7 @@ import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
@@ -31,6 +32,7 @@ public class JellyfishNecklaceItem extends RelicItem {
                                 .maxLevel(0)
                                 .build())
                         .ability("shock", RelicAbilityEntry.builder()
+                                .active(AbilityCastType.TOGGLEABLE)
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(0.5D, 2.5D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.2D)
@@ -65,15 +67,17 @@ public class JellyfishNecklaceItem extends RelicItem {
 
         Level level = player.getCommandSenderWorld();
 
-        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox())) {
-            if (entity == player)
-                continue;
+        if (AbilityUtils.isAbilityTicking(stack, "shock")) {
+            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox())) {
+                if (entity == player)
+                    continue;
 
-            if (entity.hurt(level.damageSources().playerAttack(player), (float) AbilityUtils.getAbilityValue(stack, "shock", "damage"))) {
-                LevelingUtils.addExperience(player, stack, 1);
+                if (entity.hurt(level.damageSources().playerAttack(player), (float) AbilityUtils.getAbilityValue(stack, "shock", "damage"))) {
+                    LevelingUtils.addExperience(player, stack, 1);
 
-                if (AbilityUtils.canUseAbility(stack, "paralysis"))
-                    entity.addEffect(new MobEffectInstance(EffectRegistry.PARALYSIS.get(), (int) Math.round(AbilityUtils.getAbilityValue(stack, "paralysis", "duration") * 20), 0));
+                    if (AbilityUtils.canUseAbility(stack, "paralysis"))
+                        entity.addEffect(new MobEffectInstance(EffectRegistry.PARALYSIS.get(), (int) Math.round(AbilityUtils.getAbilityValue(stack, "paralysis", "duration") * 20), 0));
+                }
             }
         }
     }
