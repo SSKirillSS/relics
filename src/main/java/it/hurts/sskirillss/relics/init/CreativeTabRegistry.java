@@ -11,6 +11,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber
@@ -32,8 +33,8 @@ public class CreativeTabRegistry {
 
     private static void fillCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTab() == RELICS_TAB.get()) {
-            for (RegistryObject<Item> object : ItemRegistry.ITEMS.getEntries()) {
-                if (object.get() instanceof ICreativeTabEntry entry)
+            for (Item item : ForgeRegistries.ITEMS.getValues()) {
+                if (item instanceof ICreativeTabEntry entry)
                     event.acceptAll(entry.processCreativeTab());
             }
 
