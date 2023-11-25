@@ -22,7 +22,7 @@ public class AnimationData {
     public Pair<Integer, Integer> getFrameByTime(long time) {
         int frames = getFrames().size();
 
-        long remainder = (time - 1) % getLength();
+        long remainder = time % getLength();
 
         int index = 0;
 
@@ -31,7 +31,7 @@ public class AnimationData {
 
             remainder -= pair.getRight();
 
-            index = (index >= frames - 1) ? frames - 1 : index + 1;
+            index = index + 1 >= frames ? 0 : index + 1;
         }
 
         return getFrames().get(index);
