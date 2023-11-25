@@ -233,20 +233,25 @@ public class AbilitiesRenderHandler {
             if (type == AbilityCastType.TOGGLEABLE) {
                 RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png"));
 
-                RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 1, 30, 624, 30, 39, scale, AnimationData.builder()
+                RenderSystem.enableBlend();
+
+                RenderUtils.renderTextureFromCenter(poseStack, x - 0.5F, y - 0.5F, 31, 473, 31, 43, scale, AnimationData.builder()
                         .frame(0, 1).frame(1, 1).frame(2, 1)
                         .frame(3, 1).frame(4, 1).frame(5, 1)
                         .frame(6, 1).frame(7, 1).frame(8, 1)
-                        .frame(9, 1).frame(10, 1).frame(11, 1)
-                        .frame(12, 1).frame(13, 1).frame(14, 1)
-                        .frame(15, 1));
+                        .frame(9, 1).frame(10, 1));
 
+                RenderSystem.disableBlend();
             } else {
-                RenderSystem.setShaderColor(1F, 1F, 1F, (float) ((Math.sin(player.tickCount * 0.2F) * 0.25F) + 0.5F));
+                RenderSystem.setShaderColor(1F, 1F, 1F, (float) ((Math.sin(player.tickCount * 0.25F) * 0.25F) + 0.75F));
+
+                RenderSystem.enableBlend();
 
                 RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/cyclical.png"));
 
-                RenderUtils.renderTextureFromCenter(poseStack, x - scale / 2F, y - scale / 2F, 29, 38, scale);
+                RenderUtils.renderTextureFromCenter(poseStack, x - scale / 2F, y - scale / 2F, 31, 43, scale);
+
+                RenderSystem.disableBlend();
 
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             }
@@ -261,6 +266,8 @@ public class AbilitiesRenderHandler {
         if (cooldown > 0) {
             RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/cooldown.png"));
 
+            RenderSystem.enableBlend();
+
             drawAbilityStatusIcon(ability, guiGraphics, x - scale, y - scale, 20, 300, scale - 0.1F, AnimationData.builder()
                             .frame(0, 2).frame(1, 2).frame(2, 2)
                             .frame(3, 2).frame(4, 2).frame(5, 2)
@@ -268,6 +275,8 @@ public class AbilitiesRenderHandler {
                             .frame(9, 2).frame(10, 8).frame(11, 2)
                             .frame(12, 2).frame(13, 2).frame(14, 2),
                     cap - cooldown, partialTicks);
+
+            RenderSystem.disableBlend();
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
@@ -288,7 +297,11 @@ public class AbilitiesRenderHandler {
             if (failedPredicates > 0) {
                 RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/locked.png"));
 
+                RenderSystem.enableBlend();
+
                 drawAbilityStatusIcon(ability, guiGraphics, x - scale, y - scale, 20, 20, scale - 0.1F, null, player.tickCount, partialTicks);
+
+                RenderSystem.disableBlend();
 
                 iconDescription = successPredicates + "/" + infoEntries.size();
             }
