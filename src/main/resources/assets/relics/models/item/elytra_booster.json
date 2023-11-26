@@ -6,11 +6,6 @@
     "overrides": [
         { "predicate": { "relics:broken": 1 }, "model": "relics:item/elytra_booster_broken" },
         { "predicate": { "relics:fuel": 0 }, "model": "relics:item/elytra_booster_0" },
-        { "predicate": { "relics:fuel": 1 }, "model": "relics:item/elytra_booster_1" },
-        { "predicate": { "relics:fuel": 2 }, "model": "relics:item/elytra_booster_2" },
-        { "predicate": { "relics:fuel": 3 }, "model": "relics:item/elytra_booster_3" },
-        { "predicate": { "relics:fuel": 4 }, "model": "relics:item/elytra_booster_4" },
-        { "predicate": { "relics:fuel": 5 }, "model": "relics:item/elytra_booster_5" }
+        { "predicate": { "relics:fuel": 1 }, "model": "relics:item/elytra_booster_1" }
     ]
 }
-
