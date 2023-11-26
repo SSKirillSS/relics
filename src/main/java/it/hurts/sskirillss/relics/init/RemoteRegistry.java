@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.init;
 
 import it.hurts.sskirillss.relics.client.hud.abilities.AbilitiesRenderHandler;
 import it.hurts.sskirillss.relics.client.models.items.back.ArrowQuiverModel;
+import it.hurts.sskirillss.relics.client.models.items.back.ElytraBoosterModel;
 import it.hurts.sskirillss.relics.client.models.items.back.MidnightRobeModel;
 import it.hurts.sskirillss.relics.client.models.items.belt.DrownedBeltModel;
 import it.hurts.sskirillss.relics.client.models.items.belt.HunterBeltModel;
@@ -13,6 +14,7 @@ import it.hurts.sskirillss.relics.client.particles.circle.CircleTintFactory;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintFactory;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
 import it.hurts.sskirillss.relics.client.renderer.items.items.back.ArrowQuiverRenderer;
+import it.hurts.sskirillss.relics.client.renderer.items.items.back.ElytraBoosterRenderer;
 import it.hurts.sskirillss.relics.client.renderer.items.items.back.MidnightRobeRenderer;
 import it.hurts.sskirillss.relics.client.renderer.items.items.belt.DrownedBeltRenderer;
 import it.hurts.sskirillss.relics.client.renderer.items.items.belt.HunterBeltRenderer;
@@ -136,6 +138,7 @@ public class RemoteRegistry {
         CuriosRendererRegistry.register(ItemRegistry.JELLYFISH_NECKLACE.get(), JellyfishNecklaceRenderer::new);
         CuriosRendererRegistry.register(ItemRegistry.MIDNIGHT_ROBE.get(), MidnightRobeRenderer::new);
         CuriosRendererRegistry.register(ItemRegistry.ARROW_QUIVER.get(), ArrowQuiverRenderer::new);
+        CuriosRendererRegistry.register(ItemRegistry.ELYTRA_BOOSTER.get(), ElytraBoosterRenderer::new);
     }
 
     @SubscribeEvent
@@ -148,6 +151,7 @@ public class RemoteRegistry {
         event.registerLayerDefinition(JellyfishNecklaceModel.LAYER, JellyfishNecklaceModel::createLayer);
         event.registerLayerDefinition(MidnightRobeModel.LAYER, MidnightRobeModel::createLayer);
         event.registerLayerDefinition(ArrowQuiverModel.LAYER, ArrowQuiverModel::createLayer);
+        event.registerLayerDefinition(ElytraBoosterModel.LAYER, ElytraBoosterModel::createLayer);
     }
 
     @SubscribeEvent
