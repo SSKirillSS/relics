@@ -109,17 +109,13 @@ public class RemoteRegistry {
                     int maxAmount = getSlotsAmount(stack);
                     int amount = getArrows(stack).size();
 
-                    return amount > 0 ? (int) Math.floor(amount / (maxAmount / 2F)) + 1 : 0;
-                });
-        ItemProperties.register(ItemRegistry.ELYTRA_BOOSTER.get(), new ResourceLocation(Reference.MODID, "fuel"),
-                (stack, world, entity, id) -> {
-                    int fuel = NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0);
-
-                    return (int) Math.ceil(fuel / (AbilityUtils.getAbilityValue(stack, "boost", "capacity") / 5F));
-                });
-        ItemProperties.register(ItemRegistry.SOLID_SNOWBALL.get(), new ResourceLocation(Reference.MODID, "snow"),
-                (stack, world, entity, id) -> {
-                    ItemStack relic = EntityUtils.findEquippedCurio(entity, ItemRegistry.WOOL_MITTEN.get());
+                        return amount > 0 ? (int) Math.floor(amount / (maxAmount / 2F)) + 1 : 0;
+                    });
+            ItemProperties.register(ItemRegistry.ELYTRA_BOOSTER.get(), new ResourceLocation(Reference.MODID, "fuel"),
+                    (stack, world, entity, id) -> NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0) > 0 ? 1 : 0);
+            ItemProperties.register(ItemRegistry.SOLID_SNOWBALL.get(), new ResourceLocation(Reference.MODID, "snow"),
+                    (stack, world, entity, id) -> {
+                        ItemStack relic = EntityUtils.findEquippedCurio(entity, ItemRegistry.WOOL_MITTEN.get());
 
                     return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (AbilityUtils.getAbilityValue(relic, "mold", "size") / 3F));
                 });
