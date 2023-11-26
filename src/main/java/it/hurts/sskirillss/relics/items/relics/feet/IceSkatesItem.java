@@ -48,7 +48,7 @@ public class IceSkatesItem extends RelicItem {
                                 .stat("damage", RelicAbilityStat.builder()
                                         .initialValue(0.05D, 0.25D)
                                         .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> (int) (MathUtils.round(value, 1) * 10))
+                                        .formatValue(value -> MathUtils.round(value * 10, 1))
                                         .build())
                                 .build())
                         .build())
