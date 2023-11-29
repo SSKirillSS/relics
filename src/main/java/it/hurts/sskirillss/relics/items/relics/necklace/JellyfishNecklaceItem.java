@@ -67,7 +67,7 @@ public class JellyfishNecklaceItem extends RelicItem {
 
         Level level = player.getCommandSenderWorld();
 
-        if (AbilityUtils.isAbilityTicking(stack, "shock")) {
+        if (!player.isSpectator() && AbilityUtils.isAbilityTicking(stack, "shock")) {
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox())) {
                 if (entity == player)
                     continue;
