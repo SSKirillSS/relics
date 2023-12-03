@@ -22,18 +22,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import top.theillusivec4.curios.api.SlotContext;
 
 public class IceBreakerItem extends RelicItem {
-    public static final String TAG_FALLING = "falling";
+    public static final String TAG_FALLING_POINT = "point";
 
     @Override
     public RelicData getRelicData() {
@@ -87,32 +86,69 @@ public class IceBreakerItem extends RelicItem {
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, AbilityCastType type, AbilityCastStage stage) {
         if (ability.equals("impact")) {
-            NBTUtils.setBoolean(stack, TAG_FALLING, true);
+            NBTUtils.setString(stack, TAG_FALLING_POINT, NBTUtils.writePosition(player.position()));
         }
     }
 
     @Override
-    public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
-        boolean isFalling = NBTUtils.getBoolean(stack, TAG_FALLING, false);
+        Vec3 position = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_FALLING_POINT, ""));
 
-        if (!isFalling)
+        if (position == null)
             return;
 
-        Vec3 motion = player.getDeltaMovement();
+        if (!player.isOnGround()) {
+            Vec3 motion = player.getDeltaMovement();
 
-        if (player.isOnGround() || player.isSpectator()) {
-            NBTUtils.setBoolean(stack, TAG_FALLING, false);
+            if (player.isOnGround() || player.isSpectator()) {
+                NBTUtils.clearTag(stack, TAG_FALLING_POINT);
 
-            return;
+                return;
+            }
+
+            player.stopFallFlying();
+            player.getAbilities().flying = false;
+
+            player.fallDistance = 0F;
+
+            player.setDeltaMovement(motion.x(), Math.min(-0.01F, motion.y() * 1.075F), motion.z());
+        } else {
+            Level level = player.getCommandSenderWorld();
+
+            double distance = (position.y() + Math.abs(level.getMinBuildHeight())) - (player.getY() + Math.abs(level.getMinBuildHeight()));
+
+            NBTUtils.clearTag(stack, TAG_FALLING_POINT);
+
+            if (distance <= 0)
+                return;
+
+            LevelingUtils.addExperience(player, stack, (int) Math.min(10, Math.round(distance / 3F)));
+
+            ShockwaveEntity shockwave = new ShockwaveEntity(level,
+                    (int) Math.round(Math.min(AbilityUtils.getAbilityValue(stack, "impact", "size"), distance * 0.25D)),
+                    (float) AbilityUtils.getAbilityValue(stack, "impact", "damage"));
+
+            BlockPos pos = player.getOnPos();
+
+            shockwave.setOwner(player);
+            shockwave.setPos(pos.getX(), pos.getY(), pos.getZ());
+
+            level.addFreshEntity(shockwave);
+
+            level.playSound(null, player.blockPosition(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.MASTER, 0.75F, 1.0F);
+            level.addParticle(ParticleTypes.EXPLOSION_EMITTER, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
         }
+    }
 
-        player.stopFallFlying();
-        player.getAbilities().flying = false;
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (stack.getItem() == newStack.getItem())
+            return;
 
-        player.setDeltaMovement(motion.x(), Math.min(-0.01F, motion.y() * 1.075F), motion.z());
+        NBTUtils.clearTag(stack, TAG_FALLING_POINT);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
@@ -129,43 +165,6 @@ public class IceBreakerItem extends RelicItem {
                 return;
 
             event.setFriction(0.6F);
-        }
-
-        @SubscribeEvent
-        public static void onEntityFall(LivingFallEvent event) {
-            if (!(event.getEntity() instanceof Player player))
-                return;
-
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_BREAKER.get());
-
-            if (stack.isEmpty())
-                return;
-
-            float distance = event.getDistance();
-
-            Level world = player.getCommandSenderWorld();
-
-            if (distance < 2 || !NBTUtils.getBoolean(stack, TAG_FALLING, false))
-                return;
-
-            LevelingUtils.addExperience(player, stack, Math.min(10, Math.round(distance / 3F)));
-
-            ShockwaveEntity shockwave = new ShockwaveEntity(world,
-                    (int) Math.round(Math.min(AbilityUtils.getAbilityValue(stack, "impact", "size"), distance * 0.25D)),
-                    (float) AbilityUtils.getAbilityValue(stack, "impact", "damage"));
-
-            BlockPos pos = player.getBlockPosBelowThatAffectsMyMovement();
-
-            shockwave.setOwner(player);
-            shockwave.setPos(pos.getX(), pos.getY(), pos.getZ());
-
-            world.addFreshEntity(shockwave);
-
-            world.playSound(null, player.blockPosition(), SoundEvents.WITHER_BREAK_BLOCK,
-                    SoundSource.MASTER, 0.75F, 1.0F);
-            world.addParticle(ParticleTypes.EXPLOSION_EMITTER, player.getX(), player.getY(), player.getZ(), 0, 0, 0);
-
-            event.setDamageMultiplier(0F);
         }
     }
 }
