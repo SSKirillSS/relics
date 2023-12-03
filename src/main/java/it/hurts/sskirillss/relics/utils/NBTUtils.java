@@ -92,7 +92,7 @@ public class NBTUtils {
 
     @Nullable
     public static Vec3 parsePosition(String value) {
-        if (value != null && !value.equals("")) {
+        if (value != null && !value.isEmpty()) {
             String[] pos = value.split(",");
 
             return new Vec3(Double.parseDouble(pos[0]), Double.parseDouble(pos[1]), Double.parseDouble(pos[2]));
