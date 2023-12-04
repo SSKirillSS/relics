@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.entities;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
@@ -91,6 +92,7 @@ public class ArrowRainEntity extends ThrowableProjectile {
             List<LivingEntity> entities = level().getEntitiesOfClass(LivingEntity.class, area).stream()
                     .filter(entry -> entry.hasLineOfSight(arrow))
                     .filter(entry -> entry.position().distanceTo(this.position()) <= getRadius())
+                    .filter(entry -> !EntityUtils.isAlliedTo(this.getOwner(), entry))
                     .sorted(Comparator.comparing(entry -> entry.position().distanceTo(arrow.position())))
                     .toList();
 
@@ -129,7 +131,7 @@ public class ArrowRainEntity extends ThrowableProjectile {
                     double zOff = r * Math.sin(theta);
 
                     entity.setPos(this.getX() + xOff, this.getY() + 15 + getRadius(), this.getZ() + zOff);
-                    entity.getPersistentData().putString("arrow_rain_owner", player.getStringUUID());
+                    entity.getPersistentData().putBoolean("relics_arrow_rain", true);
                     entity.setDeltaMovement(0, -0.5F, 0);
                     entity.setOwner(player);
                     entity.life = 1100;
@@ -191,10 +193,11 @@ public class ArrowRainEntity extends ThrowableProjectile {
         @SubscribeEvent
         public static void onProjectileImpact(ProjectileImpactEvent event) {
             if (!(event.getEntity() instanceof AbstractArrow arrow)
-                    || !(arrow.getOwner() instanceof Player)
+                    || !arrow.getPersistentData().getBoolean("relics_arrow_rain")
+                    || !(arrow.getOwner() instanceof Player player)
                     || !(event.getRayTraceResult() instanceof EntityHitResult result)
-                    || !(result.getEntity() instanceof Player player)
-                    || !arrow.getPersistentData().getString("arrow_rain_owner").equals(player.getStringUUID()))
+                    || !(result.getEntity() instanceof LivingEntity entity)
+                    || !EntityUtils.isAlliedTo(player, entity))
                 return;
 
             event.setCanceled(true);

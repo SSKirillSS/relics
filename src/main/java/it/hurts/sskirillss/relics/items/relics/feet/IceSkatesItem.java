@@ -93,7 +93,7 @@ public class IceSkatesItem extends RelicItem {
                 if (entity == player || entity.hurtTime > 0)
                     continue;
 
-                entity.hurt(level.damageSources().playerAttack(player), (float) (duration * AbilityUtils.getAbilityValue(stack, "ram", "damage")));
+                EntityUtils.hurt(entity, level.damageSources().playerAttack(player), (float) (duration * AbilityUtils.getAbilityValue(stack, "ram", "damage")));
 
                 double factor = Mth.clamp(duration * 0.025D, 1D, 2D);
 

@@ -1,8 +1,10 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -17,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.CuriosApi;
 
+import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
@@ -180,5 +183,17 @@ public class EntityUtils {
         }
 
         return result;
+    }
+
+    public static boolean isAlliedTo(@Nullable Entity source, @Nullable Entity target) {
+        return (source == null || target == null) || (source.isAlliedTo(target) || target.isAlliedTo(source)) || (target.getUUID().equals(source.getUUID()))
+                || (target instanceof OwnableEntity ownable && ownable.getOwnerUUID() != null && ownable.getOwnerUUID().equals(source.getUUID()));
+    }
+
+    public static boolean hurt(LivingEntity entity, DamageSource source, float amount) {
+        if (source.getEntity() instanceof LivingEntity sourceEntity && isAlliedTo(sourceEntity, entity))
+            return false;
+
+        return entity.hurt(source, amount);
     }
 }

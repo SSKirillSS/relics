@@ -192,6 +192,9 @@ public class RageGloveItem extends RelicItem {
                 EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_DAMAGE, (float) (AbilityUtils.getAbilityValue(stack, "spurt", "damage") * stacks), AttributeModifier.Operation.ADDITION);
 
                 for (LivingEntity entity : targets) {
+                    if (EntityUtils.isAlliedTo(player, entity))
+                        continue;
+
                     player.attack(entity);
 
                     LevelingUtils.addExperience(player, stack, 1);

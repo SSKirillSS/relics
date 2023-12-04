@@ -76,10 +76,11 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
                 .filter(entity -> !bouncedEntities.contains(entity.getUUID().toString()))
                 .filter(EntitySelector.NO_CREATIVE_OR_SPECTATOR)
                 .filter(entity -> {
-                    if (this.getOwner() == null)
+                    if (!(this.getOwner() instanceof Player player))
                         return false;
 
-                    return !entity.getStringUUID().equals(this.getOwner().getStringUUID());
+                    return !entity.getStringUUID().equals(player.getStringUUID())
+                            && !EntityUtils.isAlliedTo(player, entity);
                 })
                 .filter(entity -> entity.hasLineOfSight(this))
                 .sorted(Comparator.comparing(entity -> entity.position().distanceTo(this.position())))
@@ -147,7 +148,12 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
 
-                entity.hurt(this.getOwner() instanceof Player player ? level().damageSources().thrown(this, player) : level().damageSources().magic(), (float) AbilityUtils.getAbilityValue(stack, "glaive", "damage"));
+                float damage = (float) AbilityUtils.getAbilityValue(stack, "glaive", "damage");
+
+                if (this.getOwner() instanceof Player player)
+                    EntityUtils.hurt(entity, level().damageSources().thrown(this, player), damage);
+                else
+                    entity.hurt(level().damageSources().magic(), damage);
 
                 if (!bouncedEntities.contains(entity.getUUID().toString())) {
                     entityData.set(BOUNCED_ENTITIES, bouncedEntitiesString + "," + entity.getUUID());

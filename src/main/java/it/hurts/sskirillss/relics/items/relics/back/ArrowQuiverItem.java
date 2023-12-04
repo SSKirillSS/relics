@@ -51,6 +51,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -631,7 +632,8 @@ public class ArrowQuiverItem extends RelicItem {
 
         @SubscribeEvent
         public static void onProjectileImpact(ProjectileImpactEvent event) {
-            if (event.getRayTraceResult().getType() != HitResult.Type.BLOCK
+            if (!(event.getRayTraceResult() instanceof EntityHitResult result)
+                    || !(result.getEntity() instanceof LivingEntity entity)
                     || !(event.getEntity() instanceof AbstractArrow arrow)
                     || !(arrow.getOwner() instanceof Player player))
                 return;
@@ -643,8 +645,12 @@ public class ArrowQuiverItem extends RelicItem {
 
             CompoundTag data = arrow.getPersistentData();
 
-            if (data.contains("arrow_quiver_multiplier"))
-                data.remove("arrow_quiver_multiplier");
+            if (data.contains("arrow_quiver_multiplier")) {
+                if (EntityUtils.isAlliedTo(player, entity))
+                    event.setCanceled(true);
+                else
+                    data.remove("arrow_quiver_multiplier");
+            }
         }
     }
 }
