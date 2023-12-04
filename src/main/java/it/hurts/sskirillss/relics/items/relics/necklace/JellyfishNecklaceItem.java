@@ -73,7 +73,7 @@ public class JellyfishNecklaceItem extends RelicItem {
                 if (entity == player)
                     continue;
 
-                if (entity.hurt(DamageSource.playerAttack(player), (float) AbilityUtils.getAbilityValue(stack, "shock", "damage"))) {
+                if (EntityUtils.hurt(DamageSource.playerAttack(player), (float) AbilityUtils.getAbilityValue(stack, "shock", "damage"))) {
                     LevelingUtils.addExperience(player, stack, 1);
 
                     if (AbilityUtils.canUseAbility(stack, "paralysis"))

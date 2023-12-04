@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,11 +86,21 @@ public class ShadowSawEntity extends ThrowableProjectile {
                 this.setDeltaMovement(this.getDeltaMovement().add(0F, -0.05F, 0F));
         }
 
-        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
-            if ((this.getOwner() == null || (this.getOwner() != null && entity != this.getOwner()))
-                    && entity.hurt(DamageSource.MAGIC, (float) Math.max(AbilityUtils.getAbilityValue(stack, "saw", "damage"), 0.1D))) {
-                entity.invulnerableTime = (int) Math.round(AbilityUtils.getAbilityValue(stack, "saw", "speed"));
+        float damage = (float) Math.max(AbilityUtils.getAbilityValue(stack, "saw", "damage"), 0.1D);
+
+        for (LivingEntity entity : getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
+            boolean mayContinue = false;
+
+            if (this.getOwner() instanceof Player player) {
+                if (EntityUtils.hurt(entity, DamageSource.playerAttack(player), damage))
+                    mayContinue = true;
+            } else {
+                if (entity.hurt(DamageSource.MAGIC, damage))
+                    mayContinue = true;
             }
+
+            if (mayContinue)
+                entity.invulnerableTime = (int) Math.round(AbilityUtils.getAbilityValue(stack, "saw", "speed"));
         }
 
         ServerLevel serverLevel = (ServerLevel) level;

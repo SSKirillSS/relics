@@ -21,7 +21,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -162,13 +161,11 @@ public class ShadowGlaiveItem extends RelicItem {
 
                     worldIn.addFreshEntity(glaive);
 
-                    EntityHitResult result = EntityUtils.rayTraceEntity(playerIn, EntitySelector.NO_CREATIVE_OR_SPECTATOR, 32);
+                    EntityHitResult result = EntityUtils.rayTraceEntity(playerIn, entry -> !EntityUtils.isAlliedTo(playerIn, entry), 32);
 
                     if (result != null) {
-                        Entity target = result.getEntity();
-
-                        if (target instanceof LivingEntity)
-                            glaive.setTarget((LivingEntity) target);
+                        if (result.getEntity() instanceof LivingEntity target)
+                            glaive.setTarget(target);
                     }
 
                     worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW.get(),

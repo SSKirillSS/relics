@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -142,11 +143,11 @@ public class SporeEntity extends ThrowableProjectile {
                 if (entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
 
-                entity.hurt(DamageSource.playerAttack(player), (float) (getSize() * AbilityUtils.getAbilityValue(getStack(), "spore", "damage")));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100));
-                entity.addEffect(new MobEffectInstance(EffectRegistry.ANTI_HEAL.get(), 100));
+                if (EntityUtils.hurt(entity, DamageSource.thrown(this, player), (float) (getSize() * AbilityUtils.getAbilityValue(getStack(), "spore", "damage")))) {
+                    entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
+                    entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100));
+                    entity.addEffect(new MobEffectInstance(EffectRegistry.ANTI_HEAL.get(), 100));
+                }
             }
 
             if (getSize() >= 1) {

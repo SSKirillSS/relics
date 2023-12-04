@@ -22,6 +22,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -89,8 +90,20 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         ItemStack stack = EntityUtils.findEquippedCurio(this.getOwner(), ItemRegistry.WOOL_MITTEN.get());
 
         if (!stack.isEmpty()) {
-            entity.hurt(DamageSource.thrown(this, this.getOwner()), (float) (getSize() * AbilityUtils.getAbilityValue(stack, "mold", "damage")));
-            entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) Math.round(getSize() * AbilityUtils.getAbilityValue(stack, "mold", "stun")) * 20, 0, true, false));
+            boolean mayContinue = false;
+
+            float damage = (float) (getSize() * AbilityUtils.getAbilityValue(stack, "mold", "damage"));
+
+            if (this.getOwner() instanceof Player player) {
+                if (EntityUtils.hurt(entity, DamageSource.thrown(this, player), damage))
+                    mayContinue = true;
+            } else {
+                if (entity.hurt(DamageSource.MAGIC, damage))
+                    mayContinue = true;
+            }
+
+            if (mayContinue)
+                entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) Math.round(getSize() * AbilityUtils.getAbilityValue(stack, "mold", "stun")) * 20, 0, true, false));
         }
 
         this.discard();
