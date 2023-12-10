@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -36,5 +37,7 @@ public class Relics {
         NetworkHandler.register();
 
         ConfigHelper.setupConfigs();
+
+        InterModComms.sendTo("carryon", "blacklistBlock", () -> "relics:researching_table");
     }
 }
