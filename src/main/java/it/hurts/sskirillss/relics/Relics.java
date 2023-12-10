@@ -62,5 +62,7 @@ public class Relics {
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         NetworkHandler.registerMessages();
+
+        InterModComms.sendTo("carryon", "blacklistBlock", () -> "relics:researching_table");
     }
 }
