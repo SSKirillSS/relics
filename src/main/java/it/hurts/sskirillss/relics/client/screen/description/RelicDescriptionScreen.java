@@ -140,7 +140,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             {
                 int level = LevelingUtils.getLevel(stack);
 
-                int percentage = LevelingUtils.isMaxLevel(stack) ? 100 : LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100);
+                float percentage = LevelingUtils.isMaxLevel(stack) ? 100F : LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
 
                 int sourceWidth = 206;
                 int maxWidth = (int) (sourceWidth * (percentage / 100F));
@@ -155,7 +155,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             }
 
             {
-                int percentage = (int) (player.totalExperience / ((player.totalExperience / player.experienceProgress) / 100));
+                float percentage = (int) (player.totalExperience / ((player.totalExperience / player.experienceProgress) / 100F));
 
                 int sourceWidth = 206;
                 int maxWidth = (int) (sourceWidth * (percentage / 100F));
@@ -213,7 +213,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         int level = LevelingUtils.getLevel(stack);
 
-        int percentage = LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100);
+        float percentage = LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
 
         boolean isMaxLevel = LevelingUtils.isMaxLevel(stack);
 
@@ -246,7 +246,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             RenderSystem.disableBlend();
         }
 
-        percentage = (int) (player.totalExperience / ((player.totalExperience / player.experienceProgress) / 100));
+        percentage = (player.totalExperience / ((player.totalExperience / player.experienceProgress) / 100F));
 
         RenderSystem.setShaderTexture(0, TEXTURE);
         blit(pPoseStack, x + 30, y + 85, 302, 148, (int) Math.ceil(percentage / 100F * 206), 3, texWidth, texHeight);
