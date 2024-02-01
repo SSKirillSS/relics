@@ -278,14 +278,27 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             RenderSystem.disableBlend();
         }
 
+        ResourceLocation background = new ResourceLocation(Reference.MODID, "textures/gui/description/backgrounds/" + relic.getRelicData().getStyleData().getStyle().getID() + ".png");
+
+        RenderSystem.setShaderTexture(0, background);
+
+        float color = (float) (0.75F + Math.sin(player.tickCount * 0.1F) * 0.05F);
+
+        RenderSystem.setShaderColor(color, color, color, 1F);
+
+        blit(pPoseStack, x + 18, y + 15, 0, 0, 34, 34, 34, 34);
+
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(pPoseStack, x + 15, y + 12, 353, 14, 40, 40, texWidth, texHeight);
+
         blit(pPoseStack, x + 13, y + 10, 302, 5, 46, 55, texWidth, texHeight);
 
+        float scale = 1.75F;
+
         RenderSystem.getModelViewStack().pushPose(); // Modify the pose stack the item renderer will use
-        RenderSystem.getModelViewStack().scale(2F, 2F, 2F);
-        RenderSystem.getModelViewStack().translate(0.5F, 0, 0);
-        Minecraft.getInstance().getItemRenderer().renderGuiItem(stack, (x + 19) / 2, (y + 17) / 2);
+        RenderSystem.getModelViewStack().translate(x + 21, y + 18.5F, 0);
+        RenderSystem.getModelViewStack().scale(scale, scale, scale);
+        Minecraft.getInstance().getItemRenderer().renderGuiItem(stack, 0, 0);
         RenderSystem.getModelViewStack().popPose();
         RenderSystem.applyModelViewMatrix(); // Reset to the current pose stack
 

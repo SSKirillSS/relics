@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.utils.RelicStyle;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
@@ -16,6 +17,7 @@ import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeMod;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -42,6 +44,7 @@ public class AmphibianBootItem extends RelicItem {
                 .levelingData(new RelicLevelingData(100, 10, 100))
                 .styleData(RelicStyleData.builder()
                         .borders("#ff6900", "#ff2e00")
+                        .style(RelicStyle.AQUATIC)
                         .build())
                 .build();
     }
@@ -74,5 +77,10 @@ public class AmphibianBootItem extends RelicItem {
             return;
 
         EntityUtils.removeAttribute(slotContext.entity(), stack, ForgeMod.SWIM_SPEED.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
+    }
+
+    @Override
+    public Rarity getRarity(ItemStack pStack) {
+        return Rarity.UNCOMMON;
     }
 }
