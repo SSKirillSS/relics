@@ -274,15 +274,29 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             RenderSystem.disableBlend();
         }
 
-        guiGraphics.blit(TEXTURE, x + 15, y + 12, 353, 14, 40, 40, texWidth, texHeight);
+        ResourceLocation background = new ResourceLocation(Reference.MODID, "textures/gui/description/backgrounds/" + relic.getRelicData().getStyleData().getStyle().getID() + ".png");
+
+        RenderSystem.setShaderTexture(0, background);
+
+        float color = (float) (0.75F + Math.sin(player.tickCount * 0.1F) * 0.05F);
+
+        RenderSystem.setShaderColor(color, color, color, 1F);
+
+        guiGraphics.blit(background, x + 18, y + 15, 0, 0, 34, 34, 34, 34);
+
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+
         guiGraphics.blit(TEXTURE, x + 13, y + 10, 302, 5, 46, 55, texWidth, texHeight);
 
         pPoseStack.pushPose();
 
-        pPoseStack.scale(2F, 2F, 2F);
-        pPoseStack.translate(0.5F, 0, 0);
+        float scale = 1.75F;
 
-        guiGraphics.renderItem(stack, (x + 19) / 2, (y + 17) / 2);
+        pPoseStack.translate(x + 21, y + 18.5F, 0);
+        pPoseStack.scale(scale, scale, scale);
+
+        guiGraphics.renderItem(stack, 0, 0);
 
         pPoseStack.popPose();
 

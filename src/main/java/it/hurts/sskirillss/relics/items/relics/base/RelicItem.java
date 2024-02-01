@@ -4,8 +4,6 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.octolib.config.data.ConfigContext;
 import it.hurts.sskirillss.octolib.config.data.OctoConfig;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.items.ItemBase;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
@@ -17,7 +15,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
-import it.hurts.sskirillss.relics.utils.MathUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
@@ -25,18 +22,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -45,7 +39,6 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,24 +92,6 @@ public abstract class RelicItem extends ItemBase implements ICurioItem {
     }
 
     @Override
-    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        Vec3 pos = entity.position();
-        RandomSource random = entity.getCommandSenderWorld().getRandom();
-
-        if (getStyle(stack) != null) {
-            String hex = getStyle(stack).getParticles();
-
-            Color color = hex == null || hex.isEmpty() ? new Color(stack.getRarity().color.getColor()) : Color.decode(hex);
-
-            entity.getCommandSenderWorld().addParticle(new CircleTintData(color, random.nextFloat() * 0.025F + 0.04F, 25, 0.97F, true),
-                    pos.x() + MathUtils.randomFloat(random) * 0.25F, pos.y() + 0.1F,
-                    pos.z() + MathUtils.randomFloat(random) * 0.25F, 0, random.nextFloat() * 0.05D, 0);
-        }
-
-        return super.onEntityItemUpdate(stack, entity);
-    }
-
-    @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         if (!level.isClientSide()) {
             for (Map.Entry<String, RelicAbilityEntry> entry : AbilityUtils.getRelicAbilityData(stack.getItem()).getAbilities().entrySet()) {
@@ -143,10 +118,6 @@ public abstract class RelicItem extends ItemBase implements ICurioItem {
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
         return true;
-    }
-
-    public RelicStyleData getStyle(ItemStack stack) {
-        return null;
     }
 
     @Override
