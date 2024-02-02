@@ -44,7 +44,7 @@ public class Relics {
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> SlotTypePreset.BODY.getMessageBuilder().build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
-                () -> SlotTypePreset.HANDS.getMessageBuilder().build());
+                () -> SlotTypePreset.HANDS.getMessageBuilder().size(2).build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> SlotTypePreset.HEAD.getMessageBuilder().build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
@@ -57,7 +57,7 @@ public class Relics {
                         .icon(new ResourceLocation(Reference.MODID, "gui/curios/empty_talisman_slot")).size(0).build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
                 () -> new SlotTypeMessage.Builder("feet").priority(240)
-                        .icon(new ResourceLocation(Reference.MODID, "gui/curios/empty_feet_slot")).build());
+                        .icon(new ResourceLocation(Reference.MODID, "gui/curios/empty_feet_slot")).size(2).build());
     }
 
     private void setupCommon(final FMLCommonSetupEvent event) {
