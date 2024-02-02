@@ -1,33 +1,18 @@
 package it.hurts.sskirillss.relics.init;
 
 import it.hurts.sskirillss.relics.client.hud.abilities.AbilitiesRenderHandler;
-import it.hurts.sskirillss.relics.client.models.items.back.ArrowQuiverModel;
-import it.hurts.sskirillss.relics.client.models.items.back.ElytraBoosterModel;
-import it.hurts.sskirillss.relics.client.models.items.back.MidnightRobeModel;
-import it.hurts.sskirillss.relics.client.models.items.belt.DrownedBeltModel;
-import it.hurts.sskirillss.relics.client.models.items.belt.HunterBeltModel;
-import it.hurts.sskirillss.relics.client.models.items.belt.LeatherBeltModel;
-import it.hurts.sskirillss.relics.client.models.items.necklace.HolyLocketModel;
-import it.hurts.sskirillss.relics.client.models.items.necklace.JellyfishNecklaceModel;
-import it.hurts.sskirillss.relics.client.models.items.necklace.ReflectionNecklaceModel;
+import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintFactory;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintFactory;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
-import it.hurts.sskirillss.relics.client.renderer.items.items.back.ArrowQuiverRenderer;
-import it.hurts.sskirillss.relics.client.renderer.items.items.back.ElytraBoosterRenderer;
-import it.hurts.sskirillss.relics.client.renderer.items.items.back.MidnightRobeRenderer;
-import it.hurts.sskirillss.relics.client.renderer.items.items.belt.DrownedBeltRenderer;
-import it.hurts.sskirillss.relics.client.renderer.items.items.belt.HunterBeltRenderer;
-import it.hurts.sskirillss.relics.client.renderer.items.items.belt.LeatherBeltRenderer;
-import it.hurts.sskirillss.relics.client.renderer.items.items.necklace.HolyLocketRenderer;
-import it.hurts.sskirillss.relics.client.renderer.items.items.necklace.JellyfishNecklaceRenderer;
-import it.hurts.sskirillss.relics.client.renderer.items.items.necklace.ReflectionNecklaceRenderer;
+import it.hurts.sskirillss.relics.client.renderer.items.items.CurioRenderer;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
 import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.feet.AquaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.MagmaWalkerItem;
@@ -45,6 +30,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
@@ -54,6 +40,7 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 import static it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem.*;
@@ -130,28 +117,22 @@ public class RemoteRegistry {
                 (stack, world, entity, id) -> NBTUtils.getString(stack, BlazingFlaskItem.TAG_POSITION, "").isEmpty() ? 0 : 1);
         });
 
-        CuriosRendererRegistry.register(ItemRegistry.DROWNED_BELT.get(), DrownedBeltRenderer::new);
-        CuriosRendererRegistry.register(ItemRegistry.HUNTER_BELT.get(), HunterBeltRenderer::new);
-        CuriosRendererRegistry.register(ItemRegistry.LEATHER_BELT.get(), LeatherBeltRenderer::new);
-        CuriosRendererRegistry.register(ItemRegistry.HOLY_LOCKET.get(), HolyLocketRenderer::new);
-        CuriosRendererRegistry.register(ItemRegistry.REFLECTION_NECKLACE.get(), ReflectionNecklaceRenderer::new);
-        CuriosRendererRegistry.register(ItemRegistry.JELLYFISH_NECKLACE.get(), JellyfishNecklaceRenderer::new);
-        CuriosRendererRegistry.register(ItemRegistry.MIDNIGHT_ROBE.get(), MidnightRobeRenderer::new);
-        CuriosRendererRegistry.register(ItemRegistry.ARROW_QUIVER.get(), ArrowQuiverRenderer::new);
-        CuriosRendererRegistry.register(ItemRegistry.ELYTRA_BOOSTER.get(), ElytraBoosterRenderer::new);
+        for (Item item : ForgeRegistries.ITEMS.getValues()) {
+            if (!(item instanceof IRenderableCurio))
+                continue;
+
+            CuriosRendererRegistry.register(item, CurioRenderer::new);
+        }
     }
 
     @SubscribeEvent
     public static void registerLayers(final EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(DrownedBeltModel.LAYER, DrownedBeltModel::createLayer);
-        event.registerLayerDefinition(HunterBeltModel.LAYER, HunterBeltModel::createLayer);
-        event.registerLayerDefinition(LeatherBeltModel.LAYER, LeatherBeltModel::createLayer);
-        event.registerLayerDefinition(HolyLocketModel.LAYER, HolyLocketModel::createLayer);
-        event.registerLayerDefinition(ReflectionNecklaceModel.LAYER, ReflectionNecklaceModel::createLayer);
-        event.registerLayerDefinition(JellyfishNecklaceModel.LAYER, JellyfishNecklaceModel::createLayer);
-        event.registerLayerDefinition(MidnightRobeModel.LAYER, MidnightRobeModel::createLayer);
-        event.registerLayerDefinition(ArrowQuiverModel.LAYER, ArrowQuiverModel::createLayer);
-        event.registerLayerDefinition(ElytraBoosterModel.LAYER, ElytraBoosterModel::createLayer);
+        for (Item item : ForgeRegistries.ITEMS.getValues()) {
+            if (!(item instanceof IRenderableCurio renderable))
+                continue;
+
+            event.registerLayerDefinition(CurioModel.getLayerLocation(item), renderable::constructLayerDefinition);
+        }
     }
 
     @SubscribeEvent
