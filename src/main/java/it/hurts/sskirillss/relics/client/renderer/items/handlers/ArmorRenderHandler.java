@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.client.renderer.items.handlers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -90,9 +91,12 @@ public class ArmorRenderHandler {
         LazyOptional<ICuriosItemHandler> helper = CuriosApi.getCuriosHelper().getCuriosHandler(player);
 
         return helper.map(curios -> curios.getStacksHandler("feet").map(handler -> {
-            for (int i = 0; i < handler.getSlots(); i++)
-                if (!handler.getStacks().getStackInSlot(i).isEmpty() && handler.getRenders().get(i))
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack stack = handler.getStacks().getStackInSlot(i);
+
+                if (!stack.isEmpty() && stack.getItem() instanceof IRenderableCurio && handler.getRenders().get(i))
                     return true;
+            }
 
             return false;
         }).orElse(false)).orElse(false);
