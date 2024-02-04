@@ -105,6 +105,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public CurioModel getModel(ItemStack stack) {
         return new SidedCurioModel(this);
     }
