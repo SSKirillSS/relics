@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 
 import java.util.List;
 
@@ -40,7 +41,15 @@ public class ResearchingTableRenderer implements BlockEntityRenderer<Researching
         } else {
             matrixStack.translate(0.5F, 0.96F, 0.5F);
             matrixStack.scale(1.25F, 1.25F, 1.25F);
+        }
+
+        matrixStack.mulPose(tileEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getRotation());
+
+        if (items.contains(stack.getItem())) {
             matrixStack.mulPose(Axis.XN.rotationDegrees(90));
+        } else {
+            matrixStack.mulPose(Axis.ZN.rotationDegrees(180));
+            matrixStack.translate(-0.025F, -0.125F, 0F);
         }
 
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
