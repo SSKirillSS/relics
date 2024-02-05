@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
@@ -54,6 +55,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("vanish", RelicAbilityEntry.builder()
+                                .active(AbilityCastType.TOGGLEABLE)
                                 .requiredPoints(2)
                                 .stat("light", RelicAbilityStat.builder()
                                         .initialValue(1D, 2D)
@@ -195,7 +197,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
 
         double light = AbilityUtils.getAbilityValue(stack, "vanish", "light");
 
-        return !stack.isEmpty() && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
+        return !stack.isEmpty() && AbilityUtils.isAbilityTicking(stack, "vanish") && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
                 && world.getBrightness(LightLayer.BLOCK, position) + world.getBrightness(LightLayer.SKY, position) / 2D <= (world.isNight() ? light * 1.5D : light);
     }
 
