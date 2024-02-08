@@ -10,6 +10,9 @@ public class StatConfigData {
     private double minInitialValue;
     private double maxInitialValue;
 
+    private double minThresholdValue;
+    private double maxThresholdValue;
+
     private RelicAbilityStat.Operation upgradeOperation;
     private double upgradeModifier;
 }

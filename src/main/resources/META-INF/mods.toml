@@ -33,6 +33,6 @@ description = '''Just a mod about useful relics with unique mechanics ;)'''
 [[dependencies.${mod_id}]]
     modId = "octolib"
     mandatory = true
-    versionRange = "[0.1,)"
+    versionRange = "[0.2,)"
     ordering = "NONE"
     side = "BOTH"

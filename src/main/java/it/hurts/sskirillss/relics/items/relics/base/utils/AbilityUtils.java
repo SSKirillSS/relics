@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -159,8 +160,7 @@ public class AbilityUtils {
 
         Pair<Double, Double> threshold = data.getThresholdValue();
 
-        return threshold == null ? MathUtils.round(result, 5)
-                : MathUtils.round(Math.max(threshold.getKey(), Math.min(threshold.getValue(), result)), 5);
+        return MathUtils.round(Mth.clamp(result, threshold.getKey(), threshold.getValue()), 5);
     }
 
     public static double getAbilityValue(ItemStack stack, String ability, String stat) {

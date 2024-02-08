@@ -22,7 +22,7 @@ public class ConfigHelper {
     public static Map<RelicItem, Path> CACHE = new HashMap<>();
 
     public static OctoConfig getConfig(RelicItem relic) {
-        return ConfigStorage.CONFIGS.get(ConfigHelper.getPath(relic));
+        return ConfigStorage.get(getPath(relic));
     }
 
     public static Path getPath(RelicItem relic) {
@@ -62,7 +62,7 @@ public class ConfigHelper {
         if (config == null || !(config.getConstructor() instanceof RelicConfigData))
             return;
 
-        config.reload();
+        config.loadFromFile();
 
         RelicConfigData relicConfig = config.get("$", RelicConfigData.class);
 
@@ -100,6 +100,7 @@ public class ConfigHelper {
                     RelicAbilityStat statEntry = statMapEntry.getValue();
 
                     statEntry.setInitialValue(Pair.of(statConfig.getMinInitialValue(), statConfig.getMaxInitialValue()));
+                    statEntry.setThresholdValue(Pair.of(statConfig.getMinThresholdValue(), statConfig.getMaxThresholdValue()));
                     statEntry.setUpgradeModifier(Pair.of(statConfig.getUpgradeOperation(), statConfig.getUpgradeModifier()));
                 }
             }
@@ -145,6 +146,7 @@ public class ConfigHelper {
                     RelicAbilityStat statEntry = statMapEntry.getValue();
 
                     StatConfigData statConfig = new StatConfigData(statEntry.getInitialValue().getKey(), statEntry.getInitialValue().getValue(),
+                            statEntry.getThresholdValue().getKey(), statEntry.getThresholdValue().getValue(),
                             statEntry.getUpgradeModifier().getKey(), statEntry.getUpgradeModifier().getValue());
 
                     abilityConfig.getStats().put(statMapEntry.getKey(), statConfig);

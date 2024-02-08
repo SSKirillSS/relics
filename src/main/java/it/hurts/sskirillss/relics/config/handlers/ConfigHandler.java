@@ -16,6 +16,6 @@ public class ConfigHandler {
         if (!(constructor instanceof RelicConfigData config))
             return;
 
-        config.getRelic().appendConfig(event.getContext());
+        config.getRelic().appendConfig(event.getSchema());
     }
 }

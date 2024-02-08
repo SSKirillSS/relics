@@ -9,8 +9,11 @@ import java.util.function.Function;
 @Data
 @Builder
 public class RelicAbilityStat {
+    @Builder.Default
     private Pair<Operation, Double> upgradeModifier;
+    @Builder.Default
     private Pair<Double, Double> initialValue;
+    @Builder.Default
     private Pair<Double, Double> thresholdValue;
 
     @Builder.Default
@@ -27,6 +30,10 @@ public class RelicAbilityStat {
     }
 
     public static class RelicAbilityStatBuilder {
+        private Pair<Operation, Double> upgradeModifier = Pair.of(Operation.ADD, 0D);
+        private Pair<Double, Double> initialValue = Pair.of(0D, 0D);
+        private Pair<Double, Double> thresholdValue = Pair.of(Double.MIN_VALUE, Double.MAX_VALUE);
+
         public RelicAbilityStatBuilder initialValue(double min, double max) {
             initialValue = Pair.of(min, max);
 
