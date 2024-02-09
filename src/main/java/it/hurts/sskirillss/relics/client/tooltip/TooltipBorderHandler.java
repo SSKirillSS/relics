@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.client.tooltip;
 
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -68,7 +68,7 @@ public class TooltipBorderHandler {
     public static void onTooltipColorEvent(RenderTooltipEvent.Color event) {
         ItemStack stack = event.getItemStack();
 
-        if (!(stack.getItem() instanceof RelicItem))
+        if (!(stack.getItem() instanceof IRelicItem))
             return;
 
         Pair<String, String> colors = getBorderColors(stack);
@@ -83,7 +83,7 @@ public class TooltipBorderHandler {
 
     @Nullable
     public static Pair<String, String> getBorderColors(ItemStack stack) {
-//        if (!(stack.getItem() instanceof RelicItem relic))
+//        if (!(stack.getItem() instanceof IRelicItem relic))
 //            return null;
 //
 //        RelicDataNew data = relic.getNewData();

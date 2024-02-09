@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics.belt;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
@@ -12,8 +13,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -40,7 +39,7 @@ import java.util.List;
 
 public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("slots", RelicAbilityEntry.builder()
@@ -91,7 +90,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
             return;
 
         if (player.isEyeInFluid(FluidTags.WATER) && !player.onGround())
-            EntityUtils.applyAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), (float) AbilityUtils.getAbilityValue(stack, "anchor", "sinking"), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), (float) getAbilityValue(stack, "anchor", "sinking"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         else
             EntityUtils.removeAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
@@ -104,14 +103,14 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(AbilityUtils.getAbilityValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("talisman", (int) Math.round(getAbilityValue(stack, "slots", "talisman"))))
                 .build();
     }
 
     @Override
     public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(ForgeMod.SWIM_SPEED.get(), (float) -AbilityUtils.getAbilityValue(stack, "anchor", "slowness")))
+                .attribute(new RelicAttributeModifier.Modifier(ForgeMod.SWIM_SPEED.get(), (float) -getAbilityValue(stack, "anchor", "slowness")))
                 .build();
     }
 
@@ -142,10 +141,10 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get());
 
-            if (stack.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            event.setAmount((float) (event.getAmount() * AbilityUtils.getAbilityValue(stack, "pressure", "damage")));
+            event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "pressure", "damage")));
         }
 
         @SubscribeEvent
@@ -160,25 +159,26 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
 
         @SubscribeEvent
         public static void onItemUseFinish(LivingEntityUseItemEvent.Stop event) {
-            ItemStack stack = event.getItem();
+            ItemStack trident = event.getItem();
 
-            if (!(event.getEntity() instanceof Player player) || stack.getItem() != Items.TRIDENT)
+            if (!(event.getEntity() instanceof Player player) || trident.getItem() != Items.TRIDENT)
                 return;
 
-            ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get());
 
-            if (relic.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            int duration = stack.getItem().getUseDuration(stack) - event.getDuration();
-            int enchantment = EnchantmentHelper.getRiptide(stack);
+
+            int duration = trident.getItem().getUseDuration(trident) - event.getDuration();
+            int enchantment = EnchantmentHelper.getRiptide(trident);
 
             if (duration < 10 || enchantment <= 0)
                 return;
 
-            LevelingUtils.addExperience(player, relic, enchantment);
+            relic.addExperience(player, stack, enchantment);
 
-            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(AbilityUtils.getAbilityValue(relic, "riptide", "cooldown") * enchantment * 20));
+            player.getCooldowns().addCooldown(trident.getItem(), (int) Math.round(relic.getAbilityValue(stack, "riptide", "cooldown") * enchantment * 20));
         }
     }
 }

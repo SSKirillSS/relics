@@ -17,8 +17,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -59,7 +57,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
     public static final String TAG_SPEED = "speed";
 
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("boost", RelicAbilityEntry.builder()
@@ -94,7 +92,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
     }
 
     public int getBreathCapacity(ItemStack stack) {
-        return (int) Math.round(AbilityUtils.getAbilityValue(stack, "boost", "capacity"));
+        return (int) Math.round(getAbilityValue(stack, "boost", "capacity"));
     }
 
     @Override
@@ -109,7 +107,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
                 double speed = NBTUtils.getDouble(stack, TAG_SPEED, 1D);
 
                 if (player.tickCount % 3 == 0) {
-                    double maxSpeed = AbilityUtils.getAbilityValue(stack, "boost", "speed");
+                    double maxSpeed = getAbilityValue(stack, "boost", "speed");
 
                     if (speed < maxSpeed) {
                         speed = Math.min(maxSpeed, speed + ((maxSpeed - 1D) / 100D));
@@ -232,7 +230,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
 
         int left = sum > capacity ? time - (sum - capacity) : time;
 
-        LevelingUtils.addExperience(player, slotStack, (int) Math.floor(left / 10F));
+        booster.addExperience(player, slotStack, (int) Math.floor(left / 10F));
 
         ItemStack result = heldStack.getCraftingRemainingItem();
 

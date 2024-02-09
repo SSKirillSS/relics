@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -13,8 +14,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -51,7 +50,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
     private static final String TAG_TARGET = "target";
 
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("vanish", RelicAbilityEntry.builder()
@@ -99,7 +98,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         LivingEntity target = getTarget(serverLevel, stack);
 
         if (target != null) {
-            double radius = AbilityUtils.getAbilityValue(stack, "backstab", "distance");
+            double radius = getAbilityValue(stack, "backstab", "distance");
             double step = 0.25D;
             int offset = 16;
 
@@ -160,12 +159,12 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         if (!canHide(entity)) {
             EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(entity.position()) >= AbilityUtils.getAbilityValue(stack, "backstab", "distance")))
+            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(entity.position()) >= getAbilityValue(stack, "backstab", "distance")))
                 NBTUtils.clearTag(stack, TAG_TARGET);
         } else {
             entity.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
 
-            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, (float) AbilityUtils.getAbilityValue(stack, "vanish", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, (float) getAbilityValue(stack, "vanish", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         }
     }
 
@@ -192,12 +191,16 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
 
     private static boolean canHide(LivingEntity entity) {
         ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.MIDNIGHT_ROBE.get());
+
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return false;
+
         Level world = entity.getCommandSenderWorld();
         BlockPos position = entity.blockPosition().above();
 
-        double light = AbilityUtils.getAbilityValue(stack, "vanish", "light");
+        double light = relic.getAbilityValue(stack, "vanish", "light");
 
-        return !stack.isEmpty() && AbilityUtils.isAbilityTicking(stack, "vanish") && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
+        return relic.isAbilityTicking(stack, "vanish") && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
                 && world.getBrightness(LightLayer.BLOCK, position) + world.getBrightness(LightLayer.SKY, position) / 2D <= (world.isNight() ? light * 1.5D : light);
     }
 
@@ -256,13 +259,13 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.MIDNIGHT_ROBE.get());
 
-            if (stack.isEmpty() || !canHide(player) || player.position().distanceTo(new Vec3(target.getX(),
-                    player.getY(), target.getZ())) > AbilityUtils.getAbilityValue(stack, "backstab", "distance"))
+            if (!(stack.getItem() instanceof IRelicItem relic) || !canHide(player) || player.position().distanceTo(new Vec3(target.getX(),
+                    player.getY(), target.getZ())) > relic.getAbilityValue(stack, "backstab", "distance"))
                 return;
 
-            LevelingUtils.addExperience(player, stack, Math.round(event.getAmount() * 0.5F));
+            relic.addExperience(player, stack, Math.round(event.getAmount() * 0.5F));
 
-            event.setAmount((float) (event.getAmount() * AbilityUtils.getAbilityValue(stack, "backstab", "damage")));
+            event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "backstab", "damage")));
 
             NBTUtils.setString(stack, TAG_TARGET, target.getStringUUID());
         }

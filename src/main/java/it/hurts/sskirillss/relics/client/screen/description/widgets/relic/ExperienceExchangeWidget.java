@@ -10,9 +10,8 @@ import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParti
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.DataUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketExperienceExchange;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -46,7 +45,7 @@ public class ExperienceExchangeWidget extends AbstractDescriptionWidget implemen
 
     @Override
     public boolean isLocked() {
-        return !LevelingUtils.isExchangeAvailable(MC.player, screen.stack) || LevelingUtils.isMaxLevel(screen.stack);
+        return !(screen.stack.getItem() instanceof IRelicItem relic) || relic.isExchangeAvailable(MC.player, screen.stack) || relic.isMaxLevel(screen.stack);
     }
 
     @Override
@@ -135,7 +134,10 @@ public class ExperienceExchangeWidget extends AbstractDescriptionWidget implemen
 
     @Override
     public void onHovered(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        RelicData data = DataUtils.getRelicData(screen.stack.getItem());
+        if (!(screen.stack.getItem() instanceof IRelicItem relic))
+            return;
+
+        RelicData data = relic.getRelicData();
 
         if (data == null)
             return;
@@ -147,7 +149,7 @@ public class ExperienceExchangeWidget extends AbstractDescriptionWidget implemen
         int maxWidth = 100;
         int renderWidth = 0;
 
-        int cost = LevelingUtils.getExchangeCost(screen.stack);
+        int cost = relic.getExchangeCost(screen.stack);
 
         int experience = MC.player.totalExperience;
 
@@ -159,7 +161,7 @@ public class ExperienceExchangeWidget extends AbstractDescriptionWidget implemen
                 Component.literal(" ")
         );
 
-        if (LevelingUtils.isMaxLevel(screen.stack))
+        if (relic.isMaxLevel(screen.stack))
             entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.exchange.locked")));
         else
             entries.add(Component.translatable("tooltip.relics.relic.exchange.cost", cost,

@@ -6,8 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -36,10 +36,10 @@ public class RelicAbilityArgument implements ArgumentType<String> {
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         LocalPlayer player = Minecraft.getInstance().player;
 
-        if (player == null)
+        if (player == null || !(player.getMainHandItem().getItem() instanceof IRelicItem relic))
             return Suggestions.empty();
 
-        RelicAbilityData data = AbilityUtils.getRelicAbilityData(player.getMainHandItem().getItem());
+        RelicAbilityData data = relic.getRelicAbilityData();
 
         if (data == null)
             return Suggestions.empty();

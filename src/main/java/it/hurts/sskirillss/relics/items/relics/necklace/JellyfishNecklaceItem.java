@@ -14,8 +14,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.EntityModel;
@@ -44,7 +42,7 @@ import java.util.List;
 
 public class JellyfishNecklaceItem extends RelicItem implements IRenderableCurio {
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("unsinkable", RelicAbilityEntry.builder()
@@ -86,16 +84,16 @@ public class JellyfishNecklaceItem extends RelicItem implements IRenderableCurio
 
         Level level = player.getCommandSenderWorld();
 
-        if (!player.isSpectator() && AbilityUtils.isAbilityTicking(stack, "shock")) {
+        if (!player.isSpectator() && isAbilityTicking(stack, "shock")) {
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox())) {
                 if (entity == player)
                     continue;
 
-                if (EntityUtils.hurt(entity, level.damageSources().playerAttack(player), (float) AbilityUtils.getAbilityValue(stack, "shock", "damage"))) {
-                    LevelingUtils.addExperience(player, stack, 1);
+                if (EntityUtils.hurt(entity, level.damageSources().playerAttack(player), (float) getAbilityValue(stack, "shock", "damage"))) {
+                    addExperience(player, stack, 1);
 
-                    if (AbilityUtils.canUseAbility(stack, "paralysis"))
-                        entity.addEffect(new MobEffectInstance(EffectRegistry.PARALYSIS.get(), (int) Math.round(AbilityUtils.getAbilityValue(stack, "paralysis", "duration") * 20), 0));
+                    if (canUseAbility(stack, "paralysis"))
+                        entity.addEffect(new MobEffectInstance(EffectRegistry.PARALYSIS.get(), (int) Math.round(getAbilityValue(stack, "paralysis", "duration") * 20), 0));
                 }
             }
         }

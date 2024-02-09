@@ -13,13 +13,10 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.Abil
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityUpgradeButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.QualityUtils;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -79,7 +76,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
     @Override
     protected void init() {
-        if (!(stack.getItem() instanceof RelicItem))
+        if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
         TextureManager manager = MC.getTextureManager();
@@ -143,7 +140,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         stack = tile.getStack();
 
-        if (!(stack.getItem() instanceof RelicItem relic))
+        if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
         RelicData relicData = relic.getRelicData();
@@ -151,7 +148,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         if (relicData == null)
             return;
 
-        RelicAbilityEntry abilityData = AbilityUtils.getRelicAbilityEntry(relic, ability);
+        RelicAbilityEntry abilityData = relic.getRelicAbilityEntry(ability);
 
         if (abilityData == null)
             return;
@@ -224,10 +221,10 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-        int level = AbilityUtils.getAbilityPoints(stack, ability);
+        int level = relic.getAbilityPoints(stack, ability);
         int maxLevel = abilityData.getMaxLevel() == -1 ? (relicData.getLevelingData().getMaxLevel() / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
 
-        MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(relic).getPath() + ".ability." + ability);
+        MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability);
 
         if (!abilityData.getStats().isEmpty())
             name.append(Component.translatable("tooltip.relics.relic.ability.level", level, maxLevel == -1 ? "∞" : maxLevel));
@@ -245,20 +242,20 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         int yOff = 0;
         int xOff = 0;
 
-        boolean isLocked = !AbilityUtils.canUseAbility(stack, ability);
+        boolean isLocked = !relic.canUseAbility(stack, ability);
 
         boolean isHoveredUpgrade = !isLocked && upgradeButton.isHovered();
         boolean isHoveredReroll = !isLocked && rerollButton.isHovered();
         boolean isHoveredReset = !isLocked && resetButton.isHovered();
 
-        for (String stat : AbilityUtils.getAbilityInitialValues(stack, ability).keySet()) {
-            RelicAbilityStat statData = AbilityUtils.getRelicAbilityStat(relic, ability, stat);
+        for (String stat : relic.getAbilityInitialValues(stack, ability).keySet()) {
+            RelicAbilityStat statData = relic.getRelicAbilityStat(ability, stat);
 
             if (statData != null) {
-                MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(AbilityUtils.getAbilityValue(stack, ability, stat))));
+                MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat))));
 
                 if (isHoveredUpgrade && level < maxLevel) {
-                    cost.append(" ➠ " + statData.getFormatValue().apply(AbilityUtils.getAbilityValue(stack, ability, stat, level + 1)));
+                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat, level + 1)));
                 }
 
                 if (isHoveredReroll) {
@@ -266,7 +263,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
                 }
 
                 if (isHoveredReset && level > 0) {
-                    cost.append(" ➠ " + statData.getFormatValue().apply(AbilityUtils.getAbilityValue(stack, ability, stat, 0)));
+                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat, 0)));
                 }
 
                 pPoseStack.pushPose();
@@ -291,7 +288,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
                 manager.bindForSetup(TEXTURE);
 
-                for (int i = 1; i < QualityUtils.getStatQuality(stack, ability, stat) + 1; i++) {
+                for (int i = 1; i < relic.getStatQuality(stack, ability, stat) + 1; i++) {
                     boolean isAliquot = i % 2 == 1;
 
                     guiGraphics.blit(TEXTURE, x + xOff + 202, y + yOff + 102, (isLocked ? 407 : 398) + (isAliquot ? 0 : 2), 10, isAliquot ? 2 : 3, 4, 512, 512);
@@ -328,7 +325,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         else
             guiGraphics.blit(TEXTURE, x + 13, y + 7, 302, 0, 46, 69, texWidth, texHeight);
 
-        for (int i = 1; i < QualityUtils.getAbilityQuality(stack, ability) + 1; i++) {
+        for (int i = 1; i < relic.getAbilityQuality(stack, ability) + 1; i++) {
             boolean isAliquot = i % 2 == 1;
 
             guiGraphics.blit(TEXTURE, x + 15 + xOff, y + 63, (isLocked ? 407 : 397) + (isAliquot ? 0 : 5), 0, isAliquot ? 5 : 4, 9, texWidth, texHeight);
@@ -336,7 +333,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             xOff += isAliquot ? 5 : 3;
         }
 
-        int points = LevelingUtils.getPoints(stack);
+        int points = relic.getPoints(stack);
 
         if (points > 0) {
             pPoseStack.pushPose();

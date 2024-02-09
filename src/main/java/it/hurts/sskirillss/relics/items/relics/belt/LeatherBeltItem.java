@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
@@ -12,8 +13,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.HumanoidModel;
@@ -32,7 +31,7 @@ import java.util.List;
 @Mod.EventBusSubscriber
 public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("slots", RelicAbilityEntry.builder()
@@ -54,25 +53,25 @@ public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(AbilityUtils.getAbilityValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("talisman", (int) Math.round(getAbilityValue(stack, "slots", "talisman"))))
                 .build();
     }
 
     @SubscribeEvent
     public static void onExperienceAdded(ExperienceAddEvent event) {
         Player player = event.getEntity();
-        ItemStack relic = event.getStack();
+        ItemStack sourceStack = event.getStack();
 
-        if (player == null || relic.getItem() == ItemRegistry.LEATHER_BELT.get())
+        if (player == null || sourceStack.getItem() == ItemRegistry.LEATHER_BELT.get())
             return;
 
-        if (relic.getTags().map(tag -> tag.location().getPath()).anyMatch(tag -> tag.equals("talisman"))) {
+        if (sourceStack.getTags().map(tag -> tag.location().getPath()).anyMatch(tag -> tag.equals("talisman"))) {
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.LEATHER_BELT.get());
 
-            if (stack.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            LevelingUtils.addExperience(player, stack, 1);
+            relic.addExperience(player, stack, 1);
         }
     }
 

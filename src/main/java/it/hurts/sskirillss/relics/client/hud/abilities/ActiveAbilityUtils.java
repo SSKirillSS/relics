@@ -1,11 +1,9 @@
 package it.hurts.sskirillss.relics.client.hud.abilities;
 
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.DataUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -26,7 +24,7 @@ public class ActiveAbilityUtils {
             for (int slot = 0; slot < handler.getSlots(); slot++) {
                 ItemStack stack = handler.getStackInSlot(slot);
 
-                if (!(stack.getItem() instanceof RelicItem))
+                if (!(stack.getItem() instanceof IRelicItem relic))
                     continue;
 
                 List<String> abilities = getRelicActiveAbilities(stack);
@@ -35,7 +33,7 @@ public class ActiveAbilityUtils {
                     continue;
 
                 for (String ability : abilities) {
-                    if (AbilityUtils.canUseAbility(stack, ability))
+                    if (relic.canUseAbility(stack, ability))
                         entries.add(new AbilitiesRenderHandler.AbilityEntry(slot, ability));
                 }
             }
@@ -45,9 +43,12 @@ public class ActiveAbilityUtils {
     }
 
     public static List<String> getRelicActiveAbilities(ItemStack stack) {
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return new ArrayList<>();
+
         List<String> abilities = new ArrayList<>();
 
-        RelicAbilityData abilityData = DataUtils.getRelicAbilityData(stack.getItem());
+        RelicAbilityData abilityData = relic.getRelicAbilityData();
 
         if (abilityData == null)
             return abilities;

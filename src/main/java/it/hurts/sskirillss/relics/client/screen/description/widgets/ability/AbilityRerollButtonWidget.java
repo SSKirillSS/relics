@@ -11,8 +11,8 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.base.Abstrac
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -45,7 +45,7 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
 
     @Override
     public boolean isLocked() {
-        return !AbilityUtils.mayPlayerReroll(MC.player, screen.stack, ability);
+        return !(screen.stack.getItem() instanceof IRelicItem relic) || !relic.mayPlayerReroll(MC.player, screen.stack, ability);
     }
 
     @Override
@@ -97,10 +97,10 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
 
     @Override
     public void onHovered(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (!AbilityUtils.canUseAbility(screen.stack, ability))
+        if (!(screen.stack.getItem() instanceof IRelicItem relic) || !relic.canUseAbility(screen.stack, ability))
             return;
 
-        RelicAbilityEntry data = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
+        RelicAbilityEntry data = relic.getRelicAbilityEntry(ability);
 
         if (data.getStats().isEmpty())
             return;
@@ -112,7 +112,7 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
         int maxWidth = 100;
         int renderWidth = 0;
 
-        int requiredExperience = AbilityUtils.getRerollRequiredExperience(screen.stack, ability);
+        int requiredExperience = relic.getRerollRequiredExperience(ability);
 
         int experience = MC.player.totalExperience;
 

@@ -1,11 +1,10 @@
 package it.hurts.sskirillss.relics.mixin;
 
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +23,7 @@ public abstract class MixinItemStack {
         ItemStack stack = (ItemStack) (Object) this;
         Item item = stack.getItem();
 
-        if (!(item instanceof RelicItem relic))
+        if (!(item instanceof IRelicItem relic))
             return;
 
         RelicData data = relic.getRelicData();
@@ -40,11 +39,11 @@ public abstract class MixinItemStack {
         for (Map.Entry<String, RelicAbilityEntry> entry : abilities.getAbilities().entrySet()) {
             String id = entry.getKey();
 
-            AbilityUtils.randomizeStats(stack, id);
-            AbilityUtils.setAbilityPoints(stack, id, 0);
+            relic.randomizeStats(stack, id);
+            relic.setAbilityPoints(stack, id, 0);
 
             if (entry.getValue().getCastData().getKey() == AbilityCastType.TOGGLEABLE)
-                AbilityUtils.setAbilityTicking(stack, id, true);
+                relic.setAbilityTicking(stack, id, true);
         }
     }
 }

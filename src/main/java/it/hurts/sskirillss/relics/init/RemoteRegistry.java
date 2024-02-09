@@ -12,9 +12,10 @@ import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
 import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
+import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
 import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.feet.AquaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.MagmaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.RollerSkatesItem;
@@ -78,7 +79,7 @@ public class RemoteRegistry {
             ItemProperties.register(ItemRegistry.MAGMA_WALKER.get(), new ResourceLocation(Reference.MODID, "heat"),
                     (stack, world, entity, id) -> {
                         int heat = NBTUtils.getInt(stack, MagmaWalkerItem.TAG_HEAT, 0);
-                        int maxHeat = (int) Math.round(AbilityUtils.getAbilityValue(stack, "pace", "heat"));
+                        int maxHeat = (int) Math.round(((IRelicItem) stack.getItem()).getAbilityValue(stack, "pace", "heat"));
 
                         return heat > maxHeat ? 4 : (int) Math.floor(heat / (maxHeat / 4F));
                     });
@@ -86,11 +87,11 @@ public class RemoteRegistry {
                     (stack, world, entity, id) -> {
                         int drench = NBTUtils.getInt(stack, AquaWalkerItem.TAG_DRENCH, 0);
 
-                        return (int) Math.floor(drench / (AbilityUtils.getAbilityValue(stack, "walking", "time") / 4F));
+                        return (int) Math.floor(drench / (((IRelicItem) stack.getItem()).getAbilityValue(stack, "walking", "time") / 4F));
                     });
             ItemProperties.register(ItemRegistry.ARROW_QUIVER.get(), new ResourceLocation(Reference.MODID, "fullness"),
                     (stack, world, entity, id) -> {
-                        int maxAmount = getSlotsAmount(stack);
+                        int maxAmount = ((ArrowQuiverItem) stack.getItem()).getSlotsAmount(stack);
                         int amount = getArrows(stack).size();
 
                         return amount > 0 ? (int) Math.floor(amount / (maxAmount / 2F)) + 1 : 0;
@@ -101,7 +102,7 @@ public class RemoteRegistry {
                     (stack, world, entity, id) -> {
                         ItemStack relic = EntityUtils.findEquippedCurio(entity, ItemRegistry.WOOL_MITTEN.get());
 
-                        return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (AbilityUtils.getAbilityValue(relic, "mold", "size") / 3F));
+                        return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (((IRelicItem) stack.getItem()).getAbilityValue(relic, "mold", "size") / 3F));
                     });
             ItemProperties.register(ItemRegistry.ROLLER_SKATES.get(), new ResourceLocation(Reference.MODID, "active"),
                     (stack, world, entity, id) -> NBTUtils.getInt(stack, RollerSkatesItem.TAG_SKATING_DURATION, 0) > 0 ? 1 : 0);

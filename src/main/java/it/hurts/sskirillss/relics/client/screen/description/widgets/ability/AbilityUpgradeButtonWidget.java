@@ -11,9 +11,8 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.base.Abstrac
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -46,14 +45,14 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
     @Override
     public boolean isLocked() {
-        return !AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability);
+        return !(screen.stack.getItem() instanceof IRelicItem relic) || !relic.mayPlayerUpgrade(MC.player, screen.stack, ability);
     }
 
     @Override
     public void playDownSound(SoundManager handler) {
-        if (!isLocked()) {
-            int level = AbilityUtils.getAbilityPoints(screen.stack, ability);
-            int maxLevel = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability).getMaxLevel();
+        if (screen.stack.getItem() instanceof IRelicItem relic && !isLocked()) {
+            int level = relic.getAbilityPoints(screen.stack, ability);
+            int maxLevel = relic.getRelicAbilityEntry(ability).getMaxLevel();
 
             handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_UPGRADE.get(), 1F + ((float) level / maxLevel)));
         }
@@ -114,10 +113,10 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
     @Override
     public void onHovered(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (!AbilityUtils.canUseAbility(screen.stack, ability))
+        if (!(screen.stack.getItem() instanceof IRelicItem relic) || !relic.canUseAbility(screen.stack, ability))
             return;
 
-        RelicAbilityEntry data = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
+        RelicAbilityEntry data = relic.getRelicAbilityEntry(ability);
 
         if (data.getStats().isEmpty())
             return;
@@ -130,9 +129,9 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
         int renderWidth = 0;
 
         int requiredPoints = data.getRequiredPoints();
-        int requiredExperience = AbilityUtils.getUpgradeRequiredExperience(screen.stack, ability);
+        int requiredExperience = relic.getUpgradeRequiredExperience(screen.stack, ability);
 
-        int points = LevelingUtils.getPoints(screen.stack);
+        int points = relic.getPoints(screen.stack);
         int experience = MC.player.totalExperience;
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
@@ -142,7 +141,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
                 Component.translatable("tooltip.relics.relic.upgrade.description").withStyle(ChatFormatting.BOLD),
                 Component.literal(" "));
 
-        if (!AbilityUtils.isAbilityMaxLevel(screen.stack, ability))
+        if (!relic.isAbilityMaxLevel(screen.stack, ability))
             entries.add(Component.translatable("tooltip.relics.relic.upgrade.cost", requiredPoints,
                     (requiredPoints > points ? negativeStatus : positiveStatus), requiredExperience,
                     (requiredExperience > experience ? negativeStatus : positiveStatus)));

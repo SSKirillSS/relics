@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.config;
 import it.hurts.sskirillss.octolib.config.data.OctoConfig;
 import it.hurts.sskirillss.octolib.config.storage.ConfigStorage;
 import it.hurts.sskirillss.relics.config.data.*;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -19,17 +20,18 @@ import java.util.List;
 import java.util.Map;
 
 public class ConfigHelper {
-    public static Map<RelicItem, Path> CACHE = new HashMap<>();
+    public static Map<IRelicItem, Path> CACHE = new HashMap<>();
 
-    public static OctoConfig getConfig(RelicItem relic) {
+    public static OctoConfig getRelicConfig(IRelicItem relic) {
         return ConfigStorage.get(getPath(relic));
     }
 
-    public static Path getPath(RelicItem relic) {
+    public static Path getPath(IRelicItem relic) {
         if (ConfigHelper.CACHE.containsKey(relic))
             return ConfigHelper.CACHE.get(relic);
 
-        Path path = FMLPaths.CONFIGDIR.get().resolve("relics").resolve(ForgeRegistries.ITEMS.getKey(relic).getPath() + ".json");
+        // TODO: Split addon configs into separated dir
+        Path path = FMLPaths.CONFIGDIR.get().resolve("relics").resolve(ForgeRegistries.ITEMS.getKey(relic.getItem()).getPath() + ".json");
 
         ConfigHelper.CACHE.put(relic, path);
 
@@ -42,22 +44,22 @@ public class ConfigHelper {
     }
 
     public static void readConfigs() {
-        List<RelicItem> relics = ForgeRegistries.ITEMS.getValues().stream().filter(entry -> entry instanceof RelicItem).map(entry -> (RelicItem) entry).toList();
+        List<IRelicItem> relics = ForgeRegistries.ITEMS.getValues().stream().filter(entry -> entry instanceof IRelicItem).map(entry -> (IRelicItem) entry).toList();
 
         if (relics.isEmpty())
             return;
 
-        for (RelicItem relic : relics)
+        for (IRelicItem relic : relics)
             readRelicConfig(relic);
     }
 
-    private static void readRelicConfig(RelicItem relic) {
+    private static void readRelicConfig(IRelicItem relic) {
         RelicData relicData = relic.getRelicData();
 
         if (relicData == null)
             return;
 
-        OctoConfig config = getConfig(relic);
+        OctoConfig config = getRelicConfig(relic);
 
         if (config == null || !(config.getConstructor() instanceof RelicConfigData))
             return;
@@ -110,7 +112,7 @@ public class ConfigHelper {
     }
 
     public static void constructConfigs() {
-        List<RelicItem> relics = ForgeRegistries.ITEMS.getValues().stream().filter(entry -> entry instanceof RelicItem).map(entry -> (RelicItem) entry).toList();
+        List<RelicItem> relics = ForgeRegistries.ITEMS.getValues().stream().filter(entry -> entry instanceof IRelicItem).map(entry -> (RelicItem) entry).toList();
 
         if (relics.isEmpty())
             return;

@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics.belt;
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
@@ -11,8 +12,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -33,7 +32,7 @@ import java.util.List;
 
 public class HunterBeltItem extends RelicItem implements IRenderableCurio {
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("slots", RelicAbilityEntry.builder()
@@ -62,7 +61,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(AbilityUtils.getAbilityValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("talisman", (int) Math.round(getAbilityValue(stack, "slots", "talisman"))))
                 .build();
     }
 
@@ -95,12 +94,12 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HUNTER_BELT.get());
 
-            if (stack.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            LevelingUtils.addExperience(player, stack, 1);
+            relic.addExperience(player, stack, 1);
 
-            event.setAmount((float) (event.getAmount() * AbilityUtils.getAbilityValue(stack, "training", "damage")));
+            event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "training", "damage")));
         }
     }
 }

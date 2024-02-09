@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -24,8 +25,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
@@ -90,7 +89,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
     private static final String TAG_ARROWS = "arrows";
 
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("receptacle", RelicAbilityEntry.builder()
@@ -209,12 +208,12 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
             Vec3 target = ray.getLocation();
 
-            int duration = (int) Math.round(AbilityUtils.getAbilityValue(stack, "rain", "duration") * 20);
+            int duration = (int) Math.round(getAbilityValue(stack, "rain", "duration") * 20);
 
             ArrowRainEntity rain = new ArrowRainEntity(EntityRegistry.ARROW_RAIN.get(), level);
 
-            rain.setDelay((int) Math.round(AbilityUtils.getAbilityValue(stack, "rain", "delay") * 20));
-            rain.setRadius((float) AbilityUtils.getAbilityValue(stack, "rain", "radius"));
+            rain.setDelay((int) Math.round(getAbilityValue(stack, "rain", "delay") * 20));
+            rain.setRadius((float) getAbilityValue(stack, "rain", "radius"));
             rain.setQuiver(stack.copy());
             rain.setDuration(duration);
             rain.setOwner(player);
@@ -222,7 +221,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
             level.addFreshEntity(rain);
 
-            AbilityUtils.setAbilityCooldown(stack, "rain", duration);
+            setAbilityCooldown(stack, "rain", duration);
         }
 
         if (ability.equals("leap")) {
@@ -249,7 +248,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
                     NBTUtils.setInt(stack, TAG_LEAP, 0);
 
-                    AbilityUtils.setAbilityCooldown(stack, "leap", (int) Math.round(AbilityUtils.getAbilityValue(stack, "leap", "cooldown") * 20));
+                    setAbilityCooldown(stack, "leap", (int) Math.round(getAbilityValue(stack, "leap", "cooldown") * 20));
 
                     level.playSound(null, player.blockPosition(), SoundRegistry.LEAP.get(), SoundSource.MASTER, 1F, 1F + random.nextFloat() * 0.5F);
                 }
@@ -273,7 +272,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
             Vec3 target = ray.getLocation();
 
             ParticleUtils.createCyl(new CircleTintData(new Color(255, 255, 255), 0.2F, 0, 1F, false),
-                    target, level, AbilityUtils.getAbilityValue(stack, "rain", "radius"), 0.2F);
+                    target, level, getAbilityValue(stack, "rain", "radius"), 0.2F);
         }
     }
 
@@ -284,7 +283,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
         Level level = player.level();
 
-        if (AbilityUtils.canUseAbility(stack, "leap")) {
+        if (canUseAbility(stack, "leap")) {
             int leap = NBTUtils.getInt(stack, TAG_LEAP, -1);
 
             if (leap >= 0) {
@@ -297,7 +296,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
                     if (leap >= 5 && (player.onGround() || player.getAbilities().flying
                             || player.isFallFlying() || player.isInWater() || player.isInLava()
-                            || leap >= AbilityUtils.getAbilityValue(stack, "leap", "duration") * 20)) {
+                            || leap >= getAbilityValue(stack, "leap", "duration") * 20)) {
                         NBTUtils.clearTag(stack, TAG_LEAP);
                     }
                 }
@@ -308,7 +307,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
             }
         }
 
-        if (AbilityUtils.canUseAbility(stack, "agility")) {
+        if (canUseAbility(stack, "agility")) {
             if (player.isUsingItem() && player.getMainHandItem().getItem() instanceof BowItem) {
                 for (int i = 0; i < 1; i++)
                     player.updatingUsingItem();
@@ -316,8 +315,8 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
         }
     }
 
-    public static int getSlotsAmount(ItemStack stack) {
-        return (int) Math.round(AbilityUtils.getAbilityValue(stack, "receptacle", "slots"));
+    public int getSlotsAmount(ItemStack stack) {
+        return (int) Math.round(getAbilityValue(stack, "receptacle", "slots"));
     }
 
     @Override
@@ -334,7 +333,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                 .collect(Collectors.toList());
     }
 
-    public static int insertStack(ItemStack stack, ItemStack arrow) {
+    public int insertStack(ItemStack stack, ItemStack arrow) {
         if (!arrow.getItem().canFitInsideContainerItems())
             return 0;
 
@@ -577,14 +576,14 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
             ItemStack slotStack = event.getSlotStack();
 
             if (slotStack.getItem() != ItemRegistry.ARROW_QUIVER.get()
-                    || !AbilityUtils.canUseAbility(slotStack, "receptacle"))
+                    || !((IRelicItem) slotStack.getItem()).canUseAbility(slotStack, "receptacle"))
                 return;
 
             if (event.getAction() == ClickAction.PRIMARY) {
                 if (!(heldStack.getItem() instanceof ArrowItem))
                     return;
 
-                int amount = insertStack(slotStack, heldStack);
+                int amount = ((ArrowQuiverItem) slotStack.getItem()).insertStack(slotStack, heldStack);
 
                 if (amount <= 0)
                     return;
@@ -611,13 +610,13 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
         @SubscribeEvent
         public static void onArrowLoose(ArrowLooseEvent event) {
             Player player = event.getEntity();
-            ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-            if (relic.isEmpty() || !AbilityUtils.canUseAbility(relic, "receptacle")
-                    || getArrows(relic).isEmpty() || player.isCreative())
+            if (stack.isEmpty() || !((IRelicItem) stack.getItem()).canUseAbility(stack, "receptacle")
+                    || getArrows(stack).isEmpty() || player.isCreative())
                 return;
 
-            takeArrow(relic);
+            takeArrow(stack);
         }
 
         @SubscribeEvent
@@ -630,12 +629,12 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
             if (!(weapon.getItem() instanceof BowItem) || (weapon.getItem() instanceof CrossbowItem))
                 return;
 
-            ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-            if (relic.isEmpty() || !AbilityUtils.canUseAbility(relic, "receptacle"))
+            if (stack.isEmpty() || !((IRelicItem) stack.getItem()).canUseAbility(stack, "receptacle"))
                 return;
 
-            List<ItemStack> arrows = getArrows(relic);
+            List<ItemStack> arrows = getArrows(stack);
 
             if (!arrows.isEmpty())
                 event.setProjectileItemStack(arrows.get(0));
@@ -649,19 +648,19 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-            if (stack.isEmpty())
+            if (stack.isEmpty() || !(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            if (AbilityUtils.canUseAbility(stack, "receptacle")) {
+            if (relic.canUseAbility(stack, "receptacle")) {
                 int amount = (int) Math.min(10, Math.round(player.position().distanceTo(new Vec3(arrow.getX(), player.getY(), arrow.getZ())) * 0.1));
 
                 if (amount > 0)
-                    LevelingUtils.addExperience(player, stack, amount);
+                    relic.addExperience(player, stack, amount);
             }
 
-            if (AbilityUtils.canUseAbility(stack, "leap")) {
+            if (relic.canUseAbility(stack, "leap")) {
                 if (arrow.getPersistentData().contains("arrow_quiver_multiplier"))
-                    event.setAmount((float) (event.getAmount() + (event.getAmount() * AbilityUtils.getAbilityValue(stack, "leap", "multiplier"))));
+                    event.setAmount((float) (event.getAmount() + (event.getAmount() * relic.getAbilityValue(stack, "leap", "multiplier"))));
             }
         }
 
@@ -676,7 +675,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-            if (stack.isEmpty() || !AbilityUtils.canUseAbility(stack, "leap")
+            if (stack.isEmpty() || !((IRelicItem) stack.getItem()).canUseAbility(stack, "leap")
                     || NBTUtils.getInt(stack, TAG_LEAP, -1) < 0)
                 return;
 
@@ -708,7 +707,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ARROW_QUIVER.get());
 
-            if (stack.isEmpty() || !AbilityUtils.canUseAbility(stack, "leap"))
+            if (stack.isEmpty() || !((IRelicItem) stack.getItem()).canUseAbility(stack, "leap"))
                 return;
 
             CompoundTag data = arrow.getPersistentData();

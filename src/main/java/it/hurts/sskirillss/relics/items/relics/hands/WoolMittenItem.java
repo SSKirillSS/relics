@@ -3,13 +3,13 @@ package it.hurts.sskirillss.relics.items.relics.hands;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -31,7 +31,7 @@ import java.util.Optional;
 
 public class WoolMittenItem extends RelicItem {
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("mold", RelicAbilityEntry.builder()
@@ -70,9 +70,9 @@ public class WoolMittenItem extends RelicItem {
         public static void onBlockClick(PlayerInteractEvent.RightClickBlock event) {
             Player player = event.getEntity();
 
-            ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.WOOL_MITTEN.get());
+            ItemStack relicStack = EntityUtils.findEquippedCurio(player, ItemRegistry.WOOL_MITTEN.get());
 
-            if (!player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty() || relic.isEmpty())
+            if (!player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty() || !(relicStack.getItem() instanceof IRelicItem relic))
                 return;
 
             Level level = player.level();
@@ -87,7 +87,7 @@ public class WoolMittenItem extends RelicItem {
 
             Inventory inventory = player.getInventory();
 
-            int size = (int) Math.round(AbilityUtils.getAbilityValue(relic, "mold", "size"));
+            int size = (int) Math.round(relic.getAbilityValue(relicStack, "mold", "size"));
 
             Optional<Integer> slot = EntityUtils.getSlotsWithItem(player, ItemRegistry.SOLID_SNOWBALL.get()).stream()
                     .filter(id -> NBTUtils.getInt(inventory.getItem(id), SolidSnowballItem.TAG_SNOW, 0) < size)

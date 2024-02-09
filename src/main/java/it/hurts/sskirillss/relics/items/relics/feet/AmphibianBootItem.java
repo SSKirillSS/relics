@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.models.items.SidedCurioModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -15,8 +16,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.utils.RelicStyle;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -51,7 +50,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
     private static final String TAG_SLIPPING_DURATION = "slipping_duration";
 
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("swimming", RelicAbilityEntry.builder()
@@ -103,9 +102,9 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
         if (player.isSwimming()) {
             if (player.tickCount % 20 == 0)
-                LevelingUtils.addExperience(player, stack, 1);
+                addExperience(player, stack, 1);
 
-            if (swimmingDuration < AbilityUtils.getAbilityValue(stack, "swimming", "duration"))
+            if (swimmingDuration < getAbilityValue(stack, "swimming", "duration"))
                 NBTUtils.setInt(stack, TAG_SWIMMING_DURATION, swimmingDuration + 1);
         } else if (swimmingDuration > 0)
             NBTUtils.setInt(stack, TAG_SWIMMING_DURATION, --swimmingDuration);
@@ -113,15 +112,15 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
         EntityUtils.removeAttribute(player, stack, ForgeMod.SWIM_SPEED.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         if (swimmingDuration > 0)
-            EntityUtils.applyAttribute(player, stack, ForgeMod.SWIM_SPEED.get(), (float) (swimmingDuration * AbilityUtils.getAbilityValue(stack, "swimming", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.SWIM_SPEED.get(), (float) (swimmingDuration * getAbilityValue(stack, "swimming", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         int slippingDuration = NBTUtils.getInt(stack, TAG_SLIPPING_DURATION, 0);
 
         if (player.isSprinting() && player.level().isRainingAt(player.blockPosition()) && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
             if (player.tickCount % 20 == 0)
-                LevelingUtils.addExperience(player, stack, 1);
+                addExperience(player, stack, 1);
 
-            if (slippingDuration < AbilityUtils.getAbilityValue(stack, "slipping", "duration") && player.tickCount % 4 == 0)
+            if (slippingDuration < getAbilityValue(stack, "slipping", "duration") && player.tickCount % 4 == 0)
                 NBTUtils.setInt(stack, TAG_SLIPPING_DURATION, slippingDuration + 1);
         } else if (slippingDuration > 0)
             NBTUtils.setInt(stack, TAG_SLIPPING_DURATION, --slippingDuration);
@@ -129,7 +128,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
         EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         if (slippingDuration > 0) {
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (slippingDuration * AbilityUtils.getAbilityValue(stack, "slipping", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (slippingDuration * getAbilityValue(stack, "slipping", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
             EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
             EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
@@ -219,10 +218,10 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
             ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.AMPHIBIAN_BOOT.get());
 
-            if (stack.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            double chance = AbilityUtils.getAbilityValue(stack, "gills", "chance");
+            double chance = relic.getAbilityValue(stack, "gills", "chance");
 
             if (event.getConsumeAirAmount() > 0 && entity.getRandom().nextDouble() <= chance)
                 event.setConsumeAirAmount(0);

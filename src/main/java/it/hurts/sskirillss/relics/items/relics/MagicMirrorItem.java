@@ -9,8 +9,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.BlockPos;
@@ -44,7 +42,7 @@ import java.awt.*;
 
 public class MagicMirrorItem extends RelicItem {
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("teleport", RelicAbilityEntry.builder()
@@ -99,13 +97,13 @@ public class MagicMirrorItem extends RelicItem {
 
         Vec3 pos = data.getRight();
 
-        LevelingUtils.addExperience(player, stack, (int) (1 + (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
+        addExperience(player, stack, (int) (1 + (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
                 * DimensionType.getTeleportationScale(player.level().dimensionType(), data.getLeft().dimensionType()))) / 50)));
 
         player.teleportTo(data.getLeft(), pos.x() + 0.5F, pos.y() + 1.0F, pos.z() + 0.5F, player.getYRot(), player.getXRot());
 
         if (!player.isCreative())
-            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(AbilityUtils.getAbilityValue(stack, "teleport", "cooldown") * 20));
+            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getAbilityValue(stack, "teleport", "cooldown") * 20));
 
         world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
@@ -196,7 +194,7 @@ public class MagicMirrorItem extends RelicItem {
         ServerLevel level = data.getLeft();
 
         return !(player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.level().dimensionType(),
-                level.dimensionType()) > AbilityUtils.getAbilityValue(stack, "teleport", "distance"));
+                level.dimensionType()) > getAbilityValue(stack, "teleport", "distance"));
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)

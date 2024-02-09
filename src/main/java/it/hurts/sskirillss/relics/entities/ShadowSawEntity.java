@@ -4,7 +4,7 @@ import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import lombok.Getter;
@@ -48,7 +48,7 @@ public class ShadowSawEntity extends ThrowableProjectile {
     public void tick() {
         this.move(MoverType.SELF, this.getDeltaMovement());
 
-        if (level().isClientSide())
+        if (level().isClientSide() || !(stack.getItem() instanceof IRelicItem relic))
             return;
 
         if (this.tickCount >= 1200)
@@ -86,7 +86,7 @@ public class ShadowSawEntity extends ThrowableProjectile {
                 this.setDeltaMovement(this.getDeltaMovement().add(0F, -0.05F, 0F));
         }
 
-        float damage = (float) Math.max(AbilityUtils.getAbilityValue(stack, "saw", "damage"), 0.1D);
+        float damage = (float) Math.max(relic.getAbilityValue(stack, "saw", "damage"), 0.1D);
 
         for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
             boolean mayContinue = false;
@@ -100,7 +100,7 @@ public class ShadowSawEntity extends ThrowableProjectile {
             }
 
             if (mayContinue)
-                entity.invulnerableTime = (int) Math.round(AbilityUtils.getAbilityValue(stack, "saw", "speed"));
+                entity.invulnerableTime = (int) Math.round(relic.getAbilityValue(stack, "saw", "speed"));
         }
 
         ServerLevel serverLevel = (ServerLevel) level();

@@ -7,8 +7,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -30,7 +28,7 @@ public class IceSkatesItem extends RelicItem {
     private static final String TAG_SKATING_DURATION = "duration";
 
     @Override
-    public RelicData constructRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("skating", RelicAbilityEntry.builder()
@@ -71,12 +69,12 @@ public class IceSkatesItem extends RelicItem {
 
         int duration = NBTUtils.getInt(stack, TAG_SKATING_DURATION, 0);
 
-        int maxDuration = (int) Math.round(AbilityUtils.getAbilityValue(stack, "skating", "duration"));
+        int maxDuration = (int) Math.round(getAbilityValue(stack, "skating", "duration"));
 
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()
                 && (pos != null && level.getBlockState(pos).is(BlockTags.ICE))) {
             if (player.tickCount % 20 == 0)
-                LevelingUtils.addExperience(player, stack, 1);
+                addExperience(player, stack, 1);
 
             if (duration < maxDuration && player.tickCount % 2 == 0) {
                 NBTUtils.setInt(stack, TAG_SKATING_DURATION, ++duration);
@@ -88,12 +86,12 @@ public class IceSkatesItem extends RelicItem {
         } else if (duration > 0)
             NBTUtils.setInt(stack, TAG_SKATING_DURATION, Math.max(0, duration - 2));
 
-        if (AbilityUtils.canUseAbility(stack, "ram") && duration >= 10) {
+        if (canUseAbility(stack, "ram") && duration >= 10) {
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox())) {
                 if (entity == player || entity.hurtTime > 0)
                     continue;
 
-                EntityUtils.hurt(entity, level.damageSources().playerAttack(player), (float) (duration * AbilityUtils.getAbilityValue(stack, "ram", "damage")));
+                EntityUtils.hurt(entity, level.damageSources().playerAttack(player), (float) (duration * getAbilityValue(stack, "ram", "damage")));
 
                 double factor = Mth.clamp(duration * 0.025D, 1D, 2D);
 
@@ -104,7 +102,7 @@ public class IceSkatesItem extends RelicItem {
         EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         if (duration > 0) {
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * AbilityUtils.getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
             EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
             EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);

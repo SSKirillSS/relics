@@ -7,14 +7,13 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,16 +38,15 @@ public class RelicAbilityStatArgument implements ArgumentType<String> {
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         LocalPlayer player = Minecraft.getInstance().player;
 
-        if (player == null)
+        if (player == null || !(player.getMainHandItem().getItem() instanceof IRelicItem relic))
             return Suggestions.empty();
 
-        Item item = player.getMainHandItem().getItem();
         String ability = StringArgumentType.getString(context, "ability");
 
         List<String> result = new ArrayList<>();
 
         if (ability.equals("all")) {
-            RelicAbilityData data = AbilityUtils.getRelicAbilityData(item);
+            RelicAbilityData data = relic.getRelicAbilityData();
 
             if (data == null)
                 return Suggestions.empty();
@@ -57,7 +55,7 @@ public class RelicAbilityStatArgument implements ArgumentType<String> {
                 result.addAll(abilityEntry.getStats().keySet());
             }
         } else {
-            RelicAbilityEntry data = AbilityUtils.getRelicAbilityEntry(item, ability);
+            RelicAbilityEntry data = relic.getRelicAbilityEntry(ability);
 
             if (data == null)
                 return Suggestions.empty();
