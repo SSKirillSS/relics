@@ -8,6 +8,7 @@
     "MixinAbstractContainerMenu",
     "MixinEnderMan",
     "MixinEntity",
+    "MixinItem",
     "MixinItemStack",
     "MixinLivingEntity",
     "MixinPiglinAi",

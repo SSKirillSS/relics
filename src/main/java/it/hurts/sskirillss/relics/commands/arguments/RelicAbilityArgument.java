@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -38,7 +39,12 @@ public class RelicAbilityArgument implements ArgumentType<String> {
         if (player == null || !(player.getMainHandItem().getItem() instanceof IRelicItem relic))
             return Suggestions.empty();
 
-        List<String> result = new ArrayList<>(relic.getRelicData().getAbilities().getAbilities().keySet());
+        RelicAbilityData data = relic.getRelicAbilityData();
+
+        if (data == null)
+            return Suggestions.empty();
+
+        List<String> result = new ArrayList<>(data.getAbilities().keySet());
 
         result.add("all");
 

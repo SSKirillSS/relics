@@ -9,9 +9,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -49,7 +46,7 @@ public class InfinityHamItem extends RelicItem {
     }
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("autophagy", RelicAbilityEntry.builder()
@@ -140,16 +137,16 @@ public class InfinityHamItem extends RelicItem {
         if (pieces > 0) {
             NBTUtils.setInt(stack, TAG_PIECES, --pieces);
 
-            int feed = (int) Math.round(AbilityUtils.getAbilityValue(stack, "autophagy", "feed"));
+            int feed = (int) Math.round(getAbilityValue(stack, "autophagy", "feed"));
 
             player.getFoodData().eat(feed, feed);
 
-            LevelingUtils.addExperience(player, stack, Math.max(1, Math.min(20 - player.getFoodData().getFoodLevel(), feed)));
+            addExperience(player, stack, Math.max(1, Math.min(20 - player.getFoodData().getFoodLevel(), feed)));
 
-            if (!AbilityUtils.canUseAbility(stack, "infusion") || !nbt.contains(TAG_POTION, 9))
+            if (!canUseAbility(stack, "infusion") || !nbt.contains(TAG_POTION, 9))
                 return;
 
-            int duration = (int) Math.round(AbilityUtils.getAbilityValue(stack, "infusion", "duration") * 20);
+            int duration = (int) Math.round(getAbilityValue(stack, "infusion", "duration") * 20);
 
             ListTag list = nbt.getList(TAG_POTION, 10);
 
@@ -207,8 +204,8 @@ public class InfinityHamItem extends RelicItem {
             ItemStack heldStack = event.getHeldStack();
             ItemStack slotStack = event.getSlotStack();
 
-            if (!(heldStack.getItem() instanceof PotionItem) || !(slotStack.getItem() instanceof InfinityHamItem)
-                    || !AbilityUtils.canUseAbility(slotStack, "infusion"))
+            if (!(heldStack.getItem() instanceof PotionItem) || !(slotStack.getItem() instanceof InfinityHamItem relic)
+                    || !relic.canUseAbility(slotStack, "infusion"))
                 return;
 
             CompoundTag tag = slotStack.getOrCreateTag();

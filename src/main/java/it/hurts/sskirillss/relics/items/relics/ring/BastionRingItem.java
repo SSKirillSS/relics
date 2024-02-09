@@ -4,14 +4,13 @@ import com.mojang.datafixers.util.Pair;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.core.BlockPos;
@@ -44,7 +43,7 @@ import java.util.Optional;
 
 public class BastionRingItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("compass", RelicAbilityEntry.builder()
@@ -141,19 +140,19 @@ public class BastionRingItem extends RelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.BASTION_RING.get());
 
-            if (stack.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
             LivingEntity entity = event.getEntity();
 
             if (entity instanceof ZombifiedPiglin)
-                LevelingUtils.addExperience(player, stack, 1);
+                relic.addExperience(player, stack, 1);
 
             if (entity instanceof Piglin)
-                LevelingUtils.addExperience(player, stack, 5);
+                relic.addExperience(player, stack, 5);
 
             if (entity instanceof PiglinBrute)
-                LevelingUtils.addExperience(player, stack, 10);
+                relic.addExperience(player, stack, 10);
         }
     }
 }

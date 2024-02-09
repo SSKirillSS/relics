@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
@@ -15,8 +15,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateData
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.CastUtils;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -84,9 +82,11 @@ public class AbilitiesRenderHandler {
             String abilityName = entry.ability;
 
             ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, entry.slot);
-            RelicItem relic = (RelicItem) stack.getItem();
 
-            AbilityCastPredicate predicate = CastUtils.getAbilityCastPredicates(relic, abilityName);
+            if (!(stack.getItem() instanceof IRelicItem relic))
+                continue;
+
+            AbilityCastPredicate predicate = relic.getAbilityCastPredicates(abilityName);
 
             if (predicate == null)
                 continue;
@@ -186,10 +186,10 @@ public class AbilitiesRenderHandler {
 
         ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
-        if (!(stack.getItem() instanceof RelicItem relic))
+        if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
-        boolean isLocked = !AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility());
+        boolean isLocked = relic.canPlayerUseActiveAbility(player, stack, ability.getAbility());
 
         ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png");
 
@@ -206,8 +206,8 @@ public class AbilitiesRenderHandler {
 
         RenderUtils.renderTextureFromCenter(poseStack, x - scale, y - scale + 2, width, height, scale + 0.025F);
 
-        int cooldown = AbilityUtils.getAbilityCooldown(stack, ability.getAbility());
-        int cap = AbilityUtils.getAbilityCooldownCap(stack, ability.getAbility());
+        int cooldown = relic.getAbilityCooldown(stack, ability.getAbility());
+        int cap = relic.getAbilityCooldownCap(stack, ability.getAbility());
 
         String iconDescription = "";
 
@@ -227,8 +227,8 @@ public class AbilitiesRenderHandler {
 
         RenderUtils.renderTextureFromCenter(poseStack, x, y, 0, isLocked ? 43 : 0, 256, 256, 30, 42, scale);
 
-        if (AbilityUtils.isAbilityTicking(stack, ability.getAbility())) {
-            AbilityCastType type = AbilityUtils.getRelicAbilityEntry(relic, ability.getAbility()).getCastData().getKey();
+        if (relic.isAbilityTicking(stack, ability.getAbility())) {
+            AbilityCastType type = relic.getRelicAbilityEntry(ability.getAbility()).getCastData().getKey();
 
             if (type == AbilityCastType.TOGGLEABLE) {
                 RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png"));
@@ -450,7 +450,7 @@ public class AbilitiesRenderHandler {
                 if (ability != null) {
                     ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
-                    if (stack.getItem() instanceof RelicItem relic && AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility()))
+                    if (stack.getItem() instanceof IRelicItem relic && relic.canPlayerUseActiveAbility(player, stack, ability.getAbility()))
                         relic.tickActiveAbilitySelection(stack, player, ability.getAbility());
                 }
 
@@ -500,15 +500,15 @@ public class AbilitiesRenderHandler {
 
             ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
-            if (!(stack.getItem() instanceof RelicItem relic))
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            if (!AbilityUtils.canPlayerUseActiveAbility(player, stack, ability.getAbility())) {
+            if (!relic.canPlayerUseActiveAbility(player, stack, ability.getAbility())) {
                 int delta = ability.getCache().getAnimation().iconShakeDelta;
 
                 ability.getCache().getAnimation().setIconShakeDelta(Math.min(20, delta + (delta > 0 ? 5 : 15)));
 
-                MC.getSoundManager().play(SimpleSoundInstance.forUI(AbilityUtils.isAbilityOnCooldown(stack, ability.getAbility())
+                MC.getSoundManager().play(SimpleSoundInstance.forUI(relic.isAbilityOnCooldown(stack, ability.getAbility())
                         ? SoundRegistry.ABILITY_COOLDOWN.get() : SoundRegistry.ABILITY_LOCKED.get(), 1F));
 
                 event.setCanceled(true);
@@ -516,9 +516,9 @@ public class AbilitiesRenderHandler {
                 return;
             }
 
-            boolean isTicking = AbilityUtils.isAbilityTicking(stack, ability.getAbility());
+            boolean isTicking = relic.isAbilityTicking(stack, ability.getAbility());
 
-            AbilityCastType type = AbilityUtils.getRelicAbilityEntry(relic, ability.getAbility()).getCastData().getKey();
+            AbilityCastType type = relic.getRelicAbilityEntry(ability.getAbility()).getCastData().getKey();
 
             MC.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.ABILITY_CAST.get(), 1F));
 
@@ -571,13 +571,13 @@ public class AbilitiesRenderHandler {
 
             ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
-            if (!(stack.getItem() instanceof RelicItem relic))
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            boolean isTicking = AbilityUtils.isAbilityTicking(stack, ability.getAbility());
+            boolean isTicking = relic.isAbilityTicking(stack, ability.getAbility());
             boolean isCasting = Minecraft.getInstance().mouseHandler.isLeftPressed();
 
-            RelicAbilityEntry entry = AbilityUtils.getRelicAbilityEntry(relic, ability.getAbility());
+            RelicAbilityEntry entry = relic.getRelicAbilityEntry(ability.getAbility());
 
             if (entry == null)
                 return;

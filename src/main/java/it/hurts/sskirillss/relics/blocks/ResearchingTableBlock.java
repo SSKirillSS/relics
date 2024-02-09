@@ -2,8 +2,7 @@ package it.hurts.sskirillss.relics.blocks;
 
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.init.TileRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.TickerUtils;
 import net.minecraft.client.Minecraft;
@@ -85,7 +84,6 @@ public class ResearchingTableBlock extends HorizontalDirectionalBlock implements
         builder.add(FACING);
     }
 
-
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -115,13 +113,16 @@ public class ResearchingTableBlock extends HorizontalDirectionalBlock implements
             BlockState oldState = level.getBlockState(pos);
 
             if (tileStack.isEmpty()) {
-                if (!(handStack.getItem() instanceof RelicItem))
+                if (!(handStack.getItem() instanceof IRelicItem relic))
                     return;
 
                 tile.setStack(handStack.split(1));
             } else {
                 if (player.isShiftKeyDown()) {
-                    ResearchUtils.setItemResearched(player, tileStack.getItem(), true);
+                    if (!(tileStack.getItem() instanceof IRelicItem relic))
+                        return;
+
+                    relic.setItemResearched(player, true);
 
                     if (level.isClientSide())
                         openGui(pos);

@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -14,8 +15,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.EntityModel;
@@ -43,7 +42,7 @@ import java.util.List;
 
 public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("steal", RelicAbilityEntry.builder()
@@ -123,11 +122,11 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
             for (Player player : level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(32))) {
                 ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
 
-                if (stack.isEmpty() || AbilityUtils.getAbilityValue(stack, "steal", "radius") < player.position().distanceTo(entity.position())
+                if (!(stack.getItem() instanceof IRelicItem relic) || relic.getAbilityValue(stack, "steal", "radius") < player.position().distanceTo(entity.position())
                         || entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
 
-                float amount = (float) (event.getAmount() * AbilityUtils.getAbilityValue(stack, "steal", "amount"));
+                float amount = (float) (event.getAmount() * relic.getAbilityValue(stack, "steal", "amount"));
 
                 LifeEssenceEntity essence = new LifeEssenceEntity(player, amount);
 
@@ -137,7 +136,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                 level.addFreshEntity(essence);
 
                 if (event.getAmount() >= 1)
-                    LevelingUtils.addExperience(player, stack, 1 + Math.round(amount));
+                    relic.addExperience(player, stack, 1 + Math.round(amount));
 
                 event.setAmount(event.getAmount() - amount);
             }

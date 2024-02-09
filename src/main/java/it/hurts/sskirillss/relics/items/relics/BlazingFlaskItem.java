@@ -8,9 +8,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import it.hurts.sskirillss.relics.utils.WorldUtils;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -35,7 +36,7 @@ public class BlazingFlaskItem extends RelicItem {
     public static final String TAG_RADIUS = "radius";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("bonfire", RelicAbilityEntry.builder()
@@ -89,16 +90,16 @@ public class BlazingFlaskItem extends RelicItem {
                     player.fallDistance = 0F;
 
                     if (player.tickCount % 100 == 0)
-                        LevelingUtils.addExperience(player, stack, 1);
+                        addExperience(player, stack, 1);
 
-                    double speed = AbilityUtils.getAbilityValue(stack, "bonfire", "speed");
+                    double speed = getAbilityValue(stack, "bonfire", "speed");
 
                     if (world.isClientSide()) {
                         if (!player.isOnGround() && (player.zza != 0 || player.xxa != 0))
                             player.move(MoverType.SELF, player.getDeltaMovement().multiply(speed, 0, speed));
 
                         if (player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
-                                && (getGroundHeight(player) + AbilityUtils.getAbilityValue(stack, "bonfire", "height")) - player.getY() > 0) {
+                                && (getGroundHeight(player) + getAbilityValue(stack, "bonfire", "height")) - player.getY() > 0) {
                             Vec3 motion = player.getDeltaMovement();
 
                             if (motion.y() < 0)
@@ -110,7 +111,7 @@ public class BlazingFlaskItem extends RelicItem {
                 }
             }
 
-            double size = NBTUtils.getInt(stack, TAG_COUNT, 0) * AbilityUtils.getAbilityValue(stack, "bonfire", "step");
+            double size = NBTUtils.getInt(stack, TAG_COUNT, 0) * getAbilityValue(stack, "bonfire", "step");
             double step = 0.1D;
             int time = 0;
 
@@ -162,7 +163,7 @@ public class BlazingFlaskItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = (float) (8F + AbilityUtils.getAbilityValue(stack, "bonfire", "height"));
+        float distance = (float) (8F + getAbilityValue(stack, "bonfire", "height"));
 
         Vec3 end = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
@@ -191,7 +192,7 @@ public class BlazingFlaskItem extends RelicItem {
     }
 
     public int getFireAround(ItemStack stack, Vec3 center, Level level) {
-        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos(center), AbilityUtils.getAbilityValue(stack, "bonfire", "step"))
+        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos((int) center.x, (int) center.y, (int) center.z), getAbilityValue(stack, "bonfire", "step"))
                 .stream().filter(pos -> (level.getBlockState(pos).getBlock() instanceof BaseFireBlock)).toList();
 
         return positions.size();

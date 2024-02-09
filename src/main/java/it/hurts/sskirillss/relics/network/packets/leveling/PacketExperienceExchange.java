@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.network.packets.leveling;
 
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.core.BlockPos;
@@ -46,7 +45,7 @@ public class PacketExperienceExchange {
 
             ItemStack stack = tile.getStack();
 
-            if (!(stack.getItem() instanceof RelicItem) || LevelingUtils.isMaxLevel(stack))
+            if (!(stack.getItem() instanceof IRelicItem relic) || relic.isMaxLevel(stack))
                 return;
 
             int playerExperience = EntityUtils.getPlayerTotalExperience(player);
@@ -54,8 +53,8 @@ public class PacketExperienceExchange {
             if (playerExperience <= 0)
                 return;
 
-            int exchanges = LevelingUtils.getExchanges(stack);
-            int level = LevelingUtils.getLevel(stack);
+            int exchanges = relic.getExchanges(stack);
+            int level = relic.getLevel(stack);
 
             int cost = 5;
 
@@ -68,15 +67,15 @@ public class PacketExperienceExchange {
                 if (playerExperience < toTake + oneCost)
                     break;
 
-                toAdd += (int) Math.ceil(LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
+                toAdd += (int) Math.ceil(relic.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
                 toTake += oneCost;
 
-                LevelingUtils.addExchanges(stack, 1);
+                relic.addExchanges(stack, 1);
             }
 
             player.giveExperiencePoints(-toTake);
 
-            LevelingUtils.addExperience(player, stack, toAdd);
+            relic.addExperience(player, stack, toAdd);
 
             world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
         });

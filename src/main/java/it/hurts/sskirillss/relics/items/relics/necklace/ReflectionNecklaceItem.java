@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.entities.StalactiteEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -14,8 +15,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -52,7 +51,7 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
     public static final String TAG_TIME = "time";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("explode", RelicAbilityEntry.builder()
@@ -89,7 +88,7 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
         double charge = NBTUtils.getDouble(stack, TAG_CHARGE, 0);
 
-        if (time > 0 && charge < AbilityUtils.getAbilityValue(stack, "explode", "capacity")) {
+        if (time > 0 && charge < getAbilityValue(stack, "explode", "capacity")) {
             --time;
 
             NBTUtils.setInt(stack, TAG_TIME, time);
@@ -119,8 +118,8 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
                             continue;
 
                         StalactiteEntity stalactite = new StalactiteEntity(level,
-                                (float) (charge * AbilityUtils.getAbilityValue(stack, "explode", "damage")),
-                                (float) (charge * AbilityUtils.getAbilityValue(stack, "explode", "stun")));
+                                (float) (charge * getAbilityValue(stack, "explode", "damage")),
+                                (float) (charge * getAbilityValue(stack, "explode", "stun")));
 
                         stalactite.setOwner(player);
                         stalactite.setPos(pos);
@@ -131,7 +130,7 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
                 }
             }
 
-            LevelingUtils.addExperience(player, stack, (int) Math.floor(charge / 10F));
+            addExperience(player, stack, (int) Math.floor(charge / 10F));
 
             NBTUtils.setDouble(stack, TAG_CHARGE, 0);
             NBTUtils.setInt(stack, TAG_TIME, 0);
@@ -194,11 +193,11 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
 
             ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.REFLECTION_NECKLACE.get());
 
-            if (stack.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
             double charge = NBTUtils.getDouble(stack, TAG_CHARGE, 0);
-            double capacity = AbilityUtils.getAbilityValue(stack, "explode", "capacity");
+            double capacity = relic.getAbilityValue(stack, "explode", "capacity");
 
             if (charge < capacity) {
                 NBTUtils.setDouble(stack, TAG_CHARGE, Math.min(capacity, charge + (event.getAmount())));

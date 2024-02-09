@@ -11,10 +11,8 @@ import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParti
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.QualityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
@@ -50,10 +48,13 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
     @Override
     public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        if (!(screen.stack.getItem() instanceof IRelicItem relic))
+            return;
+
         TextureManager manager = MC.getTextureManager();
 
-        boolean canUse = AbilityUtils.canUseAbility(screen.stack, ability);
-        boolean canUpgrade = AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability);
+        boolean canUse = relic.canUseAbility(screen.stack, ability);
+        boolean canUpgrade = relic.mayPlayerUpgrade(MC.player, screen.stack, ability);
 
         ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + "/" + ability + ".png");
 
@@ -162,7 +163,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         manager.bindForSetup(RelicDescriptionScreen.TEXTURE);
 
-        for (int i = 1; i < QualityUtils.getAbilityQuality(screen.stack, ability) + 1; i++) {
+        for (int i = 1; i < relic.getAbilityQuality(screen.stack, ability) + 1; i++) {
             boolean isAliquot = i % 2 == 1;
 
             blit(poseStack, -(width / 2) + xOff + 2, -(height / 2) + 38, (canUse ? 302 : 334) + (isAliquot ? 0 : 2), 108, isAliquot ? 2 : 3, 4, 512, 512);
@@ -170,7 +171,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
             xOff += (isAliquot ? 2 : 3);
         }
 
-        MutableComponent title = Component.literal(String.valueOf(AbilityUtils.getAbilityPoints(screen.stack, ability))).withStyle(ChatFormatting.BOLD);
+        MutableComponent title = Component.literal(String.valueOf(relic.getAbilityPoints(screen.stack, ability))).withStyle(ChatFormatting.BOLD);
 
         float textScale = 0.5F;
 
@@ -183,12 +184,15 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
     @Override
     public void onTick() {
+        if (!(screen.stack.getItem() instanceof IRelicItem relic))
+            return;
+
         float maxScale = 1.1F;
         float minScale = 1F;
 
         RandomSource random = MC.player.getRandom();
 
-        if (AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
+        if (relic.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
             if (screen.ticksExisted % 7 == 0)
                 ParticleStorage.addParticle(screen, new ExperienceParticleData(new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
                         x + 5 + random.nextInt(18), y + 18, 0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
@@ -196,7 +200,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         if (isHovered) {
             if (screen.ticksExisted % 3 == 0)
-                ParticleStorage.addParticle(screen, new ExperienceParticleData(AbilityUtils.canUseAbility(screen.stack, ability)
+                ParticleStorage.addParticle(screen, new ExperienceParticleData(relic.canUseAbility(screen.stack, ability)
                         ? new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0)
                         : new Color(100 + random.nextInt(100), 100 + random.nextInt(100), 100 + random.nextInt(100)),
                         x + random.nextInt(width), y - 1, 0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
@@ -211,7 +215,10 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
     @Override
     public void onHovered(PoseStack poseStack, int mouseX, int mouseY) {
-        RelicAbilityEntry data = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
+        if (!(screen.stack.getItem() instanceof IRelicItem relic))
+            return;
+
+        RelicAbilityEntry data = relic.getRelicAbilityEntry(ability);
 
         if (data == null)
             return;
@@ -225,7 +232,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
                 Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD)
         );
 
-        int level = LevelingUtils.getLevel(screen.stack);
+        int level = relic.getLevel(screen.stack);
         int requiredLevel = data.getRequiredLevel();
 
         if (level < requiredLevel) {
@@ -236,7 +243,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
             entries.add(Component.literal(" "));
 
             entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.ability.tooltip.no_stats")));
-        } else if (AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
+        } else if (relic.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
             entries.add(Component.literal(" "));
 
             entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.ability.tooltip.ready_to_upgrade", Component.translatable("tooltip.relics.relic.status.positive").withStyle(ChatFormatting.GREEN))));

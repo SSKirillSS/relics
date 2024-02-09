@@ -11,12 +11,10 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.Abilit
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.ExperienceExchangeWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.QualityUtils;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -82,7 +80,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         ItemStack stack = tile.getStack();
 
-        if (!(stack.getItem() instanceof RelicItem))
+        if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
         this.stack = stack;
@@ -90,7 +88,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
     @Override
     protected void init() {
-        if (!(stack.getItem() instanceof RelicItem relic))
+        if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
         TextureManager manager = MC.getTextureManager();
@@ -127,6 +125,9 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
     public void tick() {
         super.tick();
 
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return;
+
         LocalPlayer player = MC.player;
 
         ticksExisted++;
@@ -138,9 +139,9 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         if (ticksExisted % 3 == 0) {
             {
-                int level = LevelingUtils.getLevel(stack);
+                int level = relic.getLevel(stack);
 
-                float percentage = LevelingUtils.isMaxLevel(stack) ? 100F : LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
+                float percentage = relic.isMaxLevel(stack) ? 100F : relic.getExperience(stack) / (relic.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
 
                 int sourceWidth = 206;
                 int maxWidth = (int) (sourceWidth * (percentage / 100F));
@@ -172,7 +173,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         if (this.ticksExisted % 10 == 0) {
             {
-                if (LevelingUtils.getPoints(stack) > 0) {
+                if (relic.getPoints(stack) > 0) {
                     ParticleStorage.addParticle(this, new ExperienceParticleData(
                             new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
                             x + backgroundWidth + 15 + random.nextInt(16), y + 8 + random.nextInt(10),
@@ -186,7 +187,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         LocalPlayer player = MC.player;
 
-        if (player == null || !(stack.getItem() instanceof RelicItem relic))
+        if (player == null || !(stack.getItem() instanceof IRelicItem relic))
             return;
 
         RelicData relicData = relic.getRelicData();
@@ -211,11 +212,11 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         blit(pPoseStack, x, y, 0, 0, backgroundWidth, backgroundHeight, texWidth, texHeight);
 
-        int level = LevelingUtils.getLevel(stack);
+        int level = relic.getLevel(stack);
 
-        float percentage = LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
+        float percentage = relic.getExperience(stack) / (relic.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
 
-        boolean isMaxLevel = LevelingUtils.isMaxLevel(stack);
+        boolean isMaxLevel = relic.isMaxLevel(stack);
 
         blit(pPoseStack, x + 30, y + 72, 302, 144, isMaxLevel ? 206 : (int) Math.ceil(percentage / 100F * 206), 3, texWidth, texHeight);
 
@@ -306,7 +307,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         int xOff = 0;
 
-        for (int i = 1; i < QualityUtils.getRelicQuality(stack) + 1; i++) {
+        for (int i = 1; i < relic.getRelicQuality(stack) + 1; i++) {
             boolean isAliquot = i % 2 == 1;
 
             blit(pPoseStack, x + 15 + xOff, y + 51, 353 + (isAliquot ? 0 : 5), 3, isAliquot ? 5 : 4, 9, texWidth, texHeight);
@@ -350,7 +351,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         pPoseStack.popPose();
 
-        String registryName = ForgeRegistries.ITEMS.getKey(relic).getPath();
+        String registryName = ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath();
 
         pPoseStack.pushPose();
 
@@ -371,7 +372,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         pPoseStack.popPose();
 
-        int points = LevelingUtils.getPoints(stack);
+        int points = relic.getPoints(stack);
 
         if (points > 0) {
             pPoseStack.pushPose();
@@ -409,9 +410,9 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             if (!isMaxLevel) {
                 entries.add(Component.literal(" "));
 
-                entries.add(Component.literal("● ").append(Component.translatable("tooltip.relics.relic.relic_experience.current_amount", LevelingUtils.getExperience(stack),
-                        LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1),
-                        MathUtils.round((LevelingUtils.getExperience(stack) / (LevelingUtils.getExperienceBetweenLevels(stack, level, level + 1) / 100F)), 1))));
+                entries.add(Component.literal("● ").append(Component.translatable("tooltip.relics.relic.relic_experience.current_amount", relic.getExperience(stack),
+                        relic.getExperienceBetweenLevels(stack, level, level + 1),
+                        MathUtils.round((relic.getExperience(stack) / (relic.getExperienceBetweenLevels(stack, level, level + 1) / 100F)), 1))));
             }
 
             for (MutableComponent entry : entries) {

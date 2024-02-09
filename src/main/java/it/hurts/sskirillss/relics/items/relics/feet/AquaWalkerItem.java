@@ -3,14 +3,13 @@ package it.hurts.sskirillss.relics.items.relics.feet;
 import it.hurts.sskirillss.relics.api.events.common.FluidCollisionEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -28,7 +27,7 @@ public class AquaWalkerItem extends RelicItem {
     public static final String TAG_DRENCH = "drench";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("walking", RelicAbilityEntry.builder()
@@ -60,9 +59,13 @@ public class AquaWalkerItem extends RelicItem {
     @SubscribeEvent
     public static void onFluidCollide(FluidCollisionEvent event) {
         ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.AQUA_WALKER.get());
+
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return;
+
         int drench = NBTUtils.getInt(stack, TAG_DRENCH, 0);
 
-        if (!(event.getEntity() instanceof Player player) || stack.isEmpty() || drench > AbilityUtils.getAbilityValue(stack, "walking", "time")
+        if (!(event.getEntity() instanceof Player player) || drench > relic.getAbilityValue(stack, "walking", "time")
                 || !event.getFluid().is(FluidTags.WATER) || player.isShiftKeyDown())
             return;
 
@@ -70,7 +73,7 @@ public class AquaWalkerItem extends RelicItem {
             NBTUtils.setInt(stack, TAG_DRENCH, ++drench);
 
             if (drench % 5 == 0)
-                LevelingUtils.addExperience(player, stack, 1);
+                relic.addExperience(player, stack, 1);
         }
 
         event.setCanceled(true);

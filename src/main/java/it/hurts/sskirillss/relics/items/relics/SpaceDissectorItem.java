@@ -9,8 +9,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -36,7 +34,7 @@ public class SpaceDissectorItem extends RelicItem {
     public static final String TAG_PORTAL = "portal";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("dissection", RelicAbilityEntry.builder()
@@ -76,22 +74,22 @@ public class SpaceDissectorItem extends RelicItem {
                 if (startPortal != null)
                     startPortal.setLifeTime(20);
                 else
-                    LevelingUtils.addExperience(player, stack, 1);
+                    addExperience(player, stack, 1);
             }
         } else
-            LevelingUtils.addExperience(player, stack, 1);
+            addExperience(player, stack, 1);
 
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = Math.round(AbilityUtils.getAbilityValue(stack, "dissection", "distance"));
+        float distance = Math.round(getAbilityValue(stack, "dissection", "distance"));
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 
         DissectionEntity portal = new DissectionEntity(world);
 
-        int time = (int) Math.round(AbilityUtils.getAbilityValue(stack, "dissection", "time")) * 20;
+        int time = (int) Math.round(getAbilityValue(stack, "dissection", "time")) * 20;
 
         portal.setPos(ray.getLocation());
         portal.setMaxLifeTime(time);
@@ -115,7 +113,7 @@ public class SpaceDissectorItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = Math.round(AbilityUtils.getAbilityValue(stack, "dissection", "distance"));
+        float distance = Math.round(getAbilityValue(stack, "dissection", "distance"));
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
@@ -157,7 +155,7 @@ public class SpaceDissectorItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = Math.round(AbilityUtils.getAbilityValue(stack, "dissection", "distance"));
+        float distance = Math.round(getAbilityValue(stack, "dissection", "distance"));
 
         BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));

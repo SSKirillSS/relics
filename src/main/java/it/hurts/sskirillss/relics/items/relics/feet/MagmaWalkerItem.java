@@ -3,14 +3,13 @@ package it.hurts.sskirillss.relics.items.relics.feet;
 import it.hurts.sskirillss.relics.api.events.common.FluidCollisionEvent;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -30,7 +29,7 @@ public class MagmaWalkerItem extends RelicItem {
     public static final String TAG_HEAT = "heat";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("heat_resistance", RelicAbilityEntry.builder()
@@ -59,8 +58,8 @@ public class MagmaWalkerItem extends RelicItem {
             return;
 
         if (heat > 0) {
-            if (heat > AbilityUtils.getAbilityValue(stack, "pace", "time"))
-                player.hurt(DamageSource.HOT_FLOOR, (float) (1F + ((heat - AbilityUtils.getAbilityValue(stack, "pace", "time")) / 10F)));
+            if (heat > getAbilityValue(stack, "pace", "time"))
+                player.hurt(DamageSource.HOT_FLOOR, (float) (1F + ((heat - getAbilityValue(stack, "pace", "time")) / 10F)));
 
             if (!level.getFluidState(player.blockPosition().below()).is(FluidTags.LAVA)
                     && !level.getFluidState(player.blockPosition()).is(FluidTags.LAVA))
@@ -72,8 +71,8 @@ public class MagmaWalkerItem extends RelicItem {
     public static void onLivingAttack(LivingAttackEvent event) {
         ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
-        if (!stack.isEmpty() && event.getSource() == DamageSource.HOT_FLOOR
-                && NBTUtils.getInt(stack, TAG_HEAT, 0) <= AbilityUtils.getAbilityValue(stack, "pace", "time")) {
+        if (stack.getItem() instanceof IRelicItem relic && event.getSource() == event.getEntity().level().damageSources().hotFloor()
+                && NBTUtils.getInt(stack, TAG_HEAT, 0) <= relic.getAbilityValue(stack, "pace", "time")) {
             event.setCanceled(true);
         }
     }
@@ -82,7 +81,7 @@ public class MagmaWalkerItem extends RelicItem {
     public static void onFluidCollide(FluidCollisionEvent event) {
         ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
-        if (!(event.getEntity() instanceof Player player) || stack.isEmpty()
+        if (!(event.getEntity() instanceof Player player) || !(stack.getItem() instanceof IRelicItem relic)
                 || !event.getFluid().is(FluidTags.LAVA) || player.isShiftKeyDown())
             return;
 
@@ -92,7 +91,7 @@ public class MagmaWalkerItem extends RelicItem {
             NBTUtils.setInt(stack, TAG_HEAT, ++heat);
 
             if (heat % 5 == 0)
-                LevelingUtils.addExperience(player, stack, 1);
+                relic.addExperience(player, stack, 1);
         }
 
         event.setCanceled(true);

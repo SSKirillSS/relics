@@ -1,10 +1,9 @@
 package it.hurts.sskirillss.relics.network.packets.abilities;
 
 import it.hurts.sskirillss.relics.client.hud.abilities.ActiveAbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -48,13 +47,13 @@ public class SpellCastPacket {
 
             ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, slot);
 
-            if (!(stack.getItem() instanceof RelicItem relic))
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
             if (!ActiveAbilityUtils.getRelicActiveAbilities(stack).contains(ability)
-                    || !AbilityUtils.canPlayerUseActiveAbility(player, stack, ability)) {
-                if (AbilityUtils.isAbilityTicking(stack, ability)) {
-                    AbilityUtils.setAbilityTicking(stack, ability, false);
+                    || !relic.canPlayerUseActiveAbility(player, stack, ability)) {
+                if (relic.isAbilityTicking(stack, ability)) {
+                    relic.setAbilityTicking(stack, ability, false);
 
                     relic.castActiveAbility(stack, player, ability, type, AbilityCastStage.END);
                 }
@@ -63,16 +62,10 @@ public class SpellCastPacket {
             }
 
             switch (type) {
-                case CYCLICAL -> {
+                case CYCLICAL, TOGGLEABLE -> {
                     switch (stage) {
-                        case START -> AbilityUtils.setAbilityTicking(stack, ability, true);
-                        case END -> AbilityUtils.setAbilityTicking(stack, ability, false);
-                    }
-                }
-                case TOGGLEABLE -> {
-                    switch (stage) {
-                        case START -> AbilityUtils.setAbilityTicking(stack, ability, true);
-                        case END -> AbilityUtils.setAbilityTicking(stack, ability, false);
+                        case START -> relic.setAbilityTicking(stack, ability, true);
+                        case END -> relic.setAbilityTicking(stack, ability, false);
                     }
                 }
             }

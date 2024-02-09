@@ -6,15 +6,12 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityArgument;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityStatArgument;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.config.ConfigHelper;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.DataUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.QualityUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -28,31 +25,38 @@ import java.util.Map;
 public class RelicsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("relics").requires(sender -> sender.hasPermission(2))
+                .then(Commands.literal("config")
+                        .then(Commands.literal("reload")
+                                .executes(context -> {
+                                    ConfigHelper.readConfigs();
+
+                                    return Command.SINGLE_SUCCESS;
+                                })))
                 .then(Commands.literal("maximize")
                         .executes(context -> {
                             ServerPlayer player = context.getSource().getPlayerOrException();
                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                            if (!(stack.getItem() instanceof RelicItem)) {
+                            if (!(stack.getItem() instanceof IRelicItem relic)) {
                                 context.getSource().sendFailure(Component.translatable("command.relics.base.not_relic"));
 
                                 return 0;
                             }
 
-                            RelicData relicData = DataUtils.getRelicData(stack.getItem());
+                            RelicData relicData = relic.getRelicData();
 
-                            LevelingUtils.setLevel(stack, relicData.getLevelingData().getMaxLevel());
+                            relic.setLevel(stack, relicData.getLevelingData().getMaxLevel());
 
                             for (Map.Entry<String, RelicAbilityEntry> abilityEntry : relicData.getAbilityData().getAbilities().entrySet()) {
                                 String abilityId = abilityEntry.getKey();
                                 RelicAbilityEntry abilityInfo = abilityEntry.getValue();
 
-                                AbilityUtils.setAbilityPoints(stack, abilityId, abilityInfo.getMaxLevel());
+                                relic.setAbilityPoints(stack, abilityId, abilityInfo.getMaxLevel());
 
                                 for (Map.Entry<String, RelicAbilityStat> statEntry : abilityInfo.getStats().entrySet()) {
                                     String statId = statEntry.getKey();
 
-                                    AbilityUtils.setAbilityValue(stack, abilityId, statId, QualityUtils.getStatByQuality(stack.getItem(), abilityId, statId, QualityUtils.MAX_QUALITY));
+                                    relic.setAbilityValue(stack, abilityId, statId, relic.getStatByQuality(abilityId, statId, relic.MAX_QUALITY));
                                 }
                             }
 
@@ -64,25 +68,25 @@ public class RelicsCommand {
                             ServerPlayer player = context.getSource().getPlayerOrException();
                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                            if (!(stack.getItem() instanceof RelicItem)) {
+                            if (!(stack.getItem() instanceof IRelicItem relic)) {
                                 context.getSource().sendFailure(Component.translatable("command.relics.base.not_relic"));
 
                                 return 0;
                             }
 
-                            RelicData relicData = DataUtils.getRelicData(stack.getItem());
+                            RelicData relicData = relic.getRelicData();
 
-                            LevelingUtils.setLevel(stack, relicData.getLevelingData().getMaxLevel());
+                            relic.setLevel(stack, relicData.getLevelingData().getMaxLevel());
 
                             for (Map.Entry<String, RelicAbilityEntry> abilityEntry : relicData.getAbilityData().getAbilities().entrySet()) {
                                 String abilityId = abilityEntry.getKey();
 
-                                AbilityUtils.setAbilityPoints(stack, abilityId, 0);
+                                relic.setAbilityPoints(stack, abilityId, 0);
 
                                 for (Map.Entry<String, RelicAbilityStat> statEntry : abilityEntry.getValue().getStats().entrySet()) {
                                     String statId = statEntry.getKey();
 
-                                    AbilityUtils.setAbilityValue(stack, abilityId, statId, QualityUtils.getStatByQuality(stack.getItem(), abilityId, statId, 0));
+                                    relic.setAbilityValue(stack, abilityId, statId, relic.getStatByQuality(abilityId, statId, 0));
                                 }
                             }
 
@@ -96,7 +100,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem)) {
+                                            if (!(stack.getItem() instanceof IRelicItem relic)) {
                                                 context.getSource().sendFailure(Component.translatable("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -107,12 +111,12 @@ public class RelicsCommand {
                                             int level = IntegerArgumentType.getInteger(context, "level");
 
                                             switch (action) {
-                                                case SET -> LevelingUtils.setLevel(stack, level);
-                                                case ADD -> LevelingUtils.addLevel(stack, level);
-                                                case TAKE -> LevelingUtils.addLevel(stack, -level);
+                                                case SET -> relic.setLevel(stack, level);
+                                                case ADD -> relic.addLevel(stack, level);
+                                                case TAKE -> relic.addLevel(stack, -level);
                                             }
 
-                                            LevelingUtils.setLevel(stack, IntegerArgumentType.getInteger(context, "level"));
+                                            relic.setLevel(stack, IntegerArgumentType.getInteger(context, "level"));
 
                                             return Command.SINGLE_SUCCESS;
                                         }))))
@@ -123,7 +127,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem)) {
+                                            if (!(stack.getItem() instanceof IRelicItem relic)) {
                                                 context.getSource().sendFailure(Component.translatable("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -134,9 +138,9 @@ public class RelicsCommand {
                                             int experience = IntegerArgumentType.getInteger(context, "experience");
 
                                             switch (action) {
-                                                case SET -> LevelingUtils.setExperience(stack, experience);
-                                                case ADD -> LevelingUtils.addExperience(stack, experience);
-                                                case TAKE -> LevelingUtils.addExperience(stack, -experience);
+                                                case SET -> relic.setExperience(stack, experience);
+                                                case ADD -> relic.addExperience(stack, experience);
+                                                case TAKE -> relic.addExperience(stack, -experience);
                                             }
 
                                             return Command.SINGLE_SUCCESS;
@@ -148,7 +152,7 @@ public class RelicsCommand {
                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                            if (!(stack.getItem() instanceof RelicItem)) {
+                                            if (!(stack.getItem() instanceof IRelicItem relic)) {
                                                 context.getSource().sendFailure(Component.translatable("command.relics.base.not_relic"));
 
                                                 return 0;
@@ -159,9 +163,9 @@ public class RelicsCommand {
                                             int points = IntegerArgumentType.getInteger(context, "points");
 
                                             switch (action) {
-                                                case SET -> LevelingUtils.setPoints(stack, points);
-                                                case ADD -> LevelingUtils.addPoints(stack, points);
-                                                case TAKE -> LevelingUtils.addPoints(stack, -points);
+                                                case SET -> relic.setPoints(stack, points);
+                                                case ADD -> relic.addPoints(stack, points);
+                                                case TAKE -> relic.addPoints(stack, -points);
                                             }
 
                                             return Command.SINGLE_SUCCESS;
@@ -175,7 +179,7 @@ public class RelicsCommand {
                                                             ServerPlayer player = context.getSource().getPlayerOrException();
                                                             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                                            if (!(stack.getItem() instanceof RelicItem)) {
+                                                            if (!(stack.getItem() instanceof IRelicItem relic)) {
                                                                 context.getSource().sendFailure(Component.translatable("command.relics.base.not_relic"));
 
                                                                 return 0;
@@ -187,23 +191,23 @@ public class RelicsCommand {
                                                             int points = IntegerArgumentType.getInteger(context, "points");
 
                                                             if (ability.equals("all")) {
-                                                                RelicAbilityData data = AbilityUtils.getRelicAbilityData(stack.getItem());
+                                                                RelicAbilityData data = relic.getRelicAbilityData();
 
                                                                 if (data == null)
                                                                     return 0;
 
                                                                 for (String entry : data.getAbilities().keySet()) {
                                                                     switch (action) {
-                                                                        case SET -> AbilityUtils.setAbilityPoints(stack, entry, points);
-                                                                        case ADD -> AbilityUtils.addAbilityPoints(stack, entry, points);
-                                                                        case TAKE -> AbilityUtils.addAbilityPoints(stack, entry, -points);
+                                                                        case SET -> relic.setAbilityPoints(stack, entry, points);
+                                                                        case ADD -> relic.addAbilityPoints(stack, entry, points);
+                                                                        case TAKE -> relic.addAbilityPoints(stack, entry, -points);
                                                                     }
                                                                 }
                                                             } else {
                                                                 switch (action) {
-                                                                    case SET -> AbilityUtils.setAbilityPoints(stack, ability, points);
-                                                                    case ADD -> AbilityUtils.addAbilityPoints(stack, ability, points);
-                                                                    case TAKE -> AbilityUtils.addAbilityPoints(stack, ability, -points);
+                                                                    case SET -> relic.setAbilityPoints(stack, ability, points);
+                                                                    case ADD -> relic.addAbilityPoints(stack, ability, points);
+                                                                    case TAKE -> relic.addAbilityPoints(stack, ability, -points);
                                                                 }
                                                             }
 
@@ -218,7 +222,7 @@ public class RelicsCommand {
                                                                     ServerPlayer player = context.getSource().getPlayerOrException();
                                                                     ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                                                    if (!(stack.getItem() instanceof RelicItem)) {
+                                                                    if (!(stack.getItem() instanceof IRelicItem relic)) {
                                                                         context.getSource().sendFailure(Component.translatable("command.relics.base.not_relic"));
 
                                                                         return 0;
@@ -231,42 +235,42 @@ public class RelicsCommand {
                                                                     double value = DoubleArgumentType.getDouble(context, "value");
 
                                                                     if (ability.equals("all")) {
-                                                                        RelicAbilityData data = AbilityUtils.getRelicAbilityData(stack.getItem());
+                                                                        RelicAbilityData data = relic.getRelicAbilityData();
 
                                                                         if (data == null)
                                                                             return 0;
 
                                                                         for (String abilityEntry : data.getAbilities().keySet()) {
                                                                             if (stat.equals("all")) {
-                                                                                for (String statEntry : AbilityUtils.getRelicAbilityEntry(stack.getItem(), abilityEntry).getStats().keySet()) {
+                                                                                for (String statEntry : relic.getRelicAbilityEntry(abilityEntry).getStats().keySet()) {
                                                                                     switch (action) {
-                                                                                        case SET -> AbilityUtils.setAbilityValue(stack, abilityEntry, statEntry, value);
-                                                                                        case ADD -> AbilityUtils.addAbilityValue(stack, abilityEntry, statEntry, value);
-                                                                                        case TAKE -> AbilityUtils.addAbilityValue(stack, abilityEntry, statEntry, -value);
+                                                                                        case SET -> relic.setAbilityValue(stack, abilityEntry, statEntry, value);
+                                                                                        case ADD -> relic.addAbilityValue(stack, abilityEntry, statEntry, value);
+                                                                                        case TAKE -> relic.addAbilityValue(stack, abilityEntry, statEntry, -value);
                                                                                     }
                                                                                 }
                                                                             } else {
                                                                                 switch (action) {
-                                                                                    case SET -> AbilityUtils.setAbilityValue(stack, abilityEntry, stat, value);
-                                                                                    case ADD -> AbilityUtils.addAbilityValue(stack, abilityEntry, stat, value);
-                                                                                    case TAKE -> AbilityUtils.addAbilityValue(stack, abilityEntry, stat, -value);
+                                                                                    case SET -> relic.setAbilityValue(stack, abilityEntry, stat, value);
+                                                                                    case ADD -> relic.addAbilityValue(stack, abilityEntry, stat, value);
+                                                                                    case TAKE -> relic.addAbilityValue(stack, abilityEntry, stat, -value);
                                                                                 }
                                                                             }
                                                                         }
                                                                     } else {
                                                                         if (stat.equals("all")) {
-                                                                            for (String statEntry : AbilityUtils.getRelicAbilityEntry(stack.getItem(), ability).getStats().keySet()) {
+                                                                            for (String statEntry : relic.getRelicAbilityEntry(ability).getStats().keySet()) {
                                                                                 switch (action) {
-                                                                                    case SET -> AbilityUtils.setAbilityValue(stack, ability, statEntry, value);
-                                                                                    case ADD -> AbilityUtils.addAbilityValue(stack, ability, statEntry, value);
-                                                                                    case TAKE -> AbilityUtils.addAbilityValue(stack, ability, statEntry, -value);
+                                                                                    case SET -> relic.setAbilityValue(stack, ability, statEntry, value);
+                                                                                    case ADD -> relic.addAbilityValue(stack, ability, statEntry, value);
+                                                                                    case TAKE -> relic.addAbilityValue(stack, ability, statEntry, -value);
                                                                                 }
                                                                             }
                                                                         } else {
                                                                             switch (action) {
-                                                                                case SET -> AbilityUtils.setAbilityValue(stack, ability, stat, value);
-                                                                                case ADD -> AbilityUtils.addAbilityValue(stack, ability, stat, value);
-                                                                                case TAKE -> AbilityUtils.addAbilityValue(stack, ability, stat, -value);
+                                                                                case SET -> relic.setAbilityValue(stack, ability, stat, value);
+                                                                                case ADD -> relic.addAbilityValue(stack, ability, stat, value);
+                                                                                case TAKE -> relic.addAbilityValue(stack, ability, stat, -value);
                                                                             }
                                                                         }
                                                                     }
@@ -282,7 +286,7 @@ public class RelicsCommand {
                                                                     ServerPlayer player = context.getSource().getPlayerOrException();
                                                                     ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                                                    if (!(stack.getItem() instanceof RelicItem)) {
+                                                                    if (!(stack.getItem() instanceof IRelicItem relic)) {
                                                                         context.getSource().sendFailure(Component.translatable("command.relics.base.not_relic"));
 
                                                                         return 0;
@@ -295,50 +299,50 @@ public class RelicsCommand {
                                                                     int quality = IntegerArgumentType.getInteger(context, "quality");
 
                                                                     if (ability.equals("all")) {
-                                                                        RelicAbilityData data = AbilityUtils.getRelicAbilityData(stack.getItem());
+                                                                        RelicAbilityData data = relic.getRelicAbilityData();
 
                                                                         if (data == null)
                                                                             return 0;
 
                                                                         for (String abilityEntry : data.getAbilities().keySet()) {
                                                                             if (stat.equals("all")) {
-                                                                                for (String statEntry : AbilityUtils.getRelicAbilityEntry(stack.getItem(), abilityEntry).getStats().keySet()) {
-                                                                                    double value = QualityUtils.getStatByQuality(stack.getItem(), abilityEntry, statEntry, quality);
+                                                                                for (String statEntry : relic.getRelicAbilityEntry(abilityEntry).getStats().keySet()) {
+                                                                                    double value = relic.getStatByQuality(abilityEntry, statEntry, quality);
 
                                                                                     switch (action) {
-                                                                                        case SET -> AbilityUtils.setAbilityValue(stack, abilityEntry, statEntry, value);
-                                                                                        case ADD -> AbilityUtils.addAbilityValue(stack, abilityEntry, statEntry, value);
-                                                                                        case TAKE -> AbilityUtils.addAbilityValue(stack, abilityEntry, statEntry, -value);
+                                                                                        case SET -> relic.setAbilityValue(stack, abilityEntry, statEntry, value);
+                                                                                        case ADD -> relic.addAbilityValue(stack, abilityEntry, statEntry, value);
+                                                                                        case TAKE -> relic.addAbilityValue(stack, abilityEntry, statEntry, -value);
                                                                                     }
                                                                                 }
                                                                             } else {
-                                                                                double value = QualityUtils.getStatByQuality(stack.getItem(), abilityEntry, stat, quality);
+                                                                                double value = relic.getStatByQuality(abilityEntry, stat, quality);
 
                                                                                 switch (action) {
-                                                                                    case SET -> AbilityUtils.setAbilityValue(stack, abilityEntry, stat, value);
-                                                                                    case ADD -> AbilityUtils.addAbilityValue(stack, abilityEntry, stat, value);
-                                                                                    case TAKE -> AbilityUtils.addAbilityValue(stack, abilityEntry, stat, -value);
+                                                                                    case SET -> relic.setAbilityValue(stack, abilityEntry, stat, value);
+                                                                                    case ADD -> relic.addAbilityValue(stack, abilityEntry, stat, value);
+                                                                                    case TAKE -> relic.addAbilityValue(stack, abilityEntry, stat, -value);
                                                                                 }
                                                                             }
                                                                         }
                                                                     } else {
                                                                         if (stat.equals("all")) {
-                                                                            for (String statEntry : AbilityUtils.getRelicAbilityEntry(stack.getItem(), ability).getStats().keySet()) {
-                                                                                double value = QualityUtils.getStatByQuality(stack.getItem(), ability, statEntry, quality);
+                                                                            for (String statEntry : relic.getRelicAbilityEntry(ability).getStats().keySet()) {
+                                                                                double value = relic.getStatByQuality(ability, statEntry, quality);
 
                                                                                 switch (action) {
-                                                                                    case SET -> AbilityUtils.setAbilityValue(stack, ability, statEntry, value);
-                                                                                    case ADD -> AbilityUtils.addAbilityValue(stack, ability, statEntry, value);
-                                                                                    case TAKE -> AbilityUtils.addAbilityValue(stack, ability, statEntry, -value);
+                                                                                    case SET -> relic.setAbilityValue(stack, ability, statEntry, value);
+                                                                                    case ADD -> relic.addAbilityValue(stack, ability, statEntry, value);
+                                                                                    case TAKE -> relic.addAbilityValue(stack, ability, statEntry, -value);
                                                                                 }
                                                                             }
                                                                         } else {
-                                                                            double value = QualityUtils.getStatByQuality(stack.getItem(), ability, stat, quality);
+                                                                            double value = relic.getStatByQuality(ability, stat, quality);
 
                                                                             switch (action) {
-                                                                                case SET -> AbilityUtils.setAbilityValue(stack, ability, stat, value);
-                                                                                case ADD -> AbilityUtils.addAbilityValue(stack, ability, stat, value);
-                                                                                case TAKE -> AbilityUtils.addAbilityValue(stack, ability, stat, -value);
+                                                                                case SET -> relic.setAbilityValue(stack, ability, stat, value);
+                                                                                case ADD -> relic.addAbilityValue(stack, ability, stat, value);
+                                                                                case TAKE -> relic.addAbilityValue(stack, ability, stat, -value);
                                                                             }
                                                                         }
                                                                     }
@@ -352,7 +356,7 @@ public class RelicsCommand {
                                                     ServerPlayer player = context.getSource().getPlayerOrException();
                                                     ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-                                                    if (!(stack.getItem() instanceof RelicItem)) {
+                                                    if (!(stack.getItem() instanceof IRelicItem relic)) {
                                                         context.getSource().sendFailure(Component.translatable("command.relics.base.not_relic"));
 
                                                         return 0;
@@ -362,25 +366,25 @@ public class RelicsCommand {
                                                     String stat = RelicAbilityStatArgument.getAbilityStat(context, "stat");
 
                                                     if (ability.equals("all")) {
-                                                        RelicAbilityData data = AbilityUtils.getRelicAbilityData(stack.getItem());
+                                                        RelicAbilityData data = relic.getRelicAbilityData();
 
                                                         if (data == null)
                                                             return 0;
 
                                                         for (String abilityEntry : data.getAbilities().keySet()) {
                                                             if (stat.equals("all")) {
-                                                                for (String statEntry : AbilityUtils.getRelicAbilityEntry(stack.getItem(), abilityEntry).getStats().keySet())
-                                                                    AbilityUtils.randomizeStat(stack, abilityEntry, statEntry);
+                                                                for (String statEntry : relic.getRelicAbilityEntry(abilityEntry).getStats().keySet())
+                                                                    relic.randomizeStat(stack, abilityEntry, statEntry);
                                                             } else {
-                                                                AbilityUtils.randomizeStat(stack, abilityEntry, stat);
+                                                                relic.randomizeStat(stack, abilityEntry, stat);
                                                             }
                                                         }
                                                     } else {
                                                         if (stat.equals("all")) {
-                                                            for (String statEntry : AbilityUtils.getRelicAbilityEntry(stack.getItem(), ability).getStats().keySet())
-                                                                AbilityUtils.randomizeStat(stack, ability, statEntry);
+                                                            for (String statEntry : relic.getRelicAbilityEntry(ability).getStats().keySet())
+                                                                relic.randomizeStat(stack, ability, statEntry);
                                                         } else {
-                                                            AbilityUtils.randomizeStat(stack, ability, stat);
+                                                            relic.randomizeStat(stack, ability, stat);
                                                         }
                                                     }
 

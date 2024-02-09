@@ -11,8 +11,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityDa
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.sounds.SoundEvents;
@@ -26,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class EnderHandItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilityData(RelicAbilityData.builder()
                         .ability("neutrality", RelicAbilityEntry.builder()
@@ -36,7 +34,7 @@ public class EnderHandItem extends RelicItem {
                                 .maxLevel(10)
                                 .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
                                         .predicate("target", data -> {
-                                                    EntityHitResult result = EntityUtils.rayTraceEntity(data.getPlayer(), (entity) -> !entity.isSpectator() && entity.isPickable(), AbilityUtils.getAbilityValue(data.getStack(), "swap", "distance"));
+                                                    EntityHitResult result = EntityUtils.rayTraceEntity(data.getPlayer(), (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(data.getStack(), "swap", "distance"));
 
                                                     return PredicateInfo.builder()
                                                             .condition(result != null && result.getEntity() instanceof LivingEntity)
@@ -66,7 +64,7 @@ public class EnderHandItem extends RelicItem {
 
             Level level = player.getLevel();
 
-            EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), AbilityUtils.getAbilityValue(stack, "swap", "distance"));
+            EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(stack, "swap", "distance"));
 
             if (result == null || !(result.getEntity() instanceof LivingEntity entity))
                 return;
@@ -84,7 +82,7 @@ public class EnderHandItem extends RelicItem {
 
             int distance = (int) Math.round(targetPos.distanceTo(currentPos));
 
-            LevelingUtils.addExperience(player, stack, 1 + Math.round(distance * 0.1F));
+            addExperience(player, stack, 1 + Math.round(distance * 0.1F));
         }
     }
 }

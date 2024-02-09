@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.init.TileRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.tiles.base.IHasHUDInfo;
 import it.hurts.sskirillss.relics.tiles.base.TileBase;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -119,7 +119,7 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
             poseStack.popPose();
 
             RenderSystem.disableBlend();
-        } else if (player.getMainHandItem().getItem() instanceof RelicItem) {
+        } else if (player.getMainHandItem().getItem() instanceof IRelicItem) {
             ResourceLocation texture = new ResourceLocation(Reference.MODID, "textures/hud/info/rmb.png");
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);

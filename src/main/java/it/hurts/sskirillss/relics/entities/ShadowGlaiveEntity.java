@@ -2,8 +2,7 @@ package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import lombok.Getter;
@@ -62,15 +61,18 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     }
 
     private void locateNearestTarget() {
-        if (entityData.get(BOUNCES) >= AbilityUtils.getAbilityValue(stack, "glaive", "bounces")) {
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return;
+
+        if (entityData.get(BOUNCES) >= relic.getAbilityValue(stack, "glaive", "bounces")) {
             this.discard();
 
             return;
         }
 
         List<String> bouncedEntities = Arrays.asList(entityData.get(BOUNCED_ENTITIES).split(","));
-        List<LivingEntity> entitiesAround = level.getEntitiesOfClass(LivingEntity.class,
-                this.getBoundingBox().inflate(AbilityUtils.getAbilityValue(stack, "glaive", "radius")));
+        List<LivingEntity> entitiesAround = getLevel().getEntitiesOfClass(LivingEntity.class,
+                this.getBoundingBox().inflate(relic.getAbilityValue(stack, "glaive", "radius")));
 
         entitiesAround = entitiesAround.stream()
                 .filter(entity -> !bouncedEntities.contains(entity.getUUID().toString()))
@@ -117,6 +119,9 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     public void tick() {
         super.tick();
 
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return;
+
         for (int i = 0; i < 3; i++)
             level.addParticle(new SparkTintData(new Color(255, random.nextInt(100), 255), 0.2F, 30),
                     this.xo, this.yo, this.zo, MathUtils.randomFloat(random) * 0.01F, 0, MathUtils.randomFloat(random) * 0.01F);
@@ -148,7 +153,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
 
-                float damage = (float) AbilityUtils.getAbilityValue(stack, "glaive", "damage");
+                float damage = (float) relic.getAbilityValue(stack, "glaive", "damage");
 
                 if (this.getOwner() instanceof Player player)
                     EntityUtils.hurt(entity, DamageSource.thrown(this, player), damage);
@@ -175,10 +180,10 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     public void onRemovedFromWorld() {
         super.onRemovedFromWorld();
 
-        if (stack.isEmpty())
+        if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
-        LevelingUtils.addExperience(this.getOwner() instanceof Player player ? player : null, stack, (int) Math.floor(entityData.get(BOUNCES) / 2F));
+        relic.addExperience(this.getOwner() instanceof Player player ? player : null, stack, (int) Math.floor(entityData.get(BOUNCES) / 2F));
     }
 
     @Override
