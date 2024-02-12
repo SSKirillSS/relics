@@ -1,11 +1,11 @@
 package it.hurts.sskirillss.relics.entities;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -106,8 +106,8 @@ public class DissectionEntity extends Entity {
                                 MathUtils.randomFloat(random) * step);
                 Vec3 angle = this.getLookAngle().normalize().multiply(mul, mul, mul);
 
-                level().addParticle(new CircleTintData(new Color(150 + random.nextInt(100), 100, 0),
-                                0.2F + random.nextFloat() * 0.1F, 10 + random.nextInt(20), 0.9F, true),
+                level().addParticle(ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(100), 100, 0),
+                                0.2F + random.nextFloat() * 0.1F, 10 + random.nextInt(20), 0.9F),
                         pos.x(), pos.y(), pos.z(), angle.x(), angle.y(), angle.z());
             }
         }
@@ -163,7 +163,7 @@ public class DissectionEntity extends Entity {
                 if (serverLevel.getBlockState(pos).blocksMotion()) {
                     locked = true;
 
-                    serverLevel.sendParticles(new CircleTintData(new Color(255, random.nextInt(50), 0), 0.1F, 10, 0.9F, true),
+                    serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(255, random.nextInt(50), 0), 0.1F, 10, 0.9F),
                             pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, 1, 0.3F, 0.3F, 0.3F, 0.025F);
                 }
             });
@@ -209,7 +209,7 @@ public class DissectionEntity extends Entity {
 
                 ((LivingEntity) target).addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
 
-                serverLevel.sendParticles(new CircleTintData(new Color(150 + random.nextInt(100), 100, 0), 0.2F, 20, 0.9F, true),
+                serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(100), 100, 0), 0.2F, 20, 0.9F),
                         target.getX(), target.getY() + 1.25F, target.getZ(), Math.round(target.getBbHeight() * 3), 0.1F, 0.1F, 0.1F, 0.05F);
             } else {
                 blacklist.add(target.getUUID());

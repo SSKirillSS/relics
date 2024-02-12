@@ -1,10 +1,10 @@
 package it.hurts.sskirillss.relics.entities;
 
-import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
@@ -123,7 +123,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
             return;
 
         for (int i = 0; i < 3; i++)
-            level().addParticle(new SparkTintData(new Color(255, random.nextInt(100), 255), 0.2F, 30),
+            level().addParticle(ParticleUtils.constructSimpleSpark(new Color(255, random.nextInt(100), 255), 0.2F, 30, 0.99F),
                     this.xo, this.yo, this.zo, MathUtils.randomFloat(random) * 0.01F, 0, MathUtils.randomFloat(random) * 0.01F);
 
         if (level().isClientSide())

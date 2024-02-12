@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
@@ -13,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingD
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -120,8 +120,8 @@ public class SpatialSignItem extends RelicItem {
                     }
 
                     for (int i = 0; i < 10; i++)
-                        worldIn.addParticle(new CircleTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(50)),
-                                        0.1F + random.nextFloat() * 0.25F, 100, 0.96F, true), player.getX(),
+                        worldIn.addParticle(ParticleUtils.constructSimpleSpark(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(50)),
+                                        0.1F + random.nextFloat() * 0.25F, 100, 0.96F), player.getX(),
                                 player.getY() + random.nextFloat() * player.getBbHeight(), player.getZ(), 0F, random.nextFloat() * 0.1F, 0F);
 
                     player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));

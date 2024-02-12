@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
@@ -10,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -136,12 +136,12 @@ public class MagicMirrorItem extends RelicItem {
             double extraX = (double) (radius * Mth.sin((float) (Math.PI + angle))) + entity.getX();
             double extraZ = (double) (radius * Mth.cos(angle)) + entity.getZ();
 
-            serverLevel.sendParticles(new CircleTintData(color, Math.max(0.2F, (getUseDuration(stack) - count) * 0.015F),
-                    40, 0.92F, false), extraX, extraY, extraZ, 1, 0F, 0F, 0F, 0F);
+            serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, Math.max(0.2F, (getUseDuration(stack) - count) * 0.015F),
+                    40, 0.92F), extraX, extraY, extraZ, 1, 0F, 0F, 0F, 0F);
         }
 
-        serverLevel.sendParticles(new CircleTintData(color, (getUseDuration(stack) - count) * 0.005F, 10 + random.nextInt(50),
-                        0.95F, false), entity.getX(), entity.getY() + entity.getBbHeight() * 0.5F, entity.getZ(),
+        serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, (getUseDuration(stack) - count) * 0.005F, 10 + random.nextInt(50),
+                        0.95F), entity.getX(), entity.getY() + entity.getBbHeight() * 0.5F, entity.getZ(),
                 (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, entity.getBbHeight() * 0.4F, 0.25F, 0.025F);
     }
 

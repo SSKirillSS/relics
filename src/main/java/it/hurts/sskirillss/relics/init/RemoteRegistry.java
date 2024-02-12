@@ -3,8 +3,6 @@ package it.hurts.sskirillss.relics.init;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.hud.abilities.AbilitiesRenderHandler;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintFactory;
-import it.hurts.sskirillss.relics.client.particles.spark.SparkTintFactory;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
 import it.hurts.sskirillss.relics.client.renderer.items.items.CurioRenderer;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
@@ -40,7 +38,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -148,12 +145,6 @@ public class RemoteRegistry {
     @SubscribeEvent
     public static void onTooltipRegistry(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(ArrowQuiverTooltip.class, ClientArrowQuiverTooltip::new);
-    }
-
-    @SubscribeEvent
-    public static void onParticleRegistry(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(ParticleRegistry.CIRCLE_TINT.get(), CircleTintFactory::new);
-        event.registerSpriteSet(ParticleRegistry.SPARK_TINT.get(), SparkTintFactory::new);
     }
 
     @SubscribeEvent

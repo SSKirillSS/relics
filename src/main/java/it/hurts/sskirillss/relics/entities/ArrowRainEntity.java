@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.entities;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -72,7 +71,7 @@ public class ArrowRainEntity extends ThrowableProjectile {
 
         RandomSource random = level().getRandom();
 
-        ParticleUtils.createCyl(new CircleTintData(new Color(255, 255, 255), 0.2F, 1, 1F, false),
+        ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(255, 255, 255), 0.2F, 1, 1F),
                 this.position(), level(), getRadius(), 0.2F);
 
         if (!level().isClientSide()) {

@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.back;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
@@ -17,6 +16,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingD
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -99,7 +99,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
 
         if (target != null) {
             double radius = getAbilityValue(stack, "backstab", "distance");
-            double step = 0.25D;
+            double step = 0.15D;
             int offset = 16;
 
             double len = (float) (2 * Math.PI * radius);
@@ -151,8 +151,8 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
                 }
 
                 if (tries < offset * 2)
-                    serverLevel.sendParticles(new CircleTintData(new Color(50 + serverLevel.getRandom().nextInt(50), 0, 255), 0.2F, 3, 0.75F, true),
-                            extraX, extraY + 0.1F, extraZ, 1, 0.05, 0.05, 0.05, 0.025);
+                    serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(50 + serverLevel.getRandom().nextInt(50), 0, 255), 0.25F, 3, 0.75F),
+                            extraX, extraY + 0.2F, extraZ, 1, 0.05, 0.05, 0.05, 0.025);
             }
         }
 

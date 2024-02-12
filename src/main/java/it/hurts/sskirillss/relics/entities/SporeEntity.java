@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.entities;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -105,10 +104,10 @@ public class SporeEntity extends ThrowableProjectile {
         double inlinedSize = Math.pow(Math.log10(1 + getSize()), 1D / 3D);
 
         if (isStuck()) {
-            ParticleUtils.createBall(new CircleTintData(new Color(random.nextInt(200), 255, 0), (float) (inlinedSize * 0.25F), 40, 0.95F, false),
+            ParticleUtils.createBall(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(200), 255, 0), (float) (inlinedSize * 0.25F), 40, 0.95F),
                     this.position().add(0, inlinedSize / 6, 0), level, 0, (float) (inlinedSize * 0.025F));
         } else {
-            level.addParticle(new CircleTintData(new Color(random.nextInt(200), 255, 0), (float) (inlinedSize * 0.25F), 40, 0.9F, false),
+            level.addParticle(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(200), 255, 0), (float) (inlinedSize * 0.25F), 40, 0.9F),
                     this.getX(), this.getY() + (inlinedSize / 6F), this.getZ(), MathUtils.randomFloat(random) * 0.025F,
                     MathUtils.randomFloat(random) * 0.025F, MathUtils.randomFloat(random) * 0.025F);
         }
@@ -146,8 +145,8 @@ public class SporeEntity extends ThrowableProjectile {
 
         double inlinedSize = Math.pow(Math.log10(1 + getSize()), 1D / 3D);
 
-        ParticleUtils.createBall(new CircleTintData(new Color(100 + level().getRandom().nextInt(50), 255, 0),
-                        (float) (inlinedSize * 0.35F), 40, 0.9F, true),
+        ParticleUtils.createBall(ParticleUtils.constructSimpleSpark(new Color(100 + level().getRandom().nextInt(50), 255, 0),
+                        (float) (inlinedSize * 0.35F), 40, 0.9F),
                 this.position().add(0, inlinedSize / 3, 0), level(), (int) Math.ceil(1 + inlinedSize), (float) (inlinedSize / 2D));
 
         if (this.getOwner() instanceof Player player) {
