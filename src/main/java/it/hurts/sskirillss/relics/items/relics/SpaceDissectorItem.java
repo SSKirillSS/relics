@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.entities.DissectionEntity;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
@@ -161,8 +160,8 @@ public class SpaceDissectorItem extends RelicItem {
                 view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
         Vec3 targetVec = ray.getLocation();
 
-        ParticleUtils.createBall(new CircleTintData(new Color(150 + random.nextInt(100), 100, 0),
-                0.2F + random.nextFloat() * 0.1F, 10 + random.nextInt(20), 0.9F, true), targetVec, level, 1, 0.25F);
+        ParticleUtils.createBall(ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(100), 100, 0),
+                0.2F + random.nextFloat() * 0.1F, 10 + random.nextInt(20), 0.9F), targetVec, level, 1, 0.25F);
 
         String stringUUID = NBTUtils.getString(stack, TAG_PORTAL, "");
 

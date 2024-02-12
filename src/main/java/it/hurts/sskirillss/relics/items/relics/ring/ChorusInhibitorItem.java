@@ -1,9 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -72,7 +70,7 @@ public class ChorusInhibitorItem extends RelicItem {
         Vec3 start = player.position().add(0, player.getBbHeight() * 0.65D, 0);
         Vec3 end = new Vec3(pos.getX() + 0.5F, pos.getY() - 0.5F, pos.getZ() + 0.5F);
 
-        ParticleUtils.createLine(new CircleTintData(new Color(20, 0, 80), 0.15F, 0, 0.5F, false),
+        ParticleUtils.createLine(ParticleUtils.constructSimpleSpark(new Color(20, 0, 80), 0.15F, 0, 0.5F),
                 player.getLevel(), start, end, (int) Math.round(start.distanceTo(end) * 5));
     }
 

@@ -1,9 +1,9 @@
 package it.hurts.sskirillss.relics.entities;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -59,7 +59,7 @@ public class StalactiteEntity extends ThrowableProjectile {
         if (level.isClientSide())
             return;
 
-        ((ServerLevel) level).sendParticles(new CircleTintData(new Color(100, 0, 255), 0.1F, 40, 0.9F, false),
+        ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(100, 0, 255), 0.1F, 40, 0.9F),
                 this.xo, this.yo, this.zo, 1, 0.025D, 0.025D, 0.025D, 0.01F);
     }
 

@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -138,10 +137,10 @@ public class BlazingFlaskItem extends RelicItem {
             }
 
             if (radius <= step)
-                ParticleUtils.createBall(new CircleTintData(new Color(255, 100, 0), 0.3F, 20, 0.9F, true),
+                ParticleUtils.createBall(ParticleUtils.constructSimpleSpark(new Color(255, 100, 0), 0.3F, 20, 0.9F),
                         center, level, 3, 0.2F);
 
-            ParticleUtils.createCyl(new CircleTintData(new Color(255, 100, 0), 0.2F, time, 0.8F, true),
+            ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(255, 100, 0), 0.2F, time, 0.8F),
                     center, level, radius, 0.15F);
         }
     }

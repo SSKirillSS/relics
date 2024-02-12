@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.entities.ArrowRainEntity;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
@@ -271,7 +270,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
             Vec3 target = ray.getLocation();
 
-            ParticleUtils.createCyl(new CircleTintData(new Color(255, 255, 255), 0.2F, 0, 1F, false),
+            ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(255, 255, 255), 0.2F, 0, 1F),
                     target, level, getAbilityValue(stack, "rain", "radius"), 0.2F);
         }
     }

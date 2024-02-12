@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
@@ -159,11 +158,11 @@ public class RageGloveItem extends RelicItem {
             Vec3 delta = end.subtract(start);
             Vec3 dir = delta.normalize();
 
-            for (int i = 0; i < distance * 10; ++i) {
-                double progress = i * delta.length() / (distance * 10);
+            for (int i = 0; i < distance * 20; ++i) {
+                double progress = i * delta.length() / (distance * 20);
 
-                level.addParticle(new CircleTintData(new Color(255, 60 + random.nextInt(60), 0), 0.2F + random.nextFloat() * 0.5F,
-                                60 + random.nextInt(60), 0.95F, true),
+                level.addParticle(ParticleUtils.constructSimpleSpark(new Color(255, 60 + random.nextInt(60), 0), 0.2F + random.nextFloat() * 0.5F,
+                                60 + random.nextInt(60), 0.95F),
                         start.x + dir.x * progress, start.y + dir.y * progress,
                         start.z + dir.z * progress, 0, MathUtils.randomFloat(random) * 0.075F, 0);
             }

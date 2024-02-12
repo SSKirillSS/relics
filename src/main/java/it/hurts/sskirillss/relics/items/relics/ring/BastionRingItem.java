@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
 import com.mojang.datafixers.util.Pair;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -13,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -112,7 +112,7 @@ public class BastionRingItem extends RelicItem {
             float x = (float) (((finalVec.x - currentVec.x) * i / distance) + currentVec.x);
             float z = (float) (((finalVec.z - currentVec.z) * i / distance) + currentVec.z);
 
-            serverLevel.sendParticles(new CircleTintData(new Color(255, 240, 150), 0.2F - i * 0.00375F, 1, 0.99F, false),
+            serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(255, 240, 150), 0.2F - i * 0.00375F, 1, 0.99F),
                     x, piglin.getY() + (piglin.getBbHeight() / 1.75F), z, 1, 0F, 0F, 0F, 0);
         }
 
@@ -121,7 +121,7 @@ public class BastionRingItem extends RelicItem {
             double extraX = (double) (0.75F * Mth.sin((float) (Math.PI + angle))) + piglin.getX();
             double extraZ = (double) (0.75F * Mth.cos(angle)) + piglin.getZ();
 
-            serverLevel.sendParticles(new CircleTintData(new Color(255, 240, 150), 0.2F, 30, 0.95F, false),
+            serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(255, 240, 150), 0.2F, 30, 0.95F),
                     extraX, piglin.getY() + (piglin.getBbHeight() / 1.75F), extraZ, 1, 0F, 0F, 0F, 0);
         }
     }
