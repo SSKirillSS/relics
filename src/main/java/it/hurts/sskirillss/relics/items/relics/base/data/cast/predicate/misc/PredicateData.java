@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.items.relics.base.data.cast.data;
+package it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.misc;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

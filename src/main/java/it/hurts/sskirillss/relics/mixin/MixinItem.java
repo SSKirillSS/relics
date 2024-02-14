@@ -1,9 +1,9 @@
 package it.hurts.sskirillss.relics.mixin;
 
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -26,12 +26,20 @@ import java.util.Map;
 
 @Mixin(Item.class)
 public class MixinItem {
+    @Inject(at = @At(value = "TAIL"), method = "<init>")
+    protected void init(Item.Properties properties, CallbackInfo ci) {
+        Item item = (Item) (Object) this;
+
+        if (item instanceof IRelicItem relic)
+            RelicStorage.RELICS.put(relic, relic.getRelicData());
+    }
+
     @Inject(method = "inventoryTick", at = @At("HEAD"))
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected, CallbackInfo ci) {
         if (level.isClientSide() || !(stack.getItem() instanceof IRelicItem relic))
             return;
 
-        for (Map.Entry<String, RelicAbilityEntry> entry : relic.getRelicAbilityData().getAbilities().entrySet()) {
+        for (Map.Entry<String, AbilityData> entry : relic.getRelicData().getAbilities().getAbilities().entrySet()) {
             String ability = entry.getKey();
 
             if (relic.getAbilityCooldown(stack, ability) > 0)
@@ -57,17 +65,12 @@ public class MixinItem {
                 if (relicData == null)
                     return;
 
-                RelicAbilityData abilityData = relicData.getAbilityData();
-
-                if (abilityData == null)
-                    return;
-
-                Map<String, RelicAbilityEntry> abilities = abilityData.getAbilities();
+                Map<String, AbilityData> abilities = relicData.getAbilities().getAbilities();
 
                 tooltip.add(Component.literal("▶ ").withStyle(ChatFormatting.DARK_GREEN)
                         .append(Component.translatable("tooltip.relics.relic.tooltip.abilities").withStyle(ChatFormatting.GREEN)));
 
-                for (Map.Entry<String, RelicAbilityEntry> entry : abilities.entrySet()) {
+                for (Map.Entry<String, AbilityData> entry : abilities.entrySet()) {
                     String id = ForgeRegistries.ITEMS.getKey(item).getPath();
                     String name = entry.getKey();
 

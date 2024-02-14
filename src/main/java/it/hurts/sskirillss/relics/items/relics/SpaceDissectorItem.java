@@ -3,11 +3,12 @@ package it.hurts.sskirillss.relics.items.relics;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.entities.DissectionEntity;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -35,22 +36,22 @@ public class SpaceDissectorItem extends RelicItem {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("dissection", RelicAbilityEntry.builder()
-                                .stat("distance", RelicAbilityStat.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("dissection")
+                                .stat(StatData.builder("distance")
                                         .initialValue(16D, 32D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.25D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
-                                .stat("time", RelicAbilityStat.builder()
+                                .stat(StatData.builder("time")
                                         .initialValue(5D, 10D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 200))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 200))
+                .style(RelicStyleData.builder()
                         .borders("#008cd7", "#0a3484")
                         .build())
                 .build();

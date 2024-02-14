@@ -12,9 +12,8 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.Experi
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -94,24 +93,15 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         manager.bindForSetup(TEXTURE);
 
-        RelicData relicData = relic.getRelicData();
-
         int x = (this.width - backgroundWidth) / 2;
         int y = (this.height - backgroundHeight) / 2;
 
-        if (relicData == null)
-            return;
+        int step = 0;
 
-        RelicAbilityData abilityData = relicData.getAbilityData();
+        for (Map.Entry<String, AbilityData> ability : relic.getRelicData().getAbilities().getAbilities().entrySet()) {
+            this.addRenderableWidget(new AbilityCardIconWidget(x + 41 + step, y + 105, this, ability.getKey()));
 
-        if (abilityData != null) {
-            int step = 0;
-
-            for (Map.Entry<String, RelicAbilityEntry> ability : abilityData.getAbilities().entrySet()) {
-                this.addRenderableWidget(new AbilityCardIconWidget(x + 41 + step, y + 105, this, ability.getKey()));
-
-                step += 39;
-            }
+            step += 39;
         }
 
         this.addRenderableWidget(new ExperienceExchangeWidget(x + 239, y + 72, this));
@@ -275,7 +265,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             RenderSystem.disableBlend();
         }
 
-        ResourceLocation background = new ResourceLocation(Reference.MODID, "textures/gui/description/backgrounds/" + relic.getRelicData().getStyleData().getStyle().getID() + ".png");
+        ResourceLocation background = new ResourceLocation(Reference.MODID, "textures/gui/description/backgrounds/" + relic.getRelicData().getStyle().getStyle().getID() + ".png");
 
         RenderSystem.setShaderTexture(0, background);
 

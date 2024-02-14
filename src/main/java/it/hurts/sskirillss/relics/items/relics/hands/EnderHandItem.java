@@ -2,15 +2,15 @@ package it.hurts.sskirillss.relics.items.relics.hands;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.sounds.SoundEvents;
@@ -26,38 +26,35 @@ public class EnderHandItem extends RelicItem {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("neutrality", RelicAbilityEntry.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("neutrality")
                                 .maxLevel(0)
                                 .build())
-                        .ability("swap", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("swap")
                                 .maxLevel(10)
-                                .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
+                                .active(CastType.INSTANTANEOUS, CastPredicate.builder()
                                         .predicate("target", data -> {
-                                                    EntityHitResult result = EntityUtils.rayTraceEntity(data.getPlayer(), (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(data.getStack(), "swap", "distance"));
+                                            EntityHitResult result = EntityUtils.rayTraceEntity(data.getPlayer(), (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(data.getStack(), "swap", "distance"));
 
-                                                    return PredicateInfo.builder()
-                                                            .condition(result != null && result.getEntity() instanceof LivingEntity)
-                                                            .build();
-                                                }
-                                        )
-                                )
-                                .stat("distance", RelicAbilityStat.builder()
+                                            return result != null && result.getEntity() instanceof LivingEntity;
+                                        })
+                                        .build())
+                                .stat(StatData.builder("distance")
                                         .initialValue(16D, 32D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 100))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 100))
+                .style(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
                         .build())
                 .build();
     }
 
     @Override
-    public void castActiveAbility(ItemStack stack, Player player, String ability, AbilityCastType type, AbilityCastStage stage) {
+    public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ability.equals("swap")) {
             if (player.getCooldowns().isOnCooldown(stack.getItem()))
                 return;

@@ -8,10 +8,9 @@ import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityArgument;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityStatArgument;
 import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -45,18 +44,18 @@ public class RelicsCommand {
 
                             RelicData relicData = relic.getRelicData();
 
-                            relic.setLevel(stack, relicData.getLevelingData().getMaxLevel());
+                            relic.setLevel(stack, relicData.getLeveling().getMaxLevel());
 
-                            for (Map.Entry<String, RelicAbilityEntry> abilityEntry : relicData.getAbilityData().getAbilities().entrySet()) {
+                            for (Map.Entry<String, AbilityData> abilityEntry : relicData.getAbilities().getAbilities().entrySet()) {
                                 String abilityId = abilityEntry.getKey();
-                                RelicAbilityEntry abilityInfo = abilityEntry.getValue();
+                                AbilityData abilityInfo = abilityEntry.getValue();
 
                                 relic.setAbilityPoints(stack, abilityId, abilityInfo.getMaxLevel());
 
-                                for (Map.Entry<String, RelicAbilityStat> statEntry : abilityInfo.getStats().entrySet()) {
+                                for (Map.Entry<String, StatData> statEntry : abilityInfo.getStats().entrySet()) {
                                     String statId = statEntry.getKey();
 
-                                    relic.setAbilityValue(stack, abilityId, statId, relic.getStatByQuality(abilityId, statId, relic.MAX_QUALITY));
+                                    relic.setAbilityValue(stack, abilityId, statId, relic.getStatByQuality(abilityId, statId, relic.getMaxQuality()));
                                 }
                             }
 
@@ -76,14 +75,14 @@ public class RelicsCommand {
 
                             RelicData relicData = relic.getRelicData();
 
-                            relic.setLevel(stack, relicData.getLevelingData().getMaxLevel());
+                            relic.setLevel(stack, relicData.getLeveling().getMaxLevel());
 
-                            for (Map.Entry<String, RelicAbilityEntry> abilityEntry : relicData.getAbilityData().getAbilities().entrySet()) {
+                            for (Map.Entry<String, AbilityData> abilityEntry : relicData.getAbilities().getAbilities().entrySet()) {
                                 String abilityId = abilityEntry.getKey();
 
                                 relic.setAbilityPoints(stack, abilityId, 0);
 
-                                for (Map.Entry<String, RelicAbilityStat> statEntry : abilityEntry.getValue().getStats().entrySet()) {
+                                for (Map.Entry<String, StatData> statEntry : abilityEntry.getValue().getStats().entrySet()) {
                                     String statId = statEntry.getKey();
 
                                     relic.setAbilityValue(stack, abilityId, statId, relic.getStatByQuality(abilityId, statId, 0));
@@ -191,12 +190,7 @@ public class RelicsCommand {
                                                             int points = IntegerArgumentType.getInteger(context, "points");
 
                                                             if (ability.equals("all")) {
-                                                                RelicAbilityData data = relic.getRelicAbilityData();
-
-                                                                if (data == null)
-                                                                    return 0;
-
-                                                                for (String entry : data.getAbilities().keySet()) {
+                                                                for (String entry : relic.getRelicData().getAbilities().getAbilities().keySet()) {
                                                                     switch (action) {
                                                                         case SET -> relic.setAbilityPoints(stack, entry, points);
                                                                         case ADD -> relic.addAbilityPoints(stack, entry, points);
@@ -235,14 +229,9 @@ public class RelicsCommand {
                                                                     double value = DoubleArgumentType.getDouble(context, "value");
 
                                                                     if (ability.equals("all")) {
-                                                                        RelicAbilityData data = relic.getRelicAbilityData();
-
-                                                                        if (data == null)
-                                                                            return 0;
-
-                                                                        for (String abilityEntry : data.getAbilities().keySet()) {
+                                                                        for (String abilityEntry : relic.getRelicData().getAbilities().getAbilities().keySet()) {
                                                                             if (stat.equals("all")) {
-                                                                                for (String statEntry : relic.getRelicAbilityEntry(abilityEntry).getStats().keySet()) {
+                                                                                for (String statEntry : relic.getAbilityData(abilityEntry).getStats().keySet()) {
                                                                                     switch (action) {
                                                                                         case SET -> relic.setAbilityValue(stack, abilityEntry, statEntry, value);
                                                                                         case ADD -> relic.addAbilityValue(stack, abilityEntry, statEntry, value);
@@ -259,7 +248,7 @@ public class RelicsCommand {
                                                                         }
                                                                     } else {
                                                                         if (stat.equals("all")) {
-                                                                            for (String statEntry : relic.getRelicAbilityEntry(ability).getStats().keySet()) {
+                                                                            for (String statEntry : relic.getAbilityData(ability).getStats().keySet()) {
                                                                                 switch (action) {
                                                                                     case SET -> relic.setAbilityValue(stack, ability, statEntry, value);
                                                                                     case ADD -> relic.addAbilityValue(stack, ability, statEntry, value);
@@ -299,14 +288,9 @@ public class RelicsCommand {
                                                                     int quality = IntegerArgumentType.getInteger(context, "quality");
 
                                                                     if (ability.equals("all")) {
-                                                                        RelicAbilityData data = relic.getRelicAbilityData();
-
-                                                                        if (data == null)
-                                                                            return 0;
-
-                                                                        for (String abilityEntry : data.getAbilities().keySet()) {
+                                                                        for (String abilityEntry : relic.getRelicData().getAbilities().getAbilities().keySet()) {
                                                                             if (stat.equals("all")) {
-                                                                                for (String statEntry : relic.getRelicAbilityEntry(abilityEntry).getStats().keySet()) {
+                                                                                for (String statEntry : relic.getAbilityData(abilityEntry).getStats().keySet()) {
                                                                                     double value = relic.getStatByQuality(abilityEntry, statEntry, quality);
 
                                                                                     switch (action) {
@@ -327,7 +311,7 @@ public class RelicsCommand {
                                                                         }
                                                                     } else {
                                                                         if (stat.equals("all")) {
-                                                                            for (String statEntry : relic.getRelicAbilityEntry(ability).getStats().keySet()) {
+                                                                            for (String statEntry : relic.getAbilityData(ability).getStats().keySet()) {
                                                                                 double value = relic.getStatByQuality(ability, statEntry, quality);
 
                                                                                 switch (action) {
@@ -366,14 +350,9 @@ public class RelicsCommand {
                                                     String stat = RelicAbilityStatArgument.getAbilityStat(context, "stat");
 
                                                     if (ability.equals("all")) {
-                                                        RelicAbilityData data = relic.getRelicAbilityData();
-
-                                                        if (data == null)
-                                                            return 0;
-
-                                                        for (String abilityEntry : data.getAbilities().keySet()) {
+                                                        for (String abilityEntry : relic.getRelicData().getAbilities().getAbilities().keySet()) {
                                                             if (stat.equals("all")) {
-                                                                for (String statEntry : relic.getRelicAbilityEntry(abilityEntry).getStats().keySet())
+                                                                for (String statEntry : relic.getAbilityData(abilityEntry).getStats().keySet())
                                                                     relic.randomizeStat(stack, abilityEntry, statEntry);
                                                             } else {
                                                                 relic.randomizeStat(stack, abilityEntry, stat);
@@ -381,7 +360,7 @@ public class RelicsCommand {
                                                         }
                                                     } else {
                                                         if (stat.equals("all")) {
-                                                            for (String statEntry : relic.getRelicAbilityEntry(ability).getStats().keySet())
+                                                            for (String statEntry : relic.getAbilityData(ability).getStats().keySet())
                                                                 relic.randomizeStat(stack, ability, statEntry);
                                                         } else {
                                                             relic.randomizeStat(stack, ability, stat);

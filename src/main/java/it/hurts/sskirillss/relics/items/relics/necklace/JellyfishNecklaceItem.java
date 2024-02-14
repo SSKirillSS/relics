@@ -8,12 +8,13 @@ import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.EntityModel;
@@ -44,29 +45,29 @@ public class JellyfishNecklaceItem extends RelicItem implements IRenderableCurio
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("unsinkable", RelicAbilityEntry.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("unsinkable")
                                 .maxLevel(0)
                                 .build())
-                        .ability("shock", RelicAbilityEntry.builder()
-                                .active(AbilityCastType.TOGGLEABLE)
-                                .stat("damage", RelicAbilityStat.builder()
+                        .ability(AbilityData.builder("shock")
+                                .active(CastType.TOGGLEABLE)
+                                .stat(StatData.builder("damage")
                                         .initialValue(0.5D, 2.5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.2D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
-                        .ability("paralysis", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("paralysis")
                                 .requiredLevel(5)
-                                .stat("duration", RelicAbilityStat.builder()
+                                .stat(StatData.builder("duration")
                                         .initialValue(0.5D, 1.5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 200))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 200))
+                .style(RelicStyleData.builder()
                         .borders("#dc41ff", "#832698")
                         .build())
                 .build();

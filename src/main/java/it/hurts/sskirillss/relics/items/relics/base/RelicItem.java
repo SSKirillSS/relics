@@ -5,9 +5,6 @@ import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.items.ItemBase;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -24,23 +21,14 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicItem {
-    // TODO: Move to static map
-    @Getter
-    @Setter
-    private RelicData relicData;
-
     public RelicItem(Item.Properties properties) {
         super(properties);
-
-        setRelicData(constructDefaultRelicData());
     }
 
     public RelicItem() {
         super(new Item.Properties()
                 .rarity(Rarity.RARE)
                 .stacksTo(1));
-
-        setRelicData(constructDefaultRelicData());
     }
 
     @Override
@@ -78,7 +66,4 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
         return true;
     }
-
-    @Override
-    public abstract RelicData constructDefaultRelicData();
 }

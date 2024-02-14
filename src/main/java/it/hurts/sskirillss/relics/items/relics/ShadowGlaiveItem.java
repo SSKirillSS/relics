@@ -6,11 +6,12 @@ import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.entities.ShadowSawEntity;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -39,45 +40,45 @@ public class ShadowGlaiveItem extends RelicItem {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("glaive", RelicAbilityEntry.builder()
-                                .stat("recharge", RelicAbilityStat.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("glaive")
+                                .stat(StatData.builder("recharge")
                                         .initialValue(30D, 10D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.09D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.09D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
-                                .stat("bounces", RelicAbilityStat.builder()
+                                .stat(StatData.builder("bounces")
                                         .initialValue(3D, 5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
-                                .stat("damage", RelicAbilityStat.builder()
+                                .stat(StatData.builder("damage")
                                         .initialValue(2D, 5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.2D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
-                                .stat("radius", RelicAbilityStat.builder()
+                                .stat(StatData.builder("radius")
                                         .initialValue(2.5D, 5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.25D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
-                        .ability("saw", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("saw")
                                 .requiredLevel(5)
-                                .stat("speed", RelicAbilityStat.builder()
+                                .stat(StatData.builder("speed")
                                         .initialValue(15D, 20D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -1D)
+                                        .upgradeModifier(UpgradeOperation.ADD, -1D)
                                         .formatValue(value -> MathUtils.round(20 - Math.max(1, value), 1))
                                         .build())
-                                .stat("damage", RelicAbilityStat.builder()
+                                .stat(StatData.builder("damage")
                                         .initialValue(0.75D, 1.5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.2D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 100))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 100))
+                .style(RelicStyleData.builder()
                         .borders("#ffe0d2", "#9c756b")
                         .build())
                 .build();

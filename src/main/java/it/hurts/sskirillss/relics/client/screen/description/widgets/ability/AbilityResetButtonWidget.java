@@ -12,7 +12,7 @@ import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -114,7 +114,7 @@ public class AbilityResetButtonWidget extends AbstractDescriptionWidget implemen
         if (!(screen.stack.getItem() instanceof IRelicItem relic) || !relic.canUseAbility(screen.stack, ability))
             return;
 
-        RelicAbilityEntry data = relic.getRelicAbilityEntry(ability);
+        AbilityData data = relic.getAbilityData(ability);
 
         if (data.getStats().isEmpty())
             return;

@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import it.hurts.sskirillss.octolib.config.api.IOctoConfig;
 import it.hurts.sskirillss.relics.config.ConfigHelper;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import lombok.Data;
 
 import java.nio.file.Path;
@@ -12,9 +12,9 @@ import java.nio.file.Path;
 @Data
 public class RelicConfigData implements IOctoConfig {
     @Expose
-    private final transient RelicItem relic;
+    private final transient IRelicItem relic;
 
-    public RelicConfigData(RelicItem relic) {
+    public RelicConfigData(IRelicItem relic) {
         this.relic = relic;
     }
 
