@@ -340,35 +340,20 @@ public interface IRelicItem {
         return getExchangeCost(stack) <= EntityUtils.getPlayerTotalExperience(player);
     }
 
-    @Nullable
     default CastPredicate getAbilityCastPredicates(String ability) {
         return getAbilityData(ability).getCastData().getValue();
     }
 
-    @Nullable
     default PredicateEntry getAbilityCastPredicate(String ability, String predicate) {
-        CastPredicate predicates = getAbilityCastPredicates(ability);
-
-        if (predicates == null)
-            return null;
-
-        return predicates.getPredicates().getOrDefault(predicate, null);
+        return getAbilityCastPredicates(ability).getPredicates().get(predicate);
     }
 
     default boolean testAbilityCastPredicate(Player player, ItemStack stack, String ability, String predicate) {
-        PredicateEntry entry = getAbilityCastPredicate(ability, predicate);
-
-        if (entry == null)
-            return false;
-
-        return entry.getPredicate().apply(new PredicateData(player, stack));
+        return getAbilityCastPredicate(ability, predicate).getPredicate().apply(new PredicateData(player, stack));
     }
 
     default boolean testAbilityCastPredicates(Player player, ItemStack stack, String ability) {
         CastPredicate predicates = getAbilityCastPredicates(ability);
-
-        if (predicates == null)
-            return false;
 
         for (Map.Entry<String, PredicateEntry> entry : predicates.getPredicates().entrySet()) {
             if (!entry.getValue().getPredicate().apply(new PredicateData(player, stack)))
