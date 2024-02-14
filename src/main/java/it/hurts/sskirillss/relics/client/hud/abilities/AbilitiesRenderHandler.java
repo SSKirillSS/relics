@@ -190,7 +190,7 @@ public class AbilitiesRenderHandler {
 
         PoseStack poseStack = guiGraphics.pose();
 
-        boolean isLocked = relic.canPlayerUseActiveAbility(player, stack, ability.getAbility());
+        boolean isLocked = !relic.canPlayerUseActiveAbility(player, stack, ability.getAbility());
 
         ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png");
 
