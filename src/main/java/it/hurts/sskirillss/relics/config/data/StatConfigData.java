@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.config.data;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,6 +13,6 @@ public class StatConfigData {
     private double minThresholdValue;
     private double maxThresholdValue;
 
-    private RelicAbilityStat.Operation upgradeOperation;
+    private UpgradeOperation upgradeOperation;
     private double upgradeModifier;
 }

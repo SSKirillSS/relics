@@ -14,9 +14,9 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.Abil
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -147,7 +147,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         if (relicData == null)
             return;
 
-        RelicAbilityEntry abilityData = relic.getRelicAbilityEntry(ability);
+        AbilityData abilityData = relic.getAbilityData(ability);
 
         if (abilityData == null)
             return;
@@ -220,7 +220,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
         int level = relic.getAbilityPoints(stack, ability);
-        int maxLevel = abilityData.getMaxLevel() == -1 ? (relicData.getLevelingData().getMaxLevel() / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
+        int maxLevel = abilityData.getMaxLevel() == -1 ? (relicData.getLeveling().getMaxLevel() / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
 
         MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability);
 
@@ -247,7 +247,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         boolean isHoveredReset = !isLocked && resetButton.isHoveredOrFocused();
 
         for (String stat : relic.getAbilityInitialValues(stack, ability).keySet()) {
-            RelicAbilityStat statData = relic.getRelicAbilityStat(ability, stat);
+            StatData statData = relic.getStatData(ability, stat);
 
             if (statData != null) {
                 MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat))));

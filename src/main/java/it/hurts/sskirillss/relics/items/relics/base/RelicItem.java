@@ -5,10 +5,6 @@ import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.items.ItemBase;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -24,15 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicItem {
-    // TODO: Move to static map
-    @Getter
-    @Setter
-    private RelicData relicData;
-
     public RelicItem(Item.Properties properties) {
         super(properties);
-
-        setRelicData(constructDefaultRelicData());
     }
 
     public RelicItem() {
@@ -40,8 +29,6 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
                 .tab(RelicsTab.RELICS_TAB)
                 .rarity(Rarity.RARE)
                 .stacksTo(1));
-
-        setRelicData(constructDefaultRelicData());
     }
 
     @Override
@@ -116,7 +103,4 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
 //
 //        return Color.decode(percentage < 33.3F ? color.getLeft() : percentage < 66.6F ? color.getMiddle() : color.getRight()).getRGB();
     }
-
-    @Override
-    public abstract RelicData constructDefaultRelicData();
 }

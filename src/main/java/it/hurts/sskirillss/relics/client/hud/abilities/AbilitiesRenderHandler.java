@@ -8,13 +8,12 @@ import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.misc.PredicateData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.PredicateEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -86,7 +85,7 @@ public class AbilitiesRenderHandler {
             if (!(stack.getItem() instanceof IRelicItem relic))
                 continue;
 
-            AbilityCastPredicate predicate = relic.getAbilityCastPredicates(abilityName);
+            CastPredicate predicate = relic.getAbilityCastPredicates(abilityName);
 
             if (predicate == null)
                 continue;
@@ -157,18 +156,17 @@ public class AbilitiesRenderHandler {
         x = -70;
         y = 25;
 
-        for (Map.Entry<String, PredicateInfo> entry : cache.get(selectedAbility.getAbility()).predicate.info.entrySet()) {
+        for (Map.Entry<String, Boolean> entry : cache.get(selectedAbility.getAbility()).predicate.info.entrySet()) {
             String predicateName = entry.getKey();
-            PredicateInfo info = entry.getValue();
+            boolean isCompleted = entry.getValue();
 
-            RenderSystem.setShaderTexture(0, info.getCondition() ? new ResourceLocation(Reference.MODID, "textures/gui/description/icons/completed.png")
-                    : info.getIcon() != null ? info.getIcon() : new ResourceLocation(Reference.MODID, "textures/gui/description/icons/" + registryName + "/" + predicateName + ".png"));
+            RenderSystem.setShaderTexture(0, isCompleted ? new ResourceLocation(Reference.MODID, "textures/gui/description/icons/completed.png") : new ResourceLocation(Reference.MODID, "textures/gui/description/icons/" + registryName + "/" + predicateName + ".png"));
 
             RenderUtils.renderTextureFromCenter(poseStack, x, y + yOff, 0, 0, 16, 16, 16, 16, 0.5F);
 
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            MC.font.drawShadow(poseStack, Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.ability + ".predicate." + predicateName, info.getPlaceholders().toArray()).withStyle(info.getCondition() ? ChatFormatting.STRIKETHROUGH : ChatFormatting.RESET), (x + 7) * 2F, (y - 2 + yOff) * 2F, info.getCondition() ? 0xbeffb8 : 0xf17f9c);
+            MC.font.drawShadow(poseStack, Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.ability + ".predicate." + predicateName).withStyle(isCompleted ? ChatFormatting.STRIKETHROUGH : ChatFormatting.RESET), (x + 7) * 2, (y - 2 + yOff) * 2, isCompleted ? 0xbeffb8 : 0xf17f9c);
 
             poseStack.scale(2F, 2F, 2F);
 
@@ -228,9 +226,9 @@ public class AbilitiesRenderHandler {
         RenderUtils.renderTextureFromCenter(poseStack, x, y, 0, isLocked ? 43 : 0, 256, 256, 30, 42, scale);
 
         if (relic.isAbilityTicking(stack, ability.getAbility())) {
-            AbilityCastType type = relic.getRelicAbilityEntry(ability.getAbility()).getCastData().getKey();
+            CastType type = relic.getAbilityData(ability.getAbility()).getCastData().getKey();
 
-            if (type == AbilityCastType.TOGGLEABLE) {
+            if (type == CastType.TOGGLEABLE) {
                 RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png"));
 
                 RenderSystem.enableBlend();
@@ -283,12 +281,12 @@ public class AbilitiesRenderHandler {
             iconDescription = String.valueOf(MathUtils.round(cooldown / 20D, 1));
         } else {
             PredicateCache predicateCache = ability.getCache().predicate;
-            Collection<PredicateInfo> infoEntries = predicateCache.info.values();
+            Collection<Boolean> infoEntries = predicateCache.info.values();
 
             int successPredicates = 0;
 
-            for (PredicateInfo info : infoEntries) {
-                if (info.getCondition())
+            for (boolean value : infoEntries) {
+                if (value)
                     successPredicates++;
             }
 
@@ -400,7 +398,7 @@ public class AbilitiesRenderHandler {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PredicateCache {
-        private Map<String, PredicateInfo> info = new HashMap<>();
+        private Map<String, Boolean> info = new HashMap<>();
     }
 
     @Mod.EventBusSubscriber(value = Dist.CLIENT)
@@ -518,32 +516,32 @@ public class AbilitiesRenderHandler {
 
             boolean isTicking = relic.isAbilityTicking(stack, ability.getAbility());
 
-            AbilityCastType type = relic.getRelicAbilityEntry(ability.getAbility()).getCastData().getKey();
+            CastType type = relic.getAbilityData(ability.getAbility()).getCastData().getKey();
 
             MC.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.ABILITY_CAST.get(), 1F));
 
             switch (type) {
                 case INSTANTANEOUS -> {
-                    NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.INSTANTANEOUS, AbilityCastStage.END, ability.getAbility(), ability.getSlot()));
+                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.INSTANTANEOUS, CastStage.END, ability.getAbility(), ability.getSlot()));
 
-                    relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.END);
+                    relic.castActiveAbility(stack, player, ability.getAbility(), type, CastStage.END);
                 }
                 case CYCLICAL -> {
-                    NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.CYCLICAL, AbilityCastStage.START, ability.getAbility(), ability.getSlot()));
+                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.CYCLICAL, CastStage.START, ability.getAbility(), ability.getSlot()));
 
-                    relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.START);
+                    relic.castActiveAbility(stack, player, ability.getAbility(), type, CastStage.START);
                 }
                 case INTERRUPTIBLE -> {
-                    AbilityCastStage stage = isTicking ? AbilityCastStage.END : AbilityCastStage.START;
+                    CastStage stage = isTicking ? CastStage.END : CastStage.START;
 
-                    NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.INTERRUPTIBLE, stage, ability.getAbility(), ability.getSlot()));
+                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.INTERRUPTIBLE, stage, ability.getAbility(), ability.getSlot()));
 
                     relic.castActiveAbility(stack, player, ability.getAbility(), type, stage);
                 }
                 case TOGGLEABLE -> {
-                    AbilityCastStage stage = isTicking ? AbilityCastStage.END : AbilityCastStage.START;
+                    CastStage stage = isTicking ? CastStage.END : CastStage.START;
 
-                    NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.TOGGLEABLE, stage, ability.getAbility(), ability.getSlot()));
+                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.TOGGLEABLE, stage, ability.getAbility(), ability.getSlot()));
 
                     relic.castActiveAbility(stack, player, ability.getAbility(), type, stage);
                 }
@@ -577,39 +575,39 @@ public class AbilitiesRenderHandler {
             boolean isTicking = relic.isAbilityTicking(stack, ability.getAbility());
             boolean isCasting = Minecraft.getInstance().mouseHandler.isLeftPressed();
 
-            RelicAbilityEntry entry = relic.getRelicAbilityEntry(ability.getAbility());
+            AbilityData entry = relic.getAbilityData(ability.getAbility());
 
             if (entry == null)
                 return;
 
-            AbilityCastType type = entry.getCastData().getKey();
+            CastType type = entry.getCastData().getKey();
 
             switch (type) {
                 case CYCLICAL -> {
                     if (isTicking) {
                         if (isCasting) {
-                            NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.CYCLICAL, AbilityCastStage.TICK, ability.getAbility(), ability.getSlot()));
+                            NetworkHandler.sendToServer(new SpellCastPacket(CastType.CYCLICAL, CastStage.TICK, ability.getAbility(), ability.getSlot()));
 
-                            relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.TICK);
+                            relic.castActiveAbility(stack, player, ability.getAbility(), type, CastStage.TICK);
                         } else {
-                            NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.CYCLICAL, AbilityCastStage.END, ability.getAbility(), ability.getSlot()));
+                            NetworkHandler.sendToServer(new SpellCastPacket(CastType.CYCLICAL, CastStage.END, ability.getAbility(), ability.getSlot()));
 
-                            relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.END);
+                            relic.castActiveAbility(stack, player, ability.getAbility(), type, CastStage.END);
                         }
                     }
                 }
                 case INTERRUPTIBLE -> {
                     if (isTicking) {
-                        NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.INTERRUPTIBLE, AbilityCastStage.TICK, ability.getAbility(), ability.getSlot()));
+                        NetworkHandler.sendToServer(new SpellCastPacket(CastType.INTERRUPTIBLE, CastStage.TICK, ability.getAbility(), ability.getSlot()));
 
-                        relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.TICK);
+                        relic.castActiveAbility(stack, player, ability.getAbility(), type, CastStage.TICK);
                     }
                 }
                 case TOGGLEABLE -> {
                     if (isTicking) {
-                        NetworkHandler.sendToServer(new SpellCastPacket(AbilityCastType.TOGGLEABLE, AbilityCastStage.TICK, ability.getAbility(), ability.getSlot()));
+                        NetworkHandler.sendToServer(new SpellCastPacket(CastType.TOGGLEABLE, CastStage.TICK, ability.getAbility(), ability.getSlot()));
 
-                        relic.castActiveAbility(stack, player, ability.getAbility(), type, AbilityCastStage.TICK);
+                        relic.castActiveAbility(stack, player, ability.getAbility(), type, CastStage.TICK);
                     }
                 }
             }

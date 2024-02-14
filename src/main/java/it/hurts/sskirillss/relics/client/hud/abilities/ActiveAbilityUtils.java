@@ -1,9 +1,8 @@
 package it.hurts.sskirillss.relics.client.hud.abilities;
 
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -48,13 +47,8 @@ public class ActiveAbilityUtils {
 
         List<String> abilities = new ArrayList<>();
 
-        RelicAbilityData abilityData = relic.getRelicAbilityData();
-
-        if (abilityData == null)
-            return abilities;
-
-        for (Map.Entry<String, RelicAbilityEntry> ability : abilityData.getAbilities().entrySet()) {
-            if (ability.getValue().getCastData().getKey() == AbilityCastType.NONE)
+        for (Map.Entry<String, AbilityData> ability : relic.getRelicData().getAbilities().getAbilities().entrySet()) {
+            if (ability.getValue().getCastData().getKey() == CastType.NONE)
                 continue;
 
             abilities.add(ability.getKey());

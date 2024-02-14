@@ -12,7 +12,7 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.base.Abstrac
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
@@ -218,7 +218,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         if (!(screen.stack.getItem() instanceof IRelicItem relic))
             return;
 
-        RelicAbilityEntry data = relic.getRelicAbilityEntry(ability);
+        AbilityData data = relic.getAbilityData(ability);
 
         if (data == null)
             return;

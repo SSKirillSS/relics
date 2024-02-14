@@ -4,12 +4,10 @@ import it.hurts.sskirillss.octolib.config.data.OctoConfig;
 import it.hurts.sskirillss.octolib.config.storage.ConfigStorage;
 import it.hurts.sskirillss.relics.config.data.*;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -69,7 +67,7 @@ public class ConfigHelper {
         RelicConfigData relicConfig = config.get("$", RelicConfigData.class);
 
         LevelingConfigData levelingConfig = relicConfig.getLevelingData();
-        RelicLevelingData levelingData = relicData.getLevelingData();
+        LevelingData levelingData = relicData.getLeveling();
 
         if (levelingConfig != null && levelingData != null) {
             levelingData.setMaxLevel(levelingConfig.getMaxLevel());
@@ -78,28 +76,27 @@ public class ConfigHelper {
         }
 
         AbilitiesConfigData abilitiesConfig = relicConfig.getAbilitiesData();
-        RelicAbilityData abilityData = relicData.getAbilityData();
 
-        if (abilitiesConfig != null && abilityData != null) {
-            for (Map.Entry<String, RelicAbilityEntry> abilityMapEntry : abilityData.getAbilities().entrySet()) {
+        if (abilitiesConfig != null) {
+            for (Map.Entry<String, AbilityData> abilityMapEntry : relicData.getAbilities().getAbilities().entrySet()) {
                 AbilityConfigData abilityConfig = abilitiesConfig.getAbilities().get(abilityMapEntry.getKey());
 
                 if (abilityConfig == null)
                     continue;
 
-                RelicAbilityEntry abilityEntry = abilityMapEntry.getValue();
+                AbilityData abilityEntry = abilityMapEntry.getValue();
 
                 abilityEntry.setMaxLevel(abilityConfig.getMaxLevel());
                 abilityEntry.setRequiredLevel(abilityConfig.getRequiredLevel());
                 abilityEntry.setRequiredPoints(abilityConfig.getRequiredPoints());
 
-                for (Map.Entry<String, RelicAbilityStat> statMapEntry : abilityEntry.getStats().entrySet()) {
+                for (Map.Entry<String, StatData> statMapEntry : abilityEntry.getStats().entrySet()) {
                     StatConfigData statConfig = abilityConfig.getStats().get(statMapEntry.getKey());
 
                     if (statConfig == null)
                         continue;
 
-                    RelicAbilityStat statEntry = statMapEntry.getValue();
+                    StatData statEntry = statMapEntry.getValue();
 
                     statEntry.setInitialValue(Pair.of(statConfig.getMinInitialValue(), statConfig.getMaxInitialValue()));
                     statEntry.setThresholdValue(Pair.of(statConfig.getMinThresholdValue(), statConfig.getMaxThresholdValue()));
@@ -112,16 +109,16 @@ public class ConfigHelper {
     }
 
     public static void constructConfigs() {
-        List<RelicItem> relics = ForgeRegistries.ITEMS.getValues().stream().filter(entry -> entry instanceof IRelicItem).map(entry -> (RelicItem) entry).toList();
+        List<IRelicItem> relics = ForgeRegistries.ITEMS.getValues().stream().filter(entry -> entry instanceof IRelicItem).map(entry -> (IRelicItem) entry).toList();
 
         if (relics.isEmpty())
             return;
 
-        for (RelicItem relic : relics)
+        for (IRelicItem relic : relics)
             constructRelicConfig(relic);
     }
 
-    private static void constructRelicConfig(RelicItem relic) {
+    private static void constructRelicConfig(IRelicItem relic) {
         RelicData relicData = relic.getRelicData();
 
         if (relicData == null)
@@ -129,36 +126,32 @@ public class ConfigHelper {
 
         RelicConfigData relicConfig = new RelicConfigData(relic);
 
-        RelicLevelingData levelingData = relicData.getLevelingData();
+        LevelingData levelingData = relicData.getLeveling();
 
         if (levelingData != null)
             relicConfig.setLevelingData(new LevelingConfigData(levelingData.getInitialCost(), levelingData.getMaxLevel(), levelingData.getStep()));
 
-        RelicAbilityData abilityData = relicData.getAbilityData();
+        AbilitiesConfigData abilitiesConfig = new AbilitiesConfigData();
 
-        if (abilityData != null) {
-            AbilitiesConfigData abilitiesConfig = new AbilitiesConfigData();
+        for (Map.Entry<String, AbilityData> abilityMapEntry : relicData.getAbilities().getAbilities().entrySet()) {
+            AbilityData abilityEntry = abilityMapEntry.getValue();
 
-            for (Map.Entry<String, RelicAbilityEntry> abilityMapEntry : abilityData.getAbilities().entrySet()) {
-                RelicAbilityEntry abilityEntry = abilityMapEntry.getValue();
+            AbilityConfigData abilityConfig = new AbilityConfigData(abilityEntry.getRequiredPoints(), abilityEntry.getRequiredLevel(), abilityEntry.getMaxLevel());
 
-                AbilityConfigData abilityConfig = new AbilityConfigData(abilityEntry.getRequiredPoints(), abilityEntry.getRequiredLevel(), abilityEntry.getMaxLevel());
+            for (Map.Entry<String, StatData> statMapEntry : abilityEntry.getStats().entrySet()) {
+                StatData statEntry = statMapEntry.getValue();
 
-                for (Map.Entry<String, RelicAbilityStat> statMapEntry : abilityEntry.getStats().entrySet()) {
-                    RelicAbilityStat statEntry = statMapEntry.getValue();
+                StatConfigData statConfig = new StatConfigData(statEntry.getInitialValue().getKey(), statEntry.getInitialValue().getValue(),
+                        statEntry.getThresholdValue().getKey(), statEntry.getThresholdValue().getValue(),
+                        statEntry.getUpgradeModifier().getKey(), statEntry.getUpgradeModifier().getValue());
 
-                    StatConfigData statConfig = new StatConfigData(statEntry.getInitialValue().getKey(), statEntry.getInitialValue().getValue(),
-                            statEntry.getThresholdValue().getKey(), statEntry.getThresholdValue().getValue(),
-                            statEntry.getUpgradeModifier().getKey(), statEntry.getUpgradeModifier().getValue());
-
-                    abilityConfig.getStats().put(statMapEntry.getKey(), statConfig);
-                }
-
-                abilitiesConfig.getAbilities().put(abilityMapEntry.getKey(), abilityConfig);
+                abilityConfig.getStats().put(statMapEntry.getKey(), statConfig);
             }
 
-            relicConfig.setAbilitiesData(abilitiesConfig);
+            abilitiesConfig.getAbilities().put(abilityMapEntry.getKey(), abilityConfig);
         }
+
+        relicConfig.setAbilitiesData(abilitiesConfig);
 
         relicConfig.setup();
     }

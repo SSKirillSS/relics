@@ -13,7 +13,7 @@ import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -52,7 +52,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
     public void playDownSound(SoundManager handler) {
         if (screen.stack.getItem() instanceof IRelicItem relic && !isLocked()) {
             int level = relic.getAbilityPoints(screen.stack, ability);
-            int maxLevel = relic.getRelicAbilityEntry(ability).getMaxLevel();
+            int maxLevel = relic.getAbilityData(ability).getMaxLevel();
 
             handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_UPGRADE.get(), 1F + ((float) level / maxLevel)));
         }
@@ -116,7 +116,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
         if (!(screen.stack.getItem() instanceof IRelicItem relic) || !relic.canUseAbility(screen.stack, ability))
             return;
 
-        RelicAbilityEntry data = relic.getRelicAbilityEntry(ability);
+        AbilityData data = relic.getAbilityData(ability);
 
         if (data.getStats().isEmpty())
             return;

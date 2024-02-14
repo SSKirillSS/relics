@@ -7,12 +7,13 @@ import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -52,36 +53,36 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("vanish", RelicAbilityEntry.builder()
-                                .active(AbilityCastType.TOGGLEABLE)
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("vanish")
+                                .active(CastType.TOGGLEABLE)
                                 .requiredPoints(2)
-                                .stat("light", RelicAbilityStat.builder()
+                                .stat(StatData.builder("light")
                                         .initialValue(1D, 2D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
-                                .stat("speed", RelicAbilityStat.builder()
+                                .stat(StatData.builder("speed")
                                         .initialValue(0.1D, 0.35D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.35D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.35D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 100))
                                         .build())
                                 .build())
-                        .ability("backstab", RelicAbilityEntry.builder()
-                                .stat("damage", RelicAbilityStat.builder()
+                        .ability(AbilityData.builder("backstab")
+                                .stat(StatData.builder("damage")
                                         .initialValue(1.25D, 1.75D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> (int) (100 * MathUtils.round(value - 1, 1)))
                                         .build())
-                                .stat("distance", RelicAbilityStat.builder()
+                                .stat(StatData.builder("distance")
                                         .initialValue(15D, 20D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.5D)
+                                        .upgradeModifier(UpgradeOperation.ADD, -0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 100))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 100))
+                .style(RelicStyleData.builder()
                         .borders("#00071f", "#001974")
                         .build())
                 .build();

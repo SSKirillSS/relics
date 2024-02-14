@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class RelicLevelingData {
-    public int initialCost;
-    public int maxLevel;
-    public int step;
+public class LevelingData {
+    private int initialCost;
+    private int maxLevel;
+    private int step;
 }

@@ -15,15 +15,15 @@ import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
@@ -90,19 +90,19 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("receptacle", RelicAbilityEntry.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("receptacle")
                                 .maxLevel(10)
-                                .stat("slots", RelicAbilityStat.builder()
+                                .stat(StatData.builder("slots")
                                         .initialValue(2, 5)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1)
                                         .formatValue(value -> (int) Math.round(value))
                                         .build())
                                 .build())
-                        .ability("leap", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("leap")
                                 .requiredLevel(5)
                                 .maxLevel(10)
-                                .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
+                                .active(CastType.INSTANTANEOUS, CastPredicate.builder()
                                         .predicate("target", data -> {
                                             Player player = data.getPlayer();
                                             Level level = player.getLevel();
@@ -115,81 +115,77 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                                             BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * maxDistance, view.y * maxDistance,
                                                     view.z * maxDistance), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
 
-                                            boolean isCorrect = ray.getType() != HitResult.Type.MISS && ray.getLocation().y() < player.getEyePosition().y();
-
-                                            return PredicateInfo.builder()
-                                                    .condition(isCorrect)
-                                                    .build();
+                                            return ray.getType() != HitResult.Type.MISS && ray.getLocation().y() < player.getEyePosition().y();
                                         })
+                                        .build()
                                 )
-                                .stat("multiplier", RelicAbilityStat.builder()
+                                .stat(StatData.builder("multiplier")
                                         .initialValue(0.1, 0.5)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, 0.15)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_TOTAL, 0.15)
                                         .formatValue(value -> (int) (MathUtils.round(value, 2) * 100))
                                         .build())
-                                .stat("duration", RelicAbilityStat.builder()
+                                .stat(StatData.builder("duration")
                                         .initialValue(4, 6)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
-                                .stat("cooldown", RelicAbilityStat.builder()
+                                .stat(StatData.builder("cooldown")
                                         .initialValue(15, 12)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, -0.1)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_TOTAL, -0.1)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
-                        .ability("agility", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("agility")
                                 .requiredLevel(10)
                                 .requiredPoints(2)
                                 .maxLevel(5)
-                                .stat("modifier", RelicAbilityStat.builder()
+                                .stat(StatData.builder("modifier")
                                         .initialValue(1, 1)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1)
                                         .formatValue(value -> (int) ((1 + MathUtils.round(value, 0))) * 100)
                                         .build())
                                 .build())
-                        .ability("rain", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("rain")
                                 .requiredLevel(15)
                                 .maxLevel(10)
-                                .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
+                                .active(CastType.INSTANTANEOUS, CastPredicate.builder()
                                         .predicate("arrow", data -> {
                                                     int count = 0;
 
                                                     for (ItemStack stack : getArrows(data.getStack()))
                                                         count += stack.getCount();
 
-                                                    return PredicateInfo.builder()
-                                                            .condition(count > 0)
-                                                            .build();
+                                                    return count > 0;
                                                 }
                                         )
+                                        .build()
                                 )
-                                .stat("radius", RelicAbilityStat.builder()
+                                .stat(StatData.builder("radius")
                                         .initialValue(3, 5)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
-                                .stat("duration", RelicAbilityStat.builder()
+                                .stat(StatData.builder("duration")
                                         .initialValue(10, 15)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.25)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
-                                .stat("delay", RelicAbilityStat.builder()
+                                .stat(StatData.builder("delay")
                                         .initialValue(1, 0.75)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, -0.15)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_TOTAL, -0.15)
                                         .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 20, 100))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 20, 100))
+                .style(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
                         .build())
                 .build();
     }
 
     @Override
-    public void castActiveAbility(ItemStack stack, Player player, String ability, AbilityCastType type, AbilityCastStage stage) {
+    public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         Level level = player.getCommandSenderWorld();
         RandomSource random = level.getRandom();
 
