@@ -58,9 +58,6 @@ public interface IRenderableCurio {
         model.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
         model.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-        ICurioRenderer.translateIfSneaking(matrixStack, entity);
-        ICurioRenderer.rotateIfSneaking(matrixStack, entity);
-
         ICurioRenderer.followBodyRotations(entity, model);
 
         VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
