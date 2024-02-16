@@ -10,6 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -69,6 +71,9 @@ public class InfinityHamItem extends RelicItem {
                 .leveling(new LevelingData(100, 10, 100))
                 .style(RelicStyleData.builder()
                         .borders("#ffe0d2", "#9c756b")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.VILLAGE)
                         .build())
                 .build();
     }

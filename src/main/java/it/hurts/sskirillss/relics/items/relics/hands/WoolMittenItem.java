@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -61,6 +63,9 @@ public class WoolMittenItem extends RelicItem {
                 .leveling(new LevelingData(100, 10, 100))
                 .style(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.COLD)
                         .build())
                 .build();
     }

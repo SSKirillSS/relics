@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.cast;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.misc.PredicateData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.PredicateEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.misc.PredicateData;
 import lombok.Builder;
 import lombok.Data;
 

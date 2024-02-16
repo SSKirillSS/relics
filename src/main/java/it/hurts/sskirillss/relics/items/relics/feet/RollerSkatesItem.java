@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -48,6 +50,10 @@ public class RollerSkatesItem extends RelicItem {
                 .leveling(new LevelingData(100, 10, 200))
                 .style(RelicStyleData.builder()
                         .borders("#dc41ff", "#832698")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.VILLAGE)
+                        .entry(LootCollections.ANTHROPOGENIC)
                         .build())
                 .build();
     }

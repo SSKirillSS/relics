@@ -17,6 +17,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -81,6 +83,9 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
                 .leveling(new LevelingData(100, 10, 100))
                 .style(RelicStyleData.builder()
                         .borders("#b8b8d6", "#6e6e8f")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.END)
                         .build())
                 .build();
     }

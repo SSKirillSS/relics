@@ -12,11 +12,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.misc.PredicateData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.PredicateEntry;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.misc.PredicateData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacket;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -96,6 +97,10 @@ public interface IRelicItem {
 
     default LevelingData getLevelingData() {
         return getRelicData().getLeveling();
+    }
+
+    default LootData getLootData() {
+        return getRelicData().getLoot();
     }
 
     default boolean isItemResearched(Player player) {

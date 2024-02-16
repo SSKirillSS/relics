@@ -1,31 +1,6 @@
 {
   "replace": false,
   "entries": [
-    "relics:relics/amphibian_boot",
-    "relics:relics/arrow_quiver",
-    "relics:relics/bastion_ring",
-    "relics:relics/blazing_flask",
-    "relics:relics/chorus_inhibitor",
-    "relics:relics/drowned_belt",
-    "relics:relics/elytra_booster",
-    "relics:relics/enders_hand",
-    "relics:relics/holy_locket",
-    "relics:relics/hunter_belt",
-    "relics:relics/ice_breaker",
-    "relics:relics/ice_skates",
-    "relics:relics/jellyfish_necklace",
-    "relics:relics/magic_mirror",
-    "relics:relics/magma_walker",
-    "relics:relics/midnight_robe",
-    "relics:relics/rage_glove",
-    "relics:relics/reflection_necklace",
-    "relics:relics/shadow_glaive",
-    "relics:relics/spatial_sign",
-    "relics:relics/space_dissector",
-    "relics:relics/spore_sack",
-    "relics:relics/infinity_ham",
-    "relics:relics/leather_belt",
-    "relics:relics/horse_flute",
-    "relics:relics/wool_mitten"
+    "relics:relic_loot"
   ]
 }

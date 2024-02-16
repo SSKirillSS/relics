@@ -28,4 +28,7 @@ public class RelicConfigData implements IOctoConfig {
 
     @SerializedName("leveling")
     private LevelingConfigData levelingData;
+
+    @SerializedName("loot")
+    private LootConfigData lootData;
 }
