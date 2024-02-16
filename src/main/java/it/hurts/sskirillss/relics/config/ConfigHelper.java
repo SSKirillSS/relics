@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollection;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -105,6 +106,10 @@ public class ConfigHelper {
             }
         }
 
+        relicData.getLoot().setCollection(LootCollection.builder()
+                .entries(relicConfig.getLootData().getEntries())
+                .build());
+
         relic.setRelicData(relicData);
     }
 
@@ -152,6 +157,12 @@ public class ConfigHelper {
         }
 
         relicConfig.setAbilitiesData(abilitiesConfig);
+
+        LootConfigData lootConfigData = new LootConfigData();
+
+        lootConfigData.setEntries(relicData.getLoot().getCollection().getEntries());
+
+        relicConfig.setLootData(lootConfigData);
 
         relicConfig.setup();
     }

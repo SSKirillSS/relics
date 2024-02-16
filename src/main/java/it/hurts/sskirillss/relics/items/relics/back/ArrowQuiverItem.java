@@ -24,6 +24,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
@@ -180,6 +182,9 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                 .leveling(new LevelingData(100, 20, 100))
                 .style(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.VILLAGE)
                         .build())
                 .build();
     }

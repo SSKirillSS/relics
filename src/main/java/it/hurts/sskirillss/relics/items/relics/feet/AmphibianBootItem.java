@@ -16,6 +16,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.utils.RelicStyle;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -90,6 +92,9 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
                 .style(RelicStyleData.builder()
                         .borders("#ff6900", "#ff2e00")
                         .style(RelicStyle.AQUATIC)
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.AQUATIC)
                         .build())
                 .build();
     }
@@ -177,7 +182,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
         VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
 
-        matrixStack.translate(0,0,-0.025F);
+        matrixStack.translate(0, 0, -0.025F);
 
         sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 

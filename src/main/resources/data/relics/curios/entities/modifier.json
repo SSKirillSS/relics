@@ -1,4 +1,15 @@
 {
-  "entities": ["player"],
-  "slots": ["talisman", "feet", "back", "belt", "feet", "hands", "necklace", "ring"]
+  "entities": [
+    "player"
+  ],
+  "slots": [
+    "talisman",
+    "feet",
+    "back",
+    "belt",
+    "feet",
+    "hands",
+    "necklace",
+    "ring"
+  ]
 }
