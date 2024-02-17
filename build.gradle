@@ -118,8 +118,6 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    //implementation 'curse.maven:octolib-916747:5089112'
-
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0+1.20.1")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0+1.20.1:api")
 
