@@ -10,17 +10,17 @@ public class LootCollections {
             .build();
 
     public static final LootCollection NETHER = LootCollection.builder()
-            .entry("[\\w]+:chests\\/[\\w_\\/]*(nether|hell)[\\w_\\/]*", 0.075F)
+            .entry("[\\w]+:chests\\/[\\w_\\/]*(nether|hell|lava|magma|fire|burn|fortress)[\\w_\\/]*", 0.075F)
             .entry("minecraft:chests/ruined_portal", 0.075F)
             .entry(BASTION)
             .build();
 
     public static final LootCollection JUNGLE = LootCollection.builder()
-            .entry("[\\w]+:chests\\/[\\w_\\/]*jungle[\\w_\\/]*", 0.075F)
+            .entry("[\\w]+:chests\\/[\\w_\\/]*(jungle|temple)[\\w_\\/]*", 0.075F)
             .build();
 
     public static final LootCollection DESERT = LootCollection.builder()
-            .entry("[\\w]+:chests\\/[\\w_\\/]*(desert|sand)[\\w_\\/]*", 0.075F)
+            .entry("[\\w]+:chests\\/[\\w_\\/]*(desert|sand|pyramid)[\\w_\\/]*", 0.075F)
             .build();
 
     public static final LootCollection AQUATIC = LootCollection.builder()
@@ -40,19 +40,17 @@ public class LootCollections {
             .build();
 
     public static final LootCollection END = LootCollection.builder()
-            .entry("[\\w]+:chests\\/[\\w_\\/]*end[\\w_\\/]*", 0.075F)
+            .entry("[\\w]+:chests\\/[\\w_\\/]*(end|warp)[\\w_\\/]*", 0.075F)
             .build();
 
     public static final LootCollection SCULK = LootCollection.builder()
+            .entry("[\\w]+:chests\\/[\\w_\\/]*(warden|sculk|echo)[\\w_\\/]*", 0.075F)
             .entry("minecraft:chests/ancient_city", 0.075F)
             .entry("minecraft:chests/ancient_city_ice_box", 0.075F)
             .build();
 
     public static final LootCollection ANTHROPOGENIC = LootCollection.builder()
-            .entry("minecraft:chests/stronghold_crossing", 0.075F)
-            .entry("minecraft:chests/abandoned_mineshaft", 0.075F)
-            .entry("minecraft:chests/stronghold_corridor", 0.075F)
-            .entry("minecraft:chests/stronghold_library", 0.075F)
+            .entry("[\\w]+:chests\\/[\\w_\\/]*(mineshaft|city|stronghold)[\\w_\\/]*", 0.075F)
             .entry(PILLAGE)
             .build();
 }
