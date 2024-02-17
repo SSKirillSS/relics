@@ -20,7 +20,7 @@ import java.util.Optional;
 @Mixin(PiglinAi.class)
 public abstract class MixinPiglinAi {
     @Shadow
-    private static void throwItems(Piglin piglin, List<ItemStack> items) {
+    private static void throwItems(Piglin pPilgin, List<ItemStack> pStacks) {
     }
 
     @Shadow
