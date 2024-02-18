@@ -106,7 +106,10 @@ public class RemoteRegistry {
                     (stack, world, entity, id) -> {
                         ItemStack relic = EntityUtils.findEquippedCurio(entity, ItemRegistry.WOOL_MITTEN.get());
 
-                        return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (((IRelicItem) stack.getItem()).getAbilityValue(relic, "mold", "size") / 3F));
+                        if (relic.isEmpty())
+                            return 3;
+
+                        return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (((IRelicItem) relic.getItem()).getAbilityValue(relic, "mold", "size") / 3F));
                     });
             ItemProperties.register(ItemRegistry.ROLLER_SKATES.get(), new ResourceLocation(Reference.MODID, "active"),
                     (stack, world, entity, id) -> NBTUtils.getInt(stack, RollerSkatesItem.TAG_SKATING_DURATION, 0) > 0 ? 1 : 0);
