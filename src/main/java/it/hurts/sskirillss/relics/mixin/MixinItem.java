@@ -14,9 +14,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -49,6 +52,12 @@ public class MixinItem {
 
     @Inject(method = "appendHoverText", at = @At("HEAD"))
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced, CallbackInfo ci) {
+        relics$processTooltip(stack, level, tooltip);
+    }
+
+    @Unique
+    @OnlyIn(Dist.CLIENT)
+    private void relics$processTooltip(ItemStack stack, @Nullable Level level, List<Component> tooltip) {
         Item item = stack.getItem();
 
         if (!(item instanceof IRelicItem relic) || (level == null || !level.isClientSide()))
