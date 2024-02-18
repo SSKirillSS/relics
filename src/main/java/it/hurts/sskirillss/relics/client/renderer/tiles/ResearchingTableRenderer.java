@@ -31,7 +31,8 @@ public class ResearchingTableRenderer implements BlockEntityRenderer<Researching
 
         // TODO: REMOVE AFTER FINISHING
         List<Item> items = Lists.newArrayList(
-                ItemRegistry.AMPHIBIAN_BOOT.get()
+                ItemRegistry.AMPHIBIAN_BOOT.get(),
+                ItemRegistry.AQUA_WALKER.get()
         );
 
         matrixStack.pushPose();
