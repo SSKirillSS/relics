@@ -85,12 +85,7 @@ public class RemoteRegistry {
             ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
                     (stack, world, entity, id) -> Math.min(8, NBTUtils.getInt(stack, ShadowGlaiveItem.TAG_CHARGES, 0)));
             ItemProperties.register(ItemRegistry.MAGMA_WALKER.get(), new ResourceLocation(Reference.MODID, "heat"),
-                    (stack, world, entity, id) -> {
-                        int heat = NBTUtils.getInt(stack, MagmaWalkerItem.TAG_HEAT, 0);
-                        int maxHeat = (int) Math.round(((IRelicItem) stack.getItem()).getAbilityValue(stack, "pace", "heat"));
-
-                        return heat > maxHeat ? 4 : (int) Math.floor(heat / (maxHeat / 4F));
-                    });
+                    (stack, world, entity, id) -> NBTUtils.getInt(stack, MagmaWalkerItem.TAG_HEAT, 0) >= ((IRelicItem) stack.getItem()).getAbilityValue(stack, "pace", "time") ? 1 : 0);
             ItemProperties.register(ItemRegistry.AQUA_WALKER.get(), new ResourceLocation(Reference.MODID, "drench"),
                     (stack, world, entity, id) -> NBTUtils.getInt(stack, AquaWalkerItem.TAG_DRENCH, 0) >= ((IRelicItem) stack.getItem()).getAbilityValue(stack, "walking", "time") ? 1 : 0);
             ItemProperties.register(ItemRegistry.ARROW_QUIVER.get(), new ResourceLocation(Reference.MODID, "fullness"),
