@@ -55,6 +55,9 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             property 'forge.enabledGameTestNamespaces', mod_id
 
+            jvmArg "-XX:+AllowEnhancedClassRedefinition"
+            jvmArg "-XX:+AllowRedefinitionToAddDeleteMethods"
+
             arg "-mixin.config=" + mod_id + ".mixins.json"
             mods {
                 "${mod_id}" {
@@ -69,6 +72,9 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'forge.enabledGameTestNamespaces', mod_id
+
+            jvmArg "-XX:+AllowEnhancedClassRedefinition"
+            jvmArg "-XX:+AllowRedefinitionToAddDeleteMethods"
 
             arg "-mixin.config=" + mod_id + ".mixins.json"
             mods {
