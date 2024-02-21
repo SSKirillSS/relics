@@ -45,7 +45,7 @@ public class ExperienceExchangeWidget extends AbstractDescriptionWidget implemen
 
     @Override
     public boolean isLocked() {
-        return !(screen.stack.getItem() instanceof IRelicItem relic) || relic.isExchangeAvailable(MC.player, screen.stack) || relic.isMaxLevel(screen.stack);
+        return !(screen.stack.getItem() instanceof IRelicItem relic) || !relic.isExchangeAvailable(MC.player, screen.stack) || relic.isMaxLevel(screen.stack);
     }
 
     @Override
