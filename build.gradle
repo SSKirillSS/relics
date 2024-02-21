@@ -124,8 +124,8 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0+1.20.1")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0+1.20.1:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+1.20.1")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+1.20.1:api")
 
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:15.2.0.27"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:15.2.0.27"))
