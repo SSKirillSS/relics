@@ -22,7 +22,7 @@ public class ChairEntity extends Entity {
 
     @Override
     public Vec3 getPassengerRidingPosition(Entity pEntity) {
-        return super.getPassengerRidingPosition(pEntity).add(0F, 0.1F, 0F);
+        return super.getPassengerRidingPosition(pEntity).add(0F, -0.5F, 0F);
     }
 
     @Override

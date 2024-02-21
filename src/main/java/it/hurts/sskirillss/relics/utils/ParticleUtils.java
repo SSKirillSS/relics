@@ -4,11 +4,14 @@ import it.hurts.sskirillss.relics.client.particles.BasicColoredParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -48,27 +51,39 @@ public class ParticleUtils {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void createCyl(ParticleOptions particle, Vec3 center, Level level, double radius, float step) {
-        int offset = 16;
+        createCyl(particle, center, level, radius, step, false);
+    }
 
-        double len = (float) (2 * Math.PI * radius);
-        int num = (int) (len / step);
+    public static void createCyl(ParticleOptions particle, Vec3 center, Level level, double radius, float step, boolean spherical) {
+        int maxTries = 16;
 
-        for (int i = 0; i < num; i++) {
-            double angle = Math.toRadians(((360F / num) * i) + (360F * ((((len / step) - num) / num) / len)));
+        if (spherical) {
+            var result = level.clip(new ClipContext(center, center.add(0, -radius, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()));
 
-            double extraX = (radius * Math.sin(angle)) + center.x();
-            double extraZ = (radius * Math.cos(angle)) + center.z();
-            double extraY = center.y();
+            if (result.getType() == HitResult.Type.MISS)
+                return;
 
-            boolean foundPos = false;
+            maxTries = (int) Math.ceil(radius * 2);
 
+            radius -= result.getLocation().distanceTo(center);
+        }
+
+        int numPoints = (int) Math.ceil((2 * Math.PI * radius) / step);
+        double angleIncrement = (2 * Math.PI) / numPoints;
+
+        for (int i = 0; i < numPoints; i++) {
+            double angle = i * angleIncrement;
+            double x = center.x() + radius * Math.cos(angle);
+            double z = center.z() + radius * Math.sin(angle);
+            double y = center.y();
+
+            boolean foundSolid = false;
             int tries;
 
-            for (tries = 0; tries < offset * 2; tries++) {
-                Vec3 vec = new Vec3(extraX, extraY, extraZ);
-                BlockPos pos = new BlockPos(Mth.floor(extraX), Mth.floor(extraY), Mth.floor(extraZ));
-
+            for (tries = 0; tries < maxTries; tries++) {
+                BlockPos pos = new BlockPos(Mth.floor(x), Mth.floor(y), Mth.floor(z));
                 BlockState state = level.getBlockState(pos);
                 VoxelShape shape = state.getCollisionShape(level, pos);
 
@@ -76,34 +91,29 @@ public class ParticleUtils {
                     shape = Shapes.block();
 
                 if (shape.isEmpty()) {
-                    if (!foundPos) {
-                        extraY -= 1;
+                    if (!foundSolid) {
+                        y -= 1;
 
                         continue;
-                    }
+                    } else break;
                 } else
-                    foundPos = true;
+                    foundSolid = true;
 
-                if (shape.isEmpty())
-                    break;
+                AABB bounds = shape.bounds();
 
-                AABB aabb = shape.bounds();
-
-                if (!aabb.move(pos).contains(vec)) {
-                    if (aabb.maxY >= 1F) {
-                        extraY += 1;
+                if (!bounds.move(pos).contains(new Vec3(x, y, z))) {
+                    if (bounds.maxY >= 1.0) {
+                        y += 1;
 
                         continue;
-                    }
-
-                    break;
+                    } else break;
                 }
 
-                extraY += step;
+                y += step;
             }
 
-            if (tries < offset * 2)
-                level.addParticle(particle, extraX, extraY + 0.1F, extraZ, 0, 0, 0);
+            if (tries < maxTries)
+                level.addParticle(particle, x, y + 0.1, z, 0, 0, 0);
         }
     }
 

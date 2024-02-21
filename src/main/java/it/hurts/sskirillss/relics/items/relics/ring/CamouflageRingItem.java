@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -35,6 +36,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.event.entity.EntityEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
@@ -81,7 +83,7 @@ public class CamouflageRingItem extends RelicItem {
             return;
 
         if (ability.equals("morph")) {
-            var distance = getStatValue(stack, "morph", "distance") + 1;
+            var distance = getStatValue(stack, "morph", "distance");
 
             Vec3 view = player.getViewVector(0);
             Vec3 eyeVec = player.getEyePosition(0);
@@ -113,7 +115,7 @@ public class CamouflageRingItem extends RelicItem {
         if (ability.equals("morph")) {
             var distance = getStatValue(stack, "morph", "distance");
 
-            ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(103, 255, 0), 0.25F, 0, 0.5F), player.position(), player.level(), distance, 0.1F);
+            ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(103, 255, 0), 0.25F, 0, 0.5F), player.position(), player.level(), distance, 0.1F, true);
         }
     }
 
@@ -125,10 +127,9 @@ public class CamouflageRingItem extends RelicItem {
         var level = player.getCommandSenderWorld();
 
         {
-            var bottomCenter = player.blockPosition();
-            var topCenter = player.blockPosition().above((int) player.getBbHeight());
+            var pos = player.getBoundingBox().getBottomCenter().add(0F, player.getBbHeight(), 0F);
 
-            boolean isHiding = level.getBlockState(bottomCenter).getBlock() instanceof BushBlock && level.getBlockState(topCenter).getBlock() instanceof BushBlock;
+            boolean isHiding = level.getBlockState(new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()))).getBlock() instanceof BushBlock;
 
             if (isHiding)
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
@@ -143,11 +144,53 @@ public class CamouflageRingItem extends RelicItem {
                 if (random.nextInt(5) == 0)
                     state.getBlock().animateTick(state, level, player.blockPosition(), random);
 
-                player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
+                player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 2, 0, false, false));
 
-                if (!(player.getVehicle() instanceof ChairEntity))
+                var shape = state.getShape(level, player.blockPosition());
+
+                if (!shape.isEmpty()) {
+                    var aabb = shape.bounds();
+
+                    if (!player.getBoundingBox().equals(aabb))
+                        player.refreshDimensions();
+                }
+
+                if (!(player.getVehicle() instanceof ChairEntity)) {
                     stack.set(BLOCK_STATE, null);
+
+                    player.refreshDimensions();
+                }
             }
+        }
+    }
+
+    @EventBusSubscriber
+    public static class CommonEvents {
+        @SubscribeEvent
+        public static void onEntityResize(EntityEvent.Size event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            var level = player.getCommandSenderWorld();
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.CAMOUFLAGE_RING.get());
+
+            if (stack.isEmpty())
+                return;
+
+            var state = stack.get(BLOCK_STATE);
+
+            if (state == null)
+                return;
+
+            var shape = state.getShape(level, player.blockPosition());
+
+            if (shape.isEmpty())
+                return;
+
+            var aabb = shape.bounds();
+
+            event.setNewSize(EntityDimensions.fixed((float) aabb.getXsize(), (float) aabb.getYsize()));
         }
     }
 
@@ -173,7 +216,7 @@ public class CamouflageRingItem extends RelicItem {
 
             poseStack.translate(-0.5F, 0, -0.5F);
 
-            blockRenderer.renderBatched(state, player.blockPosition(), level, poseStack, event.getMultiBufferSource().getBuffer(RenderType.TRANSLUCENT), true, level.getRandom());
+            blockRenderer.renderBatched(state, player.blockPosition(), level, poseStack, event.getMultiBufferSource().getBuffer(RenderType.CUTOUT), true, level.getRandom());
 
             poseStack.translate(0.5F, 0, 0.5F);
         }
