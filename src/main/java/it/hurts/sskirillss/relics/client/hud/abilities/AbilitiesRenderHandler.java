@@ -448,7 +448,7 @@ public class AbilitiesRenderHandler {
                 if (ability != null) {
                     ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot());
 
-                    if (stack.getItem() instanceof IRelicItem relic && relic.canPlayerUseActiveAbility(player, stack, ability.getAbility()))
+                    if (stack.getItem() instanceof IRelicItem relic && relic.getAbilityData(ability.getAbility()) != null && relic.canPlayerUseActiveAbility(player, stack, ability.getAbility()))
                         relic.tickActiveAbilitySelection(stack, player, ability.getAbility());
                 }
 
