@@ -144,13 +144,13 @@ public class JellyfishNecklaceItem extends RelicItem implements IRenderableCurio
     public LayerDefinition constructLayerDefinition() {
         MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0.0F);
 
-        PartDefinition bone = mesh.getRoot().addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-9.6401F, -10.4222F, 0.475F, 16.0F, 7.0F, 8.0F, new CubeDeformation(0.5F)), PartPose.offset(1.6401F, 10.4222F, -4.625F));
+        PartDefinition bone = mesh.getRoot().addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, 0.0F, -4.15F, 16.0F, 7.0F, 8.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        bone.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(10, 16).addBox(-0.675F, 0.575F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.6109F, -2.1891F, 0.025F, 0.0F, 0.0F, -0.7854F));
-        bone.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(10, 16).addBox(0.0F, -2.5F, -0.475F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.6109F, -2.1891F, 0.025F, 0.0F, 0.0F, 1.5708F));
-        bone.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(10, 16).addBox(1.5F, -2.25F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.6109F, -2.1891F, 0.025F, 0.0F, 0.0F, 0.7854F));
-        bone.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(10, 16).addBox(-1.0104F, 0.5429F, -0.55F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.225F)), PartPose.offsetAndRotation(-1.6047F, -3.2401F, 0.05F, 0.0F, 0.0F, -0.004F));
-        bone.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(1, 16).addBox(-1.5104F, -2.4571F, -1.05F, 3.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.6047F, -2.7401F, 0.05F, 0.0F, 0.0F, -0.004F));
+        bone.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(10, 16).addBox(-0.675F, 0.575F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.9708F, 8.2331F, -4.6F, 0.0F, 0.0F, -0.7854F));
+        bone.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(10, 16).addBox(0.0F, -2.5F, -0.475F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.9708F, 8.2331F, -4.6F, 0.0F, 0.0F, 1.5708F));
+        bone.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(10, 16).addBox(1.5F, -2.25F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.9708F, 8.2331F, -4.6F, 0.0F, 0.0F, 0.7854F));
+        bone.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(10, 16).addBox(-1.0104F, 0.5429F, -0.55F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.225F)), PartPose.offsetAndRotation(0.0354F, 7.1821F, -4.575F, 0.0F, 0.0F, -0.004F));
+        bone.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(1, 16).addBox(-1.5104F, -2.4571F, -1.05F, 3.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0354F, 7.6821F, -4.575F, 0.0F, 0.0F, -0.004F));
 
         return LayerDefinition.create(mesh, 64, 64);
     }
@@ -159,5 +159,4 @@ public class JellyfishNecklaceItem extends RelicItem implements IRenderableCurio
     public List<String> headParts() {
         return Lists.newArrayList("body");
     }
-
 }
