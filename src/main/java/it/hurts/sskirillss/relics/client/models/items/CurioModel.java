@@ -21,17 +21,19 @@ public class CurioModel extends HumanoidModel<LivingEntity> {
     @Getter
     private final ModelPart root;
 
-    public CurioModel(Item item) {
-        super(constructRoot(item));
+    private CurioModel(Item item, ModelPart root) {
+        super(root);
 
         this.item = item;
-        this.root = constructRoot(item);
+        this.root = root;
+    }
+
+    public CurioModel(Item item) {
+        this(item, constructRoot(item));
     }
 
     public static ModelLayerLocation getLayerLocation(Item item) {
         ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
-
-        assert id != null;
 
         return new ModelLayerLocation(new ResourceLocation(id.getNamespace(), id.getPath()), id.getPath());
     }

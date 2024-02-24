@@ -28,8 +28,6 @@ public interface IRenderableCurio {
         return new CurioModel(stack.getItem());
     }
 
-    ;
-
     default ResourceLocation getTexture(ItemStack stack) {
         ResourceLocation id = ForgeRegistries.ITEMS.getKey(stack.getItem());
 
