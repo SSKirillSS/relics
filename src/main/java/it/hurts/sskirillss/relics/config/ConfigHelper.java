@@ -29,8 +29,7 @@ public class ConfigHelper {
         if (ConfigHelper.CACHE.containsKey(relic))
             return ConfigHelper.CACHE.get(relic);
 
-        // TODO: Split addon configs into separated dir
-        Path path = FMLPaths.CONFIGDIR.get().resolve("relics").resolve(ForgeRegistries.ITEMS.getKey(relic.getItem()).getPath() + ".json");
+        Path path = FMLPaths.CONFIGDIR.get().resolve(ForgeRegistries.ITEMS.getKey(relic.getItem()).getNamespace()).resolve(ForgeRegistries.ITEMS.getKey(relic.getItem()).getPath() + ".json");
 
         ConfigHelper.CACHE.put(relic, path);
 
