@@ -97,8 +97,8 @@
   "tooltip.relics.shadow_glaive.ability.glaive.stat.radius.value": "%1$s blocks.",
   "tooltip.relics.shadow_glaive.ability.saw": "Merciless punishment",
   "tooltip.relics.shadow_glaive.ability.saw.description": "Usage consumes all 8 glaive charges, summoning a saw that deals damage to nearby targets. Reuse will return the saw to the wearer, restoring all charges. Automatic charge regeneration is blocked while the ability is active.",
-  "tooltip.relics.shadow_glaive.ability.saw.stat.speed.title": "Attack speed:",
-  "tooltip.relics.shadow_glaive.ability.saw.stat.speed.value": "%1$s hits per second.",
+  "tooltip.relics.shadow_glaive.ability.saw.stat.speed.title": "Hit interval:",
+  "tooltip.relics.shadow_glaive.ability.saw.stat.speed.value": "%1$s seconds.",
   "tooltip.relics.shadow_glaive.ability.saw.stat.damage.title": "Damage:",
   "tooltip.relics.shadow_glaive.ability.saw.stat.damage.value": "%1$s units.",
 

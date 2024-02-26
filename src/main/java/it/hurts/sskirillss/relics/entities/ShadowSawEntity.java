@@ -86,21 +86,25 @@ public class ShadowSawEntity extends ThrowableProjectile {
                 this.setDeltaMovement(this.getDeltaMovement().add(0F, -0.05F, 0F));
         }
 
-        float damage = (float) Math.max(relic.getAbilityValue(stack, "saw", "damage"), 0.1D);
+        int speed = (int) Math.round(relic.getAbilityValue(stack, "saw", "speed"));
 
-        for (LivingEntity entity : getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
-            boolean mayContinue = false;
+        if (this.tickCount % speed == 0) {
+            float damage = (float) Math.max(relic.getAbilityValue(stack, "saw", "damage"), 0.1D);
 
-            if (this.getOwner() instanceof Player player) {
-                if (EntityUtils.hurt(entity, DamageSource.playerAttack(player), damage))
-                    mayContinue = true;
-            } else {
-                if (entity.hurt(DamageSource.MAGIC, damage))
-                    mayContinue = true;
+            for (LivingEntity entity : getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
+                boolean mayContinue = false;
+
+                if (this.getOwner() instanceof Player player) {
+                    if (EntityUtils.hurt(entity, DamageSource.playerAttack(player), damage))
+                        mayContinue = true;
+                } else {
+                    if (entity.hurt(DamageSource.MAGIC, damage))
+                        mayContinue = true;
+                }
+
+                if (mayContinue)
+                    entity.invulnerableTime = speed;
             }
-
-            if (mayContinue)
-                entity.invulnerableTime = (int) Math.round(relic.getAbilityValue(stack, "saw", "speed"));
         }
 
         ServerLevel serverLevel = (ServerLevel) level;
