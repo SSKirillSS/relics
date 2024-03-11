@@ -75,7 +75,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         ItemStack stack = tile.getStack();
 
-        if (!(stack.getItem() instanceof IRelicItem relic))
+        if (!(stack.getItem() instanceof IRelicItem))
             return;
 
         this.stack = stack;
@@ -83,7 +83,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
     @Override
     protected void init() {
-        if (!(stack.getItem() instanceof IRelicItem relic))
+        if (stack == null || !(stack.getItem() instanceof IRelicItem relic))
             return;
 
         TextureManager manager = MC.getTextureManager();
@@ -111,14 +111,14 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
     public void tick() {
         super.tick();
 
-        if (!(stack.getItem() instanceof IRelicItem relic))
-            return;
-
         LocalPlayer player = MC.player;
+
+        if (stack == null || !(stack.getItem() instanceof IRelicItem relic) || player == null)
+            return;
 
         ticksExisted++;
 
-        RandomSource random = MC.player.getRandom();
+        RandomSource random = player.getRandom();
 
         int x = (this.width - backgroundWidth) / 2;
         int y = (this.height - backgroundHeight) / 2;
@@ -173,7 +173,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         LocalPlayer player = MC.player;
 
-        if (player == null || !(stack.getItem() instanceof IRelicItem relic))
+        if (stack == null || !(stack.getItem() instanceof IRelicItem relic) || player == null)
             return;
 
         RelicData relicData = relic.getRelicData();
