@@ -259,8 +259,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         poseStack.translate((x + (getWidth() / 2F)) / scale, (y + (getHeight() / 2F)) / scale, 0);
 
-        ScreenUtils.drawTexturedTooltipBorder(poseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
-                renderWidth, height, -((renderWidth + 19) / 2), y);
+        ScreenUtils.drawTexturedTooltipBorder(poseStack, RelicDescriptionScreen.BORDER_PAPER, renderWidth, height, -((renderWidth + 19) / 2), y);
 
         int yOff = 0;
 

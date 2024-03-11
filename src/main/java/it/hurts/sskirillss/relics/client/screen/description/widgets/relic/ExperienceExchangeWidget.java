@@ -176,8 +176,7 @@ public class ExperienceExchangeWidget extends AbstractDescriptionWidget implemen
         int renderX = x + width + 1;
         int renderY = mouseY - (height / 2) - 9;
 
-        ScreenUtils.drawTexturedTooltipBorder(poseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
-                renderWidth, height, renderX, renderY);
+        ScreenUtils.drawTexturedTooltipBorder(poseStack, RelicDescriptionScreen.BORDER_PAPER, renderWidth, height, renderX, renderY);
 
         int yOff = 0;
 

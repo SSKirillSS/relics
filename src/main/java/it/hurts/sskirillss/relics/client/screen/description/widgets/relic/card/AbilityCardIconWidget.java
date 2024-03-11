@@ -139,10 +139,9 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         }
 
         int renderX = x + 29;
-        int renderY = y;
+        int renderY = y; // FIXME 1.19.2 :: Height too high?
 
-        ScreenUtils.drawTexturedTooltipBorder(poseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
-                width, height, renderX, renderY);
+        ScreenUtils.drawTexturedTooltipBorder(poseStack, RelicDescriptionScreen.BORDER_PAPER, width, height, renderX, renderY);
 
         poseStack.scale(0.5F, 0.5F, 0.5F);
 

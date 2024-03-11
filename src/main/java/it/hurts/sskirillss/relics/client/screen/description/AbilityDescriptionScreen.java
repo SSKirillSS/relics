@@ -178,7 +178,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         boolean hoveredVanillaExperience = ScreenUtils.isHovered(x + 30, y + 81, 206, 3, pMouseX, pMouseY);
 
         if (hoveredVanillaExperience) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/experience_highlight.png"));
+            RenderSystem.setShaderTexture(0, RelicDescriptionScreen.VANILLA_EXPERIENCE_HIGHLIGHT);
 
             RenderSystem.enableBlend();
 
@@ -340,16 +340,14 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             MutableComponent value = Component.literal(String.valueOf(points)).withStyle(ChatFormatting.BOLD);
 
-            ResourceLocation icon = new ResourceLocation(Reference.MODID, "textures/gui/description/leveling_point.png");
-
-            manager.bindForSetup(icon);
+            manager.bindForSetup(RelicDescriptionScreen.LEVELING_POINT);
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-            RenderSystem.setShaderTexture(0, icon);
+            RenderSystem.setShaderTexture(0, RelicDescriptionScreen.LEVELING_POINT);
 
             blit(pPoseStack, x + backgroundWidth + 5, y - 2, 0, 0, 50, 31, 50, 31);
 
-            MC.font.draw(pPoseStack, value, x + backgroundWidth + 39 - (MC.font.width(value) / 2), y + 10, 0xffce96);
+            MC.font.draw(pPoseStack, value, x + backgroundWidth + 39 - (MC.font.width(value) / 2F), y + 10, 0xffce96);
 
             pPoseStack.popPose();
         }
@@ -389,8 +387,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             int renderX = pMouseX - 9 - (renderWidth / 2);
             int renderY = y + 87;
 
-            ScreenUtils.drawTexturedTooltipBorder(pPoseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
-                    renderWidth, height, renderX, renderY);
+            ScreenUtils.drawTexturedTooltipBorder(pPoseStack, RelicDescriptionScreen.BORDER_PAPER, renderWidth, height, renderX, renderY);
 
             yOff = 0;
 
@@ -408,11 +405,11 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         }
 
         if (points > 0 && ScreenUtils.isHovered(x + backgroundWidth + 5, y - 2, 50, 31, pMouseX, pMouseY)) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/leveling_point_highlight.png"));
+            RenderSystem.setShaderTexture(0, RelicDescriptionScreen.LEVELING_POINT_HIGHLIGHT);
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(pPoseStack, x + backgroundWidth + 5 + (50 / 2), y - 2 + (31 / 2), 64, 768, 64, 64, 1F, AnimationData.builder()
+            RenderUtils.renderTextureFromCenter(pPoseStack, x + backgroundWidth + 5 + (50 / 2F), y - 2 + (31 / 2F), 64, 768, 64, 64, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)
@@ -456,8 +453,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             int renderX = pMouseX + 1;
             int renderY = pMouseY + 1;
 
-            ScreenUtils.drawTexturedTooltipBorder(pPoseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
-                    renderWidth, height, renderX, renderY);
+            ScreenUtils.drawTexturedTooltipBorder(pPoseStack, RelicDescriptionScreen.BORDER_PAPER, renderWidth, height, renderX, renderY);
 
             yOff = 0;
 
