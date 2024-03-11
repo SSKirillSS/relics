@@ -54,8 +54,8 @@ public class RemoteRegistry {
         ResourceLocation location = event.getAtlas().location();
 
         if (location.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            event.addSprite(new ResourceLocation(Reference.MODID, "gui/curios/empty_talisman_slot"));
-            event.addSprite(new ResourceLocation(Reference.MODID, "gui/curios/empty_feet_slot"));
+            event.addSprite(new ResourceLocation(Reference.MODID, "slot/empty_talisman_slot"));
+            event.addSprite(new ResourceLocation(Reference.MODID, "slot/empty_feet_slot"));
         }
     }
 

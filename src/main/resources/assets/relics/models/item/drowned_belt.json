@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/drowned_belt"
+        "layer0": "relics:item/drowned_belt"
     },
     "overrides": [
         { "predicate": { "relics:broken": 1 }, "model": "relics:item/drowned_belt_broken" }

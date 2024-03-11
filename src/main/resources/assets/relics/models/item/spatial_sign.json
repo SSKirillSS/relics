@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/spatial_sign"
+        "layer0": "relics:item/spatial_sign"
     },
     "overrides": [
         { "predicate": { "relics:broken": 1 }, "model": "relics:item/spatial_sign_broken" }
