@@ -49,6 +49,8 @@ public class ExperienceExchangeWidget extends AbstractDescriptionWidget implemen
 
     @Override
     public void onPress() {
+        this.setFocused(true);
+
         if (isLocked())
             exchangeSpeed = 1;
     }
