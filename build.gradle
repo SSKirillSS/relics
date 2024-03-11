@@ -65,6 +65,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    flatDir { dirs 'dev' }
     maven {
         url = "https://maven.theillusivec4.top/"
     }
@@ -86,6 +87,8 @@ dependencies {
     implementation 'org.jetbrains:annotations:20.1.0'
 
     minecraft 'net.minecraftforge:forge:1.19.2-43.1.52'
+
+    implementation fg.deobf("dev:octolib:1.19.2-0.3")
 
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0:api")

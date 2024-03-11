@@ -2,13 +2,14 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -39,24 +40,28 @@ public class HorseFluteItem extends RelicItem {
     private static final String TAG_UUID = "uuid";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("paddock", RelicAbilityEntry.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("paddock")
                                 .maxLevel(0)
                                 .build())
-                        .ability("heal", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("heal")
                                 .requiredLevel(5)
-                                .stat("amount", RelicAbilityStat.builder()
+                                .stat(StatData.builder("amount")
                                         .initialValue(0.01D, 0.1D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
                                         .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 100))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 100))
+                .style(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.VILLAGE)
+                        .entry(LootCollections.ANTHROPOGENIC)
                         .build())
                 .build();
     }
@@ -133,8 +138,8 @@ public class HorseFluteItem extends RelicItem {
         if (entityIn.tickCount % 20 == 0) {
             AbstractHorse horse = decodeHorseData(stack, level);
             if (horse != null) {
-                if (AbilityUtils.canUseAbility(stack, "heal")) {
-                    horse.heal((float) AbilityUtils.getAbilityValue(stack, "heal", "amount"));
+                if (canUseAbility(stack, "heal")) {
+                    horse.heal((float) getAbilityValue(stack, "heal", "amount"));
 
                     CompoundTag nbt = new CompoundTag();
 
@@ -177,7 +182,7 @@ public class HorseFluteItem extends RelicItem {
         Vec3 pos = horse.position();
 
         if (NBTUtils.getString(stack, TAG_UUID, "").equals(horse.getUUID().toString()) && horse.walkDist > 25) {
-            LevelingUtils.addExperience(player, stack, Math.round(horse.walkDist / 25));
+            addExperience(player, stack, Math.round(horse.walkDist / 25));
 
             horse.walkDist = 0;
         }

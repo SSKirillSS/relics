@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.api.events.common.TooltipDisplayEvent;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -24,7 +25,7 @@ import java.awt.*;
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class TooltipBorderHandler {
     @SubscribeEvent
-    public static void onTooltipDisplay(TooltipDisplayEvent event) {
+    public static void onTooltipDisplay(TooltipDisplayEvent event) { // FIXME 1.19.2 :: Removed in 1.20.1?
         ItemStack stack = event.getStack();
         PoseStack poseStack = event.getPoseStack();
 
@@ -77,7 +78,7 @@ public class TooltipBorderHandler {
     public static void onTooltipColorEvent(RenderTooltipEvent.Color event) {
         ItemStack stack = event.getItemStack();
 
-        if (!(stack.getItem() instanceof RelicItem))
+        if (!(stack.getItem() instanceof IRelicItem))
             return;
 
         Pair<String, String> colors = getBorderColors(stack);
@@ -92,7 +93,7 @@ public class TooltipBorderHandler {
 
     @Nullable
     public static Pair<String, String> getBorderColors(ItemStack stack) {
-//        if (!(stack.getItem() instanceof RelicItem relic))
+//        if (!(stack.getItem() instanceof IRelicItem relic))
 //            return null;
 //
 //        RelicDataNew data = relic.getNewData();

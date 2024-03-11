@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber
-public class WandererHandler {
+public class WandererHandler { // FIXME 1.19.2 :: Removed in 1.20.1?
     @SubscribeEvent
     public static void onWandererTradesCompile(WandererTradesEvent event) {
         for (RegistryObject<Item> entry : ItemRegistry.ITEMS.getEntries()) {

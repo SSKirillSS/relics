@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/chorus_inhibitor_broken"
+        "layer0": "relics:item/chorus_inhibitor_broken"
     }
 }
 

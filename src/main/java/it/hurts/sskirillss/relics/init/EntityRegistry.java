@@ -72,7 +72,7 @@ public class EntityRegistry {
                     .build("arrow_rain")
     );
 
-    public static void registerEntities() {
+    public static void register() {
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

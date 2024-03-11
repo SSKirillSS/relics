@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/holy_locket_broken"
+        "layer0": "relics:item/holy_locket_broken"
     }
 }
 

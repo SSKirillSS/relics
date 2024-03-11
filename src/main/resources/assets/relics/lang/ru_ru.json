@@ -9,17 +9,29 @@
 
   "tooltip.relics.relic.tooltip.abilities": "Способности:",
 
-  "tooltip.relics.relic.ability.tooltip.level": "Уровень: %1$s/%2$s",
-  "tooltip.relics.relic.ability.tooltip.rarity": "Редкость:",
   "tooltip.relics.relic.ability.tooltip.low_level": "Для использования необходимо повысить уровень реликвии до %1$s %2$s.",
-  "tooltip.relics.relic.ability.tooltip.no_stats": "Эта способность не имеет улучшаемых характеристик и не влияет на качество реликвии.",
+  "tooltip.relics.relic.ability.tooltip.no_stats": "Способность не имеет улучшаемых характеристик и не влияет на качество реликвии.",
+  "tooltip.relics.relic.ability.tooltip.ready_to_upgrade": "Способность готова к улучшению %1$s .",
 
-  "tooltip.relics.relic.max_level": "-= MAX =-",
+  "tooltip.relics.relic.leveling_points.title": "Очки прокачки",
+
+  "tooltip.relics.relic.vanilla_experience.title": "Ванильный опыт Minecraft",
+  "tooltip.relics.relic.vanilla_experience.current_amount": "Текущее количество: %1$s/%2$s [%3$s%%]",
+  "tooltip.relics.relic.vanilla_experience.total_amount": "Общее количество: %1$s",
+
+  "tooltip.relics.relic.relic_experience.title": "Опыт реликвии",
+  "tooltip.relics.relic.relic_experience.current_amount": "Текущее количество: %1$s/%2$s [%3$s%%]",
+
+  "tooltip.relics.relic.max_level": "MAX",
 
   "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
 
   "tooltip.relics.relic.status.positive": "§2§l[§2§l✔§2§l]",
   "tooltip.relics.relic.status.negative": "§4§l[§4§l✘§4§l]",
+
+  "tooltip.relics.relic.exchange.description": "Конвертация опыта",
+  "tooltip.relics.relic.exchange.cost": "Преобразовать %1$s ванильного опыта Minecraft в 1%% от максимального опыта для текущего уровня реликвии. Стоимость обмена увеличивается за каждое использование %2$s.",
+  "tooltip.relics.relic.exchange.locked": "Реликвия достигла максимального уровня.",
 
   "tooltip.relics.relic.upgrade.description": "Повышение уровня",
   "tooltip.relics.relic.upgrade.cost": "Стоимость: %1$s очков прокачки %2$s, %3$s единиц опыта %4$s.",
@@ -85,8 +97,8 @@
   "tooltip.relics.shadow_glaive.ability.glaive.stat.radius.value": "%1$s блоков.",
   "tooltip.relics.shadow_glaive.ability.saw": "Безжалостное наказание",
   "tooltip.relics.shadow_glaive.ability.saw.description": "Использование расходует все 8 зарядов глефы, призывая пилу, наносящую урон целям поблизости. Повторное использование возвратит пилу носителю, восстановив все заряды. Автоматическая регенерация зарядов блокируется, пока способность активна.",
-  "tooltip.relics.shadow_glaive.ability.saw.stat.speed.title": "Скорость атаки:",
-  "tooltip.relics.shadow_glaive.ability.saw.stat.speed.value": "%1$s ударов в секунду.",
+  "tooltip.relics.shadow_glaive.ability.saw.stat.speed.title": "Интервал урона:",
+  "tooltip.relics.shadow_glaive.ability.saw.stat.speed.value": "%1$s секунд.",
   "tooltip.relics.shadow_glaive.ability.saw.stat.damage.title": "Урон:",
   "tooltip.relics.shadow_glaive.ability.saw.stat.damage.value": "%1$s единиц.",
 
@@ -342,13 +354,23 @@
   "tooltip.relics.ice_skates.ability.ram.stat.damage.value": "%1$s единиц.",
 
   "item.relics.amphibian_boot": "Ботинок амфибии",
-  "tooltip.relics.amphibian_boot.leveling": "+1 ед. опыта за каждую секунду ускорения от способности «Плавники».",
+  "tooltip.relics.amphibian_boot.leveling": "+1 ед. опыта за каждую секунду ускорения от способности «Плавники».\n+1 ед. опыта за каждую секунду ускорения от способности «Скольжение».",
   "tooltip.relics.amphibian_boot.ability.swimming": "Плавники",
   "tooltip.relics.amphibian_boot.ability.swimming.description": "Ускоряет скорость плаванья в зависимости от его продолжительности.",
   "tooltip.relics.amphibian_boot.ability.swimming.stat.speed.title": "Множитель скорости:",
   "tooltip.relics.amphibian_boot.ability.swimming.stat.speed.value": "%1$s%% за каждую секунду.",
   "tooltip.relics.amphibian_boot.ability.swimming.stat.duration.title": "Максимальная продолжительность:",
   "tooltip.relics.amphibian_boot.ability.swimming.stat.duration.value": "%1$s секунд.",
+  "tooltip.relics.amphibian_boot.ability.slipping": "Скольжение",
+  "tooltip.relics.amphibian_boot.ability.slipping.description": "Увеличивает скорость передвижения под дождём в зависимости от её продолжительности.",
+  "tooltip.relics.amphibian_boot.ability.slipping.stat.speed.title": "Множитель скорости за секунду:",
+  "tooltip.relics.amphibian_boot.ability.slipping.stat.speed.value": "%1$s%%.",
+  "tooltip.relics.amphibian_boot.ability.slipping.stat.duration.title": "Максимальная продолжительность:",
+  "tooltip.relics.amphibian_boot.ability.slipping.stat.duration.value": "%1$s секунд.",
+  "tooltip.relics.amphibian_boot.ability.gills": "Жабры",
+  "tooltip.relics.amphibian_boot.ability.gills.description": "Наделяет игрока способностью не расходовать воздух будучи под водой.",
+  "tooltip.relics.amphibian_boot.ability.gills.stat.chance.title": "Шанс срабатывания:",
+  "tooltip.relics.amphibian_boot.ability.gills.stat.chance.value": "%1$s%%.",
 
   "item.relics.spatial_sign": "Пространственная печать",
   "tooltip.relics.spatial_sign.leveling": "+1 ед. опыта за каждую секунду возвращения от способности «Временной разлом».",

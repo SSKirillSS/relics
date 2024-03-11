@@ -1,18 +1,18 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -45,25 +45,28 @@ import java.awt.*;
 
 public class MagicMirrorItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("teleport", RelicAbilityEntry.builder()
-                                .stat("distance", RelicAbilityStat.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("teleport")
+                                .stat(StatData.builder("distance")
                                         .initialValue(500D, 1000D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
-                                .stat("cooldown", RelicAbilityStat.builder()
+                                .stat(StatData.builder("cooldown")
                                         .initialValue(60D, 120D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, -0.05D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.05D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 200))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 200))
+                .style(RelicStyleData.builder()
                         .borders("#008cd7", "#0a3484")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.ANTHROPOGENIC)
                         .build())
                 .build();
     }
@@ -72,8 +75,7 @@ public class MagicMirrorItem extends RelicItem {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
-        if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get())
-                || DurabilityUtils.isBroken(stack) || worldIn.isClientSide())
+        if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get()) || worldIn.isClientSide())
             return InteractionResultHolder.fail(stack);
 
         ServerPlayer serverPlayer = (ServerPlayer) playerIn;
@@ -100,13 +102,13 @@ public class MagicMirrorItem extends RelicItem {
 
         Vec3 pos = data.getRight();
 
-        LevelingUtils.addExperience(player, stack, (int) (1 + (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
-                * DimensionType.getTeleportationScale(player.level.dimensionType(), data.getLeft().dimensionType()))) / 50)));
+        addExperience(player, stack, (int) (1 + (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
+                * DimensionType.getTeleportationScale(player.getLevel().dimensionType(), data.getLeft().dimensionType()))) / 50)));
 
         player.teleportTo(data.getLeft(), pos.x() + 0.5F, pos.y() + 1.0F, pos.z() + 0.5F, player.getYRot(), player.getXRot());
 
         if (!player.isCreative())
-            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(AbilityUtils.getAbilityValue(stack, "teleport", "cooldown") * 20));
+            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getAbilityValue(stack, "teleport", "cooldown") * 20));
 
         world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
@@ -115,18 +117,16 @@ public class MagicMirrorItem extends RelicItem {
 
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        if (player.level.isClientSide())
+    public void onUsingTick(ItemStack stack, LivingEntity entity, int count) {
+        if (!(entity.getLevel() instanceof ServerLevel serverLevel))
             return;
 
-        ServerLevel level = (ServerLevel) player.level;
-
         float radius = count * 0.075F;
-        double extraY = player.getY() + 1.5F - Math.log((count + getUseDuration(stack) * 0.075F) * 0.1F);
+        double extraY = entity.getY() + 1.5F - Math.log((count + getUseDuration(stack) * 0.075F) * 0.1F);
 
-        RandomSource random = level.getRandom();
+        RandomSource random = serverLevel.getRandom();
 
-        Color color = switch (level.dimension().location().getPath()) {
+        Color color = switch (serverLevel.dimension().location().getPath()) {
             case "overworld" -> new Color(75, 150, 255);
             case "the_nether" -> new Color(150, 0, 0);
             case "the_end" -> new Color(100, 0, 200);
@@ -136,16 +136,16 @@ public class MagicMirrorItem extends RelicItem {
         for (int i = 0; i < 5; i++) {
             float angle = (0.01F * (count * 3 + i * 125));
 
-            double extraX = (double) (radius * Mth.sin((float) (Math.PI + angle))) + player.getX();
-            double extraZ = (double) (radius * Mth.cos(angle)) + player.getZ();
+            double extraX = (double) (radius * Mth.sin((float) (Math.PI + angle))) + entity.getX();
+            double extraZ = (double) (radius * Mth.cos(angle)) + entity.getZ();
 
-            level.sendParticles(new CircleTintData(color, Math.max(0.2F, (getUseDuration(stack) - count) * 0.015F),
-                    40, 0.92F, false), extraX, extraY, extraZ, 1, 0F, 0F, 0F, 0F);
+            serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, Math.max(0.2F, (getUseDuration(stack) - count) * 0.015F),
+                    40, 0.92F), extraX, extraY, extraZ, 1, 0F, 0F, 0F, 0F);
         }
 
-        level.sendParticles(new CircleTintData(color, (getUseDuration(stack) - count) * 0.005F, 10 + random.nextInt(50),
-                        0.95F, false), player.getX(), player.getY() + player.getBbHeight() * 0.5F, player.getZ(),
-                (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, player.getBbHeight() * 0.4F, 0.25F, 0.025F);
+        serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, (getUseDuration(stack) - count) * 0.005F, 10 + random.nextInt(50),
+                        0.95F), entity.getX(), entity.getY() + entity.getBbHeight() * 0.5F, entity.getZ(),
+                (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, entity.getBbHeight() * 0.4F, 0.25F, 0.025F);
     }
 
     @Override
@@ -196,8 +196,8 @@ public class MagicMirrorItem extends RelicItem {
         Vec3 pos = data.getRight();
         ServerLevel level = data.getLeft();
 
-        return !(player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.level.dimensionType(),
-                level.dimensionType()) > AbilityUtils.getAbilityValue(stack, "teleport", "distance"));
+        return !(player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.getLevel().dimensionType(),
+                level.dimensionType()) > getAbilityValue(stack, "teleport", "distance"));
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)

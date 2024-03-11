@@ -2,14 +2,18 @@ package it.hurts.sskirillss.relics.items.relics.feet;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
@@ -28,40 +32,43 @@ public class IceSkatesItem extends RelicItem {
     private static final String TAG_SKATING_DURATION = "duration";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("skating", RelicAbilityEntry.builder()
-                                .stat("speed", RelicAbilityStat.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("skating")
+                                .stat(StatData.builder("speed")
                                         .initialValue(0.01D, 0.035D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 10 * 100))
                                         .build())
-                                .stat("duration", RelicAbilityStat.builder()
+                                .stat(StatData.builder("duration")
                                         .initialValue(25D, 50D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value / 10, 1))
                                         .build())
                                 .build())
-                        .ability("ram", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("ram")
                                 .requiredLevel(5)
-                                .stat("damage", RelicAbilityStat.builder()
+                                .stat(StatData.builder("damage")
                                         .initialValue(0.05D, 0.25D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> (int) (MathUtils.round(value, 1) * 10))
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value * 10, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 200))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 200))
+                .style(RelicStyleData.builder()
                         .borders("#dc41ff", "#832698")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.COLD)
                         .build())
                 .build();
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack))
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
         Level level = player.getCommandSenderWorld();
@@ -69,12 +76,12 @@ public class IceSkatesItem extends RelicItem {
 
         int duration = NBTUtils.getInt(stack, TAG_SKATING_DURATION, 0);
 
-        int maxDuration = (int) Math.round(AbilityUtils.getAbilityValue(stack, "skating", "duration"));
+        int maxDuration = (int) Math.round(getAbilityValue(stack, "skating", "duration"));
 
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()
                 && (pos != null && level.getBlockState(pos).is(BlockTags.ICE))) {
             if (player.tickCount % 20 == 0)
-                LevelingUtils.addExperience(player, stack, 1);
+                addExperience(player, stack, 1);
 
             if (duration < maxDuration && player.tickCount % 2 == 0) {
                 NBTUtils.setInt(stack, TAG_SKATING_DURATION, ++duration);
@@ -86,12 +93,12 @@ public class IceSkatesItem extends RelicItem {
         } else if (duration > 0)
             NBTUtils.setInt(stack, TAG_SKATING_DURATION, Math.max(0, duration - 2));
 
-        if (AbilityUtils.canUseAbility(stack, "ram") && duration >= 10) {
+        if (canUseAbility(stack, "ram") && duration >= 10) {
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox())) {
                 if (entity == player || entity.hurtTime > 0)
                     continue;
 
-                entity.hurt(DamageSource.playerAttack(player), (float) (duration * AbilityUtils.getAbilityValue(stack, "ram", "damage")));
+                EntityUtils.hurt(entity, DamageSource.playerAttack(player), (float) (duration * getAbilityValue(stack, "ram", "damage")));
 
                 double factor = Mth.clamp(duration * 0.025D, 1D, 2D);
 
@@ -102,7 +109,7 @@ public class IceSkatesItem extends RelicItem {
         EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         if (duration > 0) {
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * AbilityUtils.getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
             EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
             EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);

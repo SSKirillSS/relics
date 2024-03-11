@@ -20,7 +20,15 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> POWERED_ARROW = SOUNDS.register("powered_arrow", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "powered_arrow")));
     public static final RegistryObject<SoundEvent> LEAP = SOUNDS.register("leap", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "leap")));
 
-    public static void registerSounds() {
+    public static final RegistryObject<SoundEvent> TABLE_UPGRADE = SOUNDS.register("table_upgrade", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "table_upgrade")));
+    public static final RegistryObject<SoundEvent> TABLE_REROLL = SOUNDS.register("table_reroll", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "table_reroll")));
+    public static final RegistryObject<SoundEvent> TABLE_RESET = SOUNDS.register("table_reset", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "table_reset")));
+
+    public static final RegistryObject<SoundEvent> ABILITY_LOCKED = SOUNDS.register("ability_locked", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "ability_locked")));
+    public static final RegistryObject<SoundEvent> ABILITY_COOLDOWN = SOUNDS.register("ability_cooldown", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "ability_cooldown")));
+    public static final RegistryObject<SoundEvent> ABILITY_CAST = SOUNDS.register("ability_cast", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "ability_cast")));
+
+    public static void register() {
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

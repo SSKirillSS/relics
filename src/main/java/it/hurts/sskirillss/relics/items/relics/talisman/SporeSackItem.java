@@ -5,17 +5,17 @@ import it.hurts.sskirillss.relics.entities.SporeEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastPredicate;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastStage;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.data.PredicateInfo;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -37,115 +37,110 @@ public class SporeSackItem extends RelicItem {
     private static final String TAG_SPORES = "spores";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("spore", RelicAbilityEntry.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("spore")
                                 .maxLevel(10)
-                                .stat("size", RelicAbilityStat.builder()
+                                .stat(StatData.builder("size")
                                         .initialValue(0.1D, 0.5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
-                                .stat("damage", RelicAbilityStat.builder()
+                                .stat(StatData.builder("damage")
                                         .initialValue(0.25D, 0.5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_TOTAL, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
-                                .stat("cooldown", RelicAbilityStat.builder()
+                                .stat(StatData.builder("cooldown")
                                         .initialValue(15D, 10D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, -0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_TOTAL, -0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
-                                .stat("duration", RelicAbilityStat.builder()
+                                .stat(StatData.builder("duration")
                                         .initialValue(2D, 4D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, 0.2D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_TOTAL, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
-                        .ability("buffer", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("buffer")
                                 .requiredLevel(5)
                                 .maxLevel(10)
-                                .stat("capacity", RelicAbilityStat.builder()
+                                .stat(StatData.builder("capacity")
                                         .initialValue(2D, 5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
-                                .stat("chance", RelicAbilityStat.builder()
+                                .stat(StatData.builder("chance")
                                         .initialValue(0.025D, 0.075D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, 0.1)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_TOTAL, 0.1)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
-                        .ability("multiplying", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("multiplying")
                                 .requiredLevel(10)
                                 .maxLevel(10)
-                                .stat("chance", RelicAbilityStat.builder()
+                                .stat(StatData.builder("chance")
                                         .initialValue(0.05D, 0.15D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, 0.128)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_TOTAL, 0.128)
                                         .formatValue(value -> (int) Math.round(MathUtils.round(value, 3) * 100))
                                         .build())
-                                .stat("size", RelicAbilityStat.builder()
+                                .stat(StatData.builder("size")
                                         .initialValue(0.05D, 0.1D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, 0.1775)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_TOTAL, 0.1775)
                                         .formatValue(value -> (int) Math.round(MathUtils.round(value, 3) * 100))
                                         .build())
-                                .stat("amount", RelicAbilityStat.builder()
+                                .stat(StatData.builder("amount")
                                         .initialValue(0.05D, 0.15D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.4)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.4)
                                         .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
                                 .build())
-                        .ability("explosion", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("explosion")
                                 .requiredLevel(15)
                                 .maxLevel(10)
-                                .active(AbilityCastType.INSTANTANEOUS, AbilityCastPredicate.builder()
-                                        .predicate("spore", data -> {
-                                                    int spores = NBTUtils.getInt(data.getStack(), TAG_SPORES, 0);
-
-                                                    return PredicateInfo.builder()
-                                                            .description(spores, 1)
-                                                            .condition(spores > 0)
-                                                            .build();
-                                                }
-                                        )
-                                )
-                                .stat("size", RelicAbilityStat.builder()
+                                .active(CastType.INSTANTANEOUS, CastPredicate.builder()
+                                        .predicate("spore", data -> NBTUtils.getInt(data.getStack(), TAG_SPORES, 0) > 0)
+                                        .build())
+                                .stat(StatData.builder("size")
                                         .initialValue(0.05D, 0.25D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 20, 100))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 20, 100))
+                .style(RelicStyleData.builder()
                         .borders("#ffe0d2", "#9c756b")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.JUNGLE)
                         .build())
                 .build();
     }
 
-    public static int getMaxSpores(ItemStack stack) {
-        return (int) Math.round(AbilityUtils.canUseAbility(stack, "buffer") ? AbilityUtils.getAbilityValue(stack, "buffer", "capacity") : 1);
+    public int getMaxSpores(ItemStack stack) {
+        return (int) Math.round(canUseAbility(stack, "buffer") ? getAbilityValue(stack, "buffer", "capacity") : 1);
     }
 
-    public static int getSpores(ItemStack stack) {
+    public int getSpores(ItemStack stack) {
         return NBTUtils.getInt(stack, TAG_SPORES, 0);
     }
 
-    public static void setSpores(ItemStack stack, int amount) {
+    public void setSpores(ItemStack stack, int amount) {
         NBTUtils.setInt(stack, TAG_SPORES, Mth.clamp(amount, 0, getMaxSpores(stack)));
     }
 
-    public static void addSpores(ItemStack stack, int amount) {
-        if (AbilityUtils.canUseAbility(stack, "buffer") && amount < 0
-                && new Random().nextFloat() <= AbilityUtils.getAbilityValue(stack, "buffer", "chance"))
+    public void addSpores(ItemStack stack, int amount) {
+        if (canUseAbility(stack, "buffer") && amount < 0
+                && new Random().nextFloat() <= getAbilityValue(stack, "buffer", "chance"))
             return;
 
         setSpores(stack, getSpores(stack) + amount);
     }
 
     @Override
-    public void castActiveAbility(ItemStack stack, Player player, String ability, AbilityCastType type, AbilityCastStage stage) {
+    public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         Level level = player.getCommandSenderWorld();
         RandomSource random = level.getRandom();
 
@@ -165,7 +160,7 @@ public class SporeSackItem extends RelicItem {
                     spore.setStack(stack);
                     spore.setDeltaMovement(motion);
                     spore.setPos(player.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
-                    spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + (player.getMaxHealth() - player.getHealth()) * AbilityUtils.getAbilityValue(stack, "explosion", "size")));
+                    spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + (player.getMaxHealth() - player.getHealth()) * getAbilityValue(stack, "explosion", "size")));
 
                     level.addFreshEntity(spore);
 
@@ -177,8 +172,8 @@ public class SporeSackItem extends RelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.level.isClientSide() || getSpores(stack) >= getMaxSpores(stack)
-                || player.tickCount % Math.round(AbilityUtils.getAbilityValue(stack, "spore", "cooldown") * 20) != 0)
+        if (!(slotContext.entity() instanceof Player player) || player.getLevel().isClientSide() || getSpores(stack) >= getMaxSpores(stack)
+                || player.tickCount % Math.round(getAbilityValue(stack, "spore", "cooldown") * 20) != 0)
             return;
 
         addSpores(stack, 1);
@@ -193,7 +188,7 @@ public class SporeSackItem extends RelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.SPORE_SACK.get());
 
-            if (stack.isEmpty() || getSpores(stack) < 1)
+            if (!(stack.getItem() instanceof SporeSackItem relic) || relic.getSpores(stack) < 1)
                 return;
 
             Level level = player.getLevel();
@@ -213,13 +208,13 @@ public class SporeSackItem extends RelicItem {
             spore.setStack(stack.copy());
             spore.setDeltaMovement(motion);
             spore.setPos(player.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
-            spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + event.getAmount() * AbilityUtils.getAbilityValue(stack, "spore", "size")));
+            spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + event.getAmount() * relic.getAbilityValue(stack, "spore", "size")));
 
             level.addFreshEntity(spore);
 
-            addSpores(stack, -1);
+            relic.addSpores(stack, -1);
 
-            LevelingUtils.addExperience(player, stack, 1);
+            relic.addExperience(player, stack, 1);
         }
     }
 }

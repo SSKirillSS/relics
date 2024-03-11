@@ -1,8 +1,10 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -17,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.CuriosApi;
 
+import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
@@ -155,8 +158,42 @@ public class EntityUtils {
         if (optional.isEmpty())
             return ItemStack.EMPTY;
 
-        ItemStack stack = optional.get().getRight();
+        return optional.get().getRight();
+    }
 
-        return DurabilityUtils.isBroken(stack) ? ItemStack.EMPTY : stack;
+    public static int getExperienceForLevel(int level) {
+        return level >= 30 ? 112 + (level - 30) * 9 : level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2;
+    }
+
+    public static int getTotalExperienceForLevel(int level) {
+        int result = 0;
+
+        for (int i = 0; i < level; i++) {
+            result += getExperienceForLevel(i);
+        }
+
+        return result;
+    }
+
+    public static int getPlayerTotalExperience(Player player) {
+        int result = player.totalExperience;
+
+        for (int level = 0; level < player.experienceLevel; level++) {
+            result += getExperienceForLevel(level);
+        }
+
+        return result;
+    }
+
+    public static boolean isAlliedTo(@Nullable Entity source, @Nullable Entity target) {
+        return (source == null || target == null) || (source.isAlliedTo(target) || target.isAlliedTo(source)) || (target.getUUID().equals(source.getUUID()))
+                || (target instanceof OwnableEntity ownable && ownable.getOwnerUUID() != null && ownable.getOwnerUUID().equals(source.getUUID()));
+    }
+
+    public static boolean hurt(LivingEntity entity, DamageSource source, float amount) {
+        if (source.getEntity() instanceof LivingEntity sourceEntity && isAlliedTo(sourceEntity, entity))
+            return false;
+
+        return entity.hurt(source, amount);
     }
 }

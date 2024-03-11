@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.mixin;
 
 import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
+import it.hurts.sskirillss.relics.items.relics.feet.AmphibianBootItem;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketSyncEntityEffects;
 import net.minecraft.nbt.CompoundTag;
@@ -14,12 +15,24 @@ import net.minecraftforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity {
+    @ModifyArg(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setAirSupply(I)V", ordinal = 0))
+    private int relics$modifyAirConsumption(int decreasedAirSupply) {
+        LivingEntity instance = (LivingEntity) (Object) this;
+
+        if (AmphibianBootItem.canBreathe(instance)) {
+            return instance.getAirSupply();
+        }
+
+        return decreasedAirSupply;
+    }
+
     @ModifyVariable(method = "travel", index = 8, ordinal = 0, at = @At("STORE"))
     protected float setBlockFriction(float original) {
         LivingEntity entity = (LivingEntity) (Object) this;
@@ -72,22 +85,6 @@ public class MixinLivingEntity {
 
         NetworkHandler.sendToClients(PacketDistributor.TRACKING_ENTITY.with(() -> entity),
                 new PacketSyncEntityEffects(entity.getId(), tag, PacketSyncEntityEffects.Action.REMOVE));
-    }
-
-    @Inject(method = "onEffectUpdated", at = @At("TAIL"))
-    protected void onEffectUpdated(MobEffectInstance effect, boolean forced, Entity target, CallbackInfo ci) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-        Level level = entity.getCommandSenderWorld();
-
-        if (level.isClientSide())
-            return;
-
-        CompoundTag tag = new CompoundTag();
-
-        effect.save(tag);
-
-        NetworkHandler.sendToClients(PacketDistributor.TRACKING_ENTITY.with(() -> entity),
-                new PacketSyncEntityEffects(entity.getId(), tag, PacketSyncEntityEffects.Action.UPDATE));
     }
 
     @Inject(method = "canBeSeenByAnyone", at = @At("HEAD"), cancellable = true)

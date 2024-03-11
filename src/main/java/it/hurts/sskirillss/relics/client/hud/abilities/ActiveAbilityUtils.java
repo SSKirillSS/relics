@@ -1,12 +1,8 @@
 package it.hurts.sskirillss.relics.client.hud.abilities;
 
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.AbilityCastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.DataUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -27,8 +23,7 @@ public class ActiveAbilityUtils {
             for (int slot = 0; slot < handler.getSlots(); slot++) {
                 ItemStack stack = handler.getStackInSlot(slot);
 
-                if (!(stack.getItem() instanceof RelicItem)
-                        || DurabilityUtils.isBroken(stack))
+                if (!(stack.getItem() instanceof IRelicItem relic))
                     continue;
 
                 List<String> abilities = getRelicActiveAbilities(stack);
@@ -37,7 +32,7 @@ public class ActiveAbilityUtils {
                     continue;
 
                 for (String ability : abilities) {
-                    if (AbilityUtils.canUseAbility(stack, ability))
+                    if (relic.canUseAbility(stack, ability))
                         entries.add(new AbilitiesRenderHandler.AbilityEntry(slot, ability));
                 }
             }
@@ -47,15 +42,13 @@ public class ActiveAbilityUtils {
     }
 
     public static List<String> getRelicActiveAbilities(ItemStack stack) {
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return new ArrayList<>();
+
         List<String> abilities = new ArrayList<>();
 
-        RelicAbilityData abilityData = DataUtils.getRelicAbilityData(stack.getItem());
-
-        if (abilityData == null)
-            return abilities;
-
-        for (Map.Entry<String, RelicAbilityEntry> ability : abilityData.getAbilities().entrySet()) {
-            if (ability.getValue().getCastData().getKey() == AbilityCastType.NONE)
+        for (Map.Entry<String, AbilityData> ability : relic.getRelicData().getAbilities().getAbilities().entrySet()) {
+            if (ability.getValue().getCastData().getKey() == CastType.NONE)
                 continue;
 
             abilities.add(ability.getKey());

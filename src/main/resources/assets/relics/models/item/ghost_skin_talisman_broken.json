@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/ghost_skin_talisman_broken"
+        "layer0": "relics:item/ghost_skin_talisman_broken"
     }
 }
 

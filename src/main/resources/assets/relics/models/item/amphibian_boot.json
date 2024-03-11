@@ -1,10 +1,12 @@
 {
-  "parent": "item/generated",
-    "textures": {
-        "layer0": "relics:items/amphibian_boot"
-    },
-    "overrides": [
-        { "predicate": { "relics:broken": 1 }, "model": "relics:item/amphibian_boot_broken" }
-    ]
+  "parent": "forge:item/default",
+  "base": {
+    "parent": "relics:item/amphibian_boot_3d"
+  },
+  "loader": "forge:separate_transforms",
+  "perspectives": {
+    "gui": {
+      "parent": "relics:item/amphibian_boot_2d"
+    }
+  }
 }
-

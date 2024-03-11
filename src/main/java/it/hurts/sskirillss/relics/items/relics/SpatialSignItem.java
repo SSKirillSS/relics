@@ -1,21 +1,21 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -44,20 +44,23 @@ public class SpatialSignItem extends RelicItem {
     public static final String TAG_WORLD = "world";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("seal", RelicAbilityEntry.builder()
-                                .stat("time", RelicAbilityStat.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("seal")
+                                .stat(StatData.builder("time")
                                         .initialValue(2D, 4D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.25D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 200))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 200))
+                .style(RelicStyleData.builder()
                         .borders("#dc41ff", "#832698")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.ANTHROPOGENIC)
                         .build())
                 .build();
     }
@@ -66,14 +69,13 @@ public class SpatialSignItem extends RelicItem {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
-        if (DurabilityUtils.isBroken(stack) || NBTUtils.getList(stack, TAG_POSITION, String.class).size() < 2
-                || worldIn.isClientSide())
+        if (NBTUtils.getList(stack, TAG_POSITION, String.class).size() < 2 || worldIn.isClientSide())
             return InteractionResultHolder.fail(stack);
 
         if (NBTUtils.getInt(stack, TAG_TIME, 0) > 0) {
             NBTUtils.setInt(stack, TAG_TIME, 0);
         } else {
-            NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(AbilityUtils.getAbilityValue(stack, "seal", "time")));
+            NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(getAbilityValue(stack, "seal", "time")));
 
             worldIn.playSound(null, playerIn.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1F, 2F);
         }
@@ -83,7 +85,7 @@ public class SpatialSignItem extends RelicItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (DurabilityUtils.isBroken(stack) || !(entityIn instanceof Player player))
+        if (!(entityIn instanceof Player player))
             return;
 
         RandomSource random = worldIn.getRandom();
@@ -98,13 +100,13 @@ public class SpatialSignItem extends RelicItem {
             if (player.tickCount % 20 == 0 && !worldIn.isClientSide()) {
                 NBTUtils.setInt(stack, TAG_TIME, --time);
 
-                LevelingUtils.addExperience(player, stack, 1);
+                addExperience(player, stack, 1);
             }
 
             if (time <= 0) {
                 worldIn.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1F, 0.5F);
 
-                player.getCooldowns().addCooldown(this, (int) (Math.ceil(AbilityUtils.getAbilityValue(stack, "seal", "time")) * 20));
+                player.getCooldowns().addCooldown(this, (int) (Math.ceil(getAbilityValue(stack, "seal", "time")) * 20));
 
                 NBTUtils.setInt(stack, TAG_TIME, -1);
 
@@ -123,8 +125,8 @@ public class SpatialSignItem extends RelicItem {
                     }
 
                     for (int i = 0; i < 10; i++)
-                        worldIn.addParticle(new CircleTintData(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(50)),
-                                        0.1F + random.nextFloat() * 0.25F, 100, 0.96F, true), player.getX(),
+                        worldIn.addParticle(ParticleUtils.constructSimpleSpark(new Color(255 - random.nextInt(100), 0, 255 - random.nextInt(50)),
+                                        0.1F + random.nextFloat() * 0.25F, 100, 0.96F), player.getX(),
                                 player.getY() + random.nextFloat() * player.getBbHeight(), player.getZ(), 0F, random.nextFloat() * 0.1F, 0F);
 
                     player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
@@ -145,7 +147,7 @@ public class SpatialSignItem extends RelicItem {
         }
 
         if (player.tickCount % 20 == 0) {
-            if (positions.size() >= 5 * AbilityUtils.getAbilityValue(stack, "seal", "time"))
+            if (positions.size() >= 5 * getAbilityValue(stack, "seal", "time"))
                 positions.remove(0);
 
             if (positions.isEmpty() || player.position().distanceTo(NBTUtils.parsePosition(positions.get(positions.size() - 1))) >= 2) {

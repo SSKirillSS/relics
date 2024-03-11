@@ -1,17 +1,16 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -36,32 +35,35 @@ import java.awt.*;
 
 public class ChorusInhibitorItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("blink", RelicAbilityEntry.builder()
-                                .stat("distance", RelicAbilityStat.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("blink")
+                                .stat(StatData.builder("distance")
                                         .initialValue(16D, 32D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.2D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 0)))
                                         .build())
-                                .stat("cooldown", RelicAbilityStat.builder()
+                                .stat(StatData.builder("cooldown")
                                         .initialValue(5D, 10D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.5D)
+                                        .upgradeModifier(UpgradeOperation.ADD, -0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 100))
-                .styleData(RelicStyleData.builder()
+                .leveling(new LevelingData(100, 10, 100))
+                .style(RelicStyleData.builder()
                         .borders("#eed551", "#dcbe1d")
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.END)
                         .build())
                 .build();
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack)
+        if (!(slotContext.entity() instanceof Player player)
                 || player.getItemInHand(InteractionHand.MAIN_HAND).getItem() != Items.CHORUS_FRUIT
                 || player.getCooldowns().isOnCooldown(Items.CHORUS_FRUIT) || !player.getLevel().isClientSide())
             return;
@@ -74,17 +76,17 @@ public class ChorusInhibitorItem extends RelicItem {
         Vec3 start = player.position().add(0, player.getBbHeight() * 0.65D, 0);
         Vec3 end = new Vec3(pos.getX() + 0.5F, pos.getY() - 0.5F, pos.getZ() + 0.5F);
 
-        ParticleUtils.createLine(new CircleTintData(new Color(20, 0, 80), 0.15F, 0, 0.5F, false),
+        ParticleUtils.createLine(ParticleUtils.constructSimpleSpark(new Color(20, 0, 80), 0.15F, 0, 0.5F),
                 player.getLevel(), start, end, (int) Math.round(start.distanceTo(end) * 5));
     }
 
     @Nullable
-    public static BlockPos getEyesPos(Player player, ItemStack stack) {
+    public BlockPos getEyesPos(Player player, ItemStack stack) {
         Level world = player.getCommandSenderWorld();
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        double distance = AbilityUtils.getAbilityValue(stack, "blink", "distance");
+        double distance = getAbilityValue(stack, "blink", "distance");
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
@@ -117,21 +119,21 @@ public class ChorusInhibitorItem extends RelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.CHORUS_INHIBITOR.get());
 
-            if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
+            if (!(stack.getItem() instanceof ChorusInhibitorItem relic))
                 return;
 
             event.setCanceled(true);
 
-            BlockPos pos = getEyesPos(player, stack);
+            BlockPos pos = relic.getEyesPos(player, stack);
 
             if (pos == null)
                 return;
 
-            LevelingUtils.addExperience(player, stack, (int) Math.floor(player.position().distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ())) / 10F));
+            relic.addExperience(player, stack, (int) Math.floor(player.position().distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ())) / 10F));
 
             player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
             player.getLevel().playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1F, 1F);
-            player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, Math.max((int) Math.round(AbilityUtils.getAbilityValue(stack, "blink", "cooldown") * 20D), 0));
+            player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, Math.max((int) Math.round(relic.getAbilityValue(stack, "blink", "cooldown") * 20D), 0));
         }
     }
 }

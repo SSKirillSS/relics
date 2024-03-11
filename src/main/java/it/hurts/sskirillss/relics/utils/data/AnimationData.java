@@ -19,6 +19,24 @@ public class AnimationData {
         return time;
     }
 
+    public Pair<Integer, Integer> getFrameByTime(long time) {
+        int frames = getFrames().size();
+
+        long remainder = time % getLength();
+
+        int index = 0;
+
+        while (remainder > 0) {
+            Pair<Integer, Integer> pair = getFrames().get(index);
+
+            remainder -= pair.getRight();
+
+            index = index + 1 >= frames ? 0 : index + 1;
+        }
+
+        return getFrames().get(index);
+    }
+
     public static AnimationData builder() {
         return new AnimationData();
     }

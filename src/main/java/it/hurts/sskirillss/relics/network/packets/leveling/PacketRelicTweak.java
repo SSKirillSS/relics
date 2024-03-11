@@ -1,10 +1,7 @@
 package it.hurts.sskirillss.relics.network.packets.leveling;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -52,41 +49,36 @@ public class PacketRelicTweak {
 
             ItemStack stack = tile.getStack();
 
-            if (!(stack.getItem() instanceof RelicItem relic))
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            RelicAbilityData data = relic.getRelicData().getAbilityData();
-
-            if (data == null)
-                return;
-
-            RelicAbilityEntry entry = data.getAbilities().get(ability);
+            AbilityData entry = relic.getAbilityData(ability);
 
             if (entry == null)
                 return;
 
             switch (operation) {
                 case INCREASE -> {
-                    if (AbilityUtils.mayPlayerUpgrade(player, stack, ability)) {
-                        player.giveExperiencePoints(-AbilityUtils.getUpgradeRequiredExperience(stack, ability));
+                    if (relic.mayPlayerUpgrade(player, stack, ability)) {
+                        player.giveExperiencePoints(-relic.getUpgradeRequiredExperience(stack, ability));
 
-                        AbilityUtils.setAbilityPoints(stack, ability, AbilityUtils.getAbilityPoints(stack, ability) + 1);
-                        LevelingUtils.addPoints(stack, -entry.getRequiredPoints());
+                        relic.setAbilityPoints(stack, ability, relic.getAbilityPoints(stack, ability) + 1);
+                        relic.addPoints(stack, -entry.getRequiredPoints());
                     }
                 }
                 case REROLL -> {
-                    if (AbilityUtils.mayPlayerReroll(player, stack, ability)) {
-                        player.giveExperiencePoints(-AbilityUtils.getRerollRequiredExperience(stack, ability));
+                    if (relic.mayPlayerReroll(player, stack, ability)) {
+                        player.giveExperiencePoints(-relic.getRerollRequiredExperience(ability));
 
-                        AbilityUtils.randomizeStats(stack, ability);
+                        relic.randomizeStats(stack, ability);
                     }
                 }
                 case RESET -> {
-                    if (AbilityUtils.mayPlayerReset(player, stack, ability)) {
-                        player.giveExperiencePoints(-AbilityUtils.getResetRequiredExperience(stack, ability));
+                    if (relic.mayPlayerReset(player, stack, ability)) {
+                        player.giveExperiencePoints(-relic.getResetRequiredExperience(stack, ability));
 
-                        LevelingUtils.addPoints(stack, AbilityUtils.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
-                        AbilityUtils.setAbilityPoints(stack, ability, 0);
+                        relic.addPoints(stack, relic.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
+                        relic.setAbilityPoints(stack, ability, 0);
                     }
                 }
             }

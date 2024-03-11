@@ -5,122 +5,79 @@ import it.hurts.sskirillss.relics.api.events.common.FluidCollisionEvent;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Mixin(Entity.class)
 public class MixinEntity {
     @ModifyVariable(method = "move", ordinal = 1, index = 3, name = "vec32", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/Entity;collide(Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;"))
-    private Vec3 fluidCollision(Vec3 original) {
-        if (!((Object) this instanceof LivingEntity entity))
+    public Vec3 fluidCollision(Vec3 original) {
+        if (!((Entity) (Object) this instanceof LivingEntity entity))
             return original;
 
-        if (original.y > 0 || isTouchingFluid(entity, entity.getBoundingBox().deflate(0.001D)))
+        if (original.y > 0)
             return original;
 
-        Map<Vec3, Double> points = new HashMap<>();
-        Double highestDistance = null;
+        Level level = entity.getCommandSenderWorld();
 
-        AABB box = entity.getBoundingBox().move(original);
+        int[][] offsets = {
+                {1, 0, 1}, {1, 0, 0}, {1, -1, 0}, {1, 0, -1},
+                {0, 0, 1}, {0, 0, 0}, {0, -1, 0}, {0, 0, -1},
+                {-1, 0, 1}, {-1, 0, 0}, {-1, -1, 0}, {-1, 0, -1}
+        };
 
-        points.put(new Vec3(box.minX, box.minY, box.minZ), null);
-        points.put(new Vec3(box.minX, box.minY, box.maxZ), null);
-        points.put(new Vec3(box.maxX, box.minY, box.minZ), null);
-        points.put(new Vec3(box.maxX, box.minY, box.maxZ), null);
+        double highestValue = original.y;
+        FluidState highestFluid = null;
 
-        boolean cancelled = false;
-        double fluidStepHeight = entity.isOnGround() ? Math.max(1F, entity.maxUpStep) : 0F;
+        for (int[] offset : offsets) {
+            BlockPos sourcePos = entity.blockPosition();
+            BlockPos pos = new BlockPos(sourcePos.getX() + offset[0], sourcePos.getY() + offset[1], sourcePos.getZ() + offset[2]);
 
-        for (Map.Entry<Vec3, Double> entry : points.entrySet()) {
-            for (int i = 0; ; i++) {
-                BlockPos landingPos = new BlockPos(entry.getKey()).offset(0, fluidStepHeight - i, 0);
-                FluidState landingState = entity.getCommandSenderWorld().getFluidState(landingPos);
+            FluidState fluidState = level.getFluidState(pos);
 
-                double distanceToFluidSurface = landingPos.getY() + landingState.getOwnHeight() - entity.getY();
+            if (fluidState.isEmpty())
+                continue;
 
-                if (distanceToFluidSurface < original.y || distanceToFluidSurface > fluidStepHeight)
-                    break;
+            VoxelShape shape = Shapes.block().move(pos.getX(), pos.getY() + fluidState.getOwnHeight(), pos.getZ());
 
-                if (!landingState.isEmpty()) {
-                    FluidCollisionEvent event = new FluidCollisionEvent(entity, landingState);
+            if (Shapes.joinIsNotEmpty(shape, Shapes.create(entity.getBoundingBox().inflate(0.5)), BooleanOp.AND)) {
+                double height = shape.max(Direction.Axis.Y) - entity.getY() - 1;
 
-                    MinecraftForge.EVENT_BUS.post(event);
-
-                    if (cancelled || event.isCanceled()) {
-                        entry.setValue(distanceToFluidSurface);
-
-                        cancelled = true;
-
-                        break;
-                    }
+                if (highestValue < height) {
+                    highestValue = height;
+                    highestFluid = fluidState;
                 }
             }
         }
 
-        for (Map.Entry<Vec3, Double> point : points.entrySet())
-            if (highestDistance == null || (point.getValue() != null && point.getValue() > highestDistance))
-                highestDistance = point.getValue();
-
-        if (highestDistance == null)
+        if (highestFluid == null)
             return original;
 
-        Vec3 finalDisplacement = new Vec3(original.x, highestDistance, original.z);
+        FluidCollisionEvent event = new FluidCollisionEvent(entity, highestFluid);
 
-        if (!isTouchingFluid(entity, entity.getBoundingBox().move(finalDisplacement).deflate(0.001D))) {
-            entity.fallDistance = 0.0F;
+        MinecraftForge.EVENT_BUS.post(event);
+
+        if (event.isCanceled()) {
+            entity.fallDistance = 0F;
             entity.setOnGround(true);
 
-            return finalDisplacement;
+            return new Vec3(original.x, highestValue, original.z);
         }
 
         return original;
-    }
-
-    @Unique
-    private static boolean isTouchingFluid(LivingEntity entity, AABB box) {
-        Level world = entity.getCommandSenderWorld();
-
-        int minX = Mth.floor(box.minX);
-        int maxX = Mth.ceil(box.maxX);
-        int minY = Mth.floor(box.minY);
-        int maxY = Mth.ceil(box.maxY);
-        int minZ = Mth.floor(box.minZ);
-        int maxZ = Mth.ceil(box.maxZ);
-
-        if (!world.hasChunksAt(minX, minY, minZ, maxX, maxY, maxZ))
-            return false;
-
-        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-
-        for (int i = minX; i < maxX; ++i) {
-            for (int j = minY; j < maxY; ++j) {
-                for (int k = minZ; k < maxZ; ++k) {
-                    mutable.set(i, j, k);
-
-                    FluidState fluidState = world.getFluidState(mutable);
-
-                    if (!fluidState.isEmpty() && fluidState.getHeight(world, mutable) + j >= box.minY)
-                        return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     @Inject(at = @At(value = "RETURN"), method = "isInWaterOrRain", cancellable = true)
@@ -138,7 +95,7 @@ public class MixinEntity {
     public void getBlockSpeedFactor(CallbackInfoReturnable<Float> cir) {
         Entity entity = (Entity) (Object) this;
 
-        EntityBlockSpeedFactorEvent event = new EntityBlockSpeedFactorEvent(entity, entity.level.getBlockState(entity.getBlockPosBelowThatAffectsMyMovement()), cir.getReturnValue());
+        EntityBlockSpeedFactorEvent event = new EntityBlockSpeedFactorEvent(entity, entity.getLevel().getBlockState(entity.getOnPos()), cir.getReturnValue());
 
         MinecraftForge.EVENT_BUS.post(event);
 

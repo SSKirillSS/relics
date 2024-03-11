@@ -8,16 +8,20 @@
     "MixinAbstractContainerMenu",
     "MixinEnderMan",
     "MixinEntity",
+    "MixinItem",
     "MixinItemStack",
     "MixinLivingEntity",
     "MixinPiglinAi",
-    "MixinPowderSnowBlock"
+    "MixinPowderSnowBlock",
+    "MixinScreen"
   ],
   "minVersion": "0.8",
   "client": [
     "MixinCamera",
     "MixinKeyboardHandler",
     "MixinMouseHandler",
-    "MixinScreen"
+    "MixinScreen",
+    "MixinMouseHandler",
+    "MixinWindow"
   ]
 }

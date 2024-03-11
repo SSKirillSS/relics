@@ -1,5 +1,19 @@
 {
-    "variants": {
-        "": { "model": "relics:block/researching_table" }
+  "variants": {
+    "facing=north": {
+      "model": "relics:block/researching_table"
+    },
+    "facing=east": {
+      "y": 90,
+      "model": "relics:block/researching_table"
+    },
+    "facing=south": {
+      "y": 180,
+      "model": "relics:block/researching_table"
+    },
+    "facing=west": {
+      "y": 270,
+      "model": "relics:block/researching_table"
     }
+  }
 }
