@@ -1,15 +1,13 @@
 package it.hurts.sskirillss.relics.client.screen.description.data;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.data.base.ParticleData;
-import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import org.lwjgl.opengl.GL11;
@@ -37,7 +35,7 @@ public class ExperienceParticleData extends ParticleData {
     }
 
     @Override
-    public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(Screen screen, PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         Minecraft MC = screen.getMinecraft();
 
         float lifePercentage = 1F - ((getMaxLifeTime() - getLifeTime()) / 100F);
@@ -50,7 +48,7 @@ public class ExperienceParticleData extends ParticleData {
 
         MC.getTextureManager().getTexture(getTexture()).setBlurMipmap(true, false);
 
-        RenderUtils.renderTextureFromCenter(guiGraphics.pose(), getX(), getY(), 8, 8, getScale() * lifePercentage);
+        RenderUtils.renderTextureFromCenter(poseStack, getX(), getY(), 8, 8, getScale() * lifePercentage);
 
         MC.getTextureManager().getTexture(getTexture()).restoreLastBlurMipmap();
 

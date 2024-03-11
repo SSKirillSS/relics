@@ -19,7 +19,6 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -50,9 +49,8 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
         TextureManager manager = MC.getTextureManager();
-        PoseStack poseStack = guiGraphics.pose();
 
         boolean canUse = AbilityUtils.canUseAbility(screen.stack, ability);
         boolean canUpgrade = AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability);
@@ -68,14 +66,14 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         poseStack.scale(scale, scale, scale);
 
-        poseStack.translate((getX() + (width / 2F)) / scale, (getY() + (height / 2F)) / scale, 0);
+        poseStack.translate((x + (width / 2F)) / scale, (y + (height / 2F)) / scale, 0);
 
         if (!canUse)
             RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, scale);
         else if (canUpgrade)
             RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, scale);
 
-        guiGraphics.blit(card, -(20 / 2) - 1, -(29 / 2) - 2, 0, 0, 20, 29, 20, 29);
+        blit(poseStack, -(20 / 2) - 1, -(29 / 2) - 2, 0, 0, 20, 29, 20, 29);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, RelicDescriptionScreen.TEXTURE);
@@ -83,9 +81,9 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         manager.bindForSetup(RelicDescriptionScreen.TEXTURE);
 
         if (canUse) {
-            guiGraphics.blit(RelicDescriptionScreen.TEXTURE, -(width / 2), -(height / 2), 302, 61, width, height, 512, 512);
+            blit(poseStack, -(width / 2), -(height / 2), 302, 61, width, height, 512, 512);
 
-            if (isHovered()) {
+            if (isHovered) {
                 RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/card_highlight_unlocked.png"));
 
                 RenderSystem.enableBlend();
@@ -108,9 +106,9 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
                 RenderSystem.disableBlend();
             }
         } else {
-            guiGraphics.blit(RelicDescriptionScreen.TEXTURE, -(width / 2) - 1, -(height / 2), 333, 61, width + 1, height, 512, 512);
+            blit(poseStack, -(width / 2) - 1, -(height / 2), 333, 61, width + 1, height, 512, 512);
 
-            if (isHovered()) {
+            if (isHovered) {
                 RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/card_highlight_locked.png"));
 
                 RenderSystem.enableBlend();
@@ -167,7 +165,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         for (int i = 1; i < QualityUtils.getAbilityQuality(screen.stack, ability) + 1; i++) {
             boolean isAliquot = i % 2 == 1;
 
-            guiGraphics.blit(RelicDescriptionScreen.TEXTURE, -(width / 2) + xOff + 2, -(height / 2) + 38, (canUse ? 302 : 334) + (isAliquot ? 0 : 2), 108, isAliquot ? 2 : 3, 4, 512, 512);
+            blit(poseStack, -(width / 2) + xOff + 2, -(height / 2) + 38, (canUse ? 302 : 334) + (isAliquot ? 0 : 2), 108, isAliquot ? 2 : 3, 4, 512, 512);
 
             xOff += (isAliquot ? 2 : 3);
         }
@@ -178,7 +176,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         poseStack.scale(textScale, textScale, textScale);
 
-        guiGraphics.drawString(MC.font, title, -((width + 1) / 2) - (MC.font.width(title) / 2) + 13, (-(height / 2) - 19), 0xffce96, true);
+        MC.font.drawShadow(poseStack, title, -((width + 1) / 2F) - (MC.font.width(title) / 2F) + 13, (-(height / 2F) - 19), 0xffce96);
 
         poseStack.popPose();
     }
@@ -193,15 +191,15 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         if (AbilityUtils.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
             if (screen.ticksExisted % 7 == 0)
                 ParticleStorage.addParticle(screen, new ExperienceParticleData(new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
-                        getX() + 5 + random.nextInt(18), getY() + 18, 0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
+                        x + 5 + random.nextInt(18), y + 18, 0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
         }
 
-        if (isHovered()) {
+        if (isHovered) {
             if (screen.ticksExisted % 3 == 0)
                 ParticleStorage.addParticle(screen, new ExperienceParticleData(AbilityUtils.canUseAbility(screen.stack, ability)
                         ? new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0)
                         : new Color(100 + random.nextInt(100), 100 + random.nextInt(100), 100 + random.nextInt(100)),
-                        getX() + random.nextInt(width), getY() - 1, 0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
+                        x + random.nextInt(width), y - 1, 0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
 
             if (scale < maxScale)
                 scale = Math.min(maxScale, scale + ((maxScale - scale) * (0.25F)));
@@ -212,13 +210,11 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
     }
 
     @Override
-    public void onHovered(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void onHovered(PoseStack poseStack, int mouseX, int mouseY) {
         RelicAbilityEntry data = AbilityUtils.getRelicAbilityEntry(screen.stack.getItem(), ability);
 
         if (data == null)
             return;
-
-        PoseStack poseStack = guiGraphics.pose();
 
         List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
@@ -261,9 +257,9 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         poseStack.scale(scale, scale, scale);
 
-        poseStack.translate((getX() + (getWidth() / 2F)) / scale, (getY() + (getHeight() / 2F)) / scale, 0);
+        poseStack.translate((x + (getWidth() / 2F)) / scale, (y + (getHeight() / 2F)) / scale, 0);
 
-        ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+        ScreenUtils.drawTexturedTooltipBorder(poseStack, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                 renderWidth, height, -((renderWidth + 19) / 2), y);
 
         int yOff = 0;
@@ -273,7 +269,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            guiGraphics.drawString(MC.font, entry, -(MC.font.width(entry) / 2), ((y + yOff + 9) * 2), 0x412708, false);
+            MC.font.draw(poseStack, entry, -(MC.font.width(entry) / 2F), ((y + yOff + 9) * 2), 0x412708);
 
             yOff += 5;
 

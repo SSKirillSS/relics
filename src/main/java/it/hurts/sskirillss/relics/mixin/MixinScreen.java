@@ -2,6 +2,9 @@ package it.hurts.sskirillss.relics.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.api.events.common.TooltipDisplayEvent;
+import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
+import it.hurts.sskirillss.relics.client.screen.description.data.base.ParticleData;
+import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;

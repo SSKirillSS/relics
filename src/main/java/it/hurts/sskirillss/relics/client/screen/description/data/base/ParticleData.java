@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.screen.description.data.base;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Data;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 
@@ -47,7 +47,7 @@ public class ParticleData {
 
     }
 
-    public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(Screen screen, PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
 
     }
 }

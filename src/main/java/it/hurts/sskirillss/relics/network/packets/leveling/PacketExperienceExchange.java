@@ -39,7 +39,7 @@ public class PacketExperienceExchange {
             if (player == null)
                 return;
 
-            Level world = player.level();
+            Level world = player.getLevel();
 
             if (!(world.getBlockEntity(pos) instanceof ResearchingTableTile tile))
                 return;
