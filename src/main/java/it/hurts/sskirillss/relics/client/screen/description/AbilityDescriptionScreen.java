@@ -17,7 +17,6 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
-import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -37,7 +36,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -75,7 +73,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
     @Override
     protected void init() {
-        if (!(stack.getItem() instanceof IRelicItem relic))
+        if (stack == null || !(stack.getItem() instanceof IRelicItem))
             return;
 
         TextureManager manager = MC.getTextureManager();
@@ -100,9 +98,12 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         LocalPlayer player = MC.player;
 
+        if (stack == null || !(stack.getItem() instanceof IRelicItem) || player == null)
+            return;
+
         ticksExisted++;
 
-        RandomSource random = MC.player.getRandom();
+        RandomSource random = player.getRandom();
 
         int x = (this.width - backgroundWidth) / 2;
         int y = (this.height - backgroundHeight) / 2;
@@ -129,17 +130,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         LocalPlayer player = MC.player;
 
-        if (player == null)
-            return;
-
-        Level world = player.getLevel();
-
-        if (!(world.getBlockEntity(pos) instanceof ResearchingTableTile tile))
-            return;
-
-        stack = tile.getStack();
-
-        if (!(stack.getItem() instanceof IRelicItem relic))
+        if (stack == null || !(stack.getItem() instanceof IRelicItem relic) || player == null)
             return;
 
         RelicData relicData = relic.getRelicData();
