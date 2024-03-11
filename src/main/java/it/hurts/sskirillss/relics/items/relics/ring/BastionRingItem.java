@@ -74,7 +74,7 @@ public class BastionRingItem extends RelicItem {
 
         Level world = player.getCommandSenderWorld();
 
-        if (world.isClientSide() || world.dimension() != Level.NETHER || DurabilityUtils.isBroken(stack))
+        if (world.isClientSide() || world.dimension() != Level.NETHER)
             return;
 
         Piglin piglin = world.getNearestEntity(Piglin.class, TargetingConditions.DEFAULT, player,

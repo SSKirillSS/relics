@@ -58,7 +58,7 @@ public class ChorusInhibitorItem extends RelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack)
+        if (!(slotContext.entity() instanceof Player player)
                 || player.getItemInHand(InteractionHand.MAIN_HAND).getItem() != Items.CHORUS_FRUIT
                 || player.getCooldowns().isOnCooldown(Items.CHORUS_FRUIT) || !player.getLevel().isClientSide())
             return;

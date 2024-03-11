@@ -84,6 +84,7 @@ public class ShadowGlaiveItem extends RelicItem {
                 .build();
     }
 
+    /* FIXME 1.19.2
     @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if (group != RelicsTab.RELICS_TAB)
@@ -95,6 +96,7 @@ public class ShadowGlaiveItem extends RelicItem {
 
         items.add(stack);
     }
+    */
 
     @Override
     public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
@@ -103,7 +105,7 @@ public class ShadowGlaiveItem extends RelicItem {
 
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
-        if (DurabilityUtils.isBroken(stack) || entityIn.tickCount % 20 != 0 || charges >= 8)
+        if (entityIn.tickCount % 20 != 0 || charges >= 8)
             return;
 
         int time = NBTUtils.getInt(stack, TAG_TIME, 0);
@@ -124,7 +126,7 @@ public class ShadowGlaiveItem extends RelicItem {
         int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
         RandomSource random = playerIn.getRandom();
 
-        if (DurabilityUtils.isBroken(stack) || playerIn.getCooldowns().isOnCooldown(stack.getItem()))
+        if (playerIn.getCooldowns().isOnCooldown(stack.getItem()))
             return InteractionResultHolder.fail(stack);
 
         ShadowSawEntity entity = getSaw(stack, worldIn);

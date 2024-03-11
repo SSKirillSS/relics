@@ -52,7 +52,7 @@ public class IceBreakerItem extends RelicItem {
                                         .predicate("falling", data -> {
                                             Player player = data.getPlayer();
 
-                                            return !(player.onGround() || player.isSpectator());
+                                            return !(player.isOnGround() || player.isSpectator());
                                         })
                                         .build())
                                 .stat(StatData.builder("size")
@@ -159,7 +159,7 @@ public class IceBreakerItem extends RelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ICE_BREAKER.get());
 
-            if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
+            if (stack.isEmpty())
                 return;
 
             event.setFriction(0.6F);

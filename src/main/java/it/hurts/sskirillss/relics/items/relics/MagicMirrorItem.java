@@ -70,8 +70,7 @@ public class MagicMirrorItem extends RelicItem {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
-        if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get())
-                || DurabilityUtils.isBroken(stack) || worldIn.isClientSide())
+        if (playerIn.getCooldowns().isOnCooldown(ItemRegistry.MAGIC_MIRROR.get()) || worldIn.isClientSide())
             return InteractionResultHolder.fail(stack);
 
         ServerPlayer serverPlayer = (ServerPlayer) playerIn;
@@ -142,8 +141,8 @@ public class MagicMirrorItem extends RelicItem {
         }
 
         serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, (getUseDuration(stack) - count) * 0.005F, 10 + random.nextInt(50),
-                        0.95F), entity.getX(), entity.getY() + entity.getBbHeight() * 0.5F, entity.getZ(),
-                (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, entity.getBbHeight() * 0.4F, 0.25F, 0.025F);
+                        0.95F), player.getX(), player.getY() + player.getBbHeight() * 0.5F, player.getZ(),
+                (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, player.getBbHeight() * 0.4F, 0.25F, 0.025F);
     }
 
     @Override
@@ -194,7 +193,7 @@ public class MagicMirrorItem extends RelicItem {
         Vec3 pos = data.getRight();
         ServerLevel level = data.getLeft();
 
-        return !(player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.level().dimensionType(),
+        return !(player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.getLevel().dimensionType(),
                 level.dimensionType()) > getAbilityValue(stack, "teleport", "distance"));
     }
 

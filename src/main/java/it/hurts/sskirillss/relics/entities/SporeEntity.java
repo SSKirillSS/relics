@@ -143,9 +143,9 @@ public class SporeEntity extends ThrowableProjectile {
 
         double inlinedSize = Math.pow(Math.log10(1 + getSize()), 1D / 3D);
 
-        ParticleUtils.createBall(ParticleUtils.constructSimpleSpark(new Color(100 + level().getRandom().nextInt(50), 255, 0),
+        ParticleUtils.createBall(ParticleUtils.constructSimpleSpark(new Color(100 + getLevel().getRandom().nextInt(50), 255, 0),
                         (float) (inlinedSize * 0.35F), 40, 0.9F),
-                this.position().add(0, inlinedSize / 3, 0), level(), (int) Math.ceil(1 + inlinedSize), (float) (inlinedSize / 2D));
+                this.position().add(0, inlinedSize / 3, 0), getLevel(), (int) Math.ceil(1 + inlinedSize), (float) (inlinedSize / 2D));
 
         if (this.getOwner() instanceof Player player) {
             RandomSource random = player.getRandom();

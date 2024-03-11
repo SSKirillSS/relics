@@ -33,7 +33,8 @@ public class Relics {
         EffectRegistry.registerEffects();
         CodecRegistry.registerCodecs();
         SoundRegistry.register();
-        ParticleRegistry.registerParticles();
+        CommandRegistry.register();
+        ParticleRegistry.register();
     }
 
     private void enqueue(final InterModEnqueueEvent event) {

@@ -112,7 +112,7 @@ public interface IRelicItem {
 
         CapabilityUtils.getRelicsCapability(player).getResearchData().putBoolean(ForgeRegistries.ITEMS.getKey(item).getPath() + "_researched", researched);
 
-        if (!player.level().isClientSide())
+        if (!player.getLevel().isClientSide())
             NetworkHandler.sendToClient(new CapabilitySyncPacket(CapabilityUtils.getRelicsCapability(player).serializeNBT()), (ServerPlayer) player);
     }
 

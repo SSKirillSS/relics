@@ -38,8 +38,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -95,7 +93,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack))
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
         int swimmingDuration = NBTUtils.getInt(stack, TAG_SWIMMING_DURATION, 0);
@@ -116,7 +114,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
         int slippingDuration = NBTUtils.getInt(stack, TAG_SLIPPING_DURATION, 0);
 
-        if (player.isSprinting() && player.level().isRainingAt(player.blockPosition()) && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
+        if (player.isSprinting() && player.getLevel().isRainingAt(player.blockPosition()) && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
             if (player.tickCount % 20 == 0)
                 addExperience(player, stack, 1);
 
@@ -210,21 +208,12 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("right_leg", "left_leg");
     }
 
-    @Mod.EventBusSubscriber // FIXME 1.19.2 :: Remove
-    public static class Events {
-        @SubscribeEvent
-        public static void onLivingBreath(LivingBreatheEvent event) {
-            LivingEntity entity = event.getEntity();
+    public static boolean canBreathe(final LivingEntity entity) {
+        ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.AMPHIBIAN_BOOT.get());
 
-            ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.AMPHIBIAN_BOOT.get());
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return true;
 
-            if (!(stack.getItem() instanceof IRelicItem relic))
-                return;
-
-            double chance = relic.getAbilityValue(stack, "gills", "chance");
-
-            if (event.getConsumeAirAmount() > 0 && entity.getRandom().nextDouble() <= chance)
-                event.setConsumeAirAmount(0);
-        }
+        return entity.getRandom().nextDouble() <= relic.getAbilityValue(stack, "gills", "chance");
     }
 }

@@ -54,7 +54,7 @@ public class RollerSkatesItem extends RelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack))
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
         int duration = NBTUtils.getInt(stack, TAG_SKATING_DURATION, 0);
@@ -97,7 +97,7 @@ public class RollerSkatesItem extends RelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ROLLER_SKATES.get());
 
-            if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
+            if (stack.isEmpty())
                 return;
 
             event.setFriction(1.075F);
@@ -110,7 +110,7 @@ public class RollerSkatesItem extends RelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.ROLLER_SKATES.get());
 
-            if (stack.isEmpty() || DurabilityUtils.isBroken(stack))
+            if (stack.isEmpty())
                 return;
 
             event.setSpeedFactor(1F);

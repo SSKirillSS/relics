@@ -72,7 +72,7 @@ public class MagmaWalkerItem extends RelicItem {
     public static void onLivingAttack(LivingAttackEvent event) {
         ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
-        if (stack.getItem() instanceof IRelicItem relic && event.getSource() == event.getEntity().level().damageSources().hotFloor()
+        if (stack.getItem() instanceof IRelicItem relic && event.getSource() == DamageSource.HOT_FLOOR
                 && NBTUtils.getInt(stack, TAG_HEAT, 0) <= relic.getAbilityValue(stack, "pace", "time")) {
             event.setCanceled(true);
         }

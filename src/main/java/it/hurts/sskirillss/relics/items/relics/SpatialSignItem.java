@@ -64,8 +64,7 @@ public class SpatialSignItem extends RelicItem {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
 
-        if (DurabilityUtils.isBroken(stack) || NBTUtils.getList(stack, TAG_POSITION, String.class).size() < 2
-                || worldIn.isClientSide())
+        if (NBTUtils.getList(stack, TAG_POSITION, String.class).size() < 2 || worldIn.isClientSide())
             return InteractionResultHolder.fail(stack);
 
         if (NBTUtils.getInt(stack, TAG_TIME, 0) > 0) {
@@ -81,7 +80,7 @@ public class SpatialSignItem extends RelicItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (DurabilityUtils.isBroken(stack) || !(entityIn instanceof Player player))
+        if (!(entityIn instanceof Player player))
             return;
 
         RandomSource random = worldIn.getRandom();

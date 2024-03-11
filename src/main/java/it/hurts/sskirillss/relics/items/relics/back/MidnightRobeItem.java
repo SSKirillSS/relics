@@ -92,7 +92,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
     public void curioTick(String identifier, int index, LivingEntity entity, ItemStack stack) {
         Level level = entity.getCommandSenderWorld();
 
-        if (DurabilityUtils.isBroken(stack) || level.isClientSide())
+        if (level.isClientSide())
             return;
 
         ServerLevel serverLevel = (ServerLevel) level;

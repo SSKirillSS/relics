@@ -63,7 +63,7 @@ public class IceSkatesItem extends RelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack))
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
         Level level = player.getCommandSenderWorld();

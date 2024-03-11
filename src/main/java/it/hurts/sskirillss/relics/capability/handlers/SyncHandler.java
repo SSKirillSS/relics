@@ -30,6 +30,6 @@ public class SyncHandler {
         if (player.getLevel().isClientSide())
             return;
 
-        CapabilityUtils.getRelicsCapability(player).ifPresent(capability -> NetworkHandler.sendToClient(new CapabilitySyncPacket(capability.serializeNBT()), (ServerPlayer) player));
+        NetworkHandler.sendToClient(new CapabilitySyncPacket(CapabilityUtils.getRelicsCapability(player).serializeNBT()), (ServerPlayer) player);
     }
 }

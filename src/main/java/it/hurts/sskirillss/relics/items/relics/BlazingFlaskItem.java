@@ -66,7 +66,7 @@ public class BlazingFlaskItem extends RelicItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
-        if (!(entity instanceof Player player) || DurabilityUtils.isBroken(stack))
+        if (!(entity instanceof Player player))
             return;
 
         Level world = player.getCommandSenderWorld();

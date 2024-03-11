@@ -209,7 +209,7 @@ public class RageGloveItem extends RelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || DurabilityUtils.isBroken(stack))
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
         if (canUseAbility(stack, "phlebotomy")) {

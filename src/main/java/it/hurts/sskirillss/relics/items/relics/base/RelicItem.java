@@ -5,18 +5,19 @@ import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.items.ItemBase;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
-import net.minecraft.network.chat.Component;
+import it.hurts.sskirillss.relics.utils.RelicsTab;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
 import java.util.UUID;
 
 public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicItem {
@@ -25,7 +26,7 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
     }
 
     public RelicItem() {
-        super(new Item.Properties()
+        this(new Item.Properties()
                 .tab(RelicsTab.RELICS_TAB)
                 .rarity(Rarity.RARE)
                 .stacksTo(1));
@@ -35,9 +36,6 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
     @Deprecated(forRemoval = true)
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> modifiers = LinkedHashMultimap.create();
-
-        if (DurabilityUtils.isBroken(stack))
-            return modifiers;
 
         RelicAttributeModifier attributes = getAttributeModifiers(stack);
         RelicSlotModifier slots = getSlotModifiers(stack);
@@ -58,16 +56,6 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
     @Override
     public boolean showAttributesTooltip(String identifier, ItemStack stack) {
         return false;
-    }
-
-    @Override
-    public boolean canEquip(String identifier, LivingEntity livingEntity, ItemStack stack) {
-        return !DurabilityUtils.isBroken(stack);
-    }
-
-    @Override
-    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
-        return !DurabilityUtils.isBroken(stack);
     }
 
     @Override

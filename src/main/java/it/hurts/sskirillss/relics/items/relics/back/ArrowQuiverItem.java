@@ -273,7 +273,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
 
     @Override
     public void curioTick(String identifier, int index, LivingEntity livingEntity, ItemStack stack) {
-        if (!(livingEntity instanceof Player player) || DurabilityUtils.isBroken(stack))
+        if (!(livingEntity instanceof Player player))
             return;
 
         Level level = player.getLevel();
