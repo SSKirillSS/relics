@@ -32,7 +32,7 @@ public class Relics {
         EntityRegistry.registerEntities();
         EffectRegistry.registerEffects();
         CodecRegistry.registerCodecs();
-        SoundRegistry.registerSounds();
+        SoundRegistry.register();
         ParticleRegistry.registerParticles();
     }
 
