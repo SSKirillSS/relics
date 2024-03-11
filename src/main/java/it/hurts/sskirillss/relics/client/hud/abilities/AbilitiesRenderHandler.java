@@ -316,31 +316,31 @@ public class AbilitiesRenderHandler {
         poseStack.popPose();
     }
 
-    private static void drawAbilityStatusIcon(AbilityEntry ability, PoseStack matrix, float x, float y, float texWidth, float texHeight, float scale, @Nullable AnimationData animation, long ticks, float partialTicks) {
-        matrix.pushPose();
+    private static void drawAbilityStatusIcon(AbilityEntry ability, PoseStack poseStack, float x, float y, float texWidth, float texHeight, float scale, @Nullable AnimationData animation, long ticks, float partialTicks) {
+        poseStack.pushPose();
 
-        matrix.translate(x, y, 0);
+        poseStack.translate(x, y, 0);
 
         AnimationCache animationCache = ability.getCache().getAnimation();
-
-        float[] shaderColor = RenderSystem.getShaderColor();
 
         if (animationCache.iconShakeDelta != 0) {
             float color = animationCache.iconShakeDelta * 0.04F;
 
-            RenderSystem.setShaderColor(shaderColor[0], shaderColor[1] - color, shaderColor[2] - color, shaderColor[3]);
+            RenderSystem.setShaderColor(1, 1 - color, 1 - color, 1);
 
-            matrix.mulPose(Vector3f.ZP.rotation((float) Math.sin((ticks + partialTicks) * 0.75F) * 0.1F));
+            poseStack.mulPose(Vector3f.ZP.rotation((float) Math.sin((ticks + partialTicks) * 0.75F) * 0.1F));
 
             scale += (animationCache.iconShakeDelta - partialTicks) * 0.025F;
         }
 
         if (animation != null)
-            RenderUtils.renderTextureFromCenter(matrix, 0, 0, texWidth, texHeight, texWidth, texWidth, scale, animation, ticks);
+            RenderUtils.renderTextureFromCenter(poseStack, 0, 0, texWidth, texHeight, texWidth, texWidth, scale, animation, ticks);
         else
-            RenderUtils.renderTextureFromCenter(matrix, 0, 0, texWidth, texHeight, scale);
+            RenderUtils.renderTextureFromCenter(poseStack, 0, 0, texWidth, texHeight, scale);
 
-        matrix.popPose();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+
+        poseStack.popPose();
     }
 
     private static int getRelativeIndex(int offset) {

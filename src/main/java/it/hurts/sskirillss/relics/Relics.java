@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics;
 
+import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -26,12 +27,12 @@ public class Relics {
 
         MinecraftForge.EVENT_BUS.register(this);
 
-        ItemRegistry.registerItems();
-        BlockRegistry.registerBlocks();
-        TileRegistry.registerTiles();
-        EntityRegistry.registerEntities();
-        EffectRegistry.registerEffects();
-        CodecRegistry.registerCodecs();
+        ItemRegistry.register();
+        BlockRegistry.register();
+        TileRegistry.register();
+        EntityRegistry.register();
+        EffectRegistry.register();
+        CodecRegistry.register();
         SoundRegistry.register();
         CommandRegistry.register();
         ParticleRegistry.register();
@@ -62,7 +63,9 @@ public class Relics {
     }
 
     private void setupCommon(final FMLCommonSetupEvent event) {
-        NetworkHandler.registerMessages();
+        NetworkHandler.register();
+
+        ConfigHelper.setupConfigs();
 
         InterModComms.sendTo("carryon", "blacklistBlock", () -> "relics:researching_table");
     }

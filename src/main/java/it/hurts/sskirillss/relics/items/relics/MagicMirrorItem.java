@@ -117,14 +117,12 @@ public class MagicMirrorItem extends RelicItem {
 
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        if (player.level.isClientSide())
+    public void onUsingTick(ItemStack stack, LivingEntity entity, int count) {
+        if (!(entity.getLevel() instanceof ServerLevel serverLevel))
             return;
 
-        ServerLevel serverLevel = (ServerLevel) player.level;
-
         float radius = count * 0.075F;
-        double extraY = player.getY() + 1.5F - Math.log((count + getUseDuration(stack) * 0.075F) * 0.1F);
+        double extraY = entity.getY() + 1.5F - Math.log((count + getUseDuration(stack) * 0.075F) * 0.1F);
 
         RandomSource random = serverLevel.getRandom();
 
@@ -138,16 +136,16 @@ public class MagicMirrorItem extends RelicItem {
         for (int i = 0; i < 5; i++) {
             float angle = (0.01F * (count * 3 + i * 125));
 
-            double extraX = (double) (radius * Mth.sin((float) (Math.PI + angle))) + player.getX();
-            double extraZ = (double) (radius * Mth.cos(angle)) + player.getZ();
+            double extraX = (double) (radius * Mth.sin((float) (Math.PI + angle))) + entity.getX();
+            double extraZ = (double) (radius * Mth.cos(angle)) + entity.getZ();
 
             serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, Math.max(0.2F, (getUseDuration(stack) - count) * 0.015F),
                     40, 0.92F), extraX, extraY, extraZ, 1, 0F, 0F, 0F, 0F);
         }
 
         serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, (getUseDuration(stack) - count) * 0.005F, 10 + random.nextInt(50),
-                        0.95F), player.getX(), player.getY() + player.getBbHeight() * 0.5F, player.getZ(),
-                (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, player.getBbHeight() * 0.4F, 0.25F, 0.025F);
+                        0.95F), entity.getX(), entity.getY() + entity.getBbHeight() * 0.5F, entity.getZ(),
+                (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, entity.getBbHeight() * 0.4F, 0.25F, 0.025F);
     }
 
     @Override

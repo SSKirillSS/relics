@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DrunkennessEffect extends MobEffect {
+public class DrunkennessEffect extends MobEffect { // FIXME 1.19.2 :: Removed in 1.20.1?
     public DrunkennessEffect() {
         super(MobEffectCategory.HARMFUL, 0X6836AA);
     }

@@ -19,7 +19,7 @@ public class BlockRegistry {
 
     public static final RegistryObject<ResearchingTableBlock> RESEARCHING_TABLE = BLOCKS.register("researching_table", ResearchingTableBlock::new);
 
-    public static void registerBlocks() {
+    public static void register() {
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         for (RegistryObject<? extends Block> block : BLOCKS.getEntries())

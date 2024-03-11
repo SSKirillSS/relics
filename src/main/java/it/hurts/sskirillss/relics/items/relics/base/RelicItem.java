@@ -2,10 +2,10 @@ package it.hurts.sskirillss.relics.items.relics.base;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import it.hurts.sskirillss.relics.items.ItemBase;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -18,9 +18,11 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicItem {
+public abstract class RelicItem extends Item implements ICurioItem, IRelicItem {
     public RelicItem(Item.Properties properties) {
         super(properties);
     }
@@ -54,18 +56,8 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
     }
 
     @Override
-    public boolean showAttributesTooltip(String identifier, ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        return switch (stack.getRarity()) {
-            case COMMON -> 100;
-            case UNCOMMON -> 150;
-            case RARE -> 200;
-            case EPIC -> 250;
-        };
+    public List<Component> getAttributesTooltip(List<Component> tooltips, ItemStack stack) {
+        return new ArrayList<>();
     }
 
     @Override

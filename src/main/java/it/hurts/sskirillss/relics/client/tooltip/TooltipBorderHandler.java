@@ -25,7 +25,7 @@ import java.awt.*;
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class TooltipBorderHandler {
     @SubscribeEvent
-    public static void onTooltipDisplay(TooltipDisplayEvent event) {
+    public static void onTooltipDisplay(TooltipDisplayEvent event) { // FIXME 1.19.2 :: Removed in 1.20.1?
         ItemStack stack = event.getStack();
         PoseStack poseStack = event.getPoseStack();
 

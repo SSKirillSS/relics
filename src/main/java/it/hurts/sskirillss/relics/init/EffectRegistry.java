@@ -21,7 +21,7 @@ public class EffectRegistry {
     public static final RegistryObject<MobEffect> ANTI_HEAL = EFFECTS.register("anti_heal", AntiHealEffect::new);
     public static final RegistryObject<MobEffect> BLEEDING = EFFECTS.register("bleeding", BleedingEffect::new);
 
-    public static void registerEffects() {
+    public static void register() {
         EFFECTS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }
