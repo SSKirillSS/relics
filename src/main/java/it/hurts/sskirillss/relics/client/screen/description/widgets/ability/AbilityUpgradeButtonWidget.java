@@ -146,7 +146,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
                     (requiredPoints > points ? negativeStatus : positiveStatus), requiredExperience,
                     (requiredExperience > experience ? negativeStatus : positiveStatus)));
         else
-                entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.upgrade.locked")));
+            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.upgrade.locked")));
 
         for (MutableComponent entry : entries) {
             int entryWidth = (MC.font.width(entry) + 4) / 2;

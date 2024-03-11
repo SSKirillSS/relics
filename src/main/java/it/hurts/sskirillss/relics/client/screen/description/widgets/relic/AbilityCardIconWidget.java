@@ -29,6 +29,10 @@ import java.awt.*;
 import java.util.List;
 
 public class AbilityCardIconWidget extends AbstractDescriptionWidget implements IHoverableWidget, ITickingWidget {
+    private static final ResourceLocation UNLOCKED = new ResourceLocation(Reference.MODID, "textures/gui/description/card_highlight_unlocked.png");
+    private static final ResourceLocation LOCKED = new ResourceLocation(Reference.MODID, "textures/gui/description/card_highlight_locked.png");
+    private static final ResourceLocation AVAILABLE = new ResourceLocation(Reference.MODID, "textures/gui/description/upgrade_available.png");
+
     private final RelicDescriptionScreen screen;
     private final String ability;
 
@@ -85,7 +89,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
             blit(poseStack, -(width / 2), -(height / 2), 302, 61, width, height, 512, 512);
 
             if (isHovered) {
-                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/card_highlight_unlocked.png"));
+                RenderSystem.setShaderTexture(0, UNLOCKED);
 
                 RenderSystem.enableBlend();
 
@@ -110,7 +114,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
             blit(poseStack, -(width / 2) - 1, -(height / 2), 333, 61, width + 1, height, 512, 512);
 
             if (isHovered) {
-                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/card_highlight_locked.png"));
+                RenderSystem.setShaderTexture(0, LOCKED);
 
                 RenderSystem.enableBlend();
 
@@ -134,11 +138,9 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         }
 
         if (canUpgrade) {
-            ResourceLocation icon = new ResourceLocation(Reference.MODID, "textures/gui/description/upgrade_available.png");
+            RenderSystem.setShaderTexture(0, AVAILABLE);
 
-            RenderSystem.setShaderTexture(0, icon);
-
-            manager.bindForSetup(icon);
+            manager.bindForSetup(AVAILABLE);
 
             RenderSystem.enableBlend();
 
@@ -264,7 +266,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         poseStack.scale(scale, scale, scale);
 
-        poseStack.translate((x + (getWidth() / 2F)) / scale, (y + (getHeight() / 2F)) / scale, 0);
+        poseStack.translate((x + (getWidth() / 2F)) / scale, (this.y + (getHeight() / 2F)) / scale, 0);
 
         ScreenUtils.drawTexturedTooltipBorder(poseStack, RelicDescriptionScreen.BORDER_PAPER, renderWidth, height, -((renderWidth + 19) / 2), y);
 
