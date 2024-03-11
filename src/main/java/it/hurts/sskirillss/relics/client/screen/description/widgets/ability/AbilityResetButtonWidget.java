@@ -56,8 +56,10 @@ public class AbilityResetButtonWidget extends AbstractDescriptionWidget implemen
 
     @Override
     public void onPress() {
-        if (!isLocked())
+        if (!isLocked()) {
             NetworkHandler.sendToServer(new PacketRelicTweak(screen.pos, ability, PacketRelicTweak.Operation.RESET));
+            screen.requiresUpdate = true;
+        }
     }
 
     @Override

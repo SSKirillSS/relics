@@ -17,6 +17,7 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -36,6 +37,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -62,6 +64,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
     public AbilityResetButtonWidget resetButton;
 
     public int ticksExisted;
+    public boolean requiresUpdate;
 
     public AbilityDescriptionScreen(BlockPos pos, ItemStack stack, String ability) {
         super(Component.empty());
@@ -69,6 +72,20 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         this.pos = pos;
         this.stack = stack;
         this.ability = ability;
+    }
+
+    private ItemStack getStack() {
+        Level level = MC.level;
+
+        if (!(level.getBlockEntity(pos) instanceof ResearchingTableTile tile))
+            return ItemStack.EMPTY;
+
+        ItemStack stack = tile.getStack();
+
+        if (!(stack.getItem() instanceof IRelicItem))
+            return ItemStack.EMPTY;
+
+        return stack;
     }
 
     @Override
@@ -97,6 +114,20 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         super.tick();
 
         LocalPlayer player = MC.player;
+
+        if (requiresUpdate) {
+            ItemStack currentStack = getStack();
+
+            if (currentStack == ItemStack.EMPTY) {
+                onClose();
+                return;
+            }
+
+            if (!ItemStack.isSameItemSameTags(stack, currentStack)) {
+                stack = currentStack;
+                requiresUpdate = false;
+            }
+        }
 
         if (stack == null || !(stack.getItem() instanceof IRelicItem) || player == null)
             return;
