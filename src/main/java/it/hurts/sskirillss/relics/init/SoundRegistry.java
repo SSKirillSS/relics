@@ -24,9 +24,9 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> TABLE_REROLL = SOUNDS.register("table_reroll", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "table_reroll")));
     public static final RegistryObject<SoundEvent> TABLE_RESET = SOUNDS.register("table_reset", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "table_reset")));
 
-    public static final RegistryObject<SoundEvent> ABILITY_LOCKED = SOUNDS.register("ability_locked", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "ability_locked")));
-    public static final RegistryObject<SoundEvent> ABILITY_COOLDOWN = SOUNDS.register("ability_cooldown", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "ability_cooldown")));
-    public static final RegistryObject<SoundEvent> ABILITY_CAST = SOUNDS.register("ability_cast", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MODID, "ability_cast")));
+    public static final RegistryObject<SoundEvent> ABILITY_LOCKED = SOUNDS.register("ability_locked", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "ability_locked")));
+    public static final RegistryObject<SoundEvent> ABILITY_COOLDOWN = SOUNDS.register("ability_cooldown", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "ability_cooldown")));
+    public static final RegistryObject<SoundEvent> ABILITY_CAST = SOUNDS.register("ability_cast", () -> new SoundEvent(new ResourceLocation(Reference.MODID, "ability_cast")));
 
     public static void register() {
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
