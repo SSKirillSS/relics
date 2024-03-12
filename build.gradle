@@ -65,7 +65,9 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    flatDir { dirs 'dev' }
+    flatDir {
+        dirs 'libs'
+    }
     maven {
         url = "https://maven.theillusivec4.top/"
     }
@@ -97,6 +99,26 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-1.19.2-forge-api:11.4.0.286"))
 
     runtimeOnly(fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.286"))
+
+    if (file("libs").isDirectory()) {
+        file("libs").eachFile { file ->
+            def splitPos = file.name.lastIndexOf("-")
+
+            if (file.name != "desktop.ini") {
+                println file.name
+
+                def modartifact = file.name.substring(0, splitPos)
+                def modversion = file.name.substring(splitPos + 1, file.name.length() - 4)
+                def modreference = "lib:$modartifact:$modversion"
+
+                dependencies {
+                    implementation fg.deobf(project.dependencies.create(modreference) {
+                        transitive = false
+                    })
+                }
+            }
+        }
+    } else file("libs").mkdir()
 }
 
 jar {
