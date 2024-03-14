@@ -232,8 +232,11 @@ public class InfinityHamItem extends RelicItem {
 
             if (player.containerMenu.getCarried().getCount() <= 1)
                 player.containerMenu.setCarried(bottle);
-            else
+            else {
+                player.containerMenu.getCarried().shrink(1);
+
                 EntityUtils.addItem(player, bottle);
+            }
 
             player.playSound(SoundEvents.BOTTLE_FILL, 1F, 1F);
 
