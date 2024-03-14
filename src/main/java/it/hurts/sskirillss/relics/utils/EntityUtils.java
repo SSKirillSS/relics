@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,6 +10,7 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -55,6 +57,25 @@ public class EntityUtils {
             }
 
         return list;
+    }
+
+    public static void addItem(Player player, ItemStack stack) {
+        if (player.addItem(stack))
+            return;
+
+        Level level = player.getCommandSenderWorld();
+        RandomSource random = level.getRandom();
+
+        ItemEntity drop = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), stack);
+
+        drop.setDeltaMovement(
+                MathUtils.randomFloat(random) * 0.15F,
+                0.1F + random.nextFloat() * 0.2F,
+                MathUtils.randomFloat(random) * 0.15F
+        );
+        drop.setPickUpDelay(20);
+
+        level.addFreshEntity(drop);
     }
 
     public static EntityHitResult rayTraceEntity(Entity shooter, Predicate<? super Entity> filter, double distance) {
