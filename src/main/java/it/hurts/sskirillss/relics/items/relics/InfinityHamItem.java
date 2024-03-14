@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -227,7 +228,13 @@ public class InfinityHamItem extends RelicItem {
                 tag.put(TAG_POTION, list);
             }
 
-            player.containerMenu.setCarried(new ItemStack(Items.GLASS_BOTTLE));
+            ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+
+            if (player.containerMenu.getCarried().getCount() <= 1)
+                player.containerMenu.setCarried(bottle);
+            else
+                EntityUtils.addItem(player, bottle);
+
             player.playSound(SoundEvents.BOTTLE_FILL, 1F, 1F);
 
             event.setCanceled(true);
