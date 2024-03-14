@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,6 +22,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -195,5 +197,34 @@ public class EntityUtils {
             return false;
 
         return entity.hurt(source, amount);
+    }
+
+    public static List<ItemStack> getEquippedRelics(LivingEntity entity) {
+        List<ItemStack> items = new ArrayList<>();
+
+        if (!(entity instanceof Player player))
+            return items;
+
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+
+            if (!(stack.getItem() instanceof IRelicItem))
+                continue;
+
+            items.add(stack);
+        }
+
+        CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
+            for (int i = 0; i < handler.getEquippedCurios().getSlots(); i++) {
+                ItemStack stack = handler.getEquippedCurios().getStackInSlot(i);
+
+                if (!(stack.getItem() instanceof IRelicItem))
+                    continue;
+
+                items.add(stack);
+            }
+        });
+
+        return items;
     }
 }

@@ -193,12 +193,12 @@ public class RageGloveItem extends RelicItem {
                 EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_DAMAGE, (float) (getAbilityValue(stack, "spurt", "damage") * stacks), AttributeModifier.Operation.ADDITION);
 
                 for (LivingEntity entity : targets) {
-                    if (EntityUtils.isAlliedTo(player, entity))
+                    if (entity.invulnerableTime > 0 || EntityUtils.isAlliedTo(player, entity))
                         continue;
 
                     player.attack(entity);
 
-                    addExperience(player, stack, 1);
+                    dropAllocableExperience(level, entity.getEyePosition(), stack, 1);
 
                     entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 100, 0));
                     entity.setSecondsOnFire(5);
@@ -236,8 +236,6 @@ public class RageGloveItem extends RelicItem {
                     NBTUtils.setInt(stack, TAG_TIME, --time);
                 else {
                     NBTUtils.setInt(stack, TAG_STACKS, 0);
-
-                    addExperience(player, stack, (int) Math.floor(stacks / 3F));
                 }
             }
         }
@@ -276,6 +274,8 @@ public class RageGloveItem extends RelicItem {
 
                     NBTUtils.setInt(stack, TAG_STACKS, ++stacks);
                     NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(relic.getAbilityValue(stack, "rage", "duration") * 20));
+
+                    relic.dropAllocableExperience(player.level(), event.getEntity().getEyePosition(), stack, 1);
 
                     event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * relic.getAbilityValue(stack, "rage", "dealt_damage")))));
                 }

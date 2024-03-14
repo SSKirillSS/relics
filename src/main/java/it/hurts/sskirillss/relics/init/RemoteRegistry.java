@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
@@ -133,8 +134,8 @@ public class RemoteRegistry {
 
     @SubscribeEvent
     public static void entityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(EntityRegistry.SHADOW_GLAIVE.get(), new ShadowGlaiveRenderer.RenderFactory());
-        event.registerEntityRenderer(EntityRegistry.BLOCK_SIMULATION.get(), new BlockSimulationRenderer.RenderFactory());
+        event.registerEntityRenderer(EntityRegistry.SHADOW_GLAIVE.get(), ShadowGlaiveRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.BLOCK_SIMULATION.get(), BlockSimulationRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SHOCKWAVE.get(), new NullRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.LIFE_ESSENCE.get(), new NullRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.STALACTITE.get(), new StalactiteRenderer.RenderFactory());
@@ -143,6 +144,8 @@ public class RemoteRegistry {
         event.registerEntityRenderer(EntityRegistry.SHADOW_SAW.get(), new ShadowSawRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.SOLID_SNOWBALL.get(), new SolidSnowballRenderer.RenderFactory());
         event.registerEntityRenderer(EntityRegistry.ARROW_RAIN.get(), new NullRenderer.RenderFactory());
+        event.registerEntityRenderer(EntityRegistry.RELIC_EXPERIENCE_ORB.get(), RelicExperienceOrbRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.THROWN_RELIC_EXPERIENCE_BOTTLE.get(), ThrownItemRenderer::new);
 
         event.registerBlockEntityRenderer(TileRegistry.RESEARCHING_TABLE.get(), ResearchingTableRenderer::new);
     }
