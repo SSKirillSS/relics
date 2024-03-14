@@ -420,6 +420,8 @@
   "tooltip.relics.space_dissector.ability.dissection.stat.time.title": "Portal lifetime:",
   "tooltip.relics.space_dissector.ability.dissection.stat.time.value": "%1$s seconds",
 
+  "item.relics.relic_experience_bottle": "Relic Experience Bottle",
+
   "block.relics.researching_table": "Researching Table",
 
   "effect.relics.stun": "Stun",

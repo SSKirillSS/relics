@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.init;
 
+import it.hurts.sskirillss.relics.entities.ThrownRelicExperienceBottle;
 import it.hurts.sskirillss.relics.entities.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.world.entity.EntityType;
@@ -70,6 +71,18 @@ public class EntityRegistry {
             EntityType.Builder.<ArrowRainEntity>of(ArrowRainEntity::new, MobCategory.MISC)
                     .sized(1F, 1F)
                     .build("arrow_rain")
+    );
+
+    public static final RegistryObject<EntityType<RelicExperienceOrbEntity>> RELIC_EXPERIENCE_ORB = ENTITIES.register("relic_experience_orb", () ->
+            EntityType.Builder.of(RelicExperienceOrbEntity::new, MobCategory.MISC)
+                    .sized(0.3F, 0.3F)
+                    .build("relic_experience_orb")
+    );
+
+    public static final RegistryObject<EntityType<ThrownRelicExperienceBottle>> THROWN_RELIC_EXPERIENCE_BOTTLE = ENTITIES.register("thrown_relic_experience_bottle", () ->
+            EntityType.Builder.of(ThrownRelicExperienceBottle::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .build("thrown_relic_experience_bottle")
     );
 
     public static void register() {

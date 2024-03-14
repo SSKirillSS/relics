@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
-    protected ShadowGlaiveRenderer(Context renderManager) {
+    public ShadowGlaiveRenderer(Context renderManager) {
         super(renderManager);
     }
 
@@ -44,12 +43,5 @@ public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
     @Override
     public ResourceLocation getTextureLocation(ShadowGlaiveEntity entity) {
         return new ResourceLocation(Reference.MODID, "textures/entities/shadow_glaive.png");
-    }
-
-    public static class RenderFactory implements EntityRendererProvider {
-        @Override
-        public EntityRenderer<? super ShadowGlaiveEntity> create(Context manager) {
-            return new ShadowGlaiveRenderer(manager);
-        }
     }
 }

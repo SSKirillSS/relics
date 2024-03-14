@@ -420,6 +420,8 @@
   "tooltip.relics.space_dissector.ability.dissection.stat.time.title": "Время жизни портала:",
   "tooltip.relics.space_dissector.ability.dissection.stat.time.value": "%1$s секунд.",
 
+  "item.relics.relic_experience_bottle": "Пузырёк опыта реликвии",
+
   "block.relics.researching_table": "Стол исследователя",
 
   "effect.relics.stun": "Оглушение",

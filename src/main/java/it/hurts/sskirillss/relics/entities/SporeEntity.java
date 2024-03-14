@@ -184,7 +184,7 @@ public class SporeEntity extends ThrowableProjectile {
 
                     level().addFreshEntity(spore);
 
-                    relic.addExperience(player, stack, 1);
+                    relic.dropAllocableExperience(level(), this.getEyePosition(), stack, 1);
                 }
             }
         }

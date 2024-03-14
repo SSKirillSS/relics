@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.init;
 
+import it.hurts.sskirillss.relics.items.RelicExperienceBottleItem;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.*;
 import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
@@ -32,6 +33,7 @@ public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MODID);
 
     public static final RegistryObject<Item> SOLID_SNOWBALL = ITEMS.register("solid_snowball", SolidSnowballItem::new);
+    public static final RegistryObject<Item> RELIC_EXPERIENCE_BOTTLE = ITEMS.register("relic_experience_bottle", RelicExperienceBottleItem::new);
 
     public static final RegistryObject<RelicItem> SPATIAL_SIGN = ITEMS.register("spatial_sign", SpatialSignItem::new);
     public static final RegistryObject<RelicItem> REFLECTION_NECKLACE = ITEMS.register("reflection_necklace", ReflectionNecklaceItem::new);

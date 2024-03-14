@@ -152,13 +152,13 @@ public class BastionRingItem extends RelicItem {
             LivingEntity entity = event.getEntity();
 
             if (entity instanceof ZombifiedPiglin)
-                relic.addExperience(player, stack, 1);
+                relic.dropAllocableExperience(player.level(), entity.getEyePosition(), stack, 1);
 
             if (entity instanceof Piglin)
-                relic.addExperience(player, stack, 5);
+                relic.dropAllocableExperience(player.level(), entity.getEyePosition(), stack, 5);
 
             if (entity instanceof PiglinBrute)
-                relic.addExperience(player, stack, 10);
+                relic.dropAllocableExperience(player.level(), entity.getEyePosition(), stack, 10);
         }
     }
 }
