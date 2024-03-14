@@ -11,6 +11,7 @@
     "MixinItem",
     "MixinItemStack",
     "MixinLivingEntity",
+    "MixinPiglinAi",
     "MixinPowderSnowBlock",
     "MixinScreen"
   ],

@@ -14,18 +14,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Mixin(PiglinAi.class)
 public abstract class MixinPiglinAi {
     @Shadow
-    private static void throwItems(Piglin pPilgin, List<ItemStack> pStacks) {
-    }
-
-    @Shadow
     private static List<ItemStack> getBarterResponseItems(Piglin piglin) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Inject(method = "stopHoldingOffHandItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/piglin/PiglinAi;throwItems(Lnet/minecraft/world/entity/monster/piglin/Piglin;Ljava/util/List;)V", ordinal = 0), cancellable = true)
@@ -40,9 +37,9 @@ public abstract class MixinPiglinAi {
         if (stack.getItem() instanceof IRelicItem relic) {
             for (int i = 0; i < Math.round(relic.getAbilityValue(stack, "trade", "rolls")); i++) {
                 if (piglin.getRandom().nextBoolean()) {
-                    throwItems(piglin, getBarterResponseItems(piglin));
+                    PiglinAi.throwItems(piglin, getBarterResponseItems(piglin));
 
-                    relic.dropAllocableExperience(piglin.level(), piglin.getEyePosition(), stack, 5);
+                    relic.dropAllocableExperience(piglin.level(), piglin.getEyePosition(), stack, 3);
                 }
             }
 
