@@ -117,7 +117,17 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         LocalPlayer player = MC.player;
 
-        if (stack == null || !(stack.getItem() instanceof IRelicItem relic) || player == null)
+        if (player == null)
+            return;
+
+        Level level = player.level();
+
+        if (!(level.getBlockEntity(pos) instanceof ResearchingTableTile tile))
+            return;
+
+        stack = tile.getStack();
+
+        if (stack == null || !(stack.getItem() instanceof IRelicItem relic))
             return;
 
         ticksExisted++;
@@ -129,9 +139,9 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         if (ticksExisted % 3 == 0) {
             {
-                int level = relic.getLevel(stack);
+                int relicLevel = relic.getLevel(stack);
 
-                float percentage = relic.isMaxLevel(stack) ? 100F : relic.getExperience(stack) / (relic.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
+                float percentage = relic.isMaxLevel(stack) ? 100F : relic.getExperience(stack) / (relic.getExperienceBetweenLevels(stack, relicLevel, relicLevel + 1) / 100F);
 
                 int sourceWidth = 206;
                 int maxWidth = (int) (sourceWidth * (percentage / 100F));

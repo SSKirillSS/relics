@@ -115,21 +115,17 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         LocalPlayer player = MC.player;
 
-        if (requiresUpdate) {
-            ItemStack currentStack = getStack();
+        if (player == null)
+            return;
 
-            if (currentStack == ItemStack.EMPTY) {
-                onClose();
-                return;
-            }
+        Level level = player.getLevel();
 
-            if (!ItemStack.isSameItemSameTags(stack, currentStack)) {
-                stack = currentStack;
-                requiresUpdate = false;
-            }
-        }
+        if (!(level.getBlockEntity(pos) instanceof ResearchingTableTile tile))
+            return;
 
-        if (stack == null || !(stack.getItem() instanceof IRelicItem) || player == null)
+        stack = tile.getStack();
+
+        if (stack == null || !(stack.getItem() instanceof IRelicItem))
             return;
 
         ticksExisted++;
