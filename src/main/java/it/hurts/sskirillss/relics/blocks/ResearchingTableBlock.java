@@ -112,7 +112,7 @@ public class ResearchingTableBlock extends HorizontalDirectionalBlock implements
             BlockState oldState = level.getBlockState(pos);
 
             if (tileStack.isEmpty()) {
-                if (!(handStack.getItem() instanceof IRelicItem relic))
+                if (!(handStack.getItem() instanceof IRelicItem))
                     return;
 
                 tile.setStack(handStack.split(1));
