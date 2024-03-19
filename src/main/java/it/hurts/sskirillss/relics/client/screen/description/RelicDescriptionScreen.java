@@ -42,6 +42,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
@@ -279,7 +280,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             RenderSystem.disableBlend();
         }
 
-        ResourceLocation background = new ResourceLocation(Reference.MODID, "textures/gui/description/backgrounds/" + relic.getRelicData().getStyle().getStyle().getID() + ".png");
+        ResourceLocation background = new ResourceLocation(Reference.MODID, "textures/gui/description/backgrounds/" + relic.getRelicData().getStyle().getStyle().toLowerCase(Locale.ROOT) + ".png");
 
         RenderSystem.setShaderTexture(0, background);
 
