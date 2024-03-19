@@ -27,7 +27,7 @@ public class ResearchingTableRenderer implements BlockEntityRenderer<Researching
 
         matrixStack.pushPose();
 
-        boolean is3d = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack) instanceof SeparateTransformsModel.Baked;
+        boolean is3d = Minecraft.getInstance().getItemRenderer().getModel(stack, tileEntity.getLevel(), null, 0) instanceof SeparateTransformsModel.Baked;
 
         if (is3d) {
             matrixStack.translate(0.5F, 1.15F, 0.5F);
