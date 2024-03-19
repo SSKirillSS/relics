@@ -18,6 +18,7 @@
   "minVersion": "0.8",
   "client": [
     "MixinCamera",
+    "MixinGuiGraphics",
     "MixinKeyboardHandler",
     "MixinMouseHandler",
     "MixinWindow"

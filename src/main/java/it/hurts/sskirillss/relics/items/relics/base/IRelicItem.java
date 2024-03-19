@@ -4,6 +4,7 @@ import it.hurts.sskirillss.octolib.config.data.ConfigContext;
 import it.hurts.sskirillss.octolib.config.data.OctoConfig;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.capability.utils.CapabilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
@@ -106,6 +107,10 @@ public interface IRelicItem {
 
     default LootData getLootData() {
         return getRelicData().getLoot();
+    }
+
+    default StyleData getStyleData() {
+        return getRelicData().getStyle();
     }
 
     default boolean isItemResearched(Player player) {

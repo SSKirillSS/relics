@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.SporeEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
@@ -110,8 +110,7 @@ public class SporeSackItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 20, 100))
-                .style(RelicStyleData.builder()
-                        .borders("#ffe0d2", "#9c756b")
+                .style(StyleData.builder()
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.JUNGLE)
