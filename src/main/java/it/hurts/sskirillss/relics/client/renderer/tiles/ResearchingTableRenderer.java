@@ -1,9 +1,7 @@
 package it.hurts.sskirillss.relics.client.renderer.tiles;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -11,11 +9,9 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-
-import java.util.List;
+import net.minecraftforge.client.model.SeparateTransformsModel;
 
 public class ResearchingTableRenderer implements BlockEntityRenderer<ResearchingTableTile> {
     public ResearchingTableRenderer(BlockEntityRendererProvider.Context context) {
@@ -29,16 +25,11 @@ public class ResearchingTableRenderer implements BlockEntityRenderer<Researching
         if (stack == null || stack.isEmpty())
             return;
 
-        // TODO: REMOVE AFTER FINISHING
-        List<Item> items = Lists.newArrayList(
-                ItemRegistry.AMPHIBIAN_BOOT.get(),
-                ItemRegistry.AQUA_WALKER.get(),
-                ItemRegistry.MAGMA_WALKER.get()
-        );
-
         matrixStack.pushPose();
 
-        if (items.contains(stack.getItem())) {
+        boolean is3d = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack) instanceof SeparateTransformsModel.Baked;
+
+        if (is3d) {
             matrixStack.translate(0.5F, 1.15F, 0.5F);
         } else {
             matrixStack.translate(0.5F, 0.96F, 0.5F);
@@ -47,7 +38,7 @@ public class ResearchingTableRenderer implements BlockEntityRenderer<Researching
 
         matrixStack.mulPose(tileEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getRotation());
 
-        if (items.contains(stack.getItem())) {
+        if (is3d) {
             matrixStack.mulPose(Vector3f.XN.rotationDegrees(90));
         } else {
             matrixStack.mulPose(Vector3f.ZN.rotationDegrees(180));
