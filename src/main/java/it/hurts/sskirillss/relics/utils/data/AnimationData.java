@@ -41,6 +41,16 @@ public class AnimationData {
         return new AnimationData();
     }
 
+    public static AnimationData construct(int texHeight, int patternHeight, int frameTime) {
+        AnimationData data = builder();
+
+        for (int i = 0; i < texHeight / patternHeight; i++) {
+            data.frame(i, frameTime);
+        }
+
+        return data;
+    }
+
     public AnimationData frame(int index, int time) {
         frames.add(Pair.of(index, time));
 

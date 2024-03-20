@@ -185,7 +185,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(guiGraphics.pose(), x + 134F, y + 83.5F, 210, 98, 210, 7, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(guiGraphics.pose(), x + 134F, y + 83.5F, 210, 98, 210, 7, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)
@@ -415,7 +415,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(guiGraphics.pose(), x + backgroundWidth + 5 + (50 / 2), y - 2 + (31 / 2), 64, 768, 64, 64, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(guiGraphics.pose(), x + backgroundWidth + 5 + (50 / 2), y - 2 + (31 / 2), 64, 768, 64, 64, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)

@@ -76,7 +76,7 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(guiGraphics.pose(), getX() + width / 2, getY() + height / 2, 32, 384, 32, 32, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(guiGraphics.pose(), getX() + width / 2, getY() + height / 2, 32, 384, 32, 32, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)

@@ -91,7 +91,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
                 RenderSystem.enableBlend();
 
-                RenderUtils.renderTextureFromCenter(poseStack, 0, 0, 64, 768, 64, 64, 1F, AnimationData.builder()
+                RenderUtils.renderAnimatedTextureFromCenter(poseStack, 0, 0, 64, 768, 64, 64, 1F, AnimationData.builder()
                         .frame(0, 2)
                         .frame(1, 2)
                         .frame(2, 2)
@@ -116,7 +116,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
                 RenderSystem.enableBlend();
 
-                RenderUtils.renderTextureFromCenter(poseStack, 0, 0, 64, 768, 64, 64, 1F, AnimationData.builder()
+                RenderUtils.renderAnimatedTextureFromCenter(poseStack, 0, 0, 64, 768, 64, 64, 1F, AnimationData.builder()
                         .frame(0, 2)
                         .frame(1, 2)
                         .frame(2, 2)
@@ -144,7 +144,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(poseStack, -1, -1, 32, 256, 32, 32, 0.9F + ((float) (Math.sin((screen.ticksExisted + pPartialTick) * 0.25F) * 0.025F)), AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(poseStack, -1, -1, 32, 256, 32, 32, 0.9F + ((float) (Math.sin((screen.ticksExisted + pPartialTick) * 0.25F) * 0.025F)), AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)
