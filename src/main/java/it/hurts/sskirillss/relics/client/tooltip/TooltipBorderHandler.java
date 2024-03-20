@@ -1,11 +1,13 @@
 package it.hurts.sskirillss.relics.client.tooltip;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.api.events.common.TooltipDisplayEvent;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
@@ -49,8 +51,13 @@ public class TooltipBorderHandler {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, texture);
 
-        int texWidth = 160;
-        int texHeight = 64;
+        Minecraft.getInstance().getTextureManager().getTexture(texture).bind();
+
+        int texWidth = GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
+        int texHeight = GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
+
+        int patternWidth = 160;
+        int patternHeight = 64;
 
         int cornerWidth = 32;
         int cornerHeight = 32;
@@ -64,14 +71,18 @@ public class TooltipBorderHandler {
 
         poseStack.translate(0, 0, 410.0);
 
-        graphics.blit(texture, x - cornerWidth / 2 - 3, y - cornerHeight / 2 - 3, 0, 0, cornerWidth, cornerHeight, texWidth, texHeight);
-        graphics.blit(texture, x + width - cornerWidth / 2 + 3, y - cornerHeight / 2 - 3, texWidth - cornerWidth, 0, cornerWidth, cornerHeight, texWidth, texHeight);
+        int frame = AnimationData.construct(texHeight, patternHeight, 2).getFrameByTime(player.tickCount).getKey();
 
-        graphics.blit(texture, x - cornerWidth / 2 - 3, y + height - cornerHeight / 2 + 3, 0, texHeight - cornerHeight, cornerWidth, cornerHeight, texWidth, texHeight);
-        graphics.blit(texture, x + width - cornerWidth / 2 + 3, y + height - cornerHeight / 2 + 3, texWidth - cornerWidth, texHeight - cornerHeight, cornerWidth, cornerHeight, texWidth, texHeight);
+        int offset = patternHeight * frame;
 
-        graphics.blit(texture, x + (width - middleWidth) / 2, y - middleHeight + 1, cornerWidth, 0, middleWidth, middleHeight, texWidth, texHeight);
-        graphics.blit(texture, x + (width - middleWidth) / 2, y + height - 1, cornerWidth, middleHeight, middleWidth, middleHeight, texWidth, texHeight);
+        graphics.blit(texture, x - cornerWidth / 2 - 3, y - cornerHeight / 2 - 3, 0, offset, cornerWidth, cornerHeight, texWidth, texHeight);
+        graphics.blit(texture, x + width - cornerWidth / 2 + 3, y - cornerHeight / 2 - 3, patternWidth - cornerWidth, offset, cornerWidth, cornerHeight, texWidth, texHeight);
+
+        graphics.blit(texture, x - cornerWidth / 2 - 3, y + height - cornerHeight / 2 + 3, 0, (patternHeight - cornerHeight) + offset, cornerWidth, cornerHeight, texWidth, texHeight);
+        graphics.blit(texture, x + width - cornerWidth / 2 + 3, y + height - cornerHeight / 2 + 3, patternWidth - cornerWidth, (patternHeight - cornerHeight) + offset, cornerWidth, cornerHeight, texWidth, texHeight);
+
+        graphics.blit(texture, x + (width - middleWidth) / 2, y - middleHeight + 1, cornerWidth, offset, middleWidth, middleHeight, texWidth, texHeight);
+        graphics.blit(texture, x + (width - middleWidth) / 2, y + height - 1, cornerWidth, middleHeight + offset, middleWidth, middleHeight, texWidth, texHeight);
 
         texture = new ResourceLocation(Reference.MODID, "textures/gui/tooltip/frame/" + id + "_star.png");
 
