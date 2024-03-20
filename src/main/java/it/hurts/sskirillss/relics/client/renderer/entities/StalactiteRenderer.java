@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class StalactiteRenderer extends EntityRenderer<StalactiteEntity> {
-    protected StalactiteRenderer(Context renderManager) {
+    public StalactiteRenderer(Context renderManager) {
         super(renderManager);
     }
 
@@ -47,12 +46,5 @@ public class StalactiteRenderer extends EntityRenderer<StalactiteEntity> {
     @Override
     public ResourceLocation getTextureLocation(StalactiteEntity entity) {
         return new ResourceLocation(Reference.MODID, "textures/entities/stalactite.png");
-    }
-
-    public static class RenderFactory implements EntityRendererProvider {
-        @Override
-        public EntityRenderer<? super StalactiteEntity> create(Context manager) {
-            return new StalactiteRenderer(manager);
-        }
     }
 }

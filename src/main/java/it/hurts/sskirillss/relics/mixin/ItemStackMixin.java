@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Map;
 
 @Mixin(ItemStack.class)
-public abstract class MixinItemStack {
+public abstract class ItemStackMixin {
     @Inject(at = @At(value = "TAIL"), method = "<init>(Lnet/minecraft/world/level/ItemLike;ILnet/minecraft/nbt/CompoundTag;)V")
     protected void init(ItemLike slug, int count, CompoundTag tag, CallbackInfo ci) {
         ItemStack stack = (ItemStack) (Object) this;

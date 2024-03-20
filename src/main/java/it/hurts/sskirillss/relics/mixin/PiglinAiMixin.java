@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Mixin(PiglinAi.class)
-public abstract class MixinPiglinAi {
+public abstract class PiglinAiMixin {
     @Shadow
     private static List<ItemStack> getBarterResponseItems(Piglin piglin) {
         return new ArrayList<>();

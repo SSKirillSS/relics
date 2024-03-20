@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mixin(Screen.class)
-public class MixinScreen {
+public class ScreenMixin {
     @Inject(method = "tick", at = @At("HEAD"))
     public void tick(CallbackInfo ci) {
         Screen screen = (Screen) (Object) this;
