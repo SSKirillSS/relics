@@ -4,25 +4,23 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "relics.refmap.json",
   "mixins": [
-    "MixinAbstractChestedHorse",
-    "MixinAbstractContainerMenu",
-    "MixinEnderMan",
-    "MixinEntity",
-    "MixinItem",
-    "MixinItemStack",
-    "MixinLivingEntity",
-    "MixinPiglinAi",
-    "MixinPowderSnowBlock",
-    "MixinScreen"
+    "AbstractChestedHorseMixin",
+    "AbstractContainerMenuMixin",
+    "EnderManMixin",
+    "EntityMixin",
+    "ItemMixin",
+    "ItemStackMixin",
+    "LivingEntityMixin",
+    "PiglinAiMixin",
+    "PowderSnowBlockMixin",
+    "ScreenMixin"
   ],
   "minVersion": "0.8",
   "client": [
-    "MixinCamera",
-    "MixinGuiGraphics",
-    "MixinKeyboardHandler",
-    "MixinMouseHandler",
-    "MixinScreen",
-    "MixinMouseHandler",
-    "MixinWindow"
+    "CameraMixin",
+    "GuiGraphicsMixin",
+    "KeyboardHandlerMixin",
+    "MouseHandlerMixin",
+    "WindowMixin"
   ]
 }

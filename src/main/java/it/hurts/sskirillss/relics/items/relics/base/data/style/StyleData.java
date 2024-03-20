@@ -1,7 +1,9 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.style;
 
+import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import lombok.Builder;
 import lombok.Data;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -10,7 +12,7 @@ import javax.annotation.Nullable;
 @Builder
 public class StyleData {
     @Builder.Default
-    private String style = "default";
+    private ResourceLocation background = Backgrounds.DEFAULT;
 
     @Nullable
     private Pair<Integer, Integer> borders;

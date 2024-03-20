@@ -2,7 +2,10 @@ package it.hurts.sskirillss.relics.utils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -34,5 +37,18 @@ public class WorldUtils {
         }
 
         return sphere;
+    }
+
+    public static double getGroundHeight(Level level, Vec3 position, int iterations) {
+        HitResult result = level.clip(new ClipContext(position, position.add(0, -iterations, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null));
+
+        if (result.getType() == HitResult.Type.BLOCK)
+            return result.getLocation().y();
+
+        return -level.getMaxBuildHeight();
+    }
+
+    public static double getGroundDistance(Level level, Vec3 position, int iterations) {
+        return Math.max(0, position.y() - getGroundHeight(level, position, iterations));
     }
 }

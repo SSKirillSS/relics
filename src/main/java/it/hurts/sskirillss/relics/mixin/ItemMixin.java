@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mixin(Item.class)
-public class MixinItem {
+public class ItemMixin {
     @Inject(at = @At(value = "TAIL"), method = "<init>")
     protected void init(Item.Properties properties, CallbackInfo ci) {
         Item item = (Item) (Object) this;

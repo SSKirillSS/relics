@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Window.class)
-public class MixinWindow {
+public class WindowMixin {
     @Inject(method = "getGuiScale", at = @At("HEAD"), cancellable = true)
     public void getGuiScale(CallbackInfoReturnable<Double> cir) {
         Minecraft MC = Minecraft.getInstance();
