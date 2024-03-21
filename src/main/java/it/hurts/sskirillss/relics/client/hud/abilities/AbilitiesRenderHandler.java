@@ -192,7 +192,7 @@ public class AbilitiesRenderHandler {
 
         boolean isLocked = !relic.canPlayerUseActiveAbility(player, stack, ability.getAbility());
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + relic.getAbilityData(ability.getAbility()).getIcon().apply(player, stack, ability.getAbility()) + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 

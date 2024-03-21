@@ -304,7 +304,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             }
         }
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + ability + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + abilityData.getIcon().apply(player, stack, ability) + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 

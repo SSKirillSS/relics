@@ -1,9 +1,12 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.leveling;
 
+import com.mojang.datafixers.util.Function3;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import lombok.Builder;
 import lombok.Data;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -21,6 +24,9 @@ public class AbilityData {
 
         return builder;
     }
+
+    @Builder.Default
+    private Function3<Player, ItemStack, String, String> icon = (player, stack, ability) -> ability;
 
     @Builder.Default
     private Map<String, StatData> stats;
