@@ -60,7 +60,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         boolean canUse = relic.canUseAbility(screen.stack, ability);
         boolean canUpgrade = relic.mayPlayerUpgrade(MC.player, screen.stack, ability);
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + "/" + ability + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(MC.player, screen.stack, ability) + ".png");
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, card);
