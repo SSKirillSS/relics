@@ -67,6 +67,7 @@ public class AquaWalkerItem extends RelicItem implements IRenderableCurio {
                 .leveling(new LevelingData(100, 10, 100))
                 .style(StyleData.builder()
                         .background(Backgrounds.AQUATIC)
+                        .borders(0x488376, 0x163d30)
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.AQUATIC)
