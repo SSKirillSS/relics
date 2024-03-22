@@ -216,7 +216,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
         ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.AMPHIBIAN_BOOT.get());
 
         if (!(stack.getItem() instanceof IRelicItem relic))
-            return true;
+            return false;
 
         return entity.getRandom().nextDouble() <= relic.getAbilityValue(stack, "gills", "chance");
     }
