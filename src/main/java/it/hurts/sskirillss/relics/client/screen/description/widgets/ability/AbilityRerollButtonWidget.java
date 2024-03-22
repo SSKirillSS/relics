@@ -50,10 +50,8 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
 
     @Override
     public void playDownSound(SoundManager handler) {
-        if (!isLocked()) {
+        if (!isLocked())
             handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_REROLL.get(), 1F));
-            screen.requiresUpdate = true;
-        }
     }
 
     @Override

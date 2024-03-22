@@ -64,7 +64,6 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
     public AbilityResetButtonWidget resetButton;
 
     public int ticksExisted;
-    public boolean requiresUpdate;
 
     public AbilityDescriptionScreen(BlockPos pos, ItemStack stack, String ability) {
         super(Component.empty());
@@ -72,20 +71,6 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         this.pos = pos;
         this.stack = stack;
         this.ability = ability;
-    }
-
-    private ItemStack getStack() {
-        Level level = MC.level;
-
-        if (!(level.getBlockEntity(pos) instanceof ResearchingTableTile tile))
-            return ItemStack.EMPTY;
-
-        ItemStack stack = tile.getStack();
-
-        if (!(stack.getItem() instanceof IRelicItem))
-            return ItemStack.EMPTY;
-
-        return stack;
     }
 
     @Override

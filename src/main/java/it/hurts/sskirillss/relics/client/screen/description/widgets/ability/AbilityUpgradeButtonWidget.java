@@ -60,10 +60,8 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
     @Override
     public void onPress() {
-        if (!isLocked()) {
+        if (!isLocked())
             NetworkHandler.sendToServer(new PacketRelicTweak(screen.pos, ability, PacketRelicTweak.Operation.INCREASE));
-            screen.requiresUpdate = true;
-        }
     }
 
     @Override
