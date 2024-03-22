@@ -274,7 +274,7 @@ public class RageGloveItem extends RelicItem {
                     NBTUtils.setInt(stack, TAG_STACKS, ++stacks);
                     NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(relic.getAbilityValue(stack, "rage", "duration") * 20));
 
-                    relic.dropAllocableExperience(player.level(), event.getEntity().getEyePosition(), stack, 1);
+                    relic.dropAllocableExperience(player.level, event.getEntity().getEyePosition(), stack, 1);
 
                     event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * relic.getAbilityValue(stack, "rage", "dealt_damage")))));
                 }

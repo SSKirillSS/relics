@@ -2,7 +2,9 @@ package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.renderer.LightTexture;
@@ -16,8 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)
 public class RelicExperienceOrbRenderer extends EntityRenderer<RelicExperienceOrbEntity> {
@@ -52,7 +52,7 @@ public class RelicExperienceOrbRenderer extends EntityRenderer<RelicExperienceOr
         poseStack.translate(0.0F, 0.2F + (entity.getStage() * 0.05F), 0.0F);
 
         poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
 
         int alpha = (int) Math.min(255, 255 * (0.75F + Math.sin(entity.tickCount * 0.25F) * 0.1F));
 

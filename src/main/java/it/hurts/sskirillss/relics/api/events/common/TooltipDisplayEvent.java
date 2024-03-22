@@ -1,8 +1,8 @@
 package it.hurts.sskirillss.relics.api.events.common;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.Event;
 public class TooltipDisplayEvent extends Event {
     private final ItemStack stack;
 
-    private final GuiGraphics graphics;
+    private final PoseStack pose;
 
     private final int width;
     private final int height;

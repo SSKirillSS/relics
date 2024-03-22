@@ -1,11 +1,11 @@
 package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.mixin.EntityAccess;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -74,12 +74,12 @@ public class RelicExperienceOrbEntity extends Entity {
         if (!this.isNoGravity())
             this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.03D, 0.0D));
 
-        if (!this.level().noCollision(this.getBoundingBox()))
+        if (!this.level.noCollision(this.getBoundingBox()))
             this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D, this.getZ());
 
         if (this.tickCount >= 15) {
             if (this.getExperience() < getMaxExperience()) {
-                for (RelicExperienceOrbEntity orb : this.level().getEntitiesOfClass(RelicExperienceOrbEntity.class, this.getBoundingBox())) {
+                for (RelicExperienceOrbEntity orb : this.level.getEntitiesOfClass(RelicExperienceOrbEntity.class, this.getBoundingBox())) {
                     if (orb.getUUID().equals(this.getUUID()) || orb.isRemoved() || orb.getExperience() >= getMaxExperience())
                         continue;
 
@@ -99,7 +99,7 @@ public class RelicExperienceOrbEntity extends Entity {
 
             double maxDistance = 16;
 
-            Player player = this.level().getNearestPlayer(this.getX(), this.getY(), this.getZ(), maxDistance, entity -> {
+            Player player = this.level.getNearestPlayer(this.getX(), this.getY(), this.getZ(), maxDistance, entity -> {
                 Player entry = (Player) entity;
 
                 return !entry.isSpectator() && !getUpgradeableRelics(entry).isEmpty();
@@ -118,7 +118,7 @@ public class RelicExperienceOrbEntity extends Entity {
                     if (relic.addExperience(player, stack, this.getExperience())) {
                         this.discard();
 
-                        this.level().playSound(null, this.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.MASTER, 0.5F, 1.25F + this.level().getRandom().nextFloat() * 0.75F);
+                        this.level.playSound(null, this.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.MASTER, 0.5F, 1.25F + this.level.getRandom().nextFloat() * 0.75F);
                     }
                 }
             }
@@ -128,15 +128,15 @@ public class RelicExperienceOrbEntity extends Entity {
 
         float friction = 0.98F;
 
-        if (this.onGround()) {
+        if (this.isOnGround()) {
             BlockPos pos = getBlockPosBelowThatAffectsMyMovement();
 
-            friction = this.level().getBlockState(pos).getFriction(this.level(), pos, this) * 0.98F;
+            friction = this.level.getBlockState(pos).getFriction(this.level, pos, this) * 0.98F;
         }
 
         this.setDeltaMovement(this.getDeltaMovement().multiply(friction, 0.98D, friction));
 
-        if (this.onGround())
+        if (this.isOnGround())
             this.setDeltaMovement(this.getDeltaMovement().multiply(1.0D, -0.9D, 1.0D));
 
         if (this.tickCount >= 1000)
@@ -162,8 +162,8 @@ public class RelicExperienceOrbEntity extends Entity {
     }
 
     @Override
-    protected BlockPos getBlockPosBelowThatAffectsMyMovement() {
-        return this.getOnPos(0.999F);
+    public BlockPos getBlockPosBelowThatAffectsMyMovement() {
+        return ((EntityAccess) this).invokeGetOnPos(0.999F);
     }
 
     @Override
@@ -177,7 +177,7 @@ public class RelicExperienceOrbEntity extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -235,14 +236,13 @@ public class EntityUtils {
             items.add(stack);
         }
 
-        CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
-            for (int i = 0; i < handler.getEquippedCurios().getSlots(); i++) {
-                ItemStack stack = handler.getEquippedCurios().getStackInSlot(i);
+        CuriosApi.getCuriosHelper().getEquippedCurios(player).ifPresent(handler -> {
+            for (int slot = 0; slot < handler.getSlots(); slot++) {
+                ItemStack stack = handler.getStackInSlot(slot);
 
-                if (!(stack.getItem() instanceof IRelicItem))
-                    continue;
-
-                items.add(stack);
+                if (stack.getItem() instanceof RelicItem) {
+                    items.add(stack);
+                }
             }
         });
 

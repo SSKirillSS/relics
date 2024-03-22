@@ -78,7 +78,7 @@ public class AbilityResetButtonWidget extends AbstractDescriptionWidget implemen
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderAnimatedTextureFromCenter(guiGraphics.pose(), getX() + width / 2, getY() + height / 2, 32, 384, 32, 32, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + width / 2f, y + height / 2f, 32, 384, 32, 32, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)

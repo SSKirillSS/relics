@@ -7,20 +7,20 @@
     "AbstractChestedHorseMixin",
     "AbstractContainerMenuMixin",
     "EnderManMixin",
+    "EntityAccess",
     "EntityMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "PiglinAiMixin",
-    "PowderSnowBlockMixin",
-    "ScreenMixin"
+    "PowderSnowBlockMixin"
   ],
   "minVersion": "0.8",
   "client": [
     "CameraMixin",
-    "GuiGraphicsMixin",
     "KeyboardHandlerMixin",
     "MouseHandlerMixin",
+    "ScreenMixin",
     "WindowMixin"
   ]
 }

@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics.entities;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -34,13 +33,13 @@ public class ThrownRelicExperienceBottle extends ThrowableItemProjectile {
     protected void onHit(HitResult result) {
         super.onHit(result);
 
-        if (this.level() instanceof ServerLevel) {
-            this.level().levelEvent(2002, this.blockPosition(), PotionUtils.getColor(Potions.LUCK));
+        if (this.level instanceof ServerLevel) {
+            this.level.levelEvent(2002, this.blockPosition(), PotionUtils.getColor(Potions.LUCK));
 
             int steps = 10 + random.nextInt(10);
 
             for (int i = 0; i < steps; i++) {
-                RelicExperienceOrbEntity orb = new RelicExperienceOrbEntity(EntityRegistry.RELIC_EXPERIENCE_ORB.get(), this.level());
+                RelicExperienceOrbEntity orb = new RelicExperienceOrbEntity(EntityRegistry.RELIC_EXPERIENCE_ORB.get(), this.level);
 
                 orb.setExperience(1 + random.nextInt(3));
                 orb.setPos(Vec3.atCenterOf(this.blockPosition()));
@@ -50,7 +49,7 @@ public class ThrownRelicExperienceBottle extends ThrowableItemProjectile {
                         (-1 + 2 * random.nextFloat()) * 0.15F
                 );
 
-                this.level().addFreshEntity(orb);
+                this.level.addFreshEntity(orb);
             }
 
             this.discard();
@@ -58,7 +57,7 @@ public class ThrownRelicExperienceBottle extends ThrowableItemProjectile {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

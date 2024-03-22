@@ -2,19 +2,21 @@ package it.hurts.sskirillss.relics.items;
 
 import it.hurts.sskirillss.relics.entities.ThrownRelicExperienceBottle;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
+import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
-public class RelicExperienceBottleItem extends ItemBase {
+public class RelicExperienceBottleItem extends Item {
     public RelicExperienceBottleItem() {
-        super(new Properties().rarity(Rarity.UNCOMMON));
+        super(new Properties().rarity(Rarity.UNCOMMON).tab(RelicsTab.RELICS_TAB));
     }
 
     @Override

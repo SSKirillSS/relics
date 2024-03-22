@@ -42,7 +42,7 @@ public abstract class PiglinAiMixin {
                 if (piglin.getRandom().nextBoolean()) {
                     throwItems(piglin, getBarterResponseItems(piglin));
 
-                    relic.dropAllocableExperience(piglin.level(), piglin.getEyePosition(), stack, 5);
+                    relic.dropAllocableExperience(piglin.level, piglin.getEyePosition(), stack, 3);
                 }
             }
 

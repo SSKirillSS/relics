@@ -113,7 +113,7 @@ public class ExperienceExchangeWidget extends AbstractDescriptionWidget implemen
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderAnimatedTextureFromCenter(guiGraphics.pose(), getX() + 6, getY() + 7, 32, 384, 32, 32, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + 6, y + 7, 32, 384, 32, 32, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)
