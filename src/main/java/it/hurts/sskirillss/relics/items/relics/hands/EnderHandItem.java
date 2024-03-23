@@ -35,8 +35,8 @@ public class EnderHandItem extends RelicItem {
                         .ability(AbilityData.builder("swap")
                                 .maxLevel(10)
                                 .active(CastType.INSTANTANEOUS, CastPredicate.builder()
-                                        .predicate("target", data -> {
-                                            EntityHitResult result = EntityUtils.rayTraceEntity(data.getPlayer(), (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(data.getStack(), "swap", "distance"));
+                                        .predicate("target", (player, stack) -> {
+                                            EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(stack, "swap", "distance"));
 
                                             return result != null && result.getEntity() instanceof LivingEntity;
                                         })

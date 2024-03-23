@@ -11,8 +11,6 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.PredicateEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.misc.PredicateData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
@@ -48,6 +46,7 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiFunction;
 
 @OnlyIn(value = Dist.CLIENT)
 public class AbilitiesRenderHandler {
@@ -91,8 +90,8 @@ public class AbilitiesRenderHandler {
             if (predicate == null)
                 continue;
 
-            for (Map.Entry<String, PredicateEntry> data : predicate.getPredicates().entrySet()) {
-                entry.getCache().predicate.info.put(data.getKey(), data.getValue().getPredicate().apply(new PredicateData(player, stack)));
+            for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> data : predicate.getPredicates().entrySet()) {
+                entry.getCache().predicate.info.put(data.getKey(), data.getValue().apply(player, stack));
             }
         }
     }

@@ -15,8 +15,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.PredicateEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.predicate.misc.PredicateData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
@@ -44,6 +42,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public interface IRelicItem {
@@ -403,19 +402,11 @@ public interface IRelicItem {
         return getAbilityData(ability).getCastData().getValue();
     }
 
-    default PredicateEntry getAbilityCastPredicate(String ability, String predicate) {
-        return getAbilityCastPredicates(ability).getPredicates().get(predicate);
-    }
-
-    default boolean testAbilityCastPredicate(Player player, ItemStack stack, String ability, String predicate) {
-        return getAbilityCastPredicate(ability, predicate).getPredicate().apply(new PredicateData(player, stack));
-    }
-
     default boolean testAbilityCastPredicates(Player player, ItemStack stack, String ability) {
         CastPredicate predicates = getAbilityCastPredicates(ability);
 
-        for (Map.Entry<String, PredicateEntry> entry : predicates.getPredicates().entrySet()) {
-            if (!entry.getValue().getPredicate().apply(new PredicateData(player, stack)))
+        for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> entry : predicates.getPredicates().entrySet()) {
+            if (!entry.getValue().apply(player, stack))
                 return false;
         }
 
