@@ -50,10 +50,8 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
 
     @Override
     public void playDownSound(SoundManager handler) {
-        if (!isLocked()) {
+        if (!isLocked())
             handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_REROLL.get(), 1F));
-            screen.requiresUpdate = true;
-        }
     }
 
     @Override
@@ -78,7 +76,7 @@ public class AbilityRerollButtonWidget extends AbstractDescriptionWidget impleme
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(poseStack, x + width / 2F, y + height / 2F, 32, 384, 32, 32, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + width / 2f, y + height / 2f, 32, 384, 32, 32, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)

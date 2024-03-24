@@ -64,6 +64,7 @@ public class Relics {
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         NetworkHandler.register();
+        DispenserBehaviorRegistry.register();
 
         ConfigHelper.setupConfigs();
 

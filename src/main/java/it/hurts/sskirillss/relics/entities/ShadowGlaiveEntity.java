@@ -155,9 +155,10 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
 
                 float damage = (float) relic.getAbilityValue(stack, "glaive", "damage");
 
-                if (this.getOwner() instanceof Player player)
+                if (this.getOwner() instanceof Player player) {
                     EntityUtils.hurt(entity, DamageSource.thrown(this, player), damage);
-                else
+                    relic.dropAllocableExperience(getLevel(), entity.getEyePosition(), stack, 1);
+                } else
                     entity.hurt(DamageSource.MAGIC, damage);
 
                 if (!bouncedEntities.contains(entity.getUUID().toString())) {
@@ -174,16 +175,6 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
             }
         } else
             this.locateNearestTarget();
-    }
-
-    @Override
-    public void onRemovedFromWorld() {
-        super.onRemovedFromWorld();
-
-        if (!(stack.getItem() instanceof IRelicItem relic))
-            return;
-
-        relic.addExperience(this.getOwner() instanceof Player player ? player : null, stack, (int) Math.floor(entityData.get(BOUNCES) / 2F));
     }
 
     @Override

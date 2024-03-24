@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
 import com.mojang.datafixers.util.Pair;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
@@ -63,8 +63,7 @@ public class BastionRingItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 200))
-                .style(RelicStyleData.builder()
-                        .borders("#008cd7", "#0a3484")
+                .style(StyleData.builder()
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.BASTION)
@@ -152,13 +151,13 @@ public class BastionRingItem extends RelicItem {
             LivingEntity entity = event.getEntity();
 
             if (entity instanceof ZombifiedPiglin)
-                relic.addExperience(player, stack, 1);
+                relic.dropAllocableExperience(player.level, entity.getEyePosition(), stack, 1);
 
             if (entity instanceof Piglin)
-                relic.addExperience(player, stack, 5);
+                relic.dropAllocableExperience(player.level, entity.getEyePosition(), stack, 5);
 
             if (entity instanceof PiglinBrute)
-                relic.addExperience(player, stack, 10);
+                relic.dropAllocableExperience(player.level, entity.getEyePosition(), stack, 10);
         }
     }
 }

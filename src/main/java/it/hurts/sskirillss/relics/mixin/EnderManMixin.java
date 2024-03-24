@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EnderMan.class)
-public class MixinEnderMan {
+public class EnderManMixin {
     @Inject(at = @At(value = "HEAD"), method = "isLookingAtMe", cancellable = true)
     protected void calmEndermans(Player player, CallbackInfoReturnable<Boolean> info) {
         if (!EntityUtils.findEquippedCurio(player, ItemRegistry.ENDER_HAND.get()).isEmpty()) info.setReturnValue(false);

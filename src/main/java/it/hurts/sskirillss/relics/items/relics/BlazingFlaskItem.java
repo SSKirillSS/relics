@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -10,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -60,8 +59,7 @@ public class BlazingFlaskItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(RelicStyleData.builder()
-                        .borders("#eed551", "#dcbe1d")
+                .style(StyleData.builder()
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.NETHER)
@@ -104,7 +102,7 @@ public class BlazingFlaskItem extends RelicItem {
                             player.move(MoverType.SELF, player.getDeltaMovement().multiply(speed, 0, speed));
 
                         if (player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
-                                && (getGroundHeight(player) + getAbilityValue(stack, "bonfire", "height")) - player.getY() > 0) {
+                                && (WorldUtils.getGroundHeight(level, player.position(), 64) + getAbilityValue(stack, "bonfire", "height")) - player.getY() > 0) {
                             Vec3 motion = player.getDeltaMovement();
 
                             if (motion.y() < 0)
@@ -149,16 +147,6 @@ public class BlazingFlaskItem extends RelicItem {
             ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(255, 100, 0), 0.2F, time, 0.8F),
                     center, level, radius, 0.15F);
         }
-    }
-
-    protected double getGroundHeight(Player player) {
-        HitResult result = player.level.clip(new ClipContext(player.position(), player.position().add(0, -64, 0),
-                ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
-
-        if (result.getType() == HitResult.Type.BLOCK)
-            return result.getLocation().y();
-
-        return -player.getCommandSenderWorld().getMaxBuildHeight();
     }
 
     @Override

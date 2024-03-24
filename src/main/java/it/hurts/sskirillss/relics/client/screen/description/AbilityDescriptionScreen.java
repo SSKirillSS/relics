@@ -64,7 +64,6 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
     public AbilityResetButtonWidget resetButton;
 
     public int ticksExisted;
-    public boolean requiresUpdate;
 
     public AbilityDescriptionScreen(BlockPos pos, ItemStack stack, String ability) {
         super(Component.empty());
@@ -72,20 +71,6 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         this.pos = pos;
         this.stack = stack;
         this.ability = ability;
-    }
-
-    private ItemStack getStack() {
-        Level level = MC.level;
-
-        if (!(level.getBlockEntity(pos) instanceof ResearchingTableTile tile))
-            return ItemStack.EMPTY;
-
-        ItemStack stack = tile.getStack();
-
-        if (!(stack.getItem() instanceof IRelicItem))
-            return ItemStack.EMPTY;
-
-        return stack;
     }
 
     @Override
@@ -115,21 +100,17 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         LocalPlayer player = MC.player;
 
-        if (requiresUpdate) {
-            ItemStack currentStack = getStack();
+        if (player == null)
+            return;
 
-            if (currentStack == ItemStack.EMPTY) {
-                onClose();
-                return;
-            }
+        Level level = player.getLevel();
 
-            if (!ItemStack.isSameItemSameTags(stack, currentStack)) {
-                stack = currentStack;
-                requiresUpdate = false;
-            }
-        }
+        if (!(level.getBlockEntity(pos) instanceof ResearchingTableTile tile))
+            return;
 
-        if (stack == null || !(stack.getItem() instanceof IRelicItem) || player == null)
+        stack = tile.getStack();
+
+        if (stack == null || !(stack.getItem() instanceof IRelicItem))
             return;
 
         ticksExisted++;
@@ -202,7 +183,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(pPoseStack, x + 134F, y + 83.5F, 210, 98, 210, 7, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(pPoseStack, x + 134F, y + 83.5F, 210, 98, 210, 7, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)
@@ -321,7 +302,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             }
         }
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + ability + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + abilityData.getIcon().apply(player, stack, ability) + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 
@@ -429,7 +410,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(pPoseStack, x + backgroundWidth + 5 + (50 / 2F), y - 2 + (31 / 2F), 64, 768, 64, 64, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(pPoseStack, x + backgroundWidth + 5 + (50 / 2f), y - 2 + (31 / 2f), 64, 768, 64, 64, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)

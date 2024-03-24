@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -55,8 +55,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(RelicStyleData.builder()
-                        .borders("#32a167", "#16702e")
+                .style(StyleData.builder()
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
@@ -103,7 +102,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            relic.addExperience(player, stack, 1);
+            relic.dropAllocableExperience(player.level, player.getEyePosition(), stack, 1);
 
             event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "training", "damage")));
         }

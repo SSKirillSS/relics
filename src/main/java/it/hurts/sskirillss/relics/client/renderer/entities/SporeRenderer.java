@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SporeRenderer extends EntityRenderer<SporeEntity> {
-    protected SporeRenderer(Context renderManager) {
+    public SporeRenderer(Context renderManager) {
         super(renderManager);
     }
 
@@ -62,12 +61,5 @@ public class SporeRenderer extends EntityRenderer<SporeEntity> {
     @Override
     public ResourceLocation getTextureLocation(SporeEntity entity) {
         return new ResourceLocation(Reference.MODID, "textures/entities/spore.png");
-    }
-
-    public static class RenderFactory implements EntityRendererProvider {
-        @Override
-        public EntityRenderer<? super SporeEntity> create(Context manager) {
-            return new SporeRenderer(manager);
-        }
     }
 }

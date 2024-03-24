@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PowderSnowBlock.class)
-public class MixinPowderSnowBlock {
+public class PowderSnowBlockMixin {
     @Inject(method = "entityInside", at = @At(value = "HEAD"), cancellable = true)
     public void boilSnow(BlockState state, Level level, BlockPos pos, Entity entity, CallbackInfo ci) {
         if (!EntityUtils.findEquippedCurio(entity, ItemRegistry.WOOL_MITTEN.get()).isEmpty())

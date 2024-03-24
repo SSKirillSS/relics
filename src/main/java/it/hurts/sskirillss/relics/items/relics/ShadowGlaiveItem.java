@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.entities.ShadowSawEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
@@ -83,8 +84,7 @@ public class ShadowGlaiveItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(RelicStyleData.builder()
-                        .borders("#ffe0d2", "#9c756b")
+                .style(StyleData.builder()
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.END)

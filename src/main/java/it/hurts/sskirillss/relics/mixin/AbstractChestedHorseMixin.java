@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractChestedHorse.class)
-public class MixinAbstractChestedHorse {
+public class AbstractChestedHorseMixin {
     @Inject(at = @At(value = "HEAD"), method = "mobInteract", cancellable = true)
     protected void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
         AbstractChestedHorse horse = (AbstractChestedHorse) (Object) this;

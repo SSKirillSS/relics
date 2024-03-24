@@ -60,7 +60,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         boolean canUse = relic.canUseAbility(screen.stack, ability);
         boolean canUpgrade = relic.mayPlayerUpgrade(MC.player, screen.stack, ability);
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + "/" + ability + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(MC.player, screen.stack, ability) + ".png");
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, card);
@@ -93,7 +93,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
                 RenderSystem.enableBlend();
 
-                RenderUtils.renderTextureFromCenter(poseStack, 0, 0, 64, 768, 64, 64, 1F, AnimationData.builder()
+                RenderUtils.renderAnimatedTextureFromCenter(poseStack, 0, 0, 64, 768, 64, 64, 1F, AnimationData.builder()
                         .frame(0, 2)
                         .frame(1, 2)
                         .frame(2, 2)
@@ -118,7 +118,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
                 RenderSystem.enableBlend();
 
-                RenderUtils.renderTextureFromCenter(poseStack, 0, 0, 64, 768, 64, 64, 1F, AnimationData.builder()
+                RenderUtils.renderAnimatedTextureFromCenter(poseStack, 0, 0, 64, 768, 64, 64, 1F, AnimationData.builder()
                         .frame(0, 2)
                         .frame(1, 2)
                         .frame(2, 2)
@@ -144,7 +144,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(poseStack, -1, -1, 32, 256, 32, 32, 0.9F + ((float) (Math.sin((screen.ticksExisted + pPartialTick) * 0.25F) * 0.025F)), AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(poseStack, -1, -1, 32, 256, 32, 32, 0.9F + ((float) (Math.sin((screen.ticksExisted + pPartialTick) * 0.25F) * 0.025F)), AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)

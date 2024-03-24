@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.ArrowRainEntity;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
@@ -180,8 +180,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 20, 100))
-                .style(RelicStyleData.builder()
-                        .borders("#eed551", "#dcbe1d")
+                .style(StyleData.builder()
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
@@ -651,7 +650,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                 int amount = (int) Math.min(10, Math.round(player.position().distanceTo(new Vec3(arrow.getX(), player.getY(), arrow.getZ())) * 0.1));
 
                 if (amount > 0)
-                    relic.addExperience(player, stack, amount);
+                    relic.dropAllocableExperience(player.level, player.getEyePosition(), stack, amount);
             }
 
             if (relic.canUseAbility(stack, "leap")) {

@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -81,8 +81,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(RelicStyleData.builder()
-                        .borders("#7889b8", "#25374e")
+                .style(StyleData.builder()
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.AQUATIC)

@@ -189,7 +189,7 @@ public class AbilitiesRenderHandler {
 
         boolean isLocked = !relic.canPlayerUseActiveAbility(player, stack, ability.getAbility());
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + ability.getAbility() + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(ActiveAbilityUtils.getStackInCuriosSlot(player, ability.getSlot()).getItem()).getPath() + "/" + relic.getAbilityData(ability.getAbility()).getIcon().apply(player, stack, ability.getAbility()) + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 
@@ -233,7 +233,7 @@ public class AbilitiesRenderHandler {
 
                 RenderSystem.enableBlend();
 
-                RenderUtils.renderTextureFromCenter(poseStack, x - 0.5F, y - 0.5F, 31, 473, 31, 43, scale, AnimationData.builder()
+                RenderUtils.renderAnimatedTextureFromCenter(poseStack, x - 0.5F, y - 0.5F, 31, 473, 31, 43, scale, AnimationData.builder()
                         .frame(0, 1).frame(1, 1).frame(2, 1)
                         .frame(3, 1).frame(4, 1).frame(5, 1)
                         .frame(6, 1).frame(7, 1).frame(8, 1)
@@ -334,7 +334,7 @@ public class AbilitiesRenderHandler {
         }
 
         if (animation != null)
-            RenderUtils.renderTextureFromCenter(poseStack, 0, 0, texWidth, texHeight, texWidth, texWidth, scale, animation, ticks);
+            RenderUtils.renderAnimatedTextureFromCenter(poseStack, 0, 0, texWidth, texHeight, texWidth, texWidth, scale, animation, ticks);
         else
             RenderUtils.renderTextureFromCenter(poseStack, 0, 0, texWidth, texHeight, scale);
 

@@ -60,10 +60,8 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
     @Override
     public void onPress() {
-        if (!isLocked()) {
+        if (!isLocked())
             NetworkHandler.sendToServer(new PacketRelicTweak(screen.pos, ability, PacketRelicTweak.Operation.INCREASE));
-            screen.requiresUpdate = true;
-        }
     }
 
     @Override
@@ -82,7 +80,7 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implem
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(poseStack, x + width / 2F, y + height / 2F, 32, 384, 32, 32, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + width / 2f, y + height / 2f, 32, 384, 32, 32, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)

@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class DissectionRenderer extends EntityRenderer<DissectionEntity> {
-    protected DissectionRenderer(Context renderManager) {
+    public DissectionRenderer(Context renderManager) {
         super(renderManager);
     }
 
@@ -55,12 +54,5 @@ public class DissectionRenderer extends EntityRenderer<DissectionEntity> {
     @Override
     public ResourceLocation getTextureLocation(DissectionEntity entity) {
         return new ResourceLocation(Reference.MODID, "textures/entities/dissection.png");
-    }
-
-    public static class RenderFactory implements EntityRendererProvider {
-        @Override
-        public EntityRenderer<? super DissectionEntity> create(Context manager) {
-            return new DissectionRenderer(manager);
-        }
     }
 }

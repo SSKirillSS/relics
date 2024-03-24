@@ -56,10 +56,8 @@ public class AbilityResetButtonWidget extends AbstractDescriptionWidget implemen
 
     @Override
     public void onPress() {
-        if (!isLocked()) {
+        if (!isLocked())
             NetworkHandler.sendToServer(new PacketRelicTweak(screen.pos, ability, PacketRelicTweak.Operation.RESET));
-            screen.requiresUpdate = true;
-        }
     }
 
     @Override
@@ -78,7 +76,7 @@ public class AbilityResetButtonWidget extends AbstractDescriptionWidget implemen
 
             RenderSystem.enableBlend();
 
-            RenderUtils.renderTextureFromCenter(poseStack, x + width / 2F, y + height / 2F, 32, 384, 32, 32, 1F, AnimationData.builder()
+            RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + width / 2f, y + height / 2f, 32, 384, 32, 32, 1F, AnimationData.builder()
                     .frame(0, 2)
                     .frame(1, 2)
                     .frame(2, 2)

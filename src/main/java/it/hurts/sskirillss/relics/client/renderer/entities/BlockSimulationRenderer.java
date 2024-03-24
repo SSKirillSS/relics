@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 
 public class BlockSimulationRenderer extends EntityRenderer<BlockSimulationEntity> {
-    protected BlockSimulationRenderer(EntityRendererProvider.Context pContext) {
+    public BlockSimulationRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
 
@@ -52,12 +52,5 @@ public class BlockSimulationRenderer extends EntityRenderer<BlockSimulationEntit
     @Override
     public ResourceLocation getTextureLocation(BlockSimulationEntity pEntity) {
         return TextureAtlas.LOCATION_BLOCKS;
-    }
-
-    public static class RenderFactory implements EntityRendererProvider {
-        @Override
-        public EntityRenderer<? super BlockSimulationEntity> create(Context manager) {
-            return new BlockSimulationRenderer(manager);
-        }
     }
 }

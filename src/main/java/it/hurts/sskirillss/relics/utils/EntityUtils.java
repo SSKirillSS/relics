@@ -1,6 +1,9 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -8,6 +11,7 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +25,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,6 +58,25 @@ public class EntityUtils {
             }
 
         return list;
+    }
+
+    public static void addItem(Player player, ItemStack stack) {
+        if (player.addItem(stack))
+            return;
+
+        Level level = player.getCommandSenderWorld();
+        RandomSource random = level.getRandom();
+
+        ItemEntity drop = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), stack);
+
+        drop.setDeltaMovement(
+                MathUtils.randomFloat(random) * 0.15F,
+                0.1F + random.nextFloat() * 0.2F,
+                MathUtils.randomFloat(random) * 0.15F
+        );
+        drop.setPickUpDelay(20);
+
+        level.addFreshEntity(drop);
     }
 
     public static EntityHitResult rayTraceEntity(Entity shooter, Predicate<? super Entity> filter, double distance) {
@@ -195,5 +219,33 @@ public class EntityUtils {
             return false;
 
         return entity.hurt(source, amount);
+    }
+
+    public static List<ItemStack> getEquippedRelics(LivingEntity entity) {
+        List<ItemStack> items = new ArrayList<>();
+
+        if (!(entity instanceof Player player))
+            return items;
+
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+
+            if (!(stack.getItem() instanceof IRelicItem))
+                continue;
+
+            items.add(stack);
+        }
+
+        CuriosApi.getCuriosHelper().getEquippedCurios(player).ifPresent(handler -> {
+            for (int slot = 0; slot < handler.getSlots(); slot++) {
+                ItemStack stack = handler.getStackInSlot(slot);
+
+                if (stack.getItem() instanceof RelicItem) {
+                    items.add(stack);
+                }
+            }
+        });
+
+        return items;
     }
 }

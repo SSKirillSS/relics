@@ -1,31 +1,28 @@
 package it.hurts.sskirillss.relics.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.api.events.common.TooltipDisplayEvent;
 import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
 import it.hurts.sskirillss.relics.client.screen.description.data.base.ParticleData;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import org.jetbrains.annotations.NotNull;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Mixin(Screen.class)
-public class MixinScreen extends AbstractContainerEventHandler {
-    @Final
-    @Shadow
-    private List<GuiEventListener> children;
-
+public class ScreenMixin {
     @Inject(method = "tick", at = @At("HEAD"))
     public void tick(CallbackInfo ci) {
         Screen screen = (Screen) (Object) this;
@@ -66,8 +63,8 @@ public class MixinScreen extends AbstractContainerEventHandler {
             data.render(screen, pose, pMouseX, pMouseY, pPartialTick);
     }
 
-    @Override
-    public @NotNull List<? extends GuiEventListener> children() {
-        return children;
+    @Inject(method = "renderTooltipInternal", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;blitOffset:F", ordinal = 2, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT)
+    public void onTooltipRender(final PoseStack pose, final List<ClientTooltipComponent> tooltip, int mouseX, int mouseY, final CallbackInfo callback, final RenderTooltipEvent.Pre event, int width, int height, int xPos, int yPos) {
+        MinecraftForge.EVENT_BUS.post(new TooltipDisplayEvent(event.getItemStack(), pose, width, height, xPos, yPos));
     }
 }

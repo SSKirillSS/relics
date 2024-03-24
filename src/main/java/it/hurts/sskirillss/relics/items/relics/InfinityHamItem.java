@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -12,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -69,8 +70,7 @@ public class InfinityHamItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(RelicStyleData.builder()
-                        .borders("#ffe0d2", "#9c756b")
+                .style(StyleData.builder()
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
@@ -231,7 +231,16 @@ public class InfinityHamItem extends RelicItem {
                 tag.put(TAG_POTION, list);
             }
 
-            player.containerMenu.setCarried(new ItemStack(Items.GLASS_BOTTLE));
+            ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+
+            if (player.containerMenu.getCarried().getCount() <= 1)
+                player.containerMenu.setCarried(bottle);
+            else {
+                player.containerMenu.getCarried().shrink(1);
+
+                EntityUtils.addItem(player, bottle);
+            }
+
             player.playSound(SoundEvents.BOTTLE_FILL, 1F, 1F);
 
             event.setCanceled(true);

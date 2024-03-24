@@ -83,7 +83,10 @@ public class PacketRelicTweak {
                 }
             }
 
-            world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+            tile.setStack(stack);
+            tile.setChanged();
+
+            world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
         });
 
         return true;
@@ -92,6 +95,6 @@ public class PacketRelicTweak {
     public enum Operation {
         RESET,
         INCREASE,
-        REROLL,
+        REROLL
     }
 }
