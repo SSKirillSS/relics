@@ -41,7 +41,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -355,12 +354,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         int yOff = 9;
 
-        List<FormattedCharSequence> lines = new ArrayList<>();
-
-        for (String entry : Component.translatable("tooltip.relics." + registryName + ".leveling").getString().lines().toList())
-            lines.addAll(MC.font.split(Component.literal("● ").append(entry), 350));
-
-        for (FormattedCharSequence line : lines) {
+        for (FormattedCharSequence line : MC.font.split(Component.translatable("tooltip.relics." + registryName + ".description"), 350)) {
             guiGraphics.drawString(MC.font, line, (x + 62) * 2, (y + 26) * 2 + yOff, 0x412708, false);
 
             yOff += 9;
