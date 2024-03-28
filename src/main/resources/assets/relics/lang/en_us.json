@@ -45,7 +45,7 @@
   "tooltip.relics.relic.reset.locked": "To use you need to level-up this ability at least 1 time.",
 
   "item.relics.infinity_ham": "Infinity Ham",
-  "tooltip.relics.infinity_ham.leveling": "+1 experience point for each piece eaten from the ability «Regeneration».",
+  "tooltip.relics.infinity_ham.description": "+1 experience point for each piece eaten from the ability «Regeneration».",
   "tooltip.relics.infinity_ham.ability.autophagy": "Regeneration",
   "tooltip.relics.infinity_ham.ability.autophagy.description": "Using a relic consumes one of the regeneratable charges, replenishing the hunger of the wearer.",
   "tooltip.relics.infinity_ham.ability.autophagy.stat.feed.title": "Saturation:",
@@ -56,7 +56,7 @@
   "tooltip.relics.infinity_ham.ability.infusion.stat.duration.value": "%1$s seconds per charge.",
 
   "item.relics.enders_hand": "Ender Hand",
-  "tooltip.relics.enders_hand.leveling": "+1 experience point for using the ability «End Transposition», +1 experience point for every 10 blocks from the distance to the target when using.",
+  "tooltip.relics.enders_hand.description": "+1 experience point for using the ability «End Transposition», +1 experience point for every 10 blocks from the distance to the target when using.",
   "tooltip.relics.enders_hand.ability.neutrality": "Neutrality",
   "tooltip.relics.enders_hand.ability.neutrality.description": "Makes endermen neutral with respect to the wearer.",
   "tooltip.relics.enders_hand.ability.swap": "End Transposition",
@@ -66,7 +66,7 @@
   "tooltip.relics.enders_hand.ability.swap.predicate.target": "Looking at the target",
 
   "item.relics.holy_locket": "Holy Locket",
-  "tooltip.relics.holy_locket.leveling": "+1 experience point for each activation of the ability «Divine Blessing», +1 experience point for each stolen healing unit.",
+  "tooltip.relics.holy_locket.description": "+1 experience point for each activation of the ability «Divine Blessing», +1 experience point for each stolen healing unit.",
   "tooltip.relics.holy_locket.ability.steal": "Divine Blessing",
   "tooltip.relics.holy_locket.ability.steal.description": "Redirects a part of the regenerated health of nearby creatures to the wearer of the relic.",
   "tooltip.relics.holy_locket.ability.steal.stat.amount.title": "Quantity:",
@@ -75,7 +75,7 @@
   "tooltip.relics.holy_locket.ability.steal.stat.radius.value": "%1$s blocks.",
 
   "item.relics.magic_mirror": "Magic Mirror",
-  "tooltip.relics.magic_mirror.leveling": "+1 experience point for each use of the «Wormhole» ability, +1 experience point for every 50 blocks to the teleportation point.",
+  "tooltip.relics.magic_mirror.description": "+1 experience point for each use of the «Wormhole» ability, +1 experience point for every 50 blocks to the teleportation point.",
   "tooltip.relics.magic_mirror.ability.teleport": "Wormhole",
   "tooltip.relics.magic_mirror.ability.teleport.description": "After use, teleports the wearer to their respawn point.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.distance.title": "Distance:",
@@ -84,7 +84,7 @@
   "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown.value": "%1$s seconds.",
 
   "item.relics.shadow_glaive": "Shadow Glaive",
-  "tooltip.relics.shadow_glaive.leveling": "+1 experience point for every 2 glaive bounces from the «Blind Justice» ability.",
+  "tooltip.relics.shadow_glaive.description": "+1 experience point for every 2 glaive bounces from the «Blind Justice» ability.",
   "tooltip.relics.shadow_glaive.ability.glaive": "Blind Justice",
   "tooltip.relics.shadow_glaive.ability.glaive.description": "Usage releases one of 8 glaive charges, bouncing between nearby targets. The missing charges are restored themselves after a certain amount of time.",
   "tooltip.relics.shadow_glaive.ability.glaive.stat.damage.title": "Damage:",
@@ -103,7 +103,7 @@
   "tooltip.relics.shadow_glaive.ability.saw.stat.damage.value": "%1$s units.",
 
   "item.relics.arrow_quiver": "Quiver",
-  "tooltip.relics.arrow_quiver.leveling": "+1 experience point for every 10 blocks to the target hit by the shot.",
+  "tooltip.relics.arrow_quiver.description": "+1 experience point for every 10 blocks to the target hit by the shot.",
   "tooltip.relics.arrow_quiver.ability.receptacle": "Arrow Storage",
   "tooltip.relics.arrow_quiver.ability.receptacle.description": "Shooting primarily uses arrows from the quiver's internal storage. Pressing the LMB with arrow on the quiver in the inventory will place it in the internal storage of the relic. Pressing the RMB on the quiver will get the last stack of arrows placed in it.",
   "tooltip.relics.arrow_quiver.ability.receptacle.stat.slots.title": "Arrow slots:",
@@ -132,7 +132,7 @@
   "tooltip.relics.arrow_quiver.ability.rain.predicate.arrow": "Arrows in the quiver",
 
   "item.relics.blazing_flask": "Blazing Flask",
-  "tooltip.relics.blazing_flask.leveling": "+1 experience point for every 5 seconds of flight within the scope of the ability «Eternal Fire».",
+  "tooltip.relics.blazing_flask.description": "+1 experience point for every 5 seconds of flight within the scope of the ability «Eternal Fire».",
   "tooltip.relics.blazing_flask.ability.bonfire": "Eternal fire",
   "tooltip.relics.blazing_flask.ability.bonfire.description": "Using a relic on a block will create a restricted flight zone, the size of which depends on the amount of fire in a certain radius around the center.",
   "tooltip.relics.blazing_flask.ability.bonfire.stat.step.title": "Fire detection radius:",
@@ -143,7 +143,7 @@
   "tooltip.relics.blazing_flask.ability.bonfire.stat.height.value": "%1$s blocks.",
 
   "item.relics.elytra_booster": "Elytra Booster",
-  "tooltip.relics.elytra_booster.leveling": "+1 experience point for every 10 seconds of burning fuel when placing it in the internal buffer of the relic from the ability «Acceleration».",
+  "tooltip.relics.elytra_booster.description": "+1 experience point for every 10 seconds of burning fuel when placing it in the internal buffer of the relic from the ability «Acceleration».",
   "tooltip.relics.elytra_booster.ability.boost": "Acceleration",
   "tooltip.relics.elytra_booster.ability.boost.description": "Using any combustible fuel on a relic in the inventory replenishes its internal buffer. Using the ability during the flight on an elytra rushes the wearer forward, consuming fuel from the internal buffer.",
   "tooltip.relics.elytra_booster.ability.boost.stat.capacity.title": "Capacity:",
@@ -154,7 +154,7 @@
   "tooltip.relics.elytra_booster.ability.boost.predicate.fuel": "Fuel in the Booster",
 
   "item.relics.midnight_robe": "Midnight Robe",
-  "tooltip.relics.midnight_robe.leveling": "+1 experience point for every 2 units of damage when attacking while being invisible from the «Disappearing» ability.",
+  "tooltip.relics.midnight_robe.description": "+1 experience point for every 2 units of damage when attacking while being invisible from the «Disappearing» ability.",
   "tooltip.relics.midnight_robe.ability.vanish": "Vanish",
   "tooltip.relics.midnight_robe.ability.vanish.description": "Gives the wearer complete invisibility and increases the speed of their movement at a sufficiently low light level.",
   "tooltip.relics.midnight_robe.ability.vanish.stat.light.title": "Minimum light level:",
@@ -169,7 +169,7 @@
   "tooltip.relics.midnight_robe.ability.backstab.stat.distance.value": "%1$s blocks.",
 
   "item.relics.reflection_necklace": "Reflecting Necklace",
-  "tooltip.relics.reflection_necklace.leveling": "+1 experience point for every 10 damage accumulated in the internal buffer of the relic from the ability «Infernal Hatred».",
+  "tooltip.relics.reflection_necklace.description": "+1 experience point for every 10 damage accumulated in the internal buffer of the relic from the ability «Infernal Hatred».",
   "tooltip.relics.reflection_necklace.ability.explode": "Infernal Hatred",
   "tooltip.relics.reflection_necklace.ability.explode.description": "Accumulates the damage received by the wearer into the internal buffer of the relic. 5 seconds after the last damage or in case of a buffer overflow, the relic explodes, throwing obsidian fragments in all directions, causing damage and stunning targets.",
   "tooltip.relics.reflection_necklace.ability.explode.stat.capacity.title": "Damage buffer:",
@@ -180,7 +180,7 @@
   "tooltip.relics.reflection_necklace.ability.explode.stat.stun.value": "%1$s seconds.",
 
   "item.relics.jellyfish_necklace": "Jellyfish Necklace",
-  "tooltip.relics.jellyfish_necklace.leveling": "+1 experience point for each activation of the ability «Electric Discharge».",
+  "tooltip.relics.jellyfish_necklace.description": "+1 experience point for each activation of the ability «Electric Discharge».",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable": "Power over the sea",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable.description": "The wearer does not sink in water.",
   "tooltip.relics.jellyfish_necklace.ability.shock": "Electrical Discharge",
@@ -193,7 +193,7 @@
   "tooltip.relics.jellyfish_necklace.ability.paralysis.stat.duration.value": "%1$s seconds.",
 
   "item.relics.spore_sack": "Spore Sack",
-  "tooltip.relics.spore_sack.leveling": "+1 experience point for each spore released by the «Poison Synthesis» ability.\n+1 experience point for each additional spore split by the «Decomposition» ability.",
+  "tooltip.relics.spore_sack.description": "+1 experience point for each spore released by the «Poison Synthesis» ability.\n+1 experience point for each additional spore split by the «Decomposition» ability.",
   "tooltip.relics.spore_sack.ability.spore": "Poison Synthesis",
   "tooltip.relics.spore_sack.ability.spore.description": "When taking damage, throws a spore in a random direction that sticks to surfaces and explodes when a target approaches, dealing damage, poisoning, slowing, and blocking healing for 5 seconds.",
   "tooltip.relics.spore_sack.ability.spore.stat.size.title": "Size:",
@@ -225,7 +225,7 @@
   "tooltip.relics.spore_sack.ability.explosion.predicate.spore": "Spores in the sack",
 
   "item.relics.ice_breaker": "Ice Breaker",
-  "tooltip.relics.ice_breaker.leveling": "+1 experience point for every 3 blocks in the fall before triggering the ability «Earthquake».",
+  "tooltip.relics.ice_breaker.description": "+1 experience point for every 3 blocks in the fall before triggering the ability «Earthquake».",
   "tooltip.relics.ice_breaker.ability.sustainability": "Sustainability",
   "tooltip.relics.ice_breaker.ability.sustainability.description": "Increases the speed of falling, increases the knockback resistance and negates slippering.",
   "tooltip.relics.ice_breaker.ability.sustainability.stat.modifier.title": "Knockback resistance:",
@@ -239,7 +239,7 @@
   "tooltip.relics.ice_breaker.ability.impact.predicate.falling": "Free fall",
 
   "item.relics.bastion_ring": "Bastion Ring",
-  "tooltip.relics.bastion_ring.leveling": "+1/5/10 experience point for each killed Zombified Piglin / Piglin / Piglin Brute.\n+1 experience point for each additional trade from the ability «Respect».",
+  "tooltip.relics.bastion_ring.description": "+1/5/10 experience point for each killed Zombified Piglin / Piglin / Piglin Brute.\n+1 experience point for each additional trade from the ability «Respect».",
   "tooltip.relics.bastion_ring.ability.compass": "Recognition",
   "tooltip.relics.bastion_ring.ability.compass.description": "Makes piglins neutral in relation to the wearer. The nearest piglin will indicate the location of a bastion nearby.",
   "tooltip.relics.bastion_ring.ability.trade": "Respect",
@@ -248,7 +248,7 @@
   "tooltip.relics.bastion_ring.ability.trade.stat.rolls.value": "%1$s units.",
 
   "item.relics.horse_flute": "Horse Flute",
-  "tooltip.relics.horse_flute.leveling": "+1 experience point for every 25 blocks overcome by a horse called by the ability «Portable Stall».",
+  "tooltip.relics.horse_flute.description": "+1 experience point for every 25 blocks overcome by a horse called by the ability «Portable Stall».",
   "tooltip.relics.horse_flute.ability.paddock": "Portable Stall",
   "tooltip.relics.horse_flute.ability.paddock.description": "Using a relic on the horse will move the animal to the internal storage. Reuse will release the creature. If the distance between the wearer and the summoned horse exceeds 16 blocks, it will automatically fit back into the flute.",
   "tooltip.relics.horse_flute.ability.paddock.stat.slots.title": "Slots:",
@@ -259,7 +259,7 @@
   "tooltip.relics.horse_flute.ability.heal.stat.amount.value": "%1$s health units per second.",
 
   "item.relics.magma_walker": "Magma Walker",
-  "tooltip.relics.magma_walker.leveling": "+1 experience point for every 5 units of heating from the ability «Fiery Tread».",
+  "tooltip.relics.magma_walker.description": "+1 experience point for every 5 units of heating from the ability «Fiery Tread».",
   "tooltip.relics.magma_walker.ability.pace": "Fiery Tread",
   "tooltip.relics.magma_walker.ability.pace.description": "For a certain amount of time allows you to walk on the lava surface without falling and taking damage. After the time limit expires, the boots begin to overheat and cause damage to the wearer proportional to the degree of overheating.",
   "tooltip.relics.magma_walker.ability.pace.stat.time.title": "Duration:",
@@ -268,14 +268,14 @@
   "tooltip.relics.magma_walker.ability.heat_resistance.description": "Suppresses damage from hot blocks.",
 
   "item.relics.aqua_walker": "Aqua Walker",
-  "tooltip.relics.aqua_walker.leveling": "+1 experience point for every 5 units of getting wet from the ability «Moisture Resistance».",
+  "tooltip.relics.aqua_walker.description": "+1 experience point for every 5 units of getting wet from the ability «Moisture Resistance».",
   "tooltip.relics.aqua_walker.ability.walking": "Moisture Resistance",
   "tooltip.relics.aqua_walker.ability.walking.description": "For a certain amount of time allows you to move on the surface of the water without falling. After the time limit expires, the boots begin to sink, dragging the wearer with them under the water.",
   "tooltip.relics.aqua_walker.ability.walking.stat.time.title": "Duration:",
   "tooltip.relics.aqua_walker.ability.walking.stat.time.value": "%1$s seconds.",
 
   "item.relics.drowned_belt": "Drowned Belt",
-  "tooltip.relics.drowned_belt.leveling": "+1 experience point for each level of enchantment «Riptide» on the trident when using it.",
+  "tooltip.relics.drowned_belt.description": "+1 experience point for each level of enchantment «Riptide» on the trident when using it.",
   "tooltip.relics.drowned_belt.ability.slots": "Load Capacity",
   "tooltip.relics.drowned_belt.ability.slots.description": "Increases the maximum number of slots for equipping relics.",
   "tooltip.relics.drowned_belt.ability.slots.stat.talisman.title": "Talismans:",
@@ -296,7 +296,7 @@
   "tooltip.relics.drowned_belt.ability.riptide.stat.cooldown.value": "%1$s seconds per enchantment level.",
 
   "item.relics.hunter_belt": "Hunter Belt",
-  "tooltip.relics.hunter_belt.leveling": "+1 experience point for each attack made by the wearer's pet.",
+  "tooltip.relics.hunter_belt.description": "+1 experience point for each attack made by the wearer's pet.",
   "tooltip.relics.hunter_belt.ability.slots": "Load Capacity",
   "tooltip.relics.hunter_belt.ability.slots.description": "Increases the maximum number of slots for equipping relics.",
   "tooltip.relics.hunter_belt.ability.slots.stat.talisman.title": "Talismans:",
@@ -307,14 +307,14 @@
   "tooltip.relics.hunter_belt.ability.training.stat.damage.value": "+%1$s%%.",
 
   "item.relics.leather_belt": "Leather Belt",
-  "tooltip.relics.leather_belt.leveling": "+1 experience point for each experience gained by equipped talismans.",
+  "tooltip.relics.leather_belt.description": "+1 experience point for each experience gained by equipped talismans.",
   "tooltip.relics.leather_belt.ability.slots": "Load Capacity",
   "tooltip.relics.leather_belt.ability.slots.description": "Increases the maximum number of slots for equipping relics.",
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.title": "Talismans:",
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.value": "+%1$s slots.",
 
   "item.relics.rage_glove": "Rage Glove",
-  "tooltip.relics.rage_glove.leveling": "+1 experience point for every 3 charges from the ability «Berserker Rage» when they are reset.\n+1 experience point for each target hit by the «Spurt» ability.",
+  "tooltip.relics.rage_glove.description": "+1 experience point for every 3 charges from the ability «Berserker Rage» when they are reset.\n+1 experience point for each target hit by the «Spurt» ability.",
   "tooltip.relics.rage_glove.ability.rage": "Berserker Rage",
   "tooltip.relics.rage_glove.ability.rage.description": "Each wearer attack made within 3 seconds after the last one accumulates 1 charge into the internal buffer of the relic. The damage inflicted and received by the wearer, as well as its movement speed and dealt damage increases in proportion to the accumulated charges. After 3 seconds, the internal buffer of the relic is emptied, canceling all bonuses received.",
   "tooltip.relics.rage_glove.ability.rage.stat.duration.title": "Charge existence time:",
@@ -341,7 +341,7 @@
   "tooltip.relics.rage_glove.ability.spurt.stat.distance.value": "%1$s blocks.",
 
   "item.relics.ice_skates": "Ice Skates",
-  "tooltip.relics.ice_skates.leveling": "+1 experience point for each second of acceleration from the ability «Skating».",
+  "tooltip.relics.ice_skates.description": "+1 experience point for each second of acceleration from the ability «Skating».",
   "tooltip.relics.ice_skates.ability.skating": "Skating",
   "tooltip.relics.ice_skates.ability.skating.description": "Increases the movement speed while on ice depending on the duration of sliding.",
   "tooltip.relics.ice_skates.ability.skating.stat.speed.title": "Speed multiplier per second:",
@@ -354,7 +354,7 @@
   "tooltip.relics.ice_skates.ability.ram.stat.damage.value": "%1$s units.",
 
   "item.relics.amphibian_boot": "Amphibian Boot",
-  "tooltip.relics.amphibian_boot.leveling": "+1 experience point for each second of acceleration from the «Fins» ability.\n+1 experience point for every second of acceleration from the «Slipping» ability.",
+  "tooltip.relics.amphibian_boot.description": "+1 experience point for each second of acceleration from the «Fins» ability.\n+1 experience point for every second of acceleration from the «Slipping» ability.",
   "tooltip.relics.amphibian_boot.ability.swimming": "Fins",
   "tooltip.relics.amphibian_boot.ability.swimming.description": "Accelerates the swimming speed depending on its duration.",
   "tooltip.relics.amphibian_boot.ability.swimming.stat.speed.title": "Speed multiplier:",
@@ -373,14 +373,14 @@
   "tooltip.relics.amphibian_boot.ability.gills.stat.chance.value": "%1$s%%.",
 
   "item.relics.spatial_sign": "Spatial Sign",
-  "tooltip.relics.spatial_sign.leveling": "+1 experience point for each second of return from the ability «Time rift».",
+  "tooltip.relics.spatial_sign.description": "+1 experience point for each second of return from the ability «Time rift».",
   "tooltip.relics.spatial_sign.ability.seal": "Time Rift",
   "tooltip.relics.spatial_sign.ability.seal.description": "When used, returns the wearer along the route traveled after a certain amount of time. Repeated use will terminate the ability.",
   "tooltip.relics.spatial_sign.ability.seal.stat.time.title": "Maximum duration:",
   "tooltip.relics.spatial_sign.ability.seal.stat.time.value": "%1$s seconds.",
 
   "item.relics.chorus_inhibitor": "Chorus Inhibitor",
-  "tooltip.relics.chorus_inhibitor.leveling": "+1 experience point for every 10 blocks to the teleportation point from the «Teleportation Control» ability.",
+  "tooltip.relics.chorus_inhibitor.description": "+1 experience point for every 10 blocks to the teleportation point from the «Teleportation Control» ability.",
   "tooltip.relics.chorus_inhibitor.ability.blink": "Teleportation Control",
   "tooltip.relics.chorus_inhibitor.ability.blink.description": "Using the chorus fruit teleports the wearer to the block along the line of sight within reach.",
   "tooltip.relics.chorus_inhibitor.ability.blink.stat.distance.title": "Maximum distance:",
@@ -390,7 +390,7 @@
 
   "item.relics.wool_mitten": "Wool Mitten",
   "item.relics.solid_snowball": "Frozen snowball",
-  "tooltip.relics.wool_mitten.leveling": "+1 experience point for every 5 units of size when hit by a snowball from the ability «Mold».",
+  "tooltip.relics.wool_mitten.description": "+1 experience point for every 5 units of size when hit by a snowball from the ability «Mold».",
   "tooltip.relics.wool_mitten.ability.mold": "Mold",
   "tooltip.relics.wool_mitten.ability.mold.description": "Collecting snow using RMB with an empty hand gradually forms special solid snowballs. Hitting such a snowball on the target will cause damage and stun it, as well as freeze targets nearby. Holding a snowball without an equipped relic also freezes the wearer.",
   "tooltip.relics.wool_mitten.ability.mold.stat.size.title": "Maximum size:",
@@ -403,7 +403,7 @@
   "tooltip.relics.wool_mitten.ability.mold.stat.freeze.value": "%1$s seconds per unit size.",
 
   "item.relics.roller_skates": "Roller Skates",
-  "tooltip.relics.roller_skates.leveling": "+1 experience point for each second of acceleration from the ability «Acceleration».",
+  "tooltip.relics.roller_skates.description": "+1 experience point for each second of acceleration from the ability «Acceleration».",
   "tooltip.relics.roller_skates.ability.skating": "Acceleration",
   "tooltip.relics.roller_skates.ability.skating.description": "Increases the movement speed depending on its duration. All blocks become slippery for the wearer.",
   "tooltip.relics.roller_skates.ability.skating.stat.speed.title": "Speed multiplier per second:",
@@ -412,7 +412,7 @@
   "tooltip.relics.roller_skates.ability.skating.stat.duration.value": "%1$s seconds.",
 
   "item.relics.space_dissector": "Space Dissector",
-  "tooltip.relics.space_dissector.leveling": "+1 experience point for each created portal if there is no existing one",
+  "tooltip.relics.space_dissector.description": "+1 experience point for each created portal if there is no existing one",
   "tooltip.relics.space_dissector.ability.dissection": "Dissection",
   "tooltip.relics.space_dissector.ability.dissection.description": "Holding RMB creates a portal on a point along the line of sight, stopping holding RMB creates a second portal using the same principle, linking it to the first one. Bringing a living creature to one of the portals will move it to the linked portal. Portals don't work if there are any solid blocks in their path.",
   "tooltip.relics.space_dissector.ability.dissection.stat.distance.title": "Maximum distance:",

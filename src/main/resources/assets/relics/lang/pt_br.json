@@ -32,7 +32,7 @@
   "tooltip.relics.relic.reset.locked": "Para usar, você precisa aprimorar esta habilidade pelo menos 1 vez.",
 
   "item.relics.infinity_ham": "Presunto Infinito",
-  "tooltip.relics.infinity_ham.leveling": "+1 ponto de experiência para cada peça comida da habilidade «Regeneração».",
+  "tooltip.relics.infinity_ham.description": "+1 ponto de experiência para cada peça comida da habilidade «Regeneração».",
   "tooltip.relics.infinity_ham.ability.autophagy": "Regeneração",
   "tooltip.relics.infinity_ham.ability.autophagy.description": "O uso de uma relíquia consome uma das cargas regeneráveis, restaurando a fome do usuário.",
   "tooltip.relics.infinity_ham.ability.autophagy.stat.feed.title": "Saturação:",
@@ -43,7 +43,7 @@
   "tooltip.relics.infinity_ham.ability.infusion.stat.duration.value": "%1$s segundos por carga.",
 
   "item.relics.enders_hand": "Mão de Ender",
-  "tooltip.relics.enders_hand.leveling": "+1 ponto de experiência ao usar a habilidade «Transposição Ender» +1 ponto de experiência a cada 10 blocos de distância até o alvo ao usar.",
+  "tooltip.relics.enders_hand.description": "+1 ponto de experiência ao usar a habilidade «Transposição Ender» +1 ponto de experiência a cada 10 blocos de distância até o alvo ao usar.",
   "tooltip.relics.enders_hand.ability.neutrality": "Neutralidade",
   "tooltip.relics.enders_hand.ability.neutrality.description": "Torna os endermans neutros em relação ao usuário.",
   "tooltip.relics.enders_hand.ability.swap": "Transposição de Ender",
@@ -53,7 +53,7 @@
   "tooltip.relics.enders_hand.ability.swap.predicate.target": "Olhando para o alvo",
 
   "item.relics.holy_locket": "Medalhão Sagrado",
-  "tooltip.relics.holy_locket.leveling": "+1 ponto de experiência para cada ativação da habilidade «Bênção Divina» +1 ponto de experiência para cada unidade de cura roubada.",
+  "tooltip.relics.holy_locket.description": "+1 ponto de experiência para cada ativação da habilidade «Bênção Divina» +1 ponto de experiência para cada unidade de cura roubada.",
   "tooltip.relics.holy_locket.ability.steal": "Bênção Divina",
   "tooltip.relics.holy_locket.ability.steal.description": "Redireciona parte da saúde regenerada de criaturas próximas para o usuário da relíquia.",
   "tooltip.relics.holy_locket.ability.steal.stat.amount.title": "Quantidade:",
@@ -62,7 +62,7 @@
   "tooltip.relics.holy_locket.ability.steal.stat.radius.value": "%1$s blocos.",
   
   "item.relics.magic_mirror": "Espelho Mágico",
-  "tooltip.relics.magic_mirror.leveling": "+1 ponto de experiência para cada uso da habilidade «Buraco de Minhoca» +1 ponto de experiência para cada 50 blocos até o ponto de teletransporte.",
+  "tooltip.relics.magic_mirror.description": "+1 ponto de experiência para cada uso da habilidade «Buraco de Minhoca» +1 ponto de experiência para cada 50 blocos até o ponto de teletransporte.",
   "tooltip.relics.magic_mirror.ability.teleport": "Buraco de Minhoca",
   "tooltip.relics.magic_mirror.ability.teleport.description": "Após o uso, teletransporta o usuário para o ponto de ressurgimento dele.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.distance.title": "Distância:",
@@ -71,7 +71,7 @@
   "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown.value": "%1$s segundos.",
 
   "item.relics.shadow_glaive": "Glaive das Sombras",
-  "tooltip.relics.shadow_glaive.leveling": "+1 ponto de experiência para cada 2 rebatidas do glaive da habilidade «Justiça Cega».",
+  "tooltip.relics.shadow_glaive.description": "+1 ponto de experiência para cada 2 rebatidas do glaive da habilidade «Justiça Cega».",
   "tooltip.relics.shadow_glaive.ability.glaive": "Justiça Cega",
   "tooltip.relics.shadow_glaive.ability.glaive.description": "O uso libera uma das 8 cargas do glaive que ricocheteia entre alvos próximos. As cargas ausentes são restauradas automaticamente após um certo tempo.",
   "tooltip.relics.shadow_glaive.ability.glaive.stat.damage.title": "Dano:",
@@ -90,7 +90,7 @@
   "tooltip.relics.shadow_glaive.ability.saw.stat.damage.value": "%1$s unidades.",
 
   "item.relics.arrow_quiver": "Aljava",
-  "tooltip.relics.arrow_quiver.leveling": "+1 ponto de experiência para cada 10 blocos atingidos pelo disparo.",
+  "tooltip.relics.arrow_quiver.description": "+1 ponto de experiência para cada 10 blocos atingidos pelo disparo.",
   "tooltip.relics.arrow_quiver.ability.receptacle": "Armazenamento de Flechas",
   "tooltip.relics.arrow_quiver.ability.receptacle.description": "O arqueiro usa principalmente flechas do armazenamento interno da aljava. Ao pressionar com o LMB na aljava no inventário, a flecha será colocada no armazenamento interno da relíquia. Pressionando com o RMB na aljava, você pegará o último conjunto de flechas colocado nela.",
   "tooltip.relics.arrow_quiver.ability.receptacle.stat.slots.title": "Espaços para flechas:",
@@ -119,7 +119,7 @@
   "tooltip.relics.arrow_quiver.ability.rain.predicate.arrow": "Flechas na aljava",
 
   "item.relics.blazing_flask": "Frasco Flamejante",
-  "tooltip.relics.blazing_flask.leveling": "+1 ponto de experiência para cada 5 segundos de voo dentro do alcance da habilidade «Fogo Eterno».",
+  "tooltip.relics.blazing_flask.description": "+1 ponto de experiência para cada 5 segundos de voo dentro do alcance da habilidade «Fogo Eterno».",
   "tooltip.relics.blazing_flask.ability.bonfire": "Fogo Eterno",
   "tooltip.relics.blazing_flask.ability.bonfire.description": "Usar a relíquia em um bloco criará uma zona de voo restrita, cujo tamanho depende da quantidade de fogo em um raio específico ao redor do centro.",
   "tooltip.relics.blazing_flask.ability.bonfire.stat.step.title": "Raio de detecção de fogo:",
@@ -130,7 +130,7 @@
   "tooltip.relics.blazing_flask.ability.bonfire.stat.height.value": "%1$s blocos.",
 
   "item.relics.elytra_booster": "Potencializador de Élitros",
-  "tooltip.relics.elytra_booster.leveling": "+1 ponto de experiência para cada 10 segundos de queima de combustível ao colocá-lo no buffer interno da relíquia da habilidade «Aceleração».",
+  "tooltip.relics.elytra_booster.description": "+1 ponto de experiência para cada 10 segundos de queima de combustível ao colocá-lo no buffer interno da relíquia da habilidade «Aceleração».",
   "tooltip.relics.elytra_booster.ability.boost": "Aceleração",
   "tooltip.relics.elytra_booster.ability.boost.description": "Usar qualquer combustível inflamável em uma relíquia no inventário recarrega seu buffer interno. Usar a habilidade durante o voo com Élitros faz com que o usuário avance rapidamente, consumindo combustível do buffer interno.",
   "tooltip.relics.elytra_booster.ability.boost.stat.capacity.title": "Capacidade:",
@@ -141,7 +141,7 @@
   "tooltip.relics.elytra_booster.ability.boost.predicate.fuel": "Combustível no Potencializador",
 
   "item.relics.midnight_robe": "Manto da Meia-Noite",
-  "tooltip.relics.midnight_robe.leveling": "+1 ponto de experiência para cada 2 unidades de dano ao atacar estando invisível com a habilidade «Desaparecer».",
+  "tooltip.relics.midnight_robe.description": "+1 ponto de experiência para cada 2 unidades de dano ao atacar estando invisível com a habilidade «Desaparecer».",
   "tooltip.relics.midnight_robe.ability.vanish": "Desaparecer",
   "tooltip.relics.midnight_robe.ability.vanish.description": "Dá ao usuário completa invisibilidade e aumenta a velocidade de movimento dele em condições de baixa luminosidade.",
   "tooltip.relics.midnight_robe.ability.vanish.stat.light.title": "Nível mínimo de luminosidade:",
@@ -156,7 +156,7 @@
   "tooltip.relics.midnight_robe.ability.backstab.stat.distance.value": "%1$s blocos.",
 
   "item.relics.reflection_necklace": "Colar Reflexivo",
-  "tooltip.relics.reflection_necklace.leveling": "+1 ponto de experiência para cada 10 de dano acumulado no buffer interno da relíquia a partir da habilidade «Ódio Infernal».",
+  "tooltip.relics.reflection_necklace.description": "+1 ponto de experiência para cada 10 de dano acumulado no buffer interno da relíquia a partir da habilidade «Ódio Infernal».",
   "tooltip.relics.reflection_necklace.ability.explode": "Ódio Infernal",
   "tooltip.relics.reflection_necklace.ability.explode.description": "Acumula o dano recebido pelo usuário no buffer interno da relíquia. Após 5 segundos do último dano ou em caso de estouro do buffer, a relíquia explode, lançando fragmentos de obsidiana em todas as direções, causando dano e atordoando os alvos.",
   "tooltip.relics.reflection_necklace.ability.explode.stat.capacity.title": "Buffer de Dano:",
@@ -167,7 +167,7 @@
   "tooltip.relics.reflection_necklace.ability.explode.stat.stun.value": "%1$s segundos.",
 
   "item.relics.jellyfish_necklace": "Colar de Água-viva",
-  "tooltip.relics.jellyfish_necklace.leveling": "+1 ponto de experiência para cada ativação da habilidade «Descarga Elétrica».",
+  "tooltip.relics.jellyfish_necklace.description": "+1 ponto de experiência para cada ativação da habilidade «Descarga Elétrica».",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable": "Domínio Sobre o Mar",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable.description": "O usuário não afunda na água.",
   "tooltip.relics.jellyfish_necklace.ability.shock": "Descarga Elétrica",
@@ -180,7 +180,7 @@
   "tooltip.relics.jellyfish_necklace.ability.paralysis.stat.duration.value": "%1$s segundos.",
 
   "item.relics.spore_sack": "Saco de Esporos",
-  "tooltip.relics.spore_sack.leveling": "+1 ponto de experiência para cada esporo liberado pela habilidade «Síntese de Veneno».\n+1 ponto de experiência para cada esporo adicional dividido pela habilidade «Decomposição».",
+  "tooltip.relics.spore_sack.description": "+1 ponto de experiência para cada esporo liberado pela habilidade «Síntese de Veneno».\n+1 ponto de experiência para cada esporo adicional dividido pela habilidade «Decomposição».",
   "tooltip.relics.spore_sack.ability.spore": "Síntese de Veneno",
   "tooltip.relics.spore_sack.ability.spore.description": "Ao sofrer dano, lança um esporo em uma direção aleatória que adere a superfícies e explode quando um alvo se aproxima, causando dano, envenenamento, desaceleração e bloqueando a cura por 5 segundos.",
   "tooltip.relics.spore_sack.ability.spore.stat.size.title": "Tamanho:",
@@ -212,7 +212,7 @@
   "tooltip.relics.spore_sack.ability.explosion.predicate.spore": "Esporos no saco",
 
   "item.relics.ice_breaker": "Quebra-Gelo",
-  "tooltip.relics.ice_breaker.leveling": "+1 ponto de experiência para cada 3 blocos de queda antes de acionar a habilidade «Terremoto».",
+  "tooltip.relics.ice_breaker.description": "+1 ponto de experiência para cada 3 blocos de queda antes de acionar a habilidade «Terremoto».",
   "tooltip.relics.ice_breaker.ability.sustainability": "Sustentabilidade",
   "tooltip.relics.ice_breaker.ability.sustainability.description": "Aumenta a velocidade de queda, aumenta a resistência ao empurrão e remove o escorregamento de blocos.",
   "tooltip.relics.ice_breaker.ability.sustainability.stat.modifier.title": "Resistência ao Empurrão:",
@@ -226,7 +226,7 @@
   "tooltip.relics.ice_breaker.ability.impact.predicate.falling": "Queda Livre",
 
   "item.relics.bastion_ring": "Anel do Bastião",
-  "tooltip.relics.bastion_ring.leveling": "+1/5/10 ponto(s) de experiência para cada Piglin-Zumbi/Piglin/Piglin Bruto morto.\n+1 ponto de experiência para cada negociação adicional da habilidade «Respeito».",
+  "tooltip.relics.bastion_ring.description": "+1/5/10 ponto(s) de experiência para cada Piglin-Zumbi/Piglin/Piglin Bruto morto.\n+1 ponto de experiência para cada negociação adicional da habilidade «Respeito».",
   "tooltip.relics.bastion_ring.ability.compass": "Reconhecimento",
   "tooltip.relics.bastion_ring.ability.compass.description": "Torna os piglins neutros em relação ao usuário. O piglin mais próximo indicará a localização do bastião nas proximidades.",
   "tooltip.relics.bastion_ring.ability.trade": "Respeito",
@@ -235,7 +235,7 @@
   "tooltip.relics.bastion_ring.ability.trade.stat.rolls.value": "%1$s unidades.",
 
   "item.relics.horse_flute": "Flauta de Cavalo",
-  "tooltip.relics.horse_flute.leveling": "+1 ponto de experiência para cada 25 blocos percorridos por um cavalo convocado pela habilidade «Estábulo Portátil».",
+  "tooltip.relics.horse_flute.description": "+1 ponto de experiência para cada 25 blocos percorridos por um cavalo convocado pela habilidade «Estábulo Portátil».",
   "tooltip.relics.horse_flute.ability.paddock": "Estábulo Portátil",
   "tooltip.relics.horse_flute.ability.paddock.description": "Ao usar o relicário no cavalo, você move o animal para o armazenamento interno. Reutilizar liberará a criatura. Se a distância entre o usuário e o cavalo convocado exceder 16 blocos, ele se encaixará automaticamente de volta na flauta.",
   "tooltip.relics.horse_flute.ability.paddock.stat.slots.title": "Espaços:",
@@ -246,7 +246,7 @@
   "tooltip.relics.horse_flute.ability.heal.stat.amount.value": "%1$s unidades de saúde por segundo.",
 
   "item.relics.magma_walker": "Botas Magmaticas",
-  "tooltip.relics.magma_walker.leveling": "+1 ponto de experiência para cada 5 unidades de aquecimento da habilidade «Passo Ardente».",
+  "tooltip.relics.magma_walker.description": "+1 ponto de experiência para cada 5 unidades de aquecimento da habilidade «Passo Ardente».",
   "tooltip.relics.magma_walker.ability.pace": "Passo Ardente",
   "tooltip.relics.magma_walker.ability.pace.description": "Por um certo tempo, permite andar sobre a superfície de lava sem cair e sem sofrer dano. Após o término do limite de tempo, as botas começam a superaquecer e causam dano ao usuário proporcional ao grau de superaquecimento.",
   "tooltip.relics.magma_walker.ability.pace.stat.time.title": "Duração:",
@@ -255,14 +255,14 @@
   "tooltip.relics.magma_walker.ability.heat_resistance.description": "Suprime o dano de blocos quentes.",
 
   "item.relics.aqua_walker": "Botas Aquáticas",
-  "tooltip.relics.aqua_walker.leveling": "+1 ponto de experiência para cada 5 unidades de umidade da habilidade «Resistência à Umidade».",
+  "tooltip.relics.aqua_walker.description": "+1 ponto de experiência para cada 5 unidades de umidade da habilidade «Resistência à Umidade».",
   "tooltip.relics.aqua_walker.ability.walking": "Resistência à Umidade",
   "tooltip.relics.aqua_walker.ability.walking.description": "Permite, por um certo período de tempo, andar sobre a superfície da água sem afundar. Após o término do tempo, as botas começam a afundar, arrastando o usuário para debaixo d'água.",
   "tooltip.relics.aqua_walker.ability.walking.stat.time.title": "Duração:",
   "tooltip.relics.aqua_walker.ability.walking.stat.time.value": "%1$s segundos.",
 
   "item.relics.drowned_belt": "Cinto do Afogado",
-  "tooltip.relics.drowned_belt.leveling": "+1 ponto de experiência para cada nível de encantamento «Correnteza» no tridente ao usá-lo.",
+  "tooltip.relics.drowned_belt.description": "+1 ponto de experiência para cada nível de encantamento «Correnteza» no tridente ao usá-lo.",
   "tooltip.relics.drowned_belt.ability.slots": "Capacidade de Carga",
   "tooltip.relics.drowned_belt.ability.slots.description": "Aumenta o número máximo de espaços para relíquias de equipamento.",
   "tooltip.relics.drowned_belt.ability.slots.stat.talisman.title": "Talismãs:",
@@ -283,7 +283,7 @@
   "tooltip.relics.drowned_belt.ability.riptide.stat.cooldown.value": "%1$s segundos por nível de encantamento.",
   
   "item.relics.hunter_belt": "Cinto do Caçador",
-  "tooltip.relics.hunter_belt.leveling": "+1 ponto de experiência para cada ataque feito pelo animal de estimação do usuário.",
+  "tooltip.relics.hunter_belt.description": "+1 ponto de experiência para cada ataque feito pelo animal de estimação do usuário.",
   "tooltip.relics.hunter_belt.ability.slots": "Capacidade de Carga",
   "tooltip.relics.hunter_belt.ability.slots.description": "Aumenta o número máximo de espaços para equipar relíquias.",
   "tooltip.relics.hunter_belt.ability.slots.stat.talisman.title": "Talismãs:",
@@ -294,14 +294,14 @@
   "tooltip.relics.hunter_belt.ability.training.stat.damage.value": "+%1$s%%.",
   
   "item.relics.leather_belt": "Cinto de Couro",
-  "tooltip.relics.leather_belt.leveling": "+1 ponto de experiência para cada experiência adquirida pelos talismãs equipados.",
+  "tooltip.relics.leather_belt.description": "+1 ponto de experiência para cada experiência adquirida pelos talismãs equipados.",
   "tooltip.relics.leather_belt.ability.slots": "Capacidade de Carga",
   "tooltip.relics.leather_belt.ability.slots.description": "Aumenta o número máximo de espaços para equipar relíquias.",
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.title": "Talismãs:",
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.value": "+%1$s espaços.",
 
   "item.relics.rage_glove": "Luva da Fúria",
-  "tooltip.relics.rage_glove.leveling": "+1 ponto de experiência para cada 3 cargas da habilidade «Fúria Berserk» quando elas são resetadas.\n+1 ponto de experiência para cada alvo atingido pela habilidade «Investida».",
+  "tooltip.relics.rage_glove.description": "+1 ponto de experiência para cada 3 cargas da habilidade «Fúria Berserk» quando elas são resetadas.\n+1 ponto de experiência para cada alvo atingido pela habilidade «Investida».",
   "tooltip.relics.rage_glove.ability.rage": "Fúria do Berserker",
   "tooltip.relics.rage_glove.ability.rage.description": "Cada ataque feito pelo usuário dentro de 3 segundos após o último acumula 1 carga no buffer interno da relíquia. O dano causado e recebido pelo usuário, bem como a velocidade de movimento e o dano causado aumentam proporcionalmente às cargas acumuladas. Após 3 segundos, o buffer interno da relíquia é esvaziado, cancelando todos os bônus recebidos.",
   "tooltip.relics.rage_glove.ability.rage.stat.duration.title": "Tempo de existência da carga:",
@@ -328,7 +328,7 @@
   "tooltip.relics.rage_glove.ability.spurt.stat.distance.value": "%1$s blocos.",
 
   "item.relics.ice_skates": "Patins de Gelo",
-  "tooltip.relics.ice_skates.leveling": "+1 ponto de experiência para cada segundo de aceleração da habilidade «Patinação».",
+  "tooltip.relics.ice_skates.description": "+1 ponto de experiência para cada segundo de aceleração da habilidade «Patinação».",
   "tooltip.relics.ice_skates.ability.skating": "Patinação",
   "tooltip.relics.ice_skates.ability.skating.description": "Aumenta a velocidade de movimento no gelo dependendo da duração do deslizamento.",
   "tooltip.relics.ice_skates.ability.skating.stat.speed.title": "Multiplicador de velocidade por segundo:",
@@ -341,7 +341,7 @@
   "tooltip.relics.ice_skates.ability.ram.stat.damage.value": "%1$s unidades.",
 
   "item.relics.amphibian_boot": "Bota Anfíbia",
-  "tooltip.relics.amphibian_boot.leveling": "+1 ponto de experiência para cada segundo de aceleração da habilidade «Barbatanas».",
+  "tooltip.relics.amphibian_boot.description": "+1 ponto de experiência para cada segundo de aceleração da habilidade «Barbatanas».",
   "tooltip.relics.amphibian_boot.ability.swimming": "Barbatanas",
   "tooltip.relics.amphibian_boot.ability.swimming.description": "Acelera a velocidade de natação dependendo da sua duração.",
   "tooltip.relics.amphibian_boot.ability.swimming.stat.speed.title": "Multiplicador de velocidade:",
@@ -350,14 +350,14 @@
   "tooltip.relics.amphibian_boot.ability.swimming.stat.duration.value": "%1$s segundos.",
 
   "item.relics.spatial_sign": "Selo Espacial",
-  "tooltip.relics.spatial_sign.leveling": "+1 ponto de experiência para cada segundo de retorno da habilidade «Fenda Temporal».",
+  "tooltip.relics.spatial_sign.description": "+1 ponto de experiência para cada segundo de retorno da habilidade «Fenda Temporal».",
   "tooltip.relics.spatial_sign.ability.seal": "Fenda Temporal",
   "tooltip.relics.spatial_sign.ability.seal.description": "Ao ser usada, retorna o usuário ao longo da rota percorrida durante um certo período de tempo. O uso repetido encerrará a habilidade.",
   "tooltip.relics.spatial_sign.ability.seal.stat.time.title": "Duração máxima:",
   "tooltip.relics.spatial_sign.ability.seal.stat.time.value": "%1$s segundos.",
 
   "item.relics.chorus_inhibitor": "Inibidor do Coro",
-  "tooltip.relics.chorus_inhibitor.leveling": "+1 ponto de experiência para cada 10 blocos até o ponto de teletransporte da habilidade «Controle de Teletransporte».",
+  "tooltip.relics.chorus_inhibitor.description": "+1 ponto de experiência para cada 10 blocos até o ponto de teletransporte da habilidade «Controle de Teletransporte».",
   "tooltip.relics.chorus_inhibitor.ability.blink": "Controle de Teletransporte",
   "tooltip.relics.chorus_inhibitor.ability.blink.description": "Ao usar a fruta do coro, teleporta o usuário para o bloco dentro do alcance da linha de visão.",
   "tooltip.relics.chorus_inhibitor.ability.blink.stat.distance.title": "Distância Máxima:",
@@ -367,7 +367,7 @@
 
   "item.relics.wool_mitten": "Luva de Lã",
   "item.relics.solid_snowball": "Bola de Neve Congelada",
-  "tooltip.relics.wool_mitten.leveling": "+1 ponto de experiência para cada 5 unidades de tamanho quando atingido por uma bola de neve da habilidade «Moldar».",
+  "tooltip.relics.wool_mitten.description": "+1 ponto de experiência para cada 5 unidades de tamanho quando atingido por uma bola de neve da habilidade «Moldar».",
   "tooltip.relics.wool_mitten.ability.mold": "Moldar",
   "tooltip.relics.wool_mitten.ability.mold.description": "Coletar neve pressionando o botão direito do mouse com as mãos vazias gradualmente forma bolas de neve sólidas especiais. Ao atingir uma bola de neve dessas em um alvo, causará dano e o atordoará, além de congelar alvos próximos. Segurar uma bola de neve sem um relicário equipado também congela o usuário.",
   "tooltip.relics.wool_mitten.ability.mold.stat.size.title": "Tamanho Máximo:",
@@ -380,7 +380,7 @@
   "tooltip.relics.wool_mitten.ability.mold.stat.freeze.value": "%1$s segundos por unidade de tamanho.",
 
   "item.relics.roller_skates": "Patins",
-  "tooltip.relics.roller_skates.leveling": "+1 ponto de experiência para cada segundo de aceleração da habilidade «Aceleração».",
+  "tooltip.relics.roller_skates.description": "+1 ponto de experiência para cada segundo de aceleração da habilidade «Aceleração».",
   "tooltip.relics.roller_skates.ability.skating": "Aceleração",
   "tooltip.relics.roller_skates.ability.skating.description": "Aumenta a velocidade de movimento dependendo da sua duração. Todos os blocos se tornam escorregadios para o usuário.",
   "tooltip.relics.roller_skates.ability.skating.stat.speed.title": "Multiplicador de Velocidade por Segundo:",
@@ -389,7 +389,7 @@
   "tooltip.relics.roller_skates.ability.skating.stat.duration.value": "%1$s segundos.",
 
   "item.relics.space_dissector": "Dissectador Espacial",
-  "tooltip.relics.space_dissector.leveling": "+1 ponto de experiência para cada portal criado, se não houver nenhum portal existente",
+  "tooltip.relics.space_dissector.description": "+1 ponto de experiência para cada portal criado, se não houver nenhum portal existente",
   "tooltip.relics.space_dissector.ability.dissection": "Dissecção",
   "tooltip.relics.space_dissector.ability.dissection.description": "Ao segurar o botão direito do mouse (RMB), cria um portal em um ponto ao longo da linha de visão; parar de segurar o RMB cria um segundo portal seguindo o mesmo princípio, vinculando-o ao primeiro. Trazer uma criatura viva para um dos portais a moverá para o portal vinculado. Os portais não funcionam se houver blocos sólidos em seu caminho.",
   "tooltip.relics.space_dissector.ability.dissection.stat.distance.title": "Distância Máxima:",

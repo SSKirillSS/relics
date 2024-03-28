@@ -45,7 +45,7 @@
   "tooltip.relics.relic.reset.locked": "이 능력을 사용하려면 최소 1회 이상 레벨업 해야 합니다.",
 
   "item.relics.infinity_ham": "Infinity Ham",
-  "tooltip.relics.infinity_ham.leveling": "섭취 한 각 조각마다 경험치 +1",
+  "tooltip.relics.infinity_ham.description": "섭취 한 각 조각마다 경험치 +1",
   "tooltip.relics.infinity_ham.ability.autophagy": "재생",
   "tooltip.relics.infinity_ham.ability.autophagy.description": "사용시 재생 가능한 조각 중 한조각을 소비하여 사용자의 배고픔을 보충합니다.",
   "tooltip.relics.infinity_ham.ability.autophagy.stat.feed.title": "포화:",
@@ -56,7 +56,7 @@
   "tooltip.relics.infinity_ham.ability.infusion.stat.duration.value": "초당 재생 %1$s ",
 
   "item.relics.enders_hand": "Ender Hand",
-  "tooltip.relics.enders_hand.leveling": "«End Transposition»능력 사용시 경험치 +1, 타겟과 사용자 사이 거리 10블럭마다 경험치 +1",
+  "tooltip.relics.enders_hand.description": "«End Transposition»능력 사용시 경험치 +1, 타겟과 사용자 사이 거리 10블럭마다 경험치 +1",
   "tooltip.relics.enders_hand.ability.neutrality": "중립",
   "tooltip.relics.enders_hand.ability.neutrality.description": "엔더맨이 사용자에 대해 중립적으로 만듭니다.",
   "tooltip.relics.enders_hand.ability.swap": "End Transposition",
@@ -66,7 +66,7 @@
   "tooltip.relics.enders_hand.ability.swap.predicate.target": "타겟을 바라보세요",
 
   "item.relics.holy_locket": "Holy Locket",
-  "tooltip.relics.holy_locket.leveling": "«신성한 축복»능력을 활성화 할 때마다 경험치 +1, 빼앗은 치유 칸당 경험치 +1",
+  "tooltip.relics.holy_locket.description": "«신성한 축복»능력을 활성화 할 때마다 경험치 +1, 빼앗은 치유 칸당 경험치 +1",
   "tooltip.relics.holy_locket.ability.steal": "신성한 축복",
   "tooltip.relics.holy_locket.ability.steal.description": "주변 생물의 재생된 체력 중 일부를 유물 사용자의 체력으로 전환합니다.",
   "tooltip.relics.holy_locket.ability.steal.stat.amount.title": "회복량:",
@@ -75,7 +75,7 @@
   "tooltip.relics.holy_locket.ability.steal.stat.radius.value": "%1$s 블록",
 
   "item.relics.magic_mirror": "Magic Mirror",
-  "tooltip.relics.magic_mirror.leveling": "«웜홀»능력 사용당 경험치 +1 순간이동 지점까지 50블록마다 경험치 +1",
+  "tooltip.relics.magic_mirror.description": "«웜홀»능력 사용당 경험치 +1 순간이동 지점까지 50블록마다 경험치 +1",
   "tooltip.relics.magic_mirror.ability.teleport": "웜홀",
   "tooltip.relics.magic_mirror.ability.teleport.description": "사용시 사용자를 리스폰 지점으로 순간이동 시킵니다.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.distance.title": "거리:",
@@ -84,7 +84,7 @@
   "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown.value": "%1$s 초",
 
   "item.relics.shadow_glaive": "Shadow Glaive",
-  "tooltip.relics.shadow_glaive.leveling": "«맹목적인 정의»능력으로 글레이브가 2회 튕길때마다 경험치 +1 ",
+  "tooltip.relics.shadow_glaive.description": "«맹목적인 정의»능력으로 글레이브가 2회 튕길때마다 경험치 +1 ",
   "tooltip.relics.shadow_glaive.ability.glaive": "맹목적인 정의",
   "tooltip.relics.shadow_glaive.ability.glaive.description": "사용하면 근처 대상 사이를 튕겨내는 글레이브 8개중 하나를 던집니다. 던진 글레이브는 일정 시간이 지나면 복원됩니다.",
   "tooltip.relics.shadow_glaive.ability.glaive.stat.damage.title": "데미지:",
@@ -103,7 +103,7 @@
   "tooltip.relics.shadow_glaive.ability.saw.stat.damage.value": "%1$s 칸",
 
   "item.relics.arrow_quiver": "Quiver",
-  "tooltip.relics.arrow_quiver.leveling": "화살로 명중한 대상과의 거리 10블록당 경험치 +1",
+  "tooltip.relics.arrow_quiver.description": "화살로 명중한 대상과의 거리 10블록당 경험치 +1",
   "tooltip.relics.arrow_quiver.ability.receptacle": "화살 보관",
   "tooltip.relics.arrow_quiver.ability.receptacle.description": "활은 화살통 내부에 존재하는 화살을 우선적으로 사용합니다. 인벤토리에 있는 화살통에 화살을 들고 좌클릭을 누르면 화살통 내부에 화살이 저장됩니다. 우클릭을 누르면 화살통 마지막 칸에 있는 화살이 꺼내집니다.",
   "tooltip.relics.arrow_quiver.ability.receptacle.stat.slots.title": "화살 슬롯:",
@@ -132,7 +132,7 @@
   "tooltip.relics.arrow_quiver.ability.rain.predicate.arrow": "화살통의 화살",
 
   "item.relics.blazing_flask": "Blazing Flask",
-  "tooltip.relics.blazing_flask.leveling": "«영원한 불»능력 범위 내에서 비행 5초마다 경험치 +1",
+  "tooltip.relics.blazing_flask.description": "«영원한 불»능력 범위 내에서 비행 5초마다 경험치 +1",
   "tooltip.relics.blazing_flask.ability.bonfire": "영원한 불",
   "tooltip.relics.blazing_flask.ability.bonfire.description": "블록에 유물을 사용하면 비행가능 구역이 생성되며, 그 크기는 중앙 주변 특정 반경의 불 양에 따라 달라집니다.",
   "tooltip.relics.blazing_flask.ability.bonfire.stat.step.title": "불 감지 범위:",
@@ -143,7 +143,7 @@
   "tooltip.relics.blazing_flask.ability.bonfire.stat.height.value": "%1$s 블록",
 
   "item.relics.elytra_booster": "Elytra Booster",
-  "tooltip.relics.elytra_booster.leveling": "«가속»능력을 통해 유물 내부 버퍼에 연료를 넣을때 연소되는 연로 10초당 경험치 +1",
+  "tooltip.relics.elytra_booster.description": "«가속»능력을 통해 유물 내부 버퍼에 연료를 넣을때 연소되는 연로 10초당 경험치 +1",
   "tooltip.relics.elytra_booster.ability.boost": "가속",
   "tooltip.relics.elytra_booster.ability.boost.description": "인벤토리에 있는 유물에 가연성 연료를 사용하면 내부 버퍼가 보충됩니다. 비행 중에 부스터의 능력을 사용하면 사용자가 부스팅 되며 내부 버퍼에 연료가 소모됩니다.",
   "tooltip.relics.elytra_booster.ability.boost.stat.capacity.title": "용량:",
@@ -154,7 +154,7 @@
   "tooltip.relics.elytra_booster.ability.boost.predicate.fuel": "부스터 내에 연료가 있어야합니다.",
 
   "item.relics.midnight_robe": "Midnight Robe",
-  "tooltip.relics.midnight_robe.leveling": "«사라짐»능력으로투명 상태에서 공격할 때 피해 2단위당 경험치 +1",
+  "tooltip.relics.midnight_robe.description": "«사라짐»능력으로투명 상태에서 공격할 때 피해 2단위당 경험치 +1",
   "tooltip.relics.midnight_robe.ability.vanish": "사라짐",
   "tooltip.relics.midnight_robe.ability.vanish.description": "사용자에게 완전한 투명효과를 부여하고 낮은 조명 수준에서 이동속도를 높입니다.",
   "tooltip.relics.midnight_robe.ability.vanish.stat.light.title": "최소 조명 레벨:",
@@ -169,7 +169,7 @@
   "tooltip.relics.midnight_robe.ability.backstab.stat.distance.value": "%1$s 블록",
 
   "item.relics.reflection_necklace": "Reflecting Necklace",
-  "tooltip.relics.reflection_necklace.leveling": "«불지옥의 증오»능력으로 인해 유물 내부 버퍼에 누적된 피해 10당 경험치 +1",
+  "tooltip.relics.reflection_necklace.description": "«불지옥의 증오»능력으로 인해 유물 내부 버퍼에 누적된 피해 10당 경험치 +1",
   "tooltip.relics.reflection_necklace.ability.explode": "불지옥의 증오",
   "tooltip.relics.reflection_necklace.ability.explode.description": "사용자가 받은 데미지를 유물 내부 버퍼에 축적합니다. 마지막 피해 후 5초 또는 버퍼 오버플로우 시 유물이 폭발하며 흑요석 조각을 사방으로 퍼트리며 피해를 주고 대상을 기절시킵니다.",
   "tooltip.relics.reflection_necklace.ability.explode.stat.capacity.title": "데미지 용량:",
@@ -180,7 +180,7 @@
   "tooltip.relics.reflection_necklace.ability.explode.stat.stun.value": "%1$s 초",
 
   "item.relics.jellyfish_necklace": "Jellyfish Necklace",
-  "tooltip.relics.jellyfish_necklace.leveling": "«방전»능력 활성화 시 마다 경험치 +1",
+  "tooltip.relics.jellyfish_necklace.description": "«방전»능력 활성화 시 마다 경험치 +1",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable": "바다 위의 힘",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable.description": "사용자는 물에 가라앉지 않습니다 ",
   "tooltip.relics.jellyfish_necklace.ability.shock": "방전",
@@ -193,7 +193,7 @@
   "tooltip.relics.jellyfish_necklace.ability.paralysis.stat.duration.value": "%1$s 초",
 
   "item.relics.spore_sack": "Spore Sack",
-  "tooltip.relics.spore_sack.leveling": "«독 합성»능력에 의해 방출된 각 포자에 대해 경험치 +1 \n «분해» 능력에 의해 분할된 각 추가 포자 마다 경험치 +1",
+  "tooltip.relics.spore_sack.description": "«독 합성»능력에 의해 방출된 각 포자에 대해 경험치 +1 \n «분해» 능력에 의해 분할된 각 추가 포자 마다 경험치 +1",
   "tooltip.relics.spore_sack.ability.spore": "독 합성",
   "tooltip.relics.spore_sack.ability.spore.description": "피해를 입을 때 무작위 방향으로 포자를 방출합니다. 이 포자는 표면에 달라붙어 대상이 접근하면 폭팔하며 피해를 주고, 중독시키고, 둔화시키고, 5초동안 치유를 차단합니다.",
   "tooltip.relics.spore_sack.ability.spore.stat.size.title": "크기:",
@@ -225,7 +225,7 @@
   "tooltip.relics.spore_sack.ability.explosion.predicate.spore": "자루의 포자",
 
   "item.relics.ice_breaker": "Ice Breaker",
-  "tooltip.relics.ice_breaker.leveling": "«지진»능력을 발동하기 전 떨어진 3블록 마다 경험치 +1",
+  "tooltip.relics.ice_breaker.description": "«지진»능력을 발동하기 전 떨어진 3블록 마다 경험치 +1",
   "tooltip.relics.ice_breaker.ability.sustainability": "지속 가능성",
   "tooltip.relics.ice_breaker.ability.sustainability.description": "낙하 속도가 증가하고 넉백 저항이 증가하며 미끄러지는 블록을 제거합니다.",
   "tooltip.relics.ice_breaker.ability.sustainability.stat.modifier.title": "넉백 저항:",
@@ -239,7 +239,7 @@
   "tooltip.relics.ice_breaker.ability.impact.predicate.falling": "자유 낙하",
 
   "item.relics.bastion_ring": "Bastion Ring",
-  "tooltip.relics.bastion_ring.leveling": "좀비 피글린/피글린/난폭한 피글린을 죽였을 때 마다 경험치 +1/5/10 \n «존중» 능력으로 추가 거래할때마다 경험치 +1",
+  "tooltip.relics.bastion_ring.description": "좀비 피글린/피글린/난폭한 피글린을 죽였을 때 마다 경험치 +1/5/10 \n «존중» 능력으로 추가 거래할때마다 경험치 +1",
   "tooltip.relics.bastion_ring.ability.compass": "인식",
   "tooltip.relics.bastion_ring.ability.compass.description": "피글린을 사용자에 대해 중립으로 만듭니다. 가장 가까운 피글린은 근처 요새의 위치를 나타냅니다.",
   "tooltip.relics.bastion_ring.ability.trade": "존중",
@@ -248,7 +248,7 @@
   "tooltip.relics.bastion_ring.ability.trade.stat.rolls.value": "%1$s 유닛.",
 
   "item.relics.horse_flute": "Horse Flute",
-  "tooltip.relics.horse_flute.leveling": "«Portable Stall»능력으로 불리는 말이 블록 25개를 이동할때 마다 경험치 +1",
+  "tooltip.relics.horse_flute.description": "«Portable Stall»능력으로 불리는 말이 블록 25개를 이동할때 마다 경험치 +1",
   "tooltip.relics.horse_flute.ability.paddock": "휴대용 스톨",
   "tooltip.relics.horse_flute.ability.paddock.description": "말에게 유물을 사용하면 동물이 내부 창고로 이동합니다. 재사용 시 말을 내보냅니다. 사용자와 소환된 말 사이의 거리가 16블록을 초과하면 자동으로 피리에 다시 들어옵니다.",
   "tooltip.relics.horse_flute.ability.paddock.stat.slots.title": "슬롯:",
@@ -259,7 +259,7 @@
   "tooltip.relics.horse_flute.ability.heal.stat.amount.value": "%1$s 초당 체력",
 
   "item.relics.magma_walker": "Magma Walker",
-  "tooltip.relics.magma_walker.leveling": "«불 같은 트레드»능력으로 가열 5단위당 경험치 +1",
+  "tooltip.relics.magma_walker.description": "«불 같은 트레드»능력으로 가열 5단위당 경험치 +1",
   "tooltip.relics.magma_walker.ability.pace": "불 같은 트레드",
   "tooltip.relics.magma_walker.ability.pace.description": "일정 시간 동안 가라앉거나 피해를 입지 않고 용암 표면을 걸을 수 있습니다. 제한 시간이 지나면 부츠가 과열되기 시작하며 과열 정도에 비례하여 착용자에게 피해를 입힙니다.",
   "tooltip.relics.magma_walker.ability.pace.stat.time.title": "지속:",
@@ -268,14 +268,14 @@
   "tooltip.relics.magma_walker.ability.heat_resistance.description": "뜨거운 블록으로 인한 손상을 억제합니다.",
 
   "item.relics.aqua_walker": "Aqua Walker",
-  "tooltip.relics.aqua_walker.leveling": "«습기 저항»능력으로 인해 젖는 5단위당 경험치 +1",
+  "tooltip.relics.aqua_walker.description": "«습기 저항»능력으로 인해 젖는 5단위당 경험치 +1",
   "tooltip.relics.aqua_walker.ability.walking": "습기 저항",
   "tooltip.relics.aqua_walker.ability.walking.description": "일정 시간 동안 가라앉지 않고 물 표면에서 이동할 수 있습니다. 제한 시간이 지나면 부츠가 가라앉기 시작하여 착용자를 물속으로 끌고 갑니다.",
   "tooltip.relics.aqua_walker.ability.walking.stat.time.title": "지속:",
   "tooltip.relics.aqua_walker.ability.walking.stat.time.value": "%1$s 초",
 
   "item.relics.drowned_belt": "Drowned Belt",
-  "tooltip.relics.drowned_belt.leveling": "삼지창을 사용 할 때 인첸트 «급류»레벨 당 +1 경험치를 얻습니다.",
+  "tooltip.relics.drowned_belt.description": "삼지창을 사용 할 때 인첸트 «급류»레벨 당 +1 경험치를 얻습니다.",
   "tooltip.relics.drowned_belt.ability.slots": "부하 용량",
   "tooltip.relics.drowned_belt.ability.slots.description": "장비 유물의 최대 슬롯 수가 증가합니다.",
   "tooltip.relics.drowned_belt.ability.slots.stat.talisman.title": "유물:",
@@ -296,7 +296,7 @@
   "tooltip.relics.drowned_belt.ability.riptide.stat.cooldown.value": "인첸트 레벨당 %1$s초",
 
   "item.relics.hunter_belt": "Hunter Belt",
-  "tooltip.relics.hunter_belt.leveling": "사용자의 애완동물이 공격할 때마다 경험치 +1",
+  "tooltip.relics.hunter_belt.description": "사용자의 애완동물이 공격할 때마다 경험치 +1",
   "tooltip.relics.hunter_belt.ability.slots": "부하 용량",
   "tooltip.relics.hunter_belt.ability.slots.description": "부적 장착을 위한 최대 슬롯 수가 증가합니다.",
   "tooltip.relics.hunter_belt.ability.slots.stat.talisman.title": "유물:",
@@ -307,14 +307,14 @@
   "tooltip.relics.hunter_belt.ability.training.stat.damage.value": "+%1$s%%.",
 
   "item.relics.leather_belt": "Leather Belt",
-  "tooltip.relics.leather_belt.leveling": "유물을 장착하여 얻은 경험치당 경험치+1",
+  "tooltip.relics.leather_belt.description": "유물을 장착하여 얻은 경험치당 경험치+1",
   "tooltip.relics.leather_belt.ability.slots": "부하 용량",
   "tooltip.relics.leather_belt.ability.slots.description": "부적 장착을 위한 최대 슬롯 수가 증가합니다.",
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.title": "부적:",
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.value": "+%1$s 슬롯",
 
   "item.relics.rage_glove": "Rage Glove",
-  "tooltip.relics.rage_glove.leveling": "«버서커의 분노»능력이 3회 충전될 때마다 경험치 +1, «스퍼트»능력으로 적중한 각 대상마다 경험치 +1",
+  "tooltip.relics.rage_glove.description": "«버서커의 분노»능력이 3회 충전될 때마다 경험치 +1, «스퍼트»능력으로 적중한 각 대상마다 경험치 +1",
   "tooltip.relics.rage_glove.ability.rage": "버서커의 분노",
   "tooltip.relics.rage_glove.ability.rage.description": "마지막 피격 후 3초 이내에 사용자가 공격 할 때마다 유물 내부 버퍼에 1개의 충전이 축적됩니다. 누적된 충전량에 비례하여 사용자가 입히고 받는 피해, 이동 속도, 입피는 피해가 증가합니다. 3초 후 유물 내부 버퍼가 비워지고, 받는 보너스가 모두 제거됩니다.",
   "tooltip.relics.rage_glove.ability.rage.stat.duration.title": "충전 유효 시간:",
@@ -341,7 +341,7 @@
   "tooltip.relics.rage_glove.ability.spurt.stat.distance.value": "%1$s 블록",
 
   "item.relics.ice_skates": "Ice Skates",
-  "tooltip.relics.ice_skates.leveling": "«스케이팅»능력으로 가속 1초마다 경험치 +1",
+  "tooltip.relics.ice_skates.description": "«스케이팅»능력으로 가속 1초마다 경험치 +1",
   "tooltip.relics.ice_skates.ability.skating": "스케이팅",
   "tooltip.relics.ice_skates.ability.skating.description": "미끄러지는 시간에 따라 얼음 위의 이동 속도가 증가합니다.",
   "tooltip.relics.ice_skates.ability.skating.stat.speed.title": "초당 속도 배율:",
@@ -354,7 +354,7 @@
   "tooltip.relics.ice_skates.ability.ram.stat.damage.value": "%1$s 유닛",
 
   "item.relics.amphibian_boot": "Amphibian Boot",
-  "tooltip.relics.amphibian_boot.leveling": "«지느러미»능력으로 인해 매초 가속할 때 마다 경험치 +1",
+  "tooltip.relics.amphibian_boot.description": "«지느러미»능력으로 인해 매초 가속할 때 마다 경험치 +1",
   "tooltip.relics.amphibian_boot.ability.swimming": "지느러미",
   "tooltip.relics.amphibian_boot.ability.swimming.description": "지속 시간에 따라 수영 속도가 빨라집니다..",
   "tooltip.relics.amphibian_boot.ability.swimming.stat.speed.title": "속도 배율:",
@@ -363,14 +363,14 @@
   "tooltip.relics.amphibian_boot.ability.swimming.stat.duration.value": "%1$s 초",
 
   "item.relics.spatial_sign": "Spatial Sign",
-  "tooltip.relics.spatial_sign.leveling": "«타임 리프트»능력으로 복귀할 때 마다 경험치 +1",
+  "tooltip.relics.spatial_sign.description": "«타임 리프트»능력으로 복귀할 때 마다 경험치 +1",
   "tooltip.relics.spatial_sign.ability.seal": "타임 리프트",
   "tooltip.relics.spatial_sign.ability.seal.description": "사용 시 일정 시간 동안 이동한 경로를 다라 사용자를 되돌린다. 재사용 시 능력이 종료됩니다.",
   "tooltip.relics.spatial_sign.ability.seal.stat.time.title": "최대 거리:",
   "tooltip.relics.spatial_sign.ability.seal.stat.time.value": "%1$s 초",
 
   "item.relics.chorus_inhibitor": "Chorus Inhibitor",
-  "tooltip.relics.chorus_inhibitor.leveling": "«순간이동 제어»능력으로 순간이동 지점까지 10블록마다 경험치 +1",
+  "tooltip.relics.chorus_inhibitor.description": "«순간이동 제어»능력으로 순간이동 지점까지 10블록마다 경험치 +1",
   "tooltip.relics.chorus_inhibitor.ability.blink": "순간이동 제어",
   "tooltip.relics.chorus_inhibitor.ability.blink.description": "후렴과를 사용하면 사용자가 바라보는 지점으로 순간이동 한다.",
   "tooltip.relics.chorus_inhibitor.ability.blink.stat.distance.title": "최대 거리:",
@@ -380,7 +380,7 @@
 
   "item.relics.wool_mitten": "Wool Mitten",
   "item.relics.solid_snowball": "얼어붙은 눈덩이",
-  "tooltip.relics.wool_mitten.leveling": "«몰드»능력으로 눈덩이를 맞추면 크기 5단위당 경험치 +1",
+  "tooltip.relics.wool_mitten.description": "«몰드»능력으로 눈덩이를 맞추면 크기 5단위당 경험치 +1",
   "tooltip.relics.wool_mitten.ability.mold": "몰드",
   "tooltip.relics.wool_mitten.ability.mold.description": "빈손으로 우클릭에 눈을 모으면 점차 특별한 단단한 눈덩이가 형성됩니다. 눈덩이를 목표물에 맞히면 피해를 입히고 기절시킬 뿐만 아니라 근처의 목표물도 얼어 붙습니다. 유물을 장착하지 않은 상태에서 눈덩이를 들고 있으면 사용자가 얼어붙습니다.",
   "tooltip.relics.wool_mitten.ability.mold.stat.size.title": "최대 크기:",
@@ -393,7 +393,7 @@
   "tooltip.relics.wool_mitten.ability.mold.stat.freeze.value": "크기당 %1$s초",
 
   "item.relics.roller_skates": "Roller Skates",
-  "tooltip.relics.roller_skates.leveling": "«가속»능력으로 가속 1초당 경험치 +1",
+  "tooltip.relics.roller_skates.description": "«가속»능력으로 가속 1초당 경험치 +1",
   "tooltip.relics.roller_skates.ability.skating": "가속",
   "tooltip.relics.roller_skates.ability.skating.description": "지속시간에 따라 이동 속도가 증가합니다. 모든 블록은 사용자가 미끄러지게 합니다.",
   "tooltip.relics.roller_skates.ability.skating.stat.speed.title": "초당 속도 배율:",
@@ -402,7 +402,7 @@
   "tooltip.relics.roller_skates.ability.skating.stat.duration.value": "%1$s 초",
 
   "item.relics.space_dissector": "Space Dissector",
-  "tooltip.relics.space_dissector.leveling": "기존 포탈이 없는 경우 생성된 포탈 마다 경험치 +1",
+  "tooltip.relics.space_dissector.description": "기존 포탈이 없는 경우 생성된 포탈 마다 경험치 +1",
   "tooltip.relics.space_dissector.ability.dissection": "해부",
   "tooltip.relics.space_dissector.ability.dissection.description": "우클릭을 누르고 있으면 시선을 따라 있는 지점에 포탈이 생성되고 우클릭을 떼면 동일안 원리에 따라 두번째 포탈이 생성되어 첫번째 포탈과 연결됩니다. 살아있는 생명체를 포탈 중 하나로 데려오면 연결된 포탈로 이동합니다. 경로에 단단한 블록이 있으면 포탈이 작동하지 않습니다 ",
   "tooltip.relics.space_dissector.ability.dissection.stat.distance.title": "최대 거리:",

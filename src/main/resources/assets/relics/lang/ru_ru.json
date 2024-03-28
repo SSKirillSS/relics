@@ -45,7 +45,7 @@
   "tooltip.relics.relic.reset.locked": "Для использования необходимо улучшить способность хотя бы 1 раз.",
 
   "item.relics.infinity_ham": "Бесконечный окорок",
-  "tooltip.relics.infinity_ham.leveling": "+1 ед. опыта за каждый съеденный кусок от способности «Регенерация».",
+  "tooltip.relics.infinity_ham.description": "+1 ед. опыта за каждый съеденный кусок от способности «Регенерация».",
   "tooltip.relics.infinity_ham.ability.autophagy": "Регенерация",
   "tooltip.relics.infinity_ham.ability.autophagy.description": "Использование реликвии расходует один из регенерируемых зарядов, восполняя голод носителя.",
   "tooltip.relics.infinity_ham.ability.autophagy.stat.feed.title": "Насыщение:",
@@ -56,7 +56,7 @@
   "tooltip.relics.infinity_ham.ability.infusion.stat.duration.value": "%1$s секунд за заряд.",
 
   "item.relics.enders_hand": "Рука Края",
-  "tooltip.relics.enders_hand.leveling": "+1 ед. опыта за использование способности «Транспозиция Края» + 1 ед. опыта за каждые 10 блоков от расстояния до цели при использовании.",
+  "tooltip.relics.enders_hand.description": "+1 ед. опыта за использование способности «Транспозиция Края» + 1 ед. опыта за каждые 10 блоков от расстояния до цели при использовании.",
   "tooltip.relics.enders_hand.ability.neutrality": "Нейтралитет",
   "tooltip.relics.enders_hand.ability.neutrality.description": "Делает эндерменов нейтральными по отношению к носителю.",
   "tooltip.relics.enders_hand.ability.swap": "Транспозиция Края",
@@ -66,7 +66,7 @@
   "tooltip.relics.enders_hand.ability.swap.predicate.target": "Взгляд на цель",
 
   "item.relics.holy_locket": "Священный медальон",
-  "tooltip.relics.holy_locket.leveling": "+1 ед. опыта за каждое срабатывание способности «Божественное благословение» + 1 ед. опыта за каждую украденную единицу исцеления.",
+  "tooltip.relics.holy_locket.description": "+1 ед. опыта за каждое срабатывание способности «Божественное благословение» + 1 ед. опыта за каждую украденную единицу исцеления.",
   "tooltip.relics.holy_locket.ability.steal": "Божественное благословение",
   "tooltip.relics.holy_locket.ability.steal.description": "Перенаправляет часть регенерируемого здоровья ближайших существ носителю реликвии.",
   "tooltip.relics.holy_locket.ability.steal.stat.amount.title": "Количество:",
@@ -75,7 +75,7 @@
   "tooltip.relics.holy_locket.ability.steal.stat.radius.value": "%1$s блоков.",
 
   "item.relics.magic_mirror": "Волшебное зеркало",
-  "tooltip.relics.magic_mirror.leveling": "+1 ед. опыта за каждое использование способности «Кротовая нора» + 1 ед. опыта за каждые 50 блоков до точки телепортации.",
+  "tooltip.relics.magic_mirror.description": "+1 ед. опыта за каждое использование способности «Кротовая нора» + 1 ед. опыта за каждые 50 блоков до точки телепортации.",
   "tooltip.relics.magic_mirror.ability.teleport": "Кротовая нора",
   "tooltip.relics.magic_mirror.ability.teleport.description": "После использования телепортирует владельца к его точке возрождения.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.distance.title": "Дистанция:",
@@ -84,7 +84,7 @@
   "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown.value": "%1$s секунд.",
 
   "item.relics.shadow_glaive": "Теневая глефа",
-  "tooltip.relics.shadow_glaive.leveling": "+1 ед. опыта за каждые 2 отскока глефы от способности «Слепое правосудие».",
+  "tooltip.relics.shadow_glaive.description": "+1 ед. опыта за каждые 2 отскока глефы от способности «Слепое правосудие».",
   "tooltip.relics.shadow_glaive.ability.glaive": "Слепое правосудие",
   "tooltip.relics.shadow_glaive.ability.glaive.description": "Использование выпускает один из 8 зарядов глефы, отскакивающий между ближайшими целями. Отсутствующие заряды восстанавливаются сами спустя определённое время.",
   "tooltip.relics.shadow_glaive.ability.glaive.stat.damage.title": "Урон:",
@@ -103,7 +103,7 @@
   "tooltip.relics.shadow_glaive.ability.saw.stat.damage.value": "%1$s единиц.",
 
   "item.relics.arrow_quiver": "Колчан",
-  "tooltip.relics.arrow_quiver.leveling": "+1 ед. опыта за каждые 10 блоков до поражённой выстрелом цели.",
+  "tooltip.relics.arrow_quiver.description": "+1 ед. опыта за каждые 10 блоков до поражённой выстрелом цели.",
   "tooltip.relics.arrow_quiver.ability.receptacle": "Хранилище стрел",
   "tooltip.relics.arrow_quiver.ability.receptacle.description": "Стрельба из лука в первую очередь использует стрелы из внутреннего хранилища колчана. Нажатие стрелой ЛКМ на колчане в инвентаре разместит её во внутреннее хранилище реликвии. Нажатие ПКМ по колчану достанет последний размещённый в нём стак стрел.",
   "tooltip.relics.arrow_quiver.ability.receptacle.stat.slots.title": "Слоты для стрел:",
@@ -132,7 +132,7 @@
   "tooltip.relics.arrow_quiver.ability.rain.predicate.arrow": "Стрелы в колчане",
 
   "item.relics.blazing_flask": "Пылающий флакон",
-  "tooltip.relics.blazing_flask.leveling": "+1 ед. опыта за каждые 5 секунд полёта внутри области действия способности «Вечный огонь».",
+  "tooltip.relics.blazing_flask.description": "+1 ед. опыта за каждые 5 секунд полёта внутри области действия способности «Вечный огонь».",
   "tooltip.relics.blazing_flask.ability.bonfire": "Вечный огонь",
   "tooltip.relics.blazing_flask.ability.bonfire.description": "Использование реликвии на блоке создаст зону ограниченного полёта, размер которой зависит от количества огня в определённом радиусе вокруг центра.",
   "tooltip.relics.blazing_flask.ability.bonfire.stat.step.title": "Радиус обнаружения огня:",
@@ -143,7 +143,7 @@
   "tooltip.relics.blazing_flask.ability.bonfire.stat.height.value": "%1$s блоков.",
 
   "item.relics.elytra_booster": "Ускоритель элитр",
-  "tooltip.relics.elytra_booster.leveling": "+1 ед. опыта за каждые 10 секунд горения топлива при помещении его во внутренний буфер реликвии от способности «Ускорение».",
+  "tooltip.relics.elytra_booster.description": "+1 ед. опыта за каждые 10 секунд горения топлива при помещении его во внутренний буфер реликвии от способности «Ускорение».",
   "tooltip.relics.elytra_booster.ability.boost": "Ускорение",
   "tooltip.relics.elytra_booster.ability.boost.description": "Использование любого горючего топлива на реликвии в инвентаре пополняет её внутренний буфер. Использование способности во время полёта на элитрах устремляет носителя вперёд, расходуя топливо из внутреннего буфера.",
   "tooltip.relics.elytra_booster.ability.boost.stat.capacity.title": "Ёмкость:",
@@ -154,7 +154,7 @@
   "tooltip.relics.elytra_booster.ability.boost.predicate.fuel": "Топливо в ускорителе",
 
   "item.relics.midnight_robe": "Полуночная мантия",
-  "tooltip.relics.midnight_robe.leveling": "+1 ед. опыта за каждые 2 единицы урона при атаке из невидимости от способности «Исчезновение».",
+  "tooltip.relics.midnight_robe.description": "+1 ед. опыта за каждые 2 единицы урона при атаке из невидимости от способности «Исчезновение».",
   "tooltip.relics.midnight_robe.ability.vanish": "Исчезновение",
   "tooltip.relics.midnight_robe.ability.vanish.description": "Наделяет носителя полной невидимостью и увеличивает скорость его передвижения при достаточно низком уровне света.",
   "tooltip.relics.midnight_robe.ability.vanish.stat.light.title": "Минимальный уровень света:",
@@ -169,7 +169,7 @@
   "tooltip.relics.midnight_robe.ability.backstab.stat.distance.value": "%1$s блоков.",
 
   "item.relics.reflection_necklace": "Отражающий амулет",
-  "tooltip.relics.reflection_necklace.leveling": "+1 ед. опыта за каждые 10 урона, накопленные во внутреннем буфере реликвии от способности «Адская ненависть».",
+  "tooltip.relics.reflection_necklace.description": "+1 ед. опыта за каждые 10 урона, накопленные во внутреннем буфере реликвии от способности «Адская ненависть».",
   "tooltip.relics.reflection_necklace.ability.explode": "Адская ненависть",
   "tooltip.relics.reflection_necklace.ability.explode.description": "Накапливает полученный носителем урон во внутренний буфер реликвии. Через 5 секунд после последнего получения урона или в случае переполнения буфера реликвия взрывается, выбрасывая во все стороны обсидиановые осколки, наносящие урон и оглушающие цели.",
   "tooltip.relics.reflection_necklace.ability.explode.stat.capacity.title": "Буфер урона:",
@@ -180,7 +180,7 @@
   "tooltip.relics.reflection_necklace.ability.explode.stat.stun.value": "%1$s секунд.",
 
   "item.relics.jellyfish_necklace": "Ожерелье медузы",
-  "tooltip.relics.jellyfish_necklace.leveling": "+1 ед. опыта за каждое срабатывание способности «Электрическая разрядка».",
+  "tooltip.relics.jellyfish_necklace.description": "+1 ед. опыта за каждое срабатывание способности «Электрическая разрядка».",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable": "Власть над морем",
   "tooltip.relics.jellyfish_necklace.ability.unsinkable.description": "Носитель не тонет в воде.",
   "tooltip.relics.jellyfish_necklace.ability.shock": "Электрическая разрядка",
@@ -193,7 +193,7 @@
   "tooltip.relics.jellyfish_necklace.ability.paralysis.stat.duration.value": "%1$s секунд.",
 
   "item.relics.spore_sack": "Мешок со спорами",
-  "tooltip.relics.spore_sack.leveling": "+1 ед. опыта за каждый выброс споры от способности «Синтез яда».\n+1 ед. опыта за каждое дополнительное разделение споры от способности «Разложение».",
+  "tooltip.relics.spore_sack.description": "+1 ед. опыта за каждый выброс споры от способности «Синтез яда».\n+1 ед. опыта за каждое дополнительное разделение споры от способности «Разложение».",
   "tooltip.relics.spore_sack.ability.spore": "Синтез яда",
   "tooltip.relics.spore_sack.ability.spore.description": "При получении урона выбрасывает в случайном направлении спору, прилипающую к поверхностям и взрывающуюся при приближении цели, нанося ей урон, а также отравляя, замедляя и блокируя исцеление на 5 секунд.",
   "tooltip.relics.spore_sack.ability.spore.stat.size.title": "Размер:",
@@ -225,7 +225,7 @@
   "tooltip.relics.spore_sack.ability.explosion.predicate.spore": "Споры в мешке",
 
   "item.relics.ice_breaker": "Ледоколы",
-  "tooltip.relics.ice_breaker.leveling": "+1 ед. опыта за каждые 3 блока в падении перед срабатыванием способности «Землетрясение».",
+  "tooltip.relics.ice_breaker.description": "+1 ед. опыта за каждые 3 блока в падении перед срабатыванием способности «Землетрясение».",
   "tooltip.relics.ice_breaker.ability.sustainability": "Устойчивость",
   "tooltip.relics.ice_breaker.ability.sustainability.description": "Увеличивает скорость падения, повышает сопротивление отдаче и убирает скольжение на блоках.",
   "tooltip.relics.ice_breaker.ability.sustainability.stat.modifier.title": "Сопротивление отдаче:",
@@ -239,7 +239,7 @@
   "tooltip.relics.ice_breaker.ability.impact.predicate.falling": "Свободное падение",
 
   "item.relics.bastion_ring": "Кольцо бастиона",
-  "tooltip.relics.bastion_ring.leveling": "+1/5/10 ед. опыта за каждого убитого Зомбифицированного пиглина/Пиглина/Брутального пиглина.\n+1 ед. опыта за каждый дополнительный торг от способности «Уважение».",
+  "tooltip.relics.bastion_ring.description": "+1/5/10 ед. опыта за каждого убитого Зомбифицированного пиглина/Пиглина/Брутального пиглина.\n+1 ед. опыта за каждый дополнительный торг от способности «Уважение».",
   "tooltip.relics.bastion_ring.ability.compass": "Признание",
   "tooltip.relics.bastion_ring.ability.compass.description": "Делает пиглинов нейтральными по отношению к носителю. Ближайший пиглин будет указывать на расположение бастиона неподалёку.",
   "tooltip.relics.bastion_ring.ability.trade": "Уважение",
@@ -248,7 +248,7 @@
   "tooltip.relics.bastion_ring.ability.trade.stat.rolls.value": "%1$s единиц.",
 
   "item.relics.horse_flute": "Лошадиная флейта",
-  "tooltip.relics.horse_flute.leveling": "+1 ед. опыта за каждые 25 преодолённых блоков лошадью, призванной способностью «Портативное стойло».",
+  "tooltip.relics.horse_flute.description": "+1 ед. опыта за каждые 25 преодолённых блоков лошадью, призванной способностью «Портативное стойло».",
   "tooltip.relics.horse_flute.ability.paddock": "Портативное стойло",
   "tooltip.relics.horse_flute.ability.paddock.description": "Использование реликвии по лошади переместит животное во внутреннее хранилище. Повторное использование высвободит существо. Если расстояние между владельцем и призванной лошадью превысит 16 блоков, она автоматически поместится обратно во флейту.",
   "tooltip.relics.horse_flute.ability.paddock.stat.slots.title": "Слоты:",
@@ -259,7 +259,7 @@
   "tooltip.relics.horse_flute.ability.heal.stat.amount.value": "%1$s единиц здоровья в секунду.",
 
   "item.relics.magma_walker": "Лаваходы",
-  "tooltip.relics.magma_walker.leveling": "+1 ед. опыта за каждые 5 единиц нагрева от способности «Пламенная поступь».",
+  "tooltip.relics.magma_walker.description": "+1 ед. опыта за каждые 5 единиц нагрева от способности «Пламенная поступь».",
   "tooltip.relics.magma_walker.ability.pace": "Пламенная поступь",
   "tooltip.relics.magma_walker.ability.pace.description": "В течение определенного времени позволяет передвигаться по поверхности лавы, не проваливаясь в неё и не получая урона. По истечении запаса времени ботинки начинают перегреваться и наносить носителю урон, пропорциональный степени перегрева.",
   "tooltip.relics.magma_walker.ability.pace.stat.time.title": "Продолжительность:",
@@ -268,14 +268,14 @@
   "tooltip.relics.magma_walker.ability.heat_resistance.description": "Подавляет урон от горячих блоков.",
 
   "item.relics.aqua_walker": "Водоходы",
-  "tooltip.relics.aqua_walker.leveling": "+1 ед. опыта за каждые 5 единиц промокания от способности «Влагоустойчивость».",
+  "tooltip.relics.aqua_walker.description": "+1 ед. опыта за каждые 5 единиц промокания от способности «Влагоустойчивость».",
   "tooltip.relics.aqua_walker.ability.walking": "Влагоустойчивость",
   "tooltip.relics.aqua_walker.ability.walking.description": "В течение определенного времени позволяет передвигаться по поверхности воды, не проваливаясь в неё. По истечении запаса времени ботинки начинают тонуть, затягивая их носителя с собой под воду.",
   "tooltip.relics.aqua_walker.ability.walking.stat.time.title": "Продолжительность:",
   "tooltip.relics.aqua_walker.ability.walking.stat.time.value": "%1$s секунд.",
 
   "item.relics.drowned_belt": "Пояс утопленника",
-  "tooltip.relics.drowned_belt.leveling": "+1 ед. опыта за каждый уровень зачарования «Тягун» на трезубце при его использовании.",
+  "tooltip.relics.drowned_belt.description": "+1 ед. опыта за каждый уровень зачарования «Тягун» на трезубце при его использовании.",
   "tooltip.relics.drowned_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.drowned_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
   "tooltip.relics.drowned_belt.ability.slots.stat.talisman.title": "Талисманы:",
@@ -296,7 +296,7 @@
   "tooltip.relics.drowned_belt.ability.riptide.stat.cooldown.value": "%1$s секунд за уровень зачарования.",
 
   "item.relics.hunter_belt": "Пояс охотника",
-  "tooltip.relics.hunter_belt.leveling": "+1 ед. опыта за каждую атаку, совершённую питомцем.",
+  "tooltip.relics.hunter_belt.description": "+1 ед. опыта за каждую атаку, совершённую питомцем.",
   "tooltip.relics.hunter_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.hunter_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
   "tooltip.relics.hunter_belt.ability.slots.stat.talisman.title": "Талисманы:",
@@ -307,14 +307,14 @@
   "tooltip.relics.hunter_belt.ability.training.stat.damage.value": "+%1$s%%.",
 
   "item.relics.leather_belt": "Кожаный пояс",
-  "tooltip.relics.leather_belt.leveling": "+1 ед. опыта за каждое получение опыта экипированными талисманами.",
+  "tooltip.relics.leather_belt.description": "+1 ед. опыта за каждое получение опыта экипированными талисманами.",
   "tooltip.relics.leather_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.leather_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.title": "Талисманы:",
   "tooltip.relics.leather_belt.ability.slots.stat.talisman.value": "+%1$s слотов.",
 
   "item.relics.rage_glove": "Перчатка ярости",
-  "tooltip.relics.rage_glove.leveling": "+1 ед. опыта за каждые 3 заряда от способности «Ярость берсерка» при их обнулении.\n+1 ед. опыта за каждую цель, поражённую способностью «Рывок».",
+  "tooltip.relics.rage_glove.description": "+1 ед. опыта за каждые 3 заряда от способности «Ярость берсерка» при их обнулении.\n+1 ед. опыта за каждую цель, поражённую способностью «Рывок».",
   "tooltip.relics.rage_glove.ability.rage": "Ярость берсерка",
   "tooltip.relics.rage_glove.ability.rage.description": "Каждая атака носителя, совершённая в течение определённого времени после последней, накапливает 1 заряд во внутренний буфер реликвии. Наносимый и получаемый урон носителя увеличиваются пропорционально накопленным зарядам. По истечении того же времени внутренний буфер реликвии опустошается, аннулируя все полученные бонусы.",
   "tooltip.relics.rage_glove.ability.rage.stat.duration.title": "Время существования заряда:",
@@ -341,7 +341,7 @@
   "tooltip.relics.rage_glove.ability.spurt.stat.distance.value": "%1$s блоков.",
 
   "item.relics.ice_skates": "Ледовые коньки",
-  "tooltip.relics.ice_skates.leveling": "+1 ед. опыта за каждую секунду ускорения от способности «Скольжение».",
+  "tooltip.relics.ice_skates.description": "+1 ед. опыта за каждую секунду ускорения от способности «Скольжение».",
   "tooltip.relics.ice_skates.ability.skating": "Скольжение",
   "tooltip.relics.ice_skates.ability.skating.description": "Увеличивает скорость передвижения по льду в зависимости от продолжительности скольжения.",
   "tooltip.relics.ice_skates.ability.skating.stat.speed.title": "Множитель скорости за секунду:",
@@ -354,7 +354,7 @@
   "tooltip.relics.ice_skates.ability.ram.stat.damage.value": "%1$s единиц.",
 
   "item.relics.amphibian_boot": "Ботинок амфибии",
-  "tooltip.relics.amphibian_boot.leveling": "+1 ед. опыта за каждую секунду ускорения от способности «Плавники».\n+1 ед. опыта за каждую секунду ускорения от способности «Скольжение».",
+  "tooltip.relics.amphibian_boot.description": "+1 ед. опыта за каждую секунду ускорения от способности «Плавники».\n+1 ед. опыта за каждую секунду ускорения от способности «Скольжение».",
   "tooltip.relics.amphibian_boot.ability.swimming": "Плавники",
   "tooltip.relics.amphibian_boot.ability.swimming.description": "Ускоряет скорость плаванья в зависимости от его продолжительности.",
   "tooltip.relics.amphibian_boot.ability.swimming.stat.speed.title": "Множитель скорости:",
@@ -373,14 +373,14 @@
   "tooltip.relics.amphibian_boot.ability.gills.stat.chance.value": "%1$s%%.",
 
   "item.relics.spatial_sign": "Пространственная печать",
-  "tooltip.relics.spatial_sign.leveling": "+1 ед. опыта за каждую секунду возвращения от способности «Временной разлом».",
+  "tooltip.relics.spatial_sign.description": "+1 ед. опыта за каждую секунду возвращения от способности «Временной разлом».",
   "tooltip.relics.spatial_sign.ability.seal": "Временной разлом",
   "tooltip.relics.spatial_sign.ability.seal.description": "При использовании возвращает носителя по пройденному в течение определенного времени маршруту. Повторное использование прервёт действие способности.",
   "tooltip.relics.spatial_sign.ability.seal.stat.time.title": "Максимальная продолжительность:",
   "tooltip.relics.spatial_sign.ability.seal.stat.time.value": "%1$s секунд.",
 
   "item.relics.chorus_inhibitor": "Хорусовый ингибитор",
-  "tooltip.relics.chorus_inhibitor.leveling": "+1 ед. опыта за каждые 10 блоков до точки телепортации от способности «Контроль телепортации».",
+  "tooltip.relics.chorus_inhibitor.description": "+1 ед. опыта за каждые 10 блоков до точки телепортации от способности «Контроль телепортации».",
   "tooltip.relics.chorus_inhibitor.ability.blink": "Контроль телепортации",
   "tooltip.relics.chorus_inhibitor.ability.blink.description": "Использование плода хоруса телепортирует носителя на блок по линии взгляда в пределах досягаемости.",
   "tooltip.relics.chorus_inhibitor.ability.blink.stat.distance.title": "Максимальная дистанция:",
@@ -390,7 +390,7 @@
 
   "item.relics.wool_mitten": "Шерстяная рукавица",
   "item.relics.solid_snowball": "Заледенелый снежок",
-  "tooltip.relics.wool_mitten.leveling": "+1 ед. опыта за каждые 5 единиц размера при попадании снежком от способности «Лепка».",
+  "tooltip.relics.wool_mitten.description": "+1 ед. опыта за каждые 5 единиц размера при попадании снежком от способности «Лепка».",
   "tooltip.relics.wool_mitten.ability.mold": "Лепка",
   "tooltip.relics.wool_mitten.ability.mold.description": "Сбор снега на ПКМ пустой рукой постепенно формирует особые твёрдые снежки. Попадание такого снежка в цель нанесёт ей урон и оглушит, а также заморозит цели поблизости. Удержание снежка без экипированной реликвии также замораживает носителя.",
   "tooltip.relics.wool_mitten.ability.mold.stat.size.title": "Максимальный размер:",
@@ -403,7 +403,7 @@
   "tooltip.relics.wool_mitten.ability.mold.stat.freeze.value": "%1$s секунд за единицу размера.",
 
   "item.relics.roller_skates": "Роликовые коньки",
-  "tooltip.relics.roller_skates.leveling": "+1 ед. опыта за каждую секунду ускорения от способности «Разгон».",
+  "tooltip.relics.roller_skates.description": "+1 ед. опыта за каждую секунду ускорения от способности «Разгон».",
   "tooltip.relics.roller_skates.ability.skating": "Разгон",
   "tooltip.relics.roller_skates.ability.skating.description": "Увеличивает скорость передвижения в зависимости от её продолжительности. Все блоки становятся скользкими для носителя.",
   "tooltip.relics.roller_skates.ability.skating.stat.speed.title": "Множитель скорости за секунду:",
@@ -412,7 +412,7 @@
   "tooltip.relics.roller_skates.ability.skating.stat.duration.value": "%1$s секунд.",
 
   "item.relics.space_dissector": "Рассекатель пространства",
-  "tooltip.relics.space_dissector.leveling": "+1 ед. опыта за каждый созданный портал при условии отсутствия уже существующего.",
+  "tooltip.relics.space_dissector.description": "+1 ед. опыта за каждый созданный портал при условии отсутствия уже существующего.",
   "tooltip.relics.space_dissector.ability.dissection": "Рассечение",
   "tooltip.relics.space_dissector.ability.dissection.description": "Зажатие ПКМ создаёт портал на точке по линии взгляда, прекращения удерживания ПКМ создаёт второй портал по тому же принципу, связывая его с первым. Приближение живого существа к одному из порталов переместит его к связанному порталу. Порталы не работают, если на их пути находятся какие-либо непроходимые блоки.",
   "tooltip.relics.space_dissector.ability.dissection.stat.distance.title": "Максимальная дистанция:",
