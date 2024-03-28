@@ -151,14 +151,12 @@ public class EnderHandItem extends RelicItem implements IRenderableCurio {
     public LayerDefinition constructLayerDefinition() {
         MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0.0F);
 
-        mesh.getRoot().addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(0, 19).mirror().addBox(-4.0F, 7.0F, -2.5F, 3.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
-                .texOffs(0, 8).mirror().addBox(-1.0F, 7.0F, -2.5F, 3.0F, 5.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
-                .texOffs(0, 0).mirror().addBox(-4.5F, 6.5F, -3.0F, 7.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)).mirror(false)
+        mesh.getRoot().addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(0, 0).mirror().addBox(-4.0F, 6.0F, -2.5F, 3.0F, 7.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(0, 13).mirror().addBox(-1.0F, 6.0F, -2.5F, 3.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
                 .texOffs(0, 0).mirror().addBox(-4.5F, 8.0F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-3.0F, 2.0F, -0.5F));
 
-        mesh.getRoot().addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 7.0F, -2.5F, 3.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 8).addBox(-2.0F, 7.0F, -2.5F, 3.0F, 5.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 0).addBox(-2.5F, 6.5F, -3.0F, 7.0F, 1.0F, 7.0F, new CubeDeformation(0.0F))
+        mesh.getRoot().addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 6.0F, -2.5F, 3.0F, 7.0F, 6.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 13).addBox(-2.0F, 6.0F, -2.5F, 3.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 0).addBox(3.5F, 8.0F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, 2.0F, -0.5F));
 
         return LayerDefinition.create(mesh, 32, 32);
