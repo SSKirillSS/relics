@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.client.renderer.items.handlers;
+package it.hurts.sskirillss.relics.client.handlers;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
