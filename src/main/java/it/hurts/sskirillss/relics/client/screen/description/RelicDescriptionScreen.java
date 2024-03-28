@@ -291,10 +291,19 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         pPoseStack.pushPose();
 
-        float scale = 1.75F;
+        float scale = 1.5F;
 
-        pPoseStack.translate(x + 21, y + 18.5F, 0);
+        pPoseStack.translate(x + 23, y + 20, 0);
         pPoseStack.scale(scale, scale, scale);
+
+        RenderSystem.setShaderColor(255F, 255F, 255F, 1F);
+
+        guiGraphics.renderItem(stack, 1, 0);
+        guiGraphics.renderItem(stack, -1, 0);
+        guiGraphics.renderItem(stack, 0, 1);
+        guiGraphics.renderItem(stack, 0, -1);
+
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         guiGraphics.renderItem(stack, 0, 0);
 
