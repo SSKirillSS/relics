@@ -1,10 +1,12 @@
 {
-  "parent": "item/generated",
-    "textures": {
-        "layer0": "relics:item/enders_hand"
-    },
-    "overrides": [
-        { "predicate": { "relics:broken": 1 }, "model": "relics:item/enders_hand_broken" }
-    ]
+  "parent": "forge:item/default",
+  "base": {
+    "parent": "relics:item/enders_hand_3d"
+  },
+  "loader": "forge:separate_transforms",
+  "perspectives": {
+    "gui": {
+      "parent": "relics:item/enders_hand_2d"
+    }
+  }
 }
-

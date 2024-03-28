@@ -1,5 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import it.hurts.sskirillss.relics.client.models.items.CurioModel;
+import it.hurts.sskirillss.relics.client.models.items.SidedCurioModel;
+import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -15,6 +21,15 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,8 +38,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.client.ICurioRenderer;
 
-public class EnderHandItem extends RelicItem {
+import java.util.List;
+
+public class EnderHandItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -85,5 +106,62 @@ public class EnderHandItem extends RelicItem {
 
             addExperience(player, stack, 1 + Math.round(distance * 0.1F));
         }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public CurioModel getModel(ItemStack stack) {
+        return new SidedCurioModel(stack.getItem());
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        CurioModel model = getModel(stack);
+
+        if (!(model instanceof SidedCurioModel sidedModel))
+            return;
+
+        sidedModel.setSlot(slotContext.index());
+
+        matrixStack.pushPose();
+
+        LivingEntity entity = slotContext.entity();
+
+        sidedModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
+        sidedModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
+        ICurioRenderer.followBodyRotations(entity, sidedModel);
+
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
+
+        matrixStack.translate(0, 0, -0.025F);
+
+        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+
+        matrixStack.popPose();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public LayerDefinition constructLayerDefinition() {
+        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0.0F);
+
+        mesh.getRoot().addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(0, 19).mirror().addBox(-4.0F, 7.0F, -2.5F, 3.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(0, 8).mirror().addBox(-1.0F, 7.0F, -2.5F, 3.0F, 5.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(0, 0).mirror().addBox(-4.5F, 6.5F, -3.0F, 7.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(0, 0).mirror().addBox(-4.5F, 8.0F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-3.0F, 2.0F, -0.5F));
+
+        mesh.getRoot().addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 7.0F, -2.5F, 3.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 8).addBox(-2.0F, 7.0F, -2.5F, 3.0F, 5.0F, 6.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 0).addBox(-2.5F, 6.5F, -3.0F, 7.0F, 1.0F, 7.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 0).addBox(3.5F, 8.0F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, 2.0F, -0.5F));
+
+        return LayerDefinition.create(mesh, 32, 32);
+    }
+
+    @Override
+    public List<String> bodyParts() {
+        return Lists.newArrayList("right_arm", "left_arm");
     }
 }
