@@ -201,9 +201,4 @@ public class SpaceDissectorItem extends RelicItem {
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
         return false;
     }
-
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
-    }
 }

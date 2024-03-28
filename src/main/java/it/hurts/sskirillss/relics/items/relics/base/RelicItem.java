@@ -66,4 +66,9 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
         return true;
     }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged;
+    }
 }

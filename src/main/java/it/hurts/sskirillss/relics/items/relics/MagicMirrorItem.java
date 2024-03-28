@@ -165,11 +165,6 @@ public class MagicMirrorItem extends RelicItem {
         return false;
     }
 
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
-    }
-
     @Nullable
     private Pair<ServerLevel, Vec3> getHomePos(ServerPlayer player, boolean useAnchor) {
         if (player.level().isClientSide())
