@@ -72,14 +72,14 @@ public class IceSkatesItem extends RelicItem {
             return;
 
         Level level = player.getCommandSenderWorld();
-        BlockPos pos = WorldUtils.getSolidBlockUnderFeet(level, player.blockPosition());
+        BlockPos pos = player.blockPosition().atY((int) Math.floor(WorldUtils.getGroundHeight(level, player.position(), 16)));
 
         int duration = NBTUtils.getInt(stack, TAG_SKATING_DURATION, 0);
 
         int maxDuration = (int) Math.round(getAbilityValue(stack, "skating", "duration"));
 
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()
-                && (pos != null && level.getBlockState(pos).is(BlockTags.ICE))) {
+                && (level.getBlockState(pos).is(BlockTags.ICE))) {
             if (player.tickCount % 20 == 0)
                 addExperience(player, stack, 1);
 

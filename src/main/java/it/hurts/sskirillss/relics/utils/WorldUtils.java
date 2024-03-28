@@ -7,20 +7,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorldUtils {
-    @Nullable
-    public static BlockPos getSolidBlockUnderFeet(Level world, BlockPos blockPos) {
-        for (BlockPos pos = blockPos.below(); pos.getY() > world.getMinBuildHeight(); pos = pos.below())
-            if (world.getBlockState(pos).blocksMotion())
-                return pos;
-
-        return null;
-    }
-
     public static List<BlockPos> getBlockSphere(BlockPos center, double radius) {
         List<BlockPos> sphere = new ArrayList<>((int) Math.pow(radius, 3));
 
@@ -50,5 +40,18 @@ public class WorldUtils {
 
     public static double getGroundDistance(Level level, Vec3 position, int iterations) {
         return Math.max(0, position.y() - getGroundHeight(level, position, iterations));
+    }
+
+    public static double getCeilHeight(Level level, Vec3 position, int iterations) {
+        HitResult result = level.clip(new ClipContext(position, position.add(0, iterations, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null));
+
+        if (result.getType() == HitResult.Type.BLOCK)
+            return result.getLocation().y();
+
+        return level.getMaxBuildHeight();
+    }
+
+    public static double getCeilDistance(Level level, Vec3 position, int iterations) {
+        return Math.max(0, getCeilHeight(level, position, iterations) - position.y());
     }
 }
