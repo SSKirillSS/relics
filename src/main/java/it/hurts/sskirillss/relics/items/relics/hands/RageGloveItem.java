@@ -23,6 +23,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
@@ -134,6 +135,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                         .build())
                 .leveling(new LevelingData(100, 20, 100))
                 .style(StyleData.builder()
+                        .background(Backgrounds.NETHER)
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.NETHER)

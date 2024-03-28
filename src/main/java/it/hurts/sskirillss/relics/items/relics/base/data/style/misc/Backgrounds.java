@@ -10,6 +10,7 @@ public class Backgrounds {
 
     public static final ResourceLocation AQUATIC = background("aquatic");
     public static final ResourceLocation ICY = background("icy");
+    public static final ResourceLocation NETHER = background("nether");
 
     public static ResourceLocation background(String name) {
         return background(Reference.MODID, name);
