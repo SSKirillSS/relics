@@ -2,20 +2,17 @@
   "animation": {
     "interpolate": false,
     "frames": [
-	        {
+	          {
                 "index": 0,
                 "time": 200
             }, {
                 "index": 1,
-                "time": 2
+                "time": 4
             }, {
                 "index": 2,
                 "time": 2
             }, {
                 "index": 3,
-                "time": 2
-            }, {
-                "index": 0,
                 "time": 2
             }, {
                 "index": 4,
@@ -27,9 +24,6 @@
                 "index": 6,
                 "time": 2
             }, {
-                "index": 0,
-                "time": 2
-            }, {
                 "index": 7,
                 "time": 2
             }, {
@@ -37,9 +31,6 @@
                 "time": 2
             }, {
                 "index": 9,
-                "time": 2
-            }, {
-                "index": 0,
                 "time": 2
             }, {
                 "index": 10,
@@ -53,7 +44,13 @@
             }, {
                 "index": 13,
                 "time": 2
+            }, {
+                "index": 14,
+                "time": 4
+            }, {
+                "index": 11,
+                "time": 2
             }
-	]       
-  }
+		   ]
+    }
 }
