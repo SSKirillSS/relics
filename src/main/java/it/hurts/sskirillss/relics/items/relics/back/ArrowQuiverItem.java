@@ -26,6 +26,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
@@ -182,6 +183,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                         .build())
                 .leveling(new LevelingData(100, 20, 100))
                 .style(StyleData.builder()
+                        .background(Backgrounds.PLAINS)
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)

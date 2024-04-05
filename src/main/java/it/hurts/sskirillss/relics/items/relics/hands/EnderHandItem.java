@@ -20,6 +20,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.EntityModel;
@@ -76,6 +77,7 @@ public class EnderHandItem extends RelicItem implements IRenderableCurio {
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
                 .style(StyleData.builder()
+                        .background(Backgrounds.END)
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.END)

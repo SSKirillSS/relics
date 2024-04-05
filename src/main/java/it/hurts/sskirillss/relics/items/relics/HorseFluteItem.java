@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -57,6 +58,7 @@ public class HorseFluteItem extends RelicItem {
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
                 .style(StyleData.builder()
+                        .background(Backgrounds.PLAINS)
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
