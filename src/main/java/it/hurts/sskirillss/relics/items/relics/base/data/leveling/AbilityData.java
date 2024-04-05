@@ -1,13 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.leveling;
 
 import com.mojang.datafixers.util.Function3;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import lombok.Builder;
 import lombok.Data;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,10 +39,21 @@ public class AbilityData {
     private int requiredPoints = 1;
 
     @Builder.Default
-    private Pair<CastType, CastPredicate> castData;
+    private CastData castData;
 
     public static class AbilityDataBuilder {
         private Map<String, StatData> stats = new HashMap<>();
+        private CastData castData = CastData.builder().build();
+
+        private AbilityDataBuilder castData(CastData data) {
+            return this;
+        }
+
+        public AbilityDataBuilder active(CastData data) {
+            this.castData = data;
+
+            return this;
+        }
 
         public AbilityDataBuilder stat(StatData stat) {
             stats.put(stat.getId(), stat);
@@ -52,22 +61,8 @@ public class AbilityData {
             return this;
         }
 
-        private Pair<CastType, CastPredicate> castData = Pair.of(CastType.NONE, CastPredicate.builder().build());
-
         private AbilityDataBuilder id(String id) {
             this.id = id;
-
-            return this;
-        }
-
-        public AbilityDataBuilder active(CastType type) {
-            castData = Pair.of(type, CastPredicate.builder().build());
-
-            return this;
-        }
-
-        public AbilityDataBuilder active(CastType type, CastPredicate predicates) {
-            castData = Pair.of(type, predicates);
 
             return this;
         }

@@ -1,13 +1,13 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
 import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.ShockwaveEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -51,7 +51,8 @@ public class IceBreakerItem extends RelicItem {
                                 .build())
                         .ability(AbilityData.builder("impact")
                                 .maxLevel(10)
-                                .active(CastType.INSTANTANEOUS, CastPredicate.builder()
+                                .active(CastData.builder()
+                                        .type(CastType.INSTANTANEOUS)
                                         .predicate("falling", (player, stack) -> !(player.onGround() || player.isSpectator()))
                                         .build())
                                 .stat(StatData.builder("size")

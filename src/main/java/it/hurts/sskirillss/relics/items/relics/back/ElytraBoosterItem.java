@@ -5,11 +5,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -64,7 +64,8 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("boost")
                                 .maxLevel(10)
-                                .active(CastType.CYCLICAL, CastPredicate.builder()
+                                .active(CastData.builder()
+                                        .type(CastType.CYCLICAL)
                                         .predicate("fuel", (player, stack) -> NBTUtils.getInt(stack, TAG_FUEL, 0) > 0)
                                         .predicate("elytra", (player, stack) -> player.isFallFlying())
                                         .build())

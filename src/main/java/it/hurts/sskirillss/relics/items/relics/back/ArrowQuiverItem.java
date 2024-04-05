@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.ArrowRainEntity;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
@@ -16,7 +15,7 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -26,6 +25,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
@@ -104,7 +104,8 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                         .ability(AbilityData.builder("leap")
                                 .requiredLevel(5)
                                 .maxLevel(10)
-                                .active(CastType.INSTANTANEOUS, CastPredicate.builder()
+                                .active(CastData.builder()
+                                        .type(CastType.INSTANTANEOUS)
                                         .predicate("target", (player, stack) -> {
                                             Level level = player.level();
 
@@ -149,7 +150,8 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                         .ability(AbilityData.builder("rain")
                                 .requiredLevel(15)
                                 .maxLevel(10)
-                                .active(CastType.INSTANTANEOUS, CastPredicate.builder()
+                                .active(CastData.builder()
+                                        .type(CastType.INSTANTANEOUS)
                                         .predicate("arrow", (player, stack) -> {
                                                     int count = 0;
 

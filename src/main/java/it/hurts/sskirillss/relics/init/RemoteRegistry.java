@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.init;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.hurts.sskirillss.relics.client.hud.abilities.AbilitiesRenderHandler;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
 import it.hurts.sskirillss.relics.client.renderer.items.items.CurioRenderer;
@@ -17,6 +16,7 @@ import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.feet.AquaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.MagmaWalkerItem;
 import it.hurts.sskirillss.relics.items.relics.feet.RollerSkatesItem;
+import it.hurts.sskirillss.relics.system.casts.handlers.HUDRenderHandler;
 import it.hurts.sskirillss.relics.tiles.base.IHasHUDInfo;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -169,7 +169,7 @@ public class RemoteRegistry {
         });
 
         event.registerBelowAll("active_abilities", (ForgeGui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
-            AbilitiesRenderHandler.render(guiGraphics, partialTick);
+            HUDRenderHandler.render(guiGraphics, partialTick);
         });
     }
 }

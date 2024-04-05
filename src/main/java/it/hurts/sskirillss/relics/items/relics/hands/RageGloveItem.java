@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.models.items.SidedCurioModel;
 import it.hurts.sskirillss.relics.client.models.items.SidedFPRCurioModel;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
@@ -115,7 +116,9 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                         .ability(AbilityData.builder("spurt")
                                 .requiredLevel(10)
                                 .maxLevel(10)
-                                .active(CastType.INSTANTANEOUS)
+                                .active(CastData.builder()
+                                        .type(CastType.INSTANTANEOUS)
+                                        .build())
                                 .stat(StatData.builder("damage")
                                         .initialValue(0.1D, 0.25D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)

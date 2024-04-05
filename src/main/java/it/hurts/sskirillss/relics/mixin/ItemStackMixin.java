@@ -36,7 +36,7 @@ public abstract class ItemStackMixin {
             relic.randomizeStats(stack, id);
             relic.setAbilityPoints(stack, id, 0);
 
-            if (entry.getValue().getCastData().getKey() == CastType.TOGGLEABLE)
+            if (relic.getAbilityCastData(id).getType() == CastType.TOGGLEABLE)
                 relic.setAbilityTicking(stack, id, true);
         }
     }

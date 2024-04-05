@@ -9,7 +9,7 @@ import it.hurts.sskirillss.relics.client.models.items.SidedFPRCurioModel;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -59,7 +59,8 @@ public class EnderHandItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .ability(AbilityData.builder("swap")
                                 .maxLevel(10)
-                                .active(CastType.INSTANTANEOUS, CastPredicate.builder()
+                                .active(CastData.builder()
+                                        .type(CastType.INSTANTANEOUS)
                                         .predicate("target", (player, stack) -> {
                                             EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(stack, "swap", "distance"));
 

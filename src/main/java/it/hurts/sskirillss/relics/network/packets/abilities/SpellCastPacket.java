@@ -1,9 +1,9 @@
 package it.hurts.sskirillss.relics.network.packets.abilities;
 
-import it.hurts.sskirillss.relics.client.hud.abilities.ActiveAbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.system.casts.abilities.AbilityReference;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -14,28 +14,24 @@ import java.util.function.Supplier;
 public class SpellCastPacket {
     private final CastType type;
     private final CastStage stage;
-    private final String ability;
-    private final int slot;
+    private final AbilityReference ability;
 
     public SpellCastPacket(FriendlyByteBuf buf) {
-        ability = buf.readUtf();
-        slot = buf.readInt();
         type = buf.readEnum(CastType.class);
         stage = buf.readEnum(CastStage.class);
+        ability = new AbilityReference().deserializeNBT(buf.readNbt());
     }
 
-    public SpellCastPacket(CastType type, CastStage stage, String ability, int slot) {
-        this.ability = ability;
-        this.slot = slot;
+    public SpellCastPacket(CastType type, CastStage stage, AbilityReference ability) {
         this.type = type;
         this.stage = stage;
+        this.ability = ability;
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUtf(ability);
-        buf.writeInt(slot);
         buf.writeEnum(type);
         buf.writeEnum(stage);
+        buf.writeNbt(ability.serializeNBT());
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
@@ -45,17 +41,16 @@ public class SpellCastPacket {
             if (player == null)
                 return;
 
-            ItemStack stack = ActiveAbilityUtils.getStackInCuriosSlot(player, slot);
+            ItemStack stack = ability.getSlot().gatherStack(player);
 
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            if (!ActiveAbilityUtils.getRelicActiveAbilities(stack).contains(ability)
-                    || !relic.canPlayerUseActiveAbility(player, stack, ability)) {
-                if (relic.isAbilityTicking(stack, ability)) {
-                    relic.setAbilityTicking(stack, ability, false);
+            if (!relic.canPlayerUseActiveAbility(player, stack, ability.getId())) {
+                if (relic.isAbilityTicking(stack, ability.getId())) {
+                    relic.setAbilityTicking(stack, ability.getId(), false);
 
-                    relic.castActiveAbility(stack, player, ability, type, CastStage.END);
+                    relic.castActiveAbility(stack, player, ability.getId(), type, CastStage.END);
                 }
 
                 return;
@@ -64,13 +59,13 @@ public class SpellCastPacket {
             switch (type) {
                 case CYCLICAL, TOGGLEABLE -> {
                     switch (stage) {
-                        case START -> relic.setAbilityTicking(stack, ability, true);
-                        case END -> relic.setAbilityTicking(stack, ability, false);
+                        case START -> relic.setAbilityTicking(stack, ability.getId(), true);
+                        case END -> relic.setAbilityTicking(stack, ability.getId(), false);
                     }
                 }
             }
 
-            relic.castActiveAbility(stack, player, ability, type, stage);
+            relic.castActiveAbility(stack, player, ability.getId(), type, stage);
         });
 
         return true;

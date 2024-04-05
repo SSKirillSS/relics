@@ -4,6 +4,7 @@ import it.hurts.sskirillss.octolib.config.data.ConfigContext;
 import it.hurts.sskirillss.octolib.config.data.OctoConfig;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.capability.utils.CapabilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
@@ -12,7 +13,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -398,14 +398,14 @@ public interface IRelicItem {
         return getExchangeCost(stack) <= EntityUtils.getPlayerTotalExperience(player);
     }
 
-    default CastPredicate getAbilityCastPredicates(String ability) {
-        return getAbilityData(ability).getCastData().getValue();
+    default CastData getAbilityCastData(String ability) {
+        return getAbilityData(ability).getCastData();
     }
 
     default boolean testAbilityCastPredicates(Player player, ItemStack stack, String ability) {
-        CastPredicate predicates = getAbilityCastPredicates(ability);
+        CastData data = getAbilityCastData(ability);
 
-        for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> entry : predicates.getPredicates().entrySet()) {
+        for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> entry : data.getPredicates().entrySet()) {
             if (!entry.getValue().apply(player, stack))
                 return false;
         }

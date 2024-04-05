@@ -1,12 +1,11 @@
 package it.hurts.sskirillss.relics.items.relics.talisman;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.SporeEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastPredicate;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -16,6 +15,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.utils.*;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -99,7 +99,8 @@ public class SporeSackItem extends RelicItem {
                         .ability(AbilityData.builder("explosion")
                                 .requiredLevel(15)
                                 .maxLevel(10)
-                                .active(CastType.INSTANTANEOUS, CastPredicate.builder()
+                                .active(CastData.builder()
+                                        .type(CastType.INSTANTANEOUS)
                                         .predicate("spore", (player, stack) -> NBTUtils.getInt(stack, TAG_SPORES, 0) > 0)
                                         .build())
                                 .stat(StatData.builder("size")
