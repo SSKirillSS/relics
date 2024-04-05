@@ -38,8 +38,8 @@ public class HandRenderHandler {
 
                     ItemStack stack = stackHandler.getStackInSlot(i);
 
-                    if (!(stack.getItem() instanceof IRenderableCurio renderable) || !(renderable.getModel(stack) instanceof SidedFPRCurioModel model)
-                            || CurioModel.getLayerLocation(stack.getItem()).toString().equals("minecraft:air#air"))
+                    if (!(stack.getItem() instanceof IRenderableCurio renderable) || CurioModel.getLayerLocation(stack.getItem()).toString().equals("minecraft:air#air")
+                            || !(renderable.getModel(stack) instanceof SidedFPRCurioModel model))
                         continue;
 
                     model.setSlot(i);
