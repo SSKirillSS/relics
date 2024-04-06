@@ -56,6 +56,9 @@ public class TooltipBorderHandler {
         int texWidth = GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
         int texHeight = GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
 
+        if (texHeight == 0 || texWidth == 0)
+            return;
+
         int patternWidth = 160;
         int patternHeight = 64;
 
