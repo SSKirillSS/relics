@@ -18,6 +18,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -78,7 +79,11 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
                         .build())
                 .leveling(new LevelingData(100, 10, 200))
                 .style(StyleData.builder()
-                        .borders(0x00baff, 0x0090a9)
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff00baff)
+                                .borderBottom(0xff0090a9)
+                                .textured(true)
+                                .build())
                         .background(Backgrounds.NETHER)
                         .build())
                 .loot(LootData.builder()

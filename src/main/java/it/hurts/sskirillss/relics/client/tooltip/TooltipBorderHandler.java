@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.api.events.common.TooltipDisplayEvent;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import net.minecraft.client.Minecraft;
@@ -18,7 +18,6 @@ import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
@@ -32,7 +31,7 @@ public class TooltipBorderHandler {
 
         ItemStack stack = event.getStack();
 
-        if (!(stack.getItem() instanceof IRelicItem relic) || relic.getRelicData().getStyle().getBorders() == null)
+        if (!(stack.getItem() instanceof IRelicItem relic) || !relic.getStyleData().getTooltip().isTextured())
             return;
 
         GuiGraphics graphics = event.getGraphics();
@@ -121,17 +120,16 @@ public class TooltipBorderHandler {
         if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
-        StyleData style = relic.getStyleData();
+        TooltipData tooltip = relic.getStyleData().getTooltip();
 
-        if (style == null)
-            return;
+        if (tooltip.getBorderTop() != -1)
+            event.setBorderStart(tooltip.getBorderTop());
+        if (tooltip.getBorderBottom() != -1)
+            event.setBorderEnd(tooltip.getBorderBottom());
 
-        Pair<Integer, Integer> borders = style.getBorders();
-
-        if (borders == null)
-            return;
-
-        event.setBorderStart(borders.getKey() + 0xFF000000);
-        event.setBorderEnd(borders.getValue() + 0xFF000000);
+        if (tooltip.getBackgroundTop() != -1)
+            event.setBorderStart(tooltip.getBackgroundTop());
+        if (tooltip.getBackgroundBottom() != -1)
+            event.setBackgroundEnd(tooltip.getBackgroundBottom());
     }
 }
