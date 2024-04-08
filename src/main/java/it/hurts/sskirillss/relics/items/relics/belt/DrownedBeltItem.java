@@ -1,24 +1,35 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -27,49 +38,53 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 import top.theillusivec4.curios.api.SlotContext;
 
-public class DrownedBeltItem extends RelicItem {
+import java.util.List;
+
+public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("slots", RelicAbilityEntry.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("slots")
                                 .requiredPoints(2)
-                                .stat("talisman", RelicAbilityStat.builder()
+                                .stat(StatData.builder("talisman")
                                         .initialValue(0D, 2D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 0)))
                                         .build())
                                 .build())
-                        .ability("anchor", RelicAbilityEntry.builder()
-                                .stat("slowness", RelicAbilityStat.builder()
-                                        .initialValue(0.25D, 0.5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.05D)
+                        .ability(AbilityData.builder("anchor")
+                                .stat(StatData.builder("slowness")
+                                        .initialValue(0.5D, 0.25D)
+                                        .upgradeModifier(UpgradeOperation.ADD, -0.05D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 2) * 100))
                                         .build())
-                                .stat("sinking", RelicAbilityStat.builder()
-                                        .initialValue(3D, 5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.1D)
+                                .stat(StatData.builder("sinking")
+                                        .initialValue(5D, 3D)
+                                        .upgradeModifier(UpgradeOperation.ADD, -0.1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 2) * 100))
                                         .build())
                                 .build())
-                        .ability("pressure", RelicAbilityEntry.builder()
-                                .stat("damage", RelicAbilityStat.builder()
+                        .ability(AbilityData.builder("pressure")
+                                .stat(StatData.builder("damage")
                                         .initialValue(1.25D, 2D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 2) * 100))
                                         .build())
                                 .build())
-                        .ability("riptide", RelicAbilityEntry.builder()
-                                .stat("cooldown", RelicAbilityStat.builder()
-                                        .initialValue(5D, 10D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, -0.5D)
+                        .ability(AbilityData.builder("riptide")
+                                .stat(StatData.builder("cooldown")
+                                        .initialValue(10D, 5D)
+                                        .upgradeModifier(UpgradeOperation.ADD, -0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 100))
-                .styleData(RelicStyleData.builder()
-                        .borders("#7889b8", "#25374e")
+                .leveling(new LevelingData(100, 10, 100))
+                .style(StyleData.builder()
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.AQUATIC)
                         .build())
                 .build();
     }
@@ -104,27 +119,44 @@ public class DrownedBeltItem extends RelicItem {
                 .build();
     }
 
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public LayerDefinition constructLayerDefinition() {
+        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0.0F);
+
+        PartDefinition bone = mesh.getRoot().addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4.5F, 9.0F, -2.5F, 9.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        bone.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 7).addBox(-2.05F, -1.5F, -0.5F, 4.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, -2.5F, -0.1295F, -0.0378F, 0.0894F));
+
+        return LayerDefinition.create(mesh, 32, 32);
+    }
+
+    @Override
+    public List<String> headParts() {
+        return Lists.newArrayList("body");
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class Events {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
             if (!(event.getSource().getEntity() instanceof Player player)
-                    || !player.isUnderWater() || !event.getEntityLiving().isUnderWater())
+                    || !player.isUnderWater() || !event.getEntity().isUnderWater())
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get());
 
-            if (stack.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            event.setAmount((float) (event.getAmount() * getAbilityValue(stack, "pressure", "damage")));
+            event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "pressure", "damage")));
         }
 
         @SubscribeEvent
         public static void onItemUseStart(LivingEntityUseItemEvent.Start event) {
             ItemStack stack = event.getItem();
 
-            if (!(event.getEntityLiving() instanceof Player player) || stack.getItem() != Items.TRIDENT || !player.getCooldowns().isOnCooldown(stack.getItem()))
+            if (!(event.getEntity() instanceof Player player) || stack.getItem() != Items.TRIDENT || !player.getCooldowns().isOnCooldown(stack.getItem()))
                 return;
 
             event.setCanceled(true);
@@ -132,25 +164,26 @@ public class DrownedBeltItem extends RelicItem {
 
         @SubscribeEvent
         public static void onItemUseFinish(LivingEntityUseItemEvent.Stop event) {
-            ItemStack stack = event.getItem();
+            ItemStack trident = event.getItem();
 
-            if (!(event.getEntityLiving() instanceof Player player) || stack.getItem() != Items.TRIDENT)
+            if (!(event.getEntity() instanceof Player player) || trident.getItem() != Items.TRIDENT)
                 return;
 
-            ItemStack relic = EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.DROWNED_BELT.get());
 
-            if (relic.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            int duration = stack.getItem().getUseDuration(stack) - event.getDuration();
-            int enchantment = EnchantmentHelper.getRiptide(stack);
+
+            int duration = trident.getItem().getUseDuration(trident) - event.getDuration();
+            int enchantment = EnchantmentHelper.getRiptide(trident);
 
             if (duration < 10 || enchantment <= 0)
                 return;
 
-            addExperience(player, relic, enchantment);
+            relic.addExperience(player, stack, enchantment);
 
-            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getAbilityValue(relic, "riptide", "cooldown") * enchantment * 20));
+            player.getCooldowns().addCooldown(trident.getItem(), (int) Math.round(relic.getAbilityValue(stack, "riptide", "cooldown") * enchantment * 20));
         }
     }
 }

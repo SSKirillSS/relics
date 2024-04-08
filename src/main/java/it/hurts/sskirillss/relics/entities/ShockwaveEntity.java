@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.init.EntityRegistry;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -78,11 +79,16 @@ public class ShockwaveEntity extends ThrowableProjectile {
 
             for (BlockPos p : closest) {
                 if (!level.isClientSide()) {
+                    float damage = radius * this.damage / step;
+
                     for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(p, p.above(3)).inflate(0.5F))) {
                         if (owner != null && entity.getStringUUID().equals(owner.getStringUUID()))
                             continue;
 
-                        entity.hurt(owner instanceof Player player ? DamageSource.playerAttack(player) : DamageSource.GENERIC, radius * damage / step);
+                        if (this.getOwner() instanceof Player player)
+                            EntityUtils.hurt(entity, DamageSource.playerAttack(player), damage);
+                        else
+                            entity.hurt(DamageSource.MAGIC, damage);
 
                         entity.setDeltaMovement(entity.position().add(0, 1, 0).subtract(centerVec).normalize().multiply(2, 1, 2));
                     }

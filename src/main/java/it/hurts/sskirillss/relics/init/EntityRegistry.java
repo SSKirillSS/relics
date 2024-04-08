@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.init;
 
+import it.hurts.sskirillss.relics.entities.ThrownRelicExperienceBottle;
 import it.hurts.sskirillss.relics.entities.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.world.entity.EntityType;
@@ -11,12 +12,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class EntityRegistry {
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MODID);
-
-    public static final RegistryObject<EntityType<FallingStarEntity>> STELLAR_CATALYST_PROJECTILE = ENTITIES.register("falling_star", () ->
-            EntityType.Builder.<FallingStarEntity>of(FallingStarEntity::new, MobCategory.MISC)
-                    .sized(1.0F, 1.0F)
-                    .build("falling_star")
-    );
 
     public static final RegistryObject<EntityType<ShadowGlaiveEntity>> SHADOW_GLAIVE = ENTITIES.register("shadow_glaive", () ->
             EntityType.Builder.<ShadowGlaiveEntity>of(ShadowGlaiveEntity::new, MobCategory.MISC)
@@ -56,7 +51,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<SporeEntity>> SPORE = ENTITIES.register("spore", () ->
             EntityType.Builder.<SporeEntity>of(SporeEntity::new, MobCategory.MISC)
-                    .sized(0.1F, 0.1F)
+                    .sized(0.2F, 0.2F)
                     .build("spore")
     );
 
@@ -66,19 +61,31 @@ public class EntityRegistry {
                     .build("shadow_saw")
     );
 
-    public static final RegistryObject<EntityType<PoisonedPuddleEntity>> POISONED_PUDDLE = ENTITIES.register("poisoned_puddle", () ->
-            EntityType.Builder.<PoisonedPuddleEntity>of(PoisonedPuddleEntity::new, MobCategory.MISC)
-                    .sized(1F, 0.5F)
-                    .build("poisoned_puddle")
-    );
-
     public static final RegistryObject<EntityType<SolidSnowballEntity>> SOLID_SNOWBALL = ENTITIES.register("solid_snowball", () ->
             EntityType.Builder.<SolidSnowballEntity>of(SolidSnowballEntity::new, MobCategory.MISC)
                     .sized(0.5F, 0.5F)
                     .build("solid_snowball")
     );
 
-    public static void registerEntities() {
+    public static final RegistryObject<EntityType<ArrowRainEntity>> ARROW_RAIN = ENTITIES.register("arrow_rain", () ->
+            EntityType.Builder.<ArrowRainEntity>of(ArrowRainEntity::new, MobCategory.MISC)
+                    .sized(1F, 1F)
+                    .build("arrow_rain")
+    );
+
+    public static final RegistryObject<EntityType<RelicExperienceOrbEntity>> RELIC_EXPERIENCE_ORB = ENTITIES.register("relic_experience_orb", () ->
+            EntityType.Builder.of(RelicExperienceOrbEntity::new, MobCategory.MISC)
+                    .sized(0.3F, 0.3F)
+                    .build("relic_experience_orb")
+    );
+
+    public static final RegistryObject<EntityType<ThrownRelicExperienceBottle>> THROWN_RELIC_EXPERIENCE_BOTTLE = ENTITIES.register("thrown_relic_experience_bottle", () ->
+            EntityType.Builder.of(ThrownRelicExperienceBottle::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .build("thrown_relic_experience_bottle")
+    );
+
+    public static void register() {
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

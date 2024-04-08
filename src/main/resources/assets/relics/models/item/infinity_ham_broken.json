@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/infinity_ham_broken"
+        "layer0": "relics:item/infinity_ham_broken"
     }
 }

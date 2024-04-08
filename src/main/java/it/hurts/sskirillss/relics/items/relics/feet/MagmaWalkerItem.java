@@ -1,62 +1,92 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.api.events.common.FluidCollisionEvent;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.client.models.items.CurioModel;
+import it.hurts.sskirillss.relics.client.models.items.SidedCurioModel;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.client.ICurioRenderer;
 
-public class MagmaWalkerItem extends RelicItem {
+import java.util.List;
+
+@Mod.EventBusSubscriber(modid = Reference.MODID)
+public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
     public static final String TAG_HEAT = "heat";
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("pace", RelicAbilityEntry.builder()
-                                .stat("heat", RelicAbilityStat.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("heat_resistance")
+                                .maxLevel(0)
+                                .build())
+                        .ability(AbilityData.builder("pace")
+                                .stat(StatData.builder("time")
                                         .initialValue(20D, 50D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 0)))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 200))
-                .styleData(RelicStyleData.builder()
-                        .borders("#dc41ff", "#832698")
+                .leveling(new LevelingData(100, 10, 200))
+                .style(StyleData.builder()
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.NETHER)
                         .build())
                 .build();
     }
 
     @Override
-    public void curioTick(SlotContext slotContext, ItemStack stack) {
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
 
-        if (!(slotContext.getWearer() instanceof Player player) || player.tickCount % 20 != 0)
+        if (!(entity instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
         if (heat > 0) {
-            if (heat > getAbilityValue(stack, "pace", "heat"))
-                player.hurt(DamageSource.HOT_FLOOR, (float) (1F + ((heat - getAbilityValue(stack, "pace", "heat")) / 10F)));
-
-            Level level = player.level;
+            if (heat > getAbilityValue(stack, "pace", "time"))
+                player.hurt(DamageSource.HOT_FLOOR, (float) (1F + ((heat - getAbilityValue(stack, "pace", "time")) / 10F)));
 
             if (!level.getFluidState(player.blockPosition().below()).is(FluidTags.LAVA)
                     && !level.getFluidState(player.blockPosition()).is(FluidTags.LAVA))
@@ -64,36 +94,94 @@ public class MagmaWalkerItem extends RelicItem {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
-    public static class Events {
-        @SubscribeEvent
-        public static void onLivingAttack(LivingAttackEvent event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get());
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public CurioModel getModel(ItemStack stack) {
+        return new SidedCurioModel(stack.getItem());
+    }
 
-            if (!stack.isEmpty() && event.getSource() == DamageSource.HOT_FLOOR
-                    && NBTUtils.getInt(stack, TAG_HEAT, 0) <= getAbilityValue(stack, "pace", "heat")) {
-                event.setCanceled(true);
-            }
-        }
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        CurioModel model = getModel(stack);
 
-        @SubscribeEvent
-        public static void onFluidCollide(FluidCollisionEvent event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntityLiving(), ItemRegistry.MAGMA_WALKER.get());
+        if (!(model instanceof SidedCurioModel sidedModel))
+            return;
 
-            if (!(event.getEntityLiving() instanceof Player player) || stack.isEmpty()
-                    || !event.getFluid().is(FluidTags.LAVA) || player.isShiftKeyDown())
-                return;
+        sidedModel.setSlot(slotContext.index());
 
-            if (player.tickCount % 20 == 0) {
-                int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
+        matrixStack.pushPose();
 
-                NBTUtils.setInt(stack, TAG_HEAT, ++heat);
+        LivingEntity entity = slotContext.entity();
 
-                if (heat % 5 == 0)
-                    addExperience(player, stack, 1);
-            }
+        sidedModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
+        sidedModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
+        ICurioRenderer.followBodyRotations(entity, sidedModel);
+
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
+
+        matrixStack.translate(0, 0, -0.025F);
+
+        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+
+        matrixStack.popPose();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public LayerDefinition constructLayerDefinition() {
+        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0.0F);
+
+        PartDefinition rightLeg = mesh.getRoot().addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 9).addBox(-2.9F, 5.5F, -2.5F, 6.0F, 7.0F, 6.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 1).addBox(-2.9F, 5.5F, -2.5F, 6.0F, 1.0F, 6.0F, new CubeDeformation(0.175F))
+                .texOffs(18, 9).addBox(-2.9F, 9.5F, -4.5F, 6.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(1.9F, 12.0F, 0.5F));
+
+        rightLeg.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, -1).addBox(1.5F, 5.5F, 4.4F, 0.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.3927F, 0.0F));
+        rightLeg.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, -1).mirror().addBox(-1.325F, 5.5F, 4.2F, 0.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.3927F, 0.0F));
+
+        PartDefinition leftLeg = mesh.getRoot().addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 9).addBox(-2.9F, 5.5F, -2.5F, 6.0F, 7.0F, 6.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 1).addBox(-2.9F, 5.5F, -2.5F, 6.0F, 1.0F, 6.0F, new CubeDeformation(0.175F))
+                .texOffs(18, 9).addBox(-2.9F, 9.5F, -4.5F, 6.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(1.9F, 12.0F, 0.5F));
+
+        leftLeg.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, -1).addBox(1.5F, 5.5F, 4.4F, 0.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.3927F, 0.0F));
+        leftLeg.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, -1).mirror().addBox(-1.325F, 5.5F, 4.2F, 0.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.3927F, 0.0F));
+
+        return LayerDefinition.create(mesh, 64, 64);
+    }
+
+    @Override
+    public List<String> bodyParts() {
+        return Lists.newArrayList("right_leg", "left_leg");
+    }
+
+    @SubscribeEvent
+    public static void onLivingAttack(LivingAttackEvent event) {
+        ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
+
+        if (stack.getItem() instanceof IRelicItem relic && event.getSource() == DamageSource.HOT_FLOOR
+                && NBTUtils.getInt(stack, TAG_HEAT, 0) <= relic.getAbilityValue(stack, "pace", "time")) {
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onFluidCollide(FluidCollisionEvent event) {
+        ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
+
+        if (!(event.getEntity() instanceof Player player) || !(stack.getItem() instanceof IRelicItem relic)
+                || !event.getFluid().is(FluidTags.LAVA) || player.isShiftKeyDown())
+            return;
+
+        if (player.tickCount % 20 == 0) {
+            int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
+
+            NBTUtils.setInt(stack, TAG_HEAT, ++heat);
+
+            if (heat % 5 == 0)
+                relic.addExperience(player, stack, 1);
+        }
+
+        event.setCanceled(true);
     }
 }

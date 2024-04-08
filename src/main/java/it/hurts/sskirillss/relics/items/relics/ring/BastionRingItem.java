@@ -1,18 +1,22 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
 import com.mojang.datafixers.util.Pair;
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import com.sun.jna.Structure;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -43,24 +47,27 @@ import java.util.Optional;
 
 public class BastionRingItem extends RelicItem {
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("compass", RelicAbilityEntry.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("compass")
+                                .maxLevel(0)
                                 .build())
-                        .ability("trade", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("trade")
                                 .requiredLevel(5)
                                 .requiredPoints(2)
-                                .stat("rolls", RelicAbilityStat.builder()
-                                        .initialValue(1D, 2D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.ADD, 1D)
+                                .stat(StatData.builder("rolls")
+                                        .initialValue(0D, 1D)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 200))
-                .styleData(RelicStyleData.builder()
-                        .borders("#008cd7", "#0a3484")
+                .leveling(new LevelingData(100, 10, 200))
+                .style(StyleData.builder()
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.BASTION)
                         .build())
                 .build();
     }
@@ -72,7 +79,7 @@ public class BastionRingItem extends RelicItem {
 
         Level world = player.getCommandSenderWorld();
 
-        if (world.isClientSide() || world.dimension() != Level.NETHER || DurabilityUtils.isBroken(stack))
+        if (world.isClientSide() || world.dimension() != Level.NETHER)
             return;
 
         Piglin piglin = world.getNearestEntity(Piglin.class, TargetingConditions.DEFAULT, player,
@@ -95,6 +102,7 @@ public class BastionRingItem extends RelicItem {
         Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>> bastion = serverLevel.getChunkSource().getGenerator().findNearestMapFeature(serverLevel,
                 optional.get(), player.blockPosition(), 100, false);
 
+
         if (bastion == null)
             return;
 
@@ -111,7 +119,7 @@ public class BastionRingItem extends RelicItem {
             float x = (float) (((finalVec.x - currentVec.x) * i / distance) + currentVec.x);
             float z = (float) (((finalVec.z - currentVec.z) * i / distance) + currentVec.z);
 
-            serverLevel.sendParticles(new CircleTintData(new Color(255, 240, 150), 0.2F - i * 0.00375F, 1, 0.99F, false),
+            serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(255, 240, 150), 0.2F - i * 0.00375F, 1, 0.99F),
                     x, piglin.getY() + (piglin.getBbHeight() / 1.75F), z, 1, 0F, 0F, 0F, 0);
         }
 
@@ -120,9 +128,14 @@ public class BastionRingItem extends RelicItem {
             double extraX = (double) (0.75F * Mth.sin((float) (Math.PI + angle))) + piglin.getX();
             double extraZ = (double) (0.75F * Mth.cos(angle)) + piglin.getZ();
 
-            serverLevel.sendParticles(new CircleTintData(new Color(255, 240, 150), 0.2F, 30, 0.95F, false),
+            serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(255, 240, 150), 0.2F, 30, 0.95F),
                     extraX, piglin.getY() + (piglin.getBbHeight() / 1.75F), extraZ, 1, 0F, 0F, 0F, 0);
         }
+    }
+
+    @Override
+    public boolean makesPiglinsNeutral(SlotContext slotContext, ItemStack stack) {
+        return true;
     }
 
     @Mod.EventBusSubscriber
@@ -134,19 +147,19 @@ public class BastionRingItem extends RelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.BASTION_RING.get());
 
-            if (stack.isEmpty())
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
             LivingEntity entity = event.getEntityLiving();
 
             if (entity instanceof ZombifiedPiglin)
-                addExperience(player, stack, 1);
+                relic.dropAllocableExperience(player.level, entity.getEyePosition(), stack, 1);
 
             if (entity instanceof Piglin)
-                addExperience(player, stack, 5);
+                relic.dropAllocableExperience(player.level, entity.getEyePosition(), stack, 5);
 
             if (entity instanceof PiglinBrute)
-                addExperience(player, stack, 10);
+                relic.dropAllocableExperience(player.level, entity.getEyePosition(), stack, 10);
         }
     }
 }

@@ -2,24 +2,24 @@ package it.hurts.sskirillss.relics.client.renderer.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import it.hurts.sskirillss.relics.client.models.DissectionModel;
+import it.hurts.sskirillss.relics.client.models.entities.DissectionModel;
 import it.hurts.sskirillss.relics.entities.DissectionEntity;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class DissectionRenderer extends EntityRenderer<DissectionEntity> {
-    protected DissectionRenderer(Context renderManager) {
+    public DissectionRenderer(Context renderManager) {
         super(renderManager);
     }
 
@@ -32,7 +32,8 @@ public class DissectionRenderer extends EntityRenderer<DissectionEntity> {
 
         matrixStackIn.translate(0, 1.5, 0);
 
-        float scale = (float) (Math.min((entityIn.tickCount - 5) * 0.075F, 1F) + (Math.abs(Math.sin((entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks)) * 0.01F)) * 0.5F));
+        float ticks = (Minecraft.getInstance().isPaused() ? 0 : partialTicks);
+        float scale = Mth.clamp((entityIn.getLifeTime() > 20F ? (entityIn.tickCount - 5F + ticks) * 0.075F : (entityIn.getLifeTime() - ticks) * 0.075F), 0F, 1F) + (Math.abs(Mth.sin((entityIn.tickCount + ticks) * 0.01F)) * 0.5F);
 
         matrixStackIn.scale(scale, scale, scale);
 
@@ -53,12 +54,5 @@ public class DissectionRenderer extends EntityRenderer<DissectionEntity> {
     @Override
     public ResourceLocation getTextureLocation(DissectionEntity entity) {
         return new ResourceLocation(Reference.MODID, "textures/entities/dissection.png");
-    }
-
-    public static class RenderFactory implements EntityRendererProvider {
-        @Override
-        public EntityRenderer<? super DissectionEntity> create(Context manager) {
-            return new DissectionRenderer(manager);
-        }
     }
 }

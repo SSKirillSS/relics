@@ -3,7 +3,7 @@ package it.hurts.sskirillss.relics.entities;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
@@ -21,6 +21,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -87,9 +88,21 @@ public class SolidSnowballEntity extends ThrowableProjectile {
 
         ItemStack stack = EntityUtils.findEquippedCurio(this.getOwner(), ItemRegistry.WOOL_MITTEN.get());
 
-        if (!stack.isEmpty()) {
-            entity.hurt(DamageSource.thrown(this, this.getOwner()), (float) (getSize() * RelicItem.getAbilityValue(stack, "mold", "damage")));
-            entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) Math.round(getSize() * RelicItem.getAbilityValue(stack, "mold", "stun")) * 20, 0, true, false));
+        if (stack.getItem() instanceof IRelicItem relic) {
+            boolean mayContinue = false;
+
+            float damage = (float) (getSize() * relic.getAbilityValue(stack, "mold", "damage"));
+
+            if (this.getOwner() instanceof Player player) {
+                if (EntityUtils.hurt(entity, DamageSource.thrown(this, player), damage))
+                    mayContinue = true;
+            } else {
+                if (entity.hurt(DamageSource.MAGIC, damage))
+                    mayContinue = true;
+            }
+
+            if (mayContinue)
+                entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) Math.round(getSize() * relic.getAbilityValue(stack, "mold", "stun")) * 20, 0, true, false));
         }
 
         this.discard();
@@ -107,15 +120,17 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         if (owner == null)
             return;
 
-        for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(getSize() / 15F))) {
-            if (!entity.getStringUUID().equals(owner.getStringUUID()))
-                entity.setTicksFrozen((int) (100 + Math.round(getSize() * RelicItem.getAbilityValue(EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get()), "mold", "freeze"))));
-        }
-
         ItemStack stack = EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get());
 
-        if (!stack.isEmpty())
-            RelicItem.addExperience(owner, stack, (int) Math.floor(getSize() / 5F));
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return;
+
+        for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(getSize() / 15F))) {
+            if (!entity.getStringUUID().equals(owner.getStringUUID()))
+                entity.setTicksFrozen((int) (100 + Math.round(getSize() * relic.getAbilityValue(EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get()), "mold", "freeze"))));
+        }
+
+        relic.addExperience(owner, stack, (int) Math.floor(getSize() / 5F));
 
         this.level.playSound(null, this.blockPosition(), SoundEvents.SNOW_BREAK, SoundSource.MASTER, 1F, 0.5F);
     }

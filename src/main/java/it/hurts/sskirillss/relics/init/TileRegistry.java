@@ -14,7 +14,7 @@ public class TileRegistry {
     public static final RegistryObject<BlockEntityType<ResearchingTableTile>> RESEARCHING_TABLE = TILES.register("researching_table", () ->
             BlockEntityType.Builder.of(ResearchingTableTile::new, BlockRegistry.RESEARCHING_TABLE.get()).build(null));
 
-    public static void registerTiles() {
+    public static void register() {
         TILES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

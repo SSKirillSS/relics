@@ -1,6 +1,11 @@
 package it.hurts.sskirillss.relics.network;
 
-import it.hurts.sskirillss.relics.network.packets.*;
+import it.hurts.sskirillss.relics.network.packets.PacketItemActivation;
+import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
+import it.hurts.sskirillss.relics.network.packets.PacketSyncEntityEffects;
+import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
+import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacket;
+import it.hurts.sskirillss.relics.network.packets.leveling.PacketExperienceExchange;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +23,7 @@ public class NetworkHandler {
         return ID++;
     }
 
-    public static void registerMessages() {
+    public static void register() {
         INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MODID, "network"),
                 () -> "1.0",
                 s -> true,
@@ -43,6 +48,21 @@ public class NetworkHandler {
                 .encoder(PacketSyncEntityEffects::toBytes)
                 .decoder(PacketSyncEntityEffects::new)
                 .consumer(PacketSyncEntityEffects::handle)
+                .add();
+        INSTANCE.messageBuilder(CapabilitySyncPacket.class, nextID())
+                .encoder(CapabilitySyncPacket::toBytes)
+                .decoder(CapabilitySyncPacket::new)
+                .consumer(CapabilitySyncPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SpellCastPacket.class, nextID())
+                .encoder(SpellCastPacket::toBytes)
+                .decoder(SpellCastPacket::new)
+                .consumer(SpellCastPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(PacketExperienceExchange.class, nextID())
+                .encoder(PacketExperienceExchange::toBytes)
+                .decoder(PacketExperienceExchange::new)
+                .consumer(PacketExperienceExchange::handle)
                 .add();
     }
 

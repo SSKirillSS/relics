@@ -1,8 +1,7 @@
 {
   "replace": false,
   "values": [
-    "relics:camouflage_ring",
-    "relics:delay_ring",
+    "relics:chorus_inhibitor",
     "relics:bastion_ring"
   ]
 }

@@ -1,11 +1,17 @@
 package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,13 +19,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.CuriosApi;
 
+import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class EntityUtils {
@@ -49,6 +55,25 @@ public class EntityUtils {
             }
 
         return list;
+    }
+
+    public static void addItem(Player player, ItemStack stack) {
+        if (player.addItem(stack))
+            return;
+
+        Level level = player.getCommandSenderWorld();
+        Random random = level.getRandom();
+
+        ItemEntity drop = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), stack);
+
+        drop.setDeltaMovement(
+                MathUtils.randomFloat(random) * 0.15F,
+                0.1F + random.nextFloat() * 0.2F,
+                MathUtils.randomFloat(random) * 0.15F
+        );
+        drop.setPickUpDelay(20);
+
+        level.addFreshEntity(drop);
     }
 
     public static EntityHitResult rayTraceEntity(Entity shooter, Predicate<? super Entity> filter, double distance) {
@@ -99,7 +124,7 @@ public class EntityUtils {
     }
 
     private static String getAttributeName(ItemStack stack, Attribute attribute) {
-        return stack.getItem().getRegistryName().getPath() + "_" + attribute.getRegistryName().getPath();
+        return ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "_" + ForgeRegistries.ATTRIBUTES.getKey(attribute).getPath();
     }
 
     public static void applyAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
@@ -154,8 +179,70 @@ public class EntityUtils {
         if (optional.isEmpty())
             return ItemStack.EMPTY;
 
-        ItemStack stack = optional.get().getRight();
+        return optional.get().getRight();
+    }
 
-        return DurabilityUtils.isBroken(stack) ? ItemStack.EMPTY : stack;
+    public static int getExperienceForLevel(int level) {
+        return level >= 30 ? 112 + (level - 30) * 9 : level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2;
+    }
+
+    public static int getTotalExperienceForLevel(int level) {
+        int result = 0;
+
+        for (int i = 0; i < level; i++) {
+            result += getExperienceForLevel(i);
+        }
+
+        return result;
+    }
+
+    public static int getPlayerTotalExperience(Player player) {
+        int result = player.totalExperience;
+
+        for (int level = 0; level < player.experienceLevel; level++) {
+            result += getExperienceForLevel(level);
+        }
+
+        return result;
+    }
+
+    public static boolean isAlliedTo(@Nullable Entity source, @Nullable Entity target) {
+        return (source == null || target == null) || (source.isAlliedTo(target) || target.isAlliedTo(source)) || (target.getUUID().equals(source.getUUID()))
+                || (target instanceof OwnableEntity ownable && ownable.getOwnerUUID() != null && ownable.getOwnerUUID().equals(source.getUUID()));
+    }
+
+    public static boolean hurt(LivingEntity entity, DamageSource source, float amount) {
+        if (source.getEntity() instanceof LivingEntity sourceEntity && isAlliedTo(sourceEntity, entity))
+            return false;
+
+        return entity.hurt(source, amount);
+    }
+
+    public static List<ItemStack> getEquippedRelics(LivingEntity entity) {
+        List<ItemStack> items = new ArrayList<>();
+
+        if (!(entity instanceof Player player))
+            return items;
+
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+
+            if (!(stack.getItem() instanceof IRelicItem))
+                continue;
+
+            items.add(stack);
+        }
+
+        CuriosApi.getCuriosHelper().getEquippedCurios(player).ifPresent(handler -> {
+            for (int slot = 0; slot < handler.getSlots(); slot++) {
+                ItemStack stack = handler.getStackInSlot(slot);
+
+                if (stack.getItem() instanceof RelicItem) {
+                    items.add(stack);
+                }
+            }
+        });
+
+        return items;
     }
 }

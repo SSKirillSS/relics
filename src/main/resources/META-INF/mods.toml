@@ -1,24 +1,38 @@
-modLoader="javafml"
-loaderVersion="[35,)"
-license="GNU GPL V3"
-issueTrackerURL="https://discord.gg/pHren9yxzW"
-logoFile="logo.png"
+modLoader = "javafml"
+loaderVersion = "[35,)"
+license = "GNU GPL V3"
+issueTrackerURL = "https://discord.gg/pHren9yxzW"
+logoFile = "logo.png"
+
 [[mods]]
-modId="relics"
-version="0.4.1.8"
-displayName="Relics"
-displayURL="https://www.curseforge.com/minecraft/mc-mods/relics-mod"
-authors="SSKirillSS"
-description="Just a mod about useful relics with unique mechanics ;)"
+modId = "relics"
+version = "0.6.2.4"
+displayName = "Relics"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/relics-mod"
+authors = "SSKirillSS"
+description = "Just a mod about useful relics with unique mechanics ;)"
+
 [[dependencies.relics]]
-    modId="forge"
-    mandatory=true
-    versionRange="[40.1.68,)"
-    ordering="NONE"
-    side="BOTH"
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "[1.18.2,1.19)"
+    ordering = "NONE"
+    side = "BOTH"
 [[dependencies.relics]]
-    modId="curios"
-    mandatory=true
-    versionRange="[1.18.1-5.0.4.2,)"
-    ordering="AFTER"
-    side="BOTH"
+    modId = "forge"
+    mandatory = true
+    versionRange = "[40.1.68,)"
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.relics]]
+    modId = "curios"
+    mandatory = true
+    versionRange = "[1.18.2-5.0.7.0,)"
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.relics]]
+    modId = "octolib"
+    mandatory = true
+    versionRange = "[0.3,)"
+    ordering = "NONE"
+    side = "BOTH"

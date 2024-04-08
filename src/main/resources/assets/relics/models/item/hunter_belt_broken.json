@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/hunter_belt_broken"
+        "layer0": "relics:item/hunter_belt_broken"
     }
 }
 

@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/shadow_glaive_5"
+        "layer0": "relics:item/shadow_glaive_5"
     }
 }
 

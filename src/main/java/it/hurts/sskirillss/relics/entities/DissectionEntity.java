@@ -1,15 +1,20 @@
 package it.hurts.sskirillss.relics.entities;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,6 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
@@ -30,6 +36,24 @@ import java.util.Random;
 import java.util.UUID;
 
 public class DissectionEntity extends Entity {
+    private static final EntityDataAccessor<Integer> LIFE_TIME = SynchedEntityData.defineId(DissectionEntity.class, EntityDataSerializers.INT);
+
+    @Getter
+    @Setter
+    private boolean isMaster = false;
+
+    @Getter
+    @Setter
+    private int maxLifeTime;
+
+    public int getLifeTime() {
+        return this.getEntityData().get(LIFE_TIME);
+    }
+
+    public void setLifeTime(int amount) {
+        this.getEntityData().set(LIFE_TIME, amount);
+    }
+
     public List<UUID> entities = new ArrayList<>();
     public List<UUID> blacklist = new ArrayList<>();
 
@@ -73,7 +97,7 @@ public class DissectionEntity extends Entity {
 
         if (this.tickCount > 5) {
             for (int i = 0; i < 5; i++) {
-                float step = Math.min((this.tickCount - 5) * 0.075F, 1F);
+                float step = Math.max(Math.min(getLifeTime() > 20 ? (tickCount - 5) * 0.075F : getLifeTime() * 0.075F, 1F), 0F);
                 float mul = random.nextFloat() * 0.3F;
 
                 Vec3 pos = this.position().add(this.getLookAngle()).add(0, this.getBbHeight() / 2, 0)
@@ -82,8 +106,8 @@ public class DissectionEntity extends Entity {
                                 MathUtils.randomFloat(random) * step);
                 Vec3 angle = this.getLookAngle().normalize().multiply(mul, mul, mul);
 
-                level.addParticle(new CircleTintData(new Color(150 + random.nextInt(100), 100, 0),
-                                0.2F + random.nextFloat() * 0.1F, 10 + random.nextInt(20), 0.9F, true),
+                getLevel().addParticle(ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(100), 100, 0),
+                                0.2F + random.nextFloat() * 0.1F, 10 + random.nextInt(20), 0.9F),
                         pos.x(), pos.y(), pos.z(), angle.x(), angle.y(), angle.z());
             }
         }
@@ -98,9 +122,25 @@ public class DissectionEntity extends Entity {
         DissectionEntity pair = getPair();
 
         if (pair == null) {
-            this.remove(RemovalReason.KILLED);
+            if (!this.isMaster() || getMaxLifeTime() == 0
+                    || this.getLifeTime() != this.getMaxLifeTime())
+                this.discard();
 
             return;
+        }
+
+        if (isMaster()) {
+            int time = getLifeTime();
+
+            if (time > 0) {
+                time--;
+
+                setLifeTime(time);
+
+                pair.setLifeTime(time);
+            } else {
+                this.discard();
+            }
         }
 
         this.lookAt(EntityAnchorArgument.Anchor.FEET, pair.position());
@@ -123,7 +163,7 @@ public class DissectionEntity extends Entity {
                 if (serverLevel.getBlockState(pos).getMaterial().blocksMotion()) {
                     locked = true;
 
-                    serverLevel.sendParticles(new CircleTintData(new Color(255, random.nextInt(50), 0), 0.1F, 10, 0.9F, true),
+                    serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(255, random.nextInt(50), 0), 0.1F, 10, 0.9F),
                             pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, 1, 0.3F, 0.3F, 0.3F, 0.025F);
                 }
             });
@@ -169,7 +209,7 @@ public class DissectionEntity extends Entity {
 
                 ((LivingEntity) target).addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
 
-                serverLevel.sendParticles(new CircleTintData(new Color(150 + random.nextInt(100), 100, 0), 0.2F, 20, 0.9F, true),
+                serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(100), 100, 0), 0.2F, 20, 0.9F),
                         target.getX(), target.getY() + 1.25F, target.getZ(), Math.round(target.getBbHeight() * 3), 0.1F, 0.1F, 0.1F, 0.05F);
             } else {
                 blacklist.add(target.getUUID());
@@ -202,18 +242,37 @@ public class DissectionEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
 
+        if (this.isMaster())
+            return;
+
+        DissectionEntity pair = this.getPair();
+
+        if (pair == null)
+            return;
+
+        pair.setLifeTime(Math.min(pair.getLifeTime(), 20));
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        entityData.define(LIFE_TIME, 100);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-
+        setMaxLifeTime(compound.getInt("maxLifeTime"));
+        setMaster(compound.getBoolean("isMaster"));
+        setLifeTime(compound.getInt("lifeTime"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-
+        compound.putInt("maxLifeTime", getMaxLifeTime());
+        compound.putBoolean("isMaster", isMaster());
+        compound.putInt("lifeTime", getLifeTime());
     }
 
     @Override

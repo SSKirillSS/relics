@@ -1,8 +1,7 @@
 package it.hurts.sskirillss.relics.network.packets.leveling;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,46 +49,44 @@ public class PacketRelicTweak {
 
             ItemStack stack = tile.getStack();
 
-            if (!(stack.getItem() instanceof RelicItem relic))
+            if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            RelicAbilityData data = relic.getRelicData().getAbilityData();
-
-            if (data == null)
-                return;
-
-            RelicAbilityEntry entry = data.getAbilities().get(ability);
+            AbilityData entry = relic.getAbilityData(ability);
 
             if (entry == null)
                 return;
 
             switch (operation) {
                 case INCREASE -> {
-                    if (RelicItem.mayPlayerUpgrade(player, stack, ability)) {
-                        player.giveExperiencePoints(-RelicItem.getUpgradeRequiredExperience(stack, ability));
+                    if (relic.mayPlayerUpgrade(player, stack, ability)) {
+                        player.giveExperiencePoints(-relic.getUpgradeRequiredExperience(stack, ability));
 
-                        RelicItem.setAbilityPoints(stack, ability, RelicItem.getAbilityPoints(stack, ability) + 1);
-                        RelicItem.addPoints(stack, -entry.getRequiredPoints());
+                        relic.setAbilityPoints(stack, ability, relic.getAbilityPoints(stack, ability) + 1);
+                        relic.addPoints(stack, -entry.getRequiredPoints());
                     }
                 }
                 case REROLL -> {
-                    if (RelicItem.mayPlayerReroll(player, stack, ability)) {
-                        player.giveExperiencePoints(-RelicItem.getRerollRequiredExperience(stack, ability));
+                    if (relic.mayPlayerReroll(player, stack, ability)) {
+                        player.giveExperiencePoints(-relic.getRerollRequiredExperience(ability));
 
-                        RelicItem.randomizeStats(stack, ability);
+                        relic.randomizeStats(stack, ability);
                     }
                 }
                 case RESET -> {
-                    if (RelicItem.mayPlayerReset(player, stack, ability)) {
-                        player.giveExperiencePoints(-RelicItem.getResetRequiredExperience(stack, ability));
+                    if (relic.mayPlayerReset(player, stack, ability)) {
+                        player.giveExperiencePoints(-relic.getResetRequiredExperience(stack, ability));
 
-                        RelicItem.addPoints(stack, RelicItem.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
-                        RelicItem.setAbilityPoints(stack, ability, 0);
+                        relic.addPoints(stack, relic.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
+                        relic.setAbilityPoints(stack, ability, 0);
                     }
                 }
             }
 
-            world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+            tile.setStack(stack);
+            tile.setChanged();
+
+            world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
         });
 
         return true;
@@ -98,6 +95,6 @@ public class PacketRelicTweak {
     public enum Operation {
         RESET,
         INCREASE,
-        REROLL,
+        REROLL
     }
 }
