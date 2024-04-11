@@ -82,7 +82,9 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
+    if (System.getProperty("idea.sync.active") != "true") {
+        annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    }
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
