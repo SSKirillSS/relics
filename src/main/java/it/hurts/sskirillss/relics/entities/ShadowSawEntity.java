@@ -1,11 +1,12 @@
 package it.hurts.sskirillss.relics.entities;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
@@ -47,7 +48,7 @@ public class ShadowSawEntity extends ThrowableProjectile {
     public void tick() {
         this.move(MoverType.SELF, this.getDeltaMovement());
 
-        if (level.isClientSide())
+        if (getLevel().isClientSide() || !(stack.getItem() instanceof IRelicItem relic))
             return;
 
         if (this.tickCount >= 1200)
@@ -85,10 +86,24 @@ public class ShadowSawEntity extends ThrowableProjectile {
                 this.setDeltaMovement(this.getDeltaMovement().add(0F, -0.05F, 0F));
         }
 
-        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
-            if ((this.getOwner() == null || (this.getOwner() != null && entity != this.getOwner()))
-                    && entity.hurt(DamageSource.MAGIC, (float) Math.max(RelicItem.getAbilityValue(stack, "saw", "damage"), 0.1D))) {
-                entity.invulnerableTime = (int) Math.round(RelicItem.getAbilityValue(stack, "saw", "speed"));
+        int speed = (int) Math.round(relic.getAbilityValue(stack, "saw", "speed"));
+
+        if (this.tickCount % speed == 0) {
+            float damage = (float) Math.max(relic.getAbilityValue(stack, "saw", "damage"), 0.1D);
+
+            for (LivingEntity entity : getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
+                boolean mayContinue = false;
+
+                if (this.getOwner() instanceof Player player) {
+                    if (EntityUtils.hurt(entity, DamageSource.playerAttack(player), damage))
+                        mayContinue = true;
+                } else {
+                    if (entity.hurt(DamageSource.MAGIC, damage))
+                        mayContinue = true;
+                }
+
+                if (mayContinue)
+                    entity.invulnerableTime = speed;
             }
         }
 
@@ -102,11 +117,11 @@ public class ShadowSawEntity extends ThrowableProjectile {
             double extraX = (radius * Mth.sin((float) (Math.PI + angle))) + this.getX();
             double extraZ = (radius * Mth.cos(angle)) + this.getZ();
 
-            serverLevel.sendParticles(new CircleTintData(new Color(200, 0, 255), 0.075F, 20, 0.95F, true),
+            serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 0, 255), 0.075F, 20, 0.95F),
                     extraX, this.getY() + 0.25F, extraZ, 1, 0.01, 0.01, 0.01, 0.025F);
         }
 
-        serverLevel.sendParticles(new CircleTintData(new Color(102, 0, 255), 0.1F, 20, 0.9F, true),
+        serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(102, 0, 255), 0.1F, 20, 0.9F),
                 this.getX(), this.getY() + 0.3F, this.getZ(), 2, 0.25, 0.1, 0.25, 0.02F);
     }
 

@@ -14,12 +14,13 @@ public class EffectRegistry {
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Reference.MODID);
 
     public static final RegistryObject<MobEffect> STUN = EFFECTS.register("stun", StunEffect::new);
-    public static final RegistryObject<MobEffect> DRUNKENNESS = EFFECTS.register("drunkenness", DrunkennessEffect::new);
     public static final RegistryObject<MobEffect> CONFUSION = EFFECTS.register("confusion", ConfusionEffect::new);
     public static final RegistryObject<MobEffect> PARALYSIS = EFFECTS.register("paralysis", ParalysisEffect::new);
     public static final RegistryObject<MobEffect> VANISHING = EFFECTS.register("vanishing", VanishingEffect::new);
+    public static final RegistryObject<MobEffect> ANTI_HEAL = EFFECTS.register("anti_heal", AntiHealEffect::new);
+    public static final RegistryObject<MobEffect> BLEEDING = EFFECTS.register("bleeding", BleedingEffect::new);
 
-    public static void registerEffects() {
+    public static void register() {
         EFFECTS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

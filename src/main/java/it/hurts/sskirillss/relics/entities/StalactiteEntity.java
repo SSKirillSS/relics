@@ -1,8 +1,9 @@
 package it.hurts.sskirillss.relics.entities;
 
-import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,16 +30,21 @@ import java.awt.*;
 public class StalactiteEntity extends ThrowableProjectile {
     @Getter
     @Setter
-    private float amount;
+    private float damage;
+
+    @Getter
+    @Setter
+    private float stun;
 
     public StalactiteEntity(EntityType<? extends ThrowableProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
-    public StalactiteEntity(Level level, float amount) {
+    public StalactiteEntity(Level level, float damage, float stun) {
         super(EntityRegistry.STALACTITE.get(), level);
 
-        this.amount = amount;
+        this.damage = damage;
+        this.stun = stun;
     }
 
     @Override
@@ -52,7 +59,7 @@ public class StalactiteEntity extends ThrowableProjectile {
         if (level.isClientSide())
             return;
 
-        ((ServerLevel) level).sendParticles(new CircleTintData(new Color(100, 0, 255), 0.1F, 40, 0.9F, false),
+        ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(100, 0, 255), 0.1F, 40, 0.9F),
                 this.xo, this.yo, this.zo, 1, 0.025D, 0.025D, 0.025D, 0.01F);
     }
 
@@ -75,9 +82,18 @@ public class StalactiteEntity extends ThrowableProjectile {
                 || (this.getOwner() != null && entity.getStringUUID().equals(this.getOwner().getStringUUID())))
             return;
 
-        entity.hurt(DamageSource.thrown(this, this.getOwner()), amount * 0.25F);
+        boolean mayContinue = false;
 
-        entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), Math.round(amount * 0.5F), 0, true, false));
+        if (this.getOwner() instanceof Player player) {
+            if (EntityUtils.hurt(entity, DamageSource.thrown(this, player), damage))
+                mayContinue = true;
+        } else {
+            if (entity.hurt(DamageSource.MAGIC, damage))
+                mayContinue = true;
+        }
+
+        if (mayContinue)
+            entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), Math.round(stun), 0, true, false));
 
         this.discard();
     }
@@ -89,12 +105,14 @@ public class StalactiteEntity extends ThrowableProjectile {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.amount = compound.getFloat("Amount");
+        this.damage = compound.getFloat("Damage");
+        this.stun = compound.getFloat("Stun");
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.putFloat("Amount", this.amount);
+        compound.putFloat("Damage", this.damage);
+        compound.putFloat("Stun", this.stun);
     }
 
     @Override

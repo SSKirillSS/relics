@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/delay_ring_broken"
+        "layer0": "relics:item/delay_ring_broken"
     }
 }
 

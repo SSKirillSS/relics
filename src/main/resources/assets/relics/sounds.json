@@ -6,5 +6,45 @@
     "throw": {
         "category": "master",
         "sounds": [ { "name": "relics:throw" } ]
+    },
+    "arrow_rain": {
+        "category": "master",
+        "sounds": [ { "name": "relics:arrow_rain" } ]
+    },
+    "spurt": {
+        "category": "master",
+        "sounds": [ { "name": "relics:spurt" } ]
+    },
+    "leap": {
+        "category": "master",
+        "sounds": [ { "name": "relics:leap" } ]
+    },
+    "powered_arrow": {
+        "category": "master",
+        "sounds": [ { "name": "relics:powered_arrow" } ]
+    },
+    "table_upgrade": {
+        "category": "master",
+        "sounds": [ { "name": "relics:table_upgrade" } ]
+    },
+    "table_reroll": {
+        "category": "master",
+        "sounds": [ { "name": "relics:table_reroll" } ]
+    },
+    "table_reset": {
+        "category": "master",
+        "sounds": [ { "name": "relics:table_reset" } ]
+    },
+    "ability_locked": {
+        "category": "master",
+        "sounds": [ { "name": "relics:ability_locked" } ]
+    },
+    "ability_cooldown": {
+        "category": "master",
+        "sounds": [ { "name": "relics:ability_cooldown" } ]
+    },
+    "ability_cast": {
+        "category": "master",
+        "sounds": [ { "name": "relics:ability_cast" } ]
     }
 }

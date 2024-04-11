@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/space_dissector_broken"
+        "layer0": "relics:item/space_dissector_broken"
     }
 }

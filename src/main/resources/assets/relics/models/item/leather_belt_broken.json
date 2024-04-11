@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/leather_belt_broken"
+        "layer0": "relics:item/leather_belt_broken"
     }
 }
 

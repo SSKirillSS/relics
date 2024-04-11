@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/camouflage_ring_broken"
+        "layer0": "relics:item/camouflage_ring_broken"
     }
 }
 

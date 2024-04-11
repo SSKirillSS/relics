@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/enders_hand_broken"
+        "layer0": "relics:item/enders_hand_broken"
     }
 }
 

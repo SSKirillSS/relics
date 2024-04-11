@@ -1,4 +1,6 @@
-package it.hurts.sskirillss.relics.utils;import net.minecraft.world.level.block.entity.BlockEntity;
+package it.hurts.sskirillss.relics.utils;
+
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;

@@ -1,20 +1,45 @@
 package it.hurts.sskirillss.relics.client.screen.description.widgets.ability;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
+import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
+import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
+import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
-import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
+import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
+import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
+import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.RenderUtils;
+import it.hurts.sskirillss.relics.utils.data.AnimationData;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 
-public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget {
+import java.awt.*;
+import java.util.List;
+import java.util.Random;
+
+public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget implements IHoverableWidget, ITickingWidget {
     private final AbilityDescriptionScreen screen;
     private final String ability;
 
     public AbilityUpgradeButtonWidget(int x, int y, AbilityDescriptionScreen screen, String ability) {
-        super(x, y, 22, 22);
+        super(x, y, 17, 17);
 
         this.screen = screen;
         this.ability = ability;
@@ -22,7 +47,17 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget {
 
     @Override
     public boolean isLocked() {
-        return !RelicItem.mayPlayerUpgrade(MC.player, screen.stack, ability);
+        return !(screen.stack.getItem() instanceof IRelicItem relic) || !relic.mayPlayerUpgrade(MC.player, screen.stack, ability);
+    }
+
+    @Override
+    public void playDownSound(SoundManager handler) {
+        if (screen.stack.getItem() instanceof IRelicItem relic && !isLocked()) {
+            int level = relic.getAbilityPoints(screen.stack, ability);
+            int maxLevel = relic.getAbilityData(ability).getMaxLevel();
+
+            handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_UPGRADE.get(), 1F + ((float) level / maxLevel)));
+        }
     }
 
     @Override
@@ -40,16 +75,105 @@ public class AbilityUpgradeButtonWidget extends AbstractDescriptionWidget {
 
         manager.bindForSetup(AbilityDescriptionScreen.TEXTURE);
 
-        if (RelicItem.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
-            blit(poseStack, x, y, 258, 0, 22, 22, 512, 512);
+        blit(poseStack, x, y, isLocked() ? 320 : 302, 70, width, height, 512, 512);
 
-            if (isHovered)
-                blit(poseStack, x - 1, y - 1, 330, 0, 24, 24, 512, 512);
-        } else {
-            blit(poseStack, x, y, 258, 24, 22, 22, 512, 512);
+        if (isHovered) {
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/upgrade_highlight_" + (isLocked() ? "locked" : "unlocked") + ".png"));
 
-            if (isHovered)
-                blit(poseStack, x - 1, y - 1, 330, 24, 24, 24, 512, 512);
+            RenderSystem.enableBlend();
+
+            RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + width / 2f, y + height / 2f, 32, 384, 32, 32, 1F, AnimationData.builder()
+                    .frame(0, 2)
+                    .frame(1, 2)
+                    .frame(2, 2)
+                    .frame(3, 2)
+                    .frame(4, 2)
+                    .frame(5, 2)
+                    .frame(6, 2)
+                    .frame(7, 2)
+                    .frame(8, 2)
+                    .frame(9, 2)
+                    .frame(10, 2)
+                    .frame(11, 2)
+            );
         }
+    }
+
+    @Override
+    public void onTick() {
+        Random random = MC.player.getRandom();
+
+        if (isHoveredOrFocused()) {
+            if (screen.ticksExisted % 10 == 0)
+                ParticleStorage.addParticle(screen, new ExperienceParticleData(isLocked()
+                        ? new Color(100 + random.nextInt(100), 100 + random.nextInt(100), 100 + random.nextInt(100))
+                        : new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
+                        x + random.nextInt(width), y + random.nextInt(height),
+                        0.15F + (random.nextFloat() * 0.25F), 100 + random.nextInt(50)));
+        }
+    }
+
+    @Override
+    public void onHovered(PoseStack poseStack, int mouseX, int mouseY) {
+        if (!(screen.stack.getItem() instanceof IRelicItem relic) || !relic.canUseAbility(screen.stack, ability))
+            return;
+
+        AbilityData data = relic.getAbilityData(ability);
+
+        if (data.getStats().isEmpty())
+            return;
+
+        List<FormattedCharSequence> tooltip = Lists.newArrayList();
+
+        int maxWidth = 100;
+        int renderWidth = 0;
+
+        int requiredPoints = data.getRequiredPoints();
+        int requiredExperience = relic.getUpgradeRequiredExperience(screen.stack, ability);
+
+        int points = relic.getPoints(screen.stack);
+        int experience = MC.player.totalExperience;
+
+        MutableComponent negativeStatus = new TranslatableComponent("tooltip.relics.relic.status.negative");
+        MutableComponent positiveStatus = new TranslatableComponent("tooltip.relics.relic.status.positive");
+
+        List<MutableComponent> entries = Lists.newArrayList(
+                new TranslatableComponent("tooltip.relics.relic.upgrade.description").withStyle(ChatFormatting.BOLD),
+                new TextComponent(" "));
+
+        if (!relic.isAbilityMaxLevel(screen.stack, ability))
+            entries.add(new TranslatableComponent("tooltip.relics.relic.upgrade.cost", requiredPoints,
+                    (requiredPoints > points ? negativeStatus : positiveStatus), requiredExperience,
+                    (requiredExperience > experience ? negativeStatus : positiveStatus)));
+        else
+            entries.add(new TextComponent("▶ ").append(new TranslatableComponent("tooltip.relics.relic.upgrade.locked")));
+
+        for (MutableComponent entry : entries) {
+            int entryWidth = (MC.font.width(entry) + 4) / 2;
+
+            if (entryWidth > renderWidth)
+                renderWidth = Math.min(entryWidth, maxWidth);
+
+            tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+        }
+
+        int height = Math.round(tooltip.size() * 4.5F);
+
+        int renderX = x + width + 1;
+        int renderY = mouseY - (height / 2) - 9;
+
+        ScreenUtils.drawTexturedTooltipBorder(poseStack, RelicDescriptionScreen.BORDER_PAPER, renderWidth, height, renderX, renderY);
+
+        int yOff = 0;
+
+        poseStack.scale(0.5F, 0.5F, 0.5F);
+
+        for (FormattedCharSequence entry : tooltip) {
+            MC.font.draw(poseStack, entry, (renderX + 9) * 2, (renderY + 9 + yOff) * 2, 0x412708);
+
+            yOff += 5;
+        }
+
+        poseStack.scale(1F, 1F, 1F);
     }
 }

@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.parchmentmc:librarian:1.+'
-        classpath 'io.freefair.gradle:lombok-plugin:6.5.0.2'
+        classpath 'io.freefair.gradle:lombok-plugin:6.6'
         classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
     }
 }
@@ -25,7 +25,7 @@ apply plugin: 'java'
 
 compileJava.options.encoding = 'UTF-8'
 
-version = '1.18.2-0.4.1.8'
+version = '1.18.2-0.6.2.4'
 group = 'it.hurts.sskirillss'
 archivesBaseName = 'relics'
 
@@ -65,12 +65,15 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    flatDir {
+        dirs 'libs'
+    }
     maven {
         url = "https://maven.theillusivec4.top/"
     }
     maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
+        name 'Blamejared Maven'
+        url 'https://maven.blamejared.com'
     }
     maven {
         name = "ModMaven"
@@ -90,6 +93,26 @@ dependencies {
 
     runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.5.174")
     compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.5.174:api")
+
+    if (file("libs").isDirectory()) {
+        file("libs").eachFile { file ->
+            def splitPos = file.name.lastIndexOf("-")
+
+            if (file.name != "desktop.ini") {
+                println file.name
+
+                def modartifact = file.name.substring(0, splitPos)
+                def modversion = file.name.substring(splitPos + 1, file.name.length() - 4)
+                def modreference = "lib:$modartifact:$modversion"
+
+                dependencies {
+                    implementation fg.deobf(project.dependencies.create(modreference) {
+                        transitive = false
+                    })
+                }
+            }
+        }
+    } else file("libs").mkdir()
 }
 
 jar {
@@ -108,3 +131,7 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

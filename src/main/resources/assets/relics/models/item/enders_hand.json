@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/enders_hand"
+        "layer0": "relics:item/enders_hand"
     },
     "overrides": [
         { "predicate": { "relics:broken": 1 }, "model": "relics:item/enders_hand_broken" }

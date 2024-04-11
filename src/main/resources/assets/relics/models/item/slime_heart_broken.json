@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/slime_heart_broken"
+        "layer0": "relics:item/slime_heart_broken"
     }
 }

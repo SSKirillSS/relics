@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+    "textures": {
+        "layer0": "relics:item/magma_walker",
+        "layer1": "relics:item/magma_walker_fire"
+    }
+}

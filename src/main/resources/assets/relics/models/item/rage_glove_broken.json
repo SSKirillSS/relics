@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/rage_glove_broken"
+        "layer0": "relics:item/rage_glove_broken"
     }
 }
 

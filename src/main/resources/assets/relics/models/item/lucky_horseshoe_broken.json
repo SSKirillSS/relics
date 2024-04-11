@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
     "textures": {
-        "layer0": "relics:items/lucky_horseshoe_broken"
+        "layer0": "relics:item/lucky_horseshoe_broken"
     }
 }
 

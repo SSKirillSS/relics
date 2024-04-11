@@ -1,7 +1,12 @@
 {
-  "parent": "item/generated",
-    "textures": {
-        "layer0": "relics:items/aqua_walker_1"
+  "parent": "forge:item/default",
+  "base": {
+    "parent": "relics:item/aqua_walker_3d"
+  },
+  "loader": "forge:separate-perspective",
+  "perspectives": {
+    "gui": {
+      "parent": "relics:item/aqua_walker_2d_1"
     }
+  }
 }
-

@@ -1,15 +1,18 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.utils.DurabilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.RelicsTab;
@@ -30,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.List;
 
@@ -46,28 +50,30 @@ public class InfinityHamItem extends RelicItem {
     }
 
     @Override
-    public RelicData getRelicData() {
+    public RelicData constructDefaultRelicData() {
         return RelicData.builder()
-                .abilityData(RelicAbilityData.builder()
-                        .ability("autophagy", RelicAbilityEntry.builder()
-                                .stat("feed", RelicAbilityStat.builder()
+                .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("autophagy")
+                                .stat(StatData.builder("feed")
                                         .initialValue(1D, 2D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
-                        .ability("infusion", RelicAbilityEntry.builder()
+                        .ability(AbilityData.builder("infusion")
                                 .requiredLevel(5)
-                                .stat("duration", RelicAbilityStat.builder()
+                                .stat(StatData.builder("duration")
                                         .initialValue(1D, 3.5D)
-                                        .upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_BASE, 0.5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
-                .levelingData(new RelicLevelingData(100, 10, 100))
-                .styleData(RelicStyleData.builder()
-                        .borders("#ffe0d2", "#9c756b")
+                .leveling(new LevelingData(100, 10, 100))
+                .style(StyleData.builder()
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootCollections.VILLAGE)
                         .build())
                 .build();
     }
@@ -86,8 +92,7 @@ public class InfinityHamItem extends RelicItem {
 
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected) {
-        if (entityIn.tickCount % 20 != 0 || !(entityIn instanceof Player player)
-                || player.isUsingItem() || DurabilityUtils.isBroken(stack))
+        if (entityIn.tickCount % 20 != 0 || !(entityIn instanceof Player player) || player.isUsingItem())
             return;
 
         int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
@@ -110,8 +115,7 @@ public class InfinityHamItem extends RelicItem {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!DurabilityUtils.isBroken(stack) && NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
-                && (player.getFoodData().needsFood() || player.isCreative()))
+        if (NBTUtils.getInt(stack, TAG_PIECES, 0) > 0 && (player.getFoodData().needsFood() || player.isCreative()))
             player.startUsingItem(hand);
 
         return super.use(world, player, hand);
@@ -146,17 +150,19 @@ public class InfinityHamItem extends RelicItem {
             if (!canUseAbility(stack, "infusion") || !nbt.contains(TAG_POTION, 9))
                 return;
 
+            int duration = (int) Math.round(getAbilityValue(stack, "infusion", "duration") * 20);
+
             ListTag list = nbt.getList(TAG_POTION, 10);
 
             for (int i = 0; i < list.size(); ++i) {
                 MobEffectInstance effect = MobEffectInstance.load(list.getCompound(i));
 
-                if (effect == null)
+                if (effect == null || effect.getEffect().isInstantenous())
                     continue;
 
                 MobEffectInstance currentEffect = player.getEffect(effect.getEffect());
 
-                player.addEffect(new MobEffectInstance(effect.getEffect(), currentEffect == null ? 100 : currentEffect.getDuration() + 100, effect.getAmplifier()));
+                player.addEffect(new MobEffectInstance(effect.getEffect(), currentEffect == null ? duration : currentEffect.getDuration() + duration, effect.getAmplifier()));
             }
 
             if (pieces <= 0 && nbt.contains(TAG_POTION))
@@ -185,6 +191,11 @@ public class InfinityHamItem extends RelicItem {
         return UseAnim.EAT;
     }
 
+    @Override
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        return false;
+    }
+
     @Mod.EventBusSubscriber
     public static class Events {
         @SubscribeEvent
@@ -197,8 +208,8 @@ public class InfinityHamItem extends RelicItem {
             ItemStack heldStack = event.getHeldStack();
             ItemStack slotStack = event.getSlotStack();
 
-            if (!(heldStack.getItem() instanceof PotionItem) || !(slotStack.getItem() instanceof InfinityHamItem)
-                    || !RelicItem.canUseAbility(slotStack, "infusion"))
+            if (!(heldStack.getItem() instanceof PotionItem) || !(slotStack.getItem() instanceof InfinityHamItem relic)
+                    || !relic.canUseAbility(slotStack, "infusion"))
                 return;
 
             CompoundTag tag = slotStack.getOrCreateTag();
@@ -209,13 +220,27 @@ public class InfinityHamItem extends RelicItem {
             if (effects.isEmpty()) {
                 NBTUtils.clearTag(slotStack, TAG_POTION);
             } else {
+                effects = effects.stream().filter(effect -> effect != null && !effect.getEffect().isInstantenous()).toList();
+
+                if (effects.isEmpty())
+                    return;
+
                 for (MobEffectInstance effect : effects)
                     list.add(effect.save(new CompoundTag()));
 
                 tag.put(TAG_POTION, list);
             }
 
-            player.containerMenu.setCarried(new ItemStack(Items.GLASS_BOTTLE));
+            ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+
+            if (player.containerMenu.getCarried().getCount() <= 1)
+                player.containerMenu.setCarried(bottle);
+            else {
+                player.containerMenu.getCarried().shrink(1);
+
+                EntityUtils.addItem(player, bottle);
+            }
+
             player.playSound(SoundEvents.BOTTLE_FILL, 1F, 1F);
 
             event.setCanceled(true);

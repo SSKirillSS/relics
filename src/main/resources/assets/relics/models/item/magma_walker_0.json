@@ -1,7 +1,12 @@
 {
-  "parent": "item/generated",
-    "textures": {
-        "layer0": "relics:items/magma_walker_0"
+  "parent": "forge:item/default",
+  "base": {
+    "parent": "relics:item/magma_walker_3d"
+  },
+  "loader": "forge:separate-perspective",
+  "perspectives": {
+    "gui": {
+      "parent": "relics:item/magma_walker_2d_0"
     }
+  }
 }
-

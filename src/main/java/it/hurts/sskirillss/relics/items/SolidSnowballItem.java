@@ -4,7 +4,6 @@ import it.hurts.sskirillss.relics.entities.SolidSnowballEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import it.hurts.sskirillss.relics.utils.RelicsTab;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -21,9 +20,9 @@ public class SolidSnowballItem extends Item {
 
     public SolidSnowballItem() {
         super(new Item.Properties()
-                .tab(RelicsTab.RELICS_TAB)
                 .stacksTo(1)
-                .rarity(Rarity.UNCOMMON));
+                .rarity(Rarity.UNCOMMON)
+        );
     }
 
     @Override

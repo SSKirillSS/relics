@@ -27,11 +27,4 @@ public class NullRenderer<T extends Entity> extends EntityRenderer<T> {
     public ResourceLocation getTextureLocation(@Nonnull T entity) {
         return TextureAtlas.LOCATION_BLOCKS;
     }
-
-    public static class RenderFactory implements EntityRendererProvider {
-        @Override
-        public EntityRenderer<?> create(Context manager) {
-            return new NullRenderer(manager);
-        }
-    }
 }
