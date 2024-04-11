@@ -27,7 +27,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -477,7 +476,7 @@ public class AbilitiesRenderHandler {
     @Mod.EventBusSubscriber(value = Dist.CLIENT)
     public static class CastEvents {
         @SubscribeEvent
-        public static void onKeyPressed(InputEvent.MouseInputEvent event) {
+        public static void onKeyPressed(InputEvent.RawMouseEvent event) {
             if (animationDelta == 0 || event.getAction() != InputConstants.PRESS
                     || event.getButton() != GLFW.GLFW_MOUSE_BUTTON_1)
                 return;
