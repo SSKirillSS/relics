@@ -231,7 +231,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
 
         booster.addExperience(player, slotStack, (int) Math.floor(left / 10F));
 
-        ItemStack result = heldStack.getItem().getCraftingRemainingItem().getDefaultInstance();
+        ItemStack result = heldStack.getContainerItem();
 
         heldStack.shrink(1);
 
