@@ -31,7 +31,4 @@ public class RelicConfigData implements IOctoConfig {
 
     @SerializedName("loot")
     private LootConfigData lootData;
-
-    @SerializedName("style")
-    private StyleConfigData styleData;
 }

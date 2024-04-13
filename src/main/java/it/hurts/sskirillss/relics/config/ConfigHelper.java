@@ -109,8 +109,6 @@ public class ConfigHelper {
                 .entries(relicConfig.getLootData().getEntries())
                 .build());
 
-        relicData.getStyle().setBackground(relicConfig.getStyleData().getBackground());
-
         relic.setRelicData(relicData);
     }
 
@@ -164,8 +162,6 @@ public class ConfigHelper {
         lootConfigData.setEntries(relicData.getLoot().getCollection().getEntries());
 
         relicConfig.setLootData(lootConfigData);
-
-        relicConfig.setStyleData(new StyleConfigData(relicData.getStyle().getBackground()));
 
         relicConfig.setup();
     }
