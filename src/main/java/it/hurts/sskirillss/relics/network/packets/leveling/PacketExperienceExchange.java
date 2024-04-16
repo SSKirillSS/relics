@@ -75,7 +75,7 @@ public class PacketExperienceExchange {
 
             player.giveExperiencePoints(-toTake);
 
-            relic.spreadExperience(player, stack, toAdd);
+            relic.addExperience(player, stack, toAdd);
 
             world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
         });
