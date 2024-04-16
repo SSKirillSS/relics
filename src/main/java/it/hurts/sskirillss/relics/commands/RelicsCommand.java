@@ -115,8 +115,6 @@ public class RelicsCommand {
                                                 case TAKE -> relic.addLevel(stack, -level);
                                             }
 
-                                            relic.setLevel(stack, IntegerArgumentType.getInteger(context, "level"));
-
                                             return Command.SINGLE_SUCCESS;
                                         }))))
                 .then(Commands.literal("experience")
