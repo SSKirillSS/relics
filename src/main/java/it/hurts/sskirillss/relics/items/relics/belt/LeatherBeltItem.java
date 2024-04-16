@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.items.relics.belt;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -16,13 +15,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -66,19 +66,19 @@ public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
 
     @SubscribeEvent
     public static void onExperienceAdded(ExperienceAddEvent event) {
-        Player player = event.getEntity();
+        LivingEntity entity = event.getEntity();
         ItemStack sourceStack = event.getStack();
 
-        if (player == null || sourceStack.getItem() == ItemRegistry.LEATHER_BELT.get())
+        if (entity == null || sourceStack.getItem() == ItemRegistry.LEATHER_BELT.get())
             return;
 
         if (sourceStack.getTags().map(tag -> tag.location().getPath()).anyMatch(tag -> tag.equals("talisman"))) {
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.LEATHER_BELT.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.LEATHER_BELT.get());
 
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            relic.addExperience(player, stack, 1);
+            relic.spreadExperience(entity, stack, 1);
         }
     }
 

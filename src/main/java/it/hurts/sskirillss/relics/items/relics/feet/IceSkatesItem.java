@@ -81,7 +81,7 @@ public class IceSkatesItem extends RelicItem {
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()
                 && (level.getBlockState(pos).is(BlockTags.ICE))) {
             if (player.tickCount % 20 == 0)
-                addExperience(player, stack, 1);
+                spreadExperience(player, stack, 1);
 
             if (duration < maxDuration && player.tickCount % 2 == 0) {
                 NBTUtils.setInt(stack, TAG_SKATING_DURATION, ++duration);

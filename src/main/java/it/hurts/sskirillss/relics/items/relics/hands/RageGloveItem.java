@@ -224,7 +224,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
 
                     player.attack(entity);
 
-                    dropAllocableExperience(level, entity.getEyePosition(), stack, 1);
+                    spreadExperience(player, stack, 1);
 
                     entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 100, 0));
                     entity.setSecondsOnFire(5);
@@ -356,7 +356,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                     NBTUtils.setInt(stack, TAG_STACKS, ++stacks);
                     NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(relic.getAbilityValue(stack, "rage", "duration") * 20));
 
-                    relic.dropAllocableExperience(player.level(), event.getEntity().getEyePosition(), stack, 1);
+                    relic.spreadExperience(player, stack, 1);
 
                     event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * relic.getAbilityValue(stack, "rage", "dealt_damage")))));
                 }

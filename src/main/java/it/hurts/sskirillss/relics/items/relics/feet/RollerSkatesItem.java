@@ -68,7 +68,7 @@ public class RollerSkatesItem extends RelicItem {
 
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
             if (player.tickCount % 20 == 0)
-                addExperience(player, stack, 1);
+                spreadExperience(player, stack, 1);
 
             if (duration < getAbilityValue(stack, "skating", "duration") && player.tickCount % 4 == 0)
                 NBTUtils.setInt(stack, TAG_SKATING_DURATION, duration + 1);

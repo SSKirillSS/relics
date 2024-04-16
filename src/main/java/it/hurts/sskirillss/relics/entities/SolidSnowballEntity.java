@@ -130,7 +130,8 @@ public class SolidSnowballEntity extends ThrowableProjectile {
                 entity.setTicksFrozen((int) (100 + Math.round(getSize() * relic.getAbilityValue(EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get()), "mold", "freeze"))));
         }
 
-        relic.addExperience(owner, stack, (int) Math.floor(getSize() / 5F));
+        if (owner instanceof LivingEntity entity)
+            relic.spreadExperience(entity, stack, (int) Math.floor(getSize() / 5F));
 
         level().playSound(null, this.blockPosition(), SoundEvents.SNOW_BREAK, SoundSource.MASTER, 1F, 0.5F);
     }

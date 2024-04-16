@@ -141,7 +141,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                 level.addFreshEntity(essence);
 
                 if (event.getAmount() >= 1)
-                    relic.addExperience(player, stack, 1 + Math.round(amount));
+                    relic.spreadExperience(player, stack, 1 + Math.round(amount));
 
                 event.setAmount(event.getAmount() - amount);
             }

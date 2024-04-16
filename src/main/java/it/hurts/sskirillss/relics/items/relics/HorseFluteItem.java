@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -10,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -173,8 +173,8 @@ public class HorseFluteItem extends RelicItem {
         return entity instanceof AbstractHorse ? (AbstractHorse) entity : null;
     }
 
-    public void catchHorse(AbstractHorse horse, Entity player, ItemStack stack) {
-        if (horse.isDeadOrDying() || (horse.getOwnerUUID() != null && !horse.getOwnerUUID().equals(player.getUUID()))
+    public void catchHorse(AbstractHorse horse, Entity entity, ItemStack stack) {
+        if (horse.isDeadOrDying() || (horse.getOwnerUUID() != null && !horse.getOwnerUUID().equals(entity.getUUID()))
                 || (horse.getOwnerUUID() == null && !horse.isTamed()))
             return;
 
@@ -183,7 +183,8 @@ public class HorseFluteItem extends RelicItem {
         Vec3 pos = horse.position();
 
         if (NBTUtils.getString(stack, TAG_UUID, "").equals(horse.getUUID().toString()) && horse.walkDist > 25) {
-            addExperience(player, stack, Math.round(horse.walkDist / 25));
+            if (entity instanceof LivingEntity living)
+                spreadExperience(living, stack, Math.round(horse.walkDist / 25));
 
             horse.walkDist = 0;
         }

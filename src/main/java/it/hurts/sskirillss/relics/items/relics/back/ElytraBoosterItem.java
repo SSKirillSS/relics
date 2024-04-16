@@ -231,7 +231,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
 
         int left = sum > capacity ? time - (sum - capacity) : time;
 
-        booster.addExperience(player, slotStack, (int) Math.floor(left / 10F));
+        booster.spreadExperience(player, slotStack, (int) Math.floor(left / 10F));
 
         ItemStack result = heldStack.getCraftingRemainingItem();
 

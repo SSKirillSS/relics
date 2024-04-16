@@ -3,7 +3,7 @@ package it.hurts.sskirillss.relics.api.events.leveling;
 import it.hurts.sskirillss.relics.api.events.base.RelicEvent;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.Cancelable;
 
@@ -15,8 +15,8 @@ public class ExperienceAddEvent extends RelicEvent {
     @Setter
     private int amount;
 
-    public ExperienceAddEvent(@Nullable Player player, ItemStack stack, int amount) {
-        super(player, stack);
+    public ExperienceAddEvent(@Nullable LivingEntity entity, ItemStack stack, int amount) {
+        super(entity, stack);
 
         this.amount = amount;
     }

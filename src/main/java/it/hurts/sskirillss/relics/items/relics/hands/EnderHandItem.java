@@ -111,7 +111,7 @@ public class EnderHandItem extends RelicItem implements IRenderableCurio {
 
             int distance = (int) Math.round(targetPos.distanceTo(currentPos));
 
-            addExperience(player, stack, 1 + Math.round(distance * 0.1F));
+            spreadExperience(player, stack, 1 + Math.round(distance * 0.1F));
         }
     }
 

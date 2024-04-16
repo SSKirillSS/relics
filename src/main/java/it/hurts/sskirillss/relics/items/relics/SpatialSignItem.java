@@ -102,7 +102,7 @@ public class SpatialSignItem extends RelicItem {
             if (player.tickCount % 20 == 0 && !worldIn.isClientSide()) {
                 NBTUtils.setInt(stack, TAG_TIME, --time);
 
-                addExperience(player, stack, 1);
+                spreadExperience(player, stack, 1);
             }
 
             if (time <= 0) {

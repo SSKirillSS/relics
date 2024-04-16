@@ -4,8 +4,6 @@ import it.hurts.sskirillss.octolib.config.data.ConfigContext;
 import it.hurts.sskirillss.octolib.config.data.OctoConfig;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.capability.utils.CapabilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
@@ -13,12 +11,15 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacket;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -28,7 +29,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,9 +40,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -281,8 +280,8 @@ public interface IRelicItem {
         return addExperience(null, stack, amount);
     }
 
-    default boolean addExperience(Entity entity, ItemStack stack, int amount) {
-        ExperienceAddEvent event = new ExperienceAddEvent(entity instanceof Player ? (Player) entity : null, stack, amount);
+    default boolean addExperience(@Nullable LivingEntity entity, ItemStack stack, int amount) {
+        ExperienceAddEvent event = new ExperienceAddEvent(entity instanceof LivingEntity ? entity : null, stack, amount);
 
         MinecraftForge.EVENT_BUS.post(event);
 
@@ -295,19 +294,36 @@ public interface IRelicItem {
         return false;
     }
 
-    default void dropAllocableExperience(Level level, Vec3 pos, ItemStack stack, int amount) {
-        dropAllocableExperience(level, pos, stack, amount, 0.75F);
+    default void spreadExperience(LivingEntity entity, ItemStack stack, int experience) {
+        spreadExperience(experience, 0.25D, entity, stack);
     }
 
-    default void dropAllocableExperience(Level level, Vec3 pos, ItemStack stack, int amount, float priority) {
-        dropExperience(level, pos, level.getRandom().nextFloat() <= priority ? stack : ItemStack.EMPTY, amount);
+    default void spreadExperience(int experience, double percentage, LivingEntity entity, ItemStack stack) {
+        boolean isMaxLevel = isMaxLevel(stack);
+
+        int toSpread = isMaxLevel ? experience : (int) Math.ceil(experience * percentage);
+
+        if (!isMaxLevel)
+            addExperience(entity, stack, experience);
+
+        if (toSpread <= 0)
+            return;
+
+        List<ItemStack> relics = new ArrayList<>();
+
+        for (RelicContainer source : RelicContainer.values())
+            relics.addAll(source.gatherRelics().apply(entity).stream().filter(entry -> !isMaxLevel(entry) && !stack.equals(entry, true)).toList());
+
+        if (relics.isEmpty())
+            return;
+
+        ItemStack relicStack = relics.get(entity.level().getRandom().nextInt(relics.size()));
+
+        if (relicStack.getItem() instanceof IRelicItem relic)
+            relic.addExperience(entity, relicStack, toSpread);
     }
 
     default void dropExperience(Level level, Vec3 pos, int amount) {
-        dropExperience(level, pos, ItemStack.EMPTY, amount);
-    }
-
-    default void dropExperience(Level level, Vec3 pos, ItemStack stack, int amount) {
         if (amount <= 0)
             return;
 
@@ -320,9 +336,6 @@ public interface IRelicItem {
 
             orb.setPos(pos);
             orb.setExperience(amount / orbs);
-
-            if (stack != null && !stack.isEmpty())
-                orb.setStack(stack);
 
             orb.setDeltaMovement(
                     (-1 + 2 * random.nextFloat()) * 0.15F,

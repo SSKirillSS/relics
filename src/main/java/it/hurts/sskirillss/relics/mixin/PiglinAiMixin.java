@@ -32,14 +32,16 @@ public abstract class PiglinAiMixin {
         if (optional.isEmpty())
             return;
 
-        ItemStack stack = EntityUtils.findEquippedCurio(optional.get(), ItemRegistry.BASTION_RING.get());
+        Player player = optional.get();
+
+        ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.BASTION_RING.get());
 
         if (stack.getItem() instanceof IRelicItem relic) {
             for (int i = 0; i < Math.round(relic.getAbilityValue(stack, "trade", "rolls")); i++) {
                 if (piglin.getRandom().nextBoolean()) {
                     PiglinAi.throwItems(piglin, getBarterResponseItems(piglin));
 
-                    relic.dropAllocableExperience(piglin.level(), piglin.getEyePosition(), stack, 3);
+                    relic.spreadExperience(player, stack, 3);
                 }
             }
 

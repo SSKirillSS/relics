@@ -104,7 +104,7 @@ public class MagicMirrorItem extends RelicItem {
 
         Vec3 pos = data.getRight();
 
-        addExperience(player, stack, (int) (1 + (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
+        spreadExperience(player, stack, (int) (1 + (Math.round((player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z()))
                 * DimensionType.getTeleportationScale(player.level().dimensionType(), data.getLeft().dimensionType()))) / 50)));
 
         player.teleportTo(data.getLeft(), pos.x() + 0.5F, pos.y() + 1.0F, pos.z() + 0.5F, player.getYRot(), player.getXRot());

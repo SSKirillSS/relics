@@ -107,7 +107,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
         if (player.isSwimming()) {
             if (player.tickCount % 20 == 0)
-                addExperience(player, stack, 1);
+                spreadExperience(player, stack, 1);
 
             if (swimmingDuration < getAbilityValue(stack, "swimming", "duration"))
                 NBTUtils.setInt(stack, TAG_SWIMMING_DURATION, swimmingDuration + 1);
@@ -123,7 +123,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
         if (player.isSprinting() && player.level().isRainingAt(player.blockPosition()) && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
             if (player.tickCount % 20 == 0)
-                addExperience(player, stack, 1);
+                spreadExperience(player, stack, 1);
 
             if (slippingDuration < getAbilityValue(stack, "slipping", "duration") && player.tickCount % 4 == 0)
                 NBTUtils.setInt(stack, TAG_SLIPPING_DURATION, slippingDuration + 1);

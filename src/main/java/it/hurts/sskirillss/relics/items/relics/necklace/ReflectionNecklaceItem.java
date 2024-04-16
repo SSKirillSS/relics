@@ -143,7 +143,7 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
                 }
             }
 
-            addExperience(player, stack, (int) Math.floor(charge / 10F));
+            spreadExperience(player, stack, (int) Math.floor(charge / 10F));
 
             NBTUtils.setDouble(stack, TAG_CHARGE, 0);
             NBTUtils.setInt(stack, TAG_TIME, 0);

@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.system.casts.handlers;
 
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastSource;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityCache;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityReference;
 import net.minecraft.world.entity.player.Player;
@@ -28,8 +28,8 @@ public class CacheHandler {
 
         LinkedHashMap<AbilityReference, AbilityCache> references = new LinkedHashMap<>();
 
-        for (CastSource source : CastSource.values()) {
-            for (AbilityReference reference : source.processInventory().apply(player)) {
+        for (RelicContainer source : RelicContainer.values()) {
+            for (AbilityReference reference : source.gatherAbilities().apply(player)) {
                 ItemStack stack = reference.getSlot().gatherStack(player);
 
                 if (!(stack.getItem() instanceof IRelicItem relic))

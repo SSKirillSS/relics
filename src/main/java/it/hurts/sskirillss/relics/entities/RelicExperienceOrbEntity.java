@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -19,22 +19,14 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RelicExperienceOrbEntity extends Entity {
     private static final EntityDataAccessor<Integer> EXPERIENCE = SynchedEntityData.defineId(RelicExperienceOrbEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<ItemStack> STACK = SynchedEntityData.defineId(RelicExperienceOrbEntity.class, EntityDataSerializers.ITEM_STACK);
 
     public RelicExperienceOrbEntity(EntityType<? extends RelicExperienceOrbEntity> type, Level level) {
         super(type, level);
-    }
-
-    public ItemStack getStack() {
-        return this.getEntityData().get(STACK);
-    }
-
-    public void setStack(ItemStack stack) {
-        this.getEntityData().set(STACK, stack);
     }
 
     public static int getMaxExperience() {
@@ -56,15 +48,12 @@ public class RelicExperienceOrbEntity extends Entity {
     }
 
     private List<ItemStack> getUpgradeableRelics(Player player) {
-        return EntityUtils.getEquippedRelics(player).stream().filter(stack -> {
-            IRelicItem relic = (IRelicItem) stack.getItem();
+        List<ItemStack> relics = new ArrayList<>();
 
-            return !relic.isMaxLevel(stack);
-        }).toList();
-    }
+        for (RelicContainer source : RelicContainer.values())
+            relics.addAll(source.gatherRelics().apply(player).stream().filter(entry -> !((IRelicItem) entry.getItem()).isMaxLevel(entry)).toList());
 
-    private List<ItemStack> getSuitableRelics(Player player) {
-        return getUpgradeableRelics(player).stream().filter(stack -> getStack().isEmpty() || stack.getItem() == getStack().getItem()).toList();
+        return relics;
     }
 
     @Override
@@ -110,12 +99,12 @@ public class RelicExperienceOrbEntity extends Entity {
 
                 if (this.position().distanceTo(player.position()) <= player.getBbWidth() * 1.25F) {
                     List<ItemStack> upgradeable = getUpgradeableRelics(player);
-                    List<ItemStack> suitable = getSuitableRelics(player);
 
-                    ItemStack stack = suitable.isEmpty() ? upgradeable.get(random.nextInt(upgradeable.size())) : suitable.get(random.nextInt(suitable.size()));
-                    IRelicItem relic = (IRelicItem) stack.getItem();
+                    if (!upgradeable.isEmpty()) {
+                        ItemStack stack = upgradeable.get(random.nextInt(upgradeable.size()));
 
-                    if (relic.addExperience(player, stack, this.getExperience())) {
+                        ((IRelicItem) stack.getItem()).spreadExperience(player, stack, this.getExperience());
+
                         this.discard();
 
                         this.level().playSound(null, this.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.MASTER, 0.5F, 1.25F + this.level().getRandom().nextFloat() * 0.75F);
@@ -146,19 +135,16 @@ public class RelicExperienceOrbEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         setExperience(tag.getInt("experience"));
-        setStack(ItemStack.of(tag.getCompound("stack")));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("experience", getExperience());
-        getStack().save(tag.getCompound("stack"));
     }
 
     @Override
     protected void defineSynchedData() {
         entityData.define(EXPERIENCE, 0);
-        entityData.define(STACK, ItemStack.EMPTY);
     }
 
     @Override

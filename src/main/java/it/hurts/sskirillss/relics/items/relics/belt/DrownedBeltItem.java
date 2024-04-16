@@ -183,7 +183,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
             if (duration < 10 || enchantment <= 0)
                 return;
 
-            relic.addExperience(player, stack, enchantment);
+            relic.spreadExperience(player, stack, enchantment);
 
             player.getCooldowns().addCooldown(trident.getItem(), (int) Math.round(relic.getAbilityValue(stack, "riptide", "cooldown") * enchantment * 20));
         }

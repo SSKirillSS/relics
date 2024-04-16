@@ -273,7 +273,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
                     player.getY(), target.getZ())) > relic.getAbilityValue(stack, "backstab", "distance"))
                 return;
 
-            relic.dropAllocableExperience(player.level(), player.getEyePosition(), stack, Math.round(event.getAmount() * 0.5F));
+            relic.spreadExperience(player, stack, Math.round(event.getAmount() * 0.5F));
 
             event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "backstab", "damage")));
 

@@ -214,7 +214,7 @@ public class SporeSackItem extends RelicItem {
 
             relic.addSpores(stack, -1);
 
-            relic.addExperience(player, stack, 1);
+            relic.spreadExperience(player, stack, 1);
         }
     }
 }
