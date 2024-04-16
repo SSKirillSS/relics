@@ -14,6 +14,8 @@ public class Backgrounds {
     public static final ResourceLocation CAVE = background("cave");
     public static final ResourceLocation PLAINS = background("plains");
     public static final ResourceLocation END = background("end");
+    public static final ResourceLocation DESERT = background("desert");
+    public static final ResourceLocation JUNGLE = background("jungle");
 
     public static ResourceLocation background(String name) {
         return background(Reference.MODID, name);
