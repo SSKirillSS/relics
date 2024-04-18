@@ -4,6 +4,7 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityCache;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityReference;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
@@ -25,6 +26,9 @@ public class CacheHandler {
             return;
 
         Player player = event.player;
+
+        if (!(player instanceof LocalPlayer))
+            return;
 
         LinkedHashMap<AbilityReference, AbilityCache> references = new LinkedHashMap<>();
 
