@@ -58,6 +58,22 @@ public class LivingEntityMixin {
                 new PacketSyncEntityEffects(entity.getId(), tag, PacketSyncEntityEffects.Action.ADD));
     }
 
+    @Inject(method = "onEffectUpdated", at = @At("TAIL"))
+    protected void onEffectUpdated(MobEffectInstance effect, boolean forced, Entity target, CallbackInfo ci) {
+        LivingEntity entity = (LivingEntity) (Object) this;
+        Level level = entity.getCommandSenderWorld();
+
+        if (level.isClientSide())
+            return;
+
+        CompoundTag tag = new CompoundTag();
+
+        effect.save(tag);
+
+        NetworkHandler.sendToClients(PacketDistributor.TRACKING_ENTITY.with(() -> entity),
+                new PacketSyncEntityEffects(entity.getId(), tag, PacketSyncEntityEffects.Action.UPDATE));
+    }
+
     @Inject(method = "onEffectRemoved", at = @At("TAIL"))
     protected void onEffectRemoved(MobEffectInstance effect, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;

@@ -44,10 +44,10 @@ public class PacketSyncEntityEffects {
             MobEffectInstance effect = MobEffectInstance.load(data);
 
             if (effect != null) {
-                if (action == Action.ADD)
-                    entity.addEffect(effect);
-                else if (action == Action.REMOVE)
-                    entity.removeEffect(effect.getEffect());
+                switch (action) {
+                    case ADD, UPDATE -> entity.addEffect(effect);
+                    case REMOVE -> entity.removeEffect(effect.getEffect());
+                }
             }
         });
 
@@ -56,6 +56,7 @@ public class PacketSyncEntityEffects {
 
     public enum Action {
         ADD,
-        REMOVE
+        REMOVE,
+        UPDATE
     }
 }
