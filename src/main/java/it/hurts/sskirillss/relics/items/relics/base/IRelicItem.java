@@ -294,11 +294,11 @@ public interface IRelicItem {
         return false;
     }
 
-    default void spreadExperience(LivingEntity entity, ItemStack stack, int experience) {
-        spreadExperience(experience, 0.25D, entity, stack);
+    default void spreadExperience(@Nullable LivingEntity entity, ItemStack stack, int experience) {
+        spreadExperience(entity, stack, experience, 0.25D);
     }
 
-    default void spreadExperience(int experience, double percentage, LivingEntity entity, ItemStack stack) {
+    default void spreadExperience(@Nullable LivingEntity entity, ItemStack stack, int experience, double percentage) {
         boolean isMaxLevel = isMaxLevel(stack);
 
         int toSpread = isMaxLevel ? experience : (int) Math.ceil(experience * percentage);
@@ -306,7 +306,7 @@ public interface IRelicItem {
         if (!isMaxLevel)
             addExperience(entity, stack, experience);
 
-        if (toSpread <= 0)
+        if (toSpread <= 0 || entity == null)
             return;
 
         List<ItemStack> relics = new ArrayList<>();
