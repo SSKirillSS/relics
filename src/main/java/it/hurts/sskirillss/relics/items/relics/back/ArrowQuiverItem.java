@@ -107,7 +107,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
-                                        .predicate("target", (player, stack) -> {
+                                        .castPredicate("target", (player, stack) -> {
                                             Level level = player.level();
 
                                             double maxDistance = player.getBlockReach() + 1;
@@ -153,7 +153,7 @@ public class ArrowQuiverItem extends RelicItem implements IRenderableCurio {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
-                                        .predicate("arrow", (player, stack) -> {
+                                        .castPredicate("arrow", (player, stack) -> {
                                                     int count = 0;
 
                                                     for (ItemStack arrow : getArrows(stack))

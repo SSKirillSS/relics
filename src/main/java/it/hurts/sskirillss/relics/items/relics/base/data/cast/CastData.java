@@ -1,17 +1,14 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.cast;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.IRelicContainer;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import lombok.Builder;
 import lombok.Data;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 
 @Data
@@ -24,15 +21,25 @@ public class CastData {
     private CastType type = CastType.NONE;
 
     @Builder.Default
-    private Map<String, BiFunction<Player, ItemStack, Boolean>> predicates;
+    private Map<String, BiFunction<Player, ItemStack, Boolean>> castPredicates;
+
+    @Builder.Default
+    private List<BiFunction<Player, ItemStack, Boolean>> visibilityPredicates;
 
     public static class CastDataBuilder {
-        private Map<String, BiFunction<Player, ItemStack, Boolean>> predicates = new HashMap<>();
+        private Map<String, BiFunction<Player, ItemStack, Boolean>> castPredicates = new HashMap<>();
+        List<BiFunction<Player, ItemStack, Boolean>> visibilityPredicates = new ArrayList<>();
 
         private List<IRelicContainer> container = List.of(RelicContainer.CURIOS);
 
-        public CastDataBuilder predicate(String id, BiFunction<Player, ItemStack, Boolean> predicate) {
-            predicates.put(id, predicate);
+        public CastDataBuilder castPredicate(String id, BiFunction<Player, ItemStack, Boolean> predicate) {
+            castPredicates.put(id, predicate);
+
+            return this;
+        }
+
+        public CastDataBuilder visibilityPredicate(BiFunction<Player, ItemStack, Boolean> predicate) {
+            visibilityPredicates.add(predicate);
 
             return this;
         }

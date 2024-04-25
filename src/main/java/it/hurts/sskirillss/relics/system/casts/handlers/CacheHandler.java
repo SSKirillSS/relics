@@ -43,7 +43,7 @@ public class CacheHandler {
 
                 Map<String, Boolean> predicates = cache.getPredicates();
 
-                for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> predicate : relic.getAbilityCastData(reference.getId()).getPredicates().entrySet())
+                for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> predicate : relic.getAbilityCastData(reference.getId()).getCastPredicates().entrySet())
                     predicates.put(predicate.getKey(), predicate.getValue().apply(player, stack));
 
                 cache.setPredicates(predicates);

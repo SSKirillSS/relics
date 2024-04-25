@@ -53,7 +53,7 @@ public class IceBreakerItem extends RelicItem {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
-                                        .predicate("falling", (player, stack) -> !(player.onGround() || player.isSpectator()))
+                                        .castPredicate("falling", (player, stack) -> !(player.onGround() || player.isSpectator()))
                                         .build())
                                 .stat(StatData.builder("size")
                                         .initialValue(2.5D, 5D)

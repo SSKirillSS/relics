@@ -46,6 +46,9 @@ public enum RelicContainer implements IRelicContainer {
             return entity -> {
                 List<AbilityReference> references = new ArrayList<>();
 
+                if (!(entity instanceof Player player))
+                    return references;
+
                 CuriosApi.getCuriosInventory(entity).ifPresent(itemHandler -> {
                     for (Map.Entry<String, ICurioStacksHandler> entry : itemHandler.getCurios().entrySet()) {
                         ICurioStacksHandler stacksHandler = entry.getValue();
@@ -57,7 +60,9 @@ public enum RelicContainer implements IRelicContainer {
                                 continue;
 
                             for (AbilityData abilityData : relic.getRelicData().getAbilities().getAbilities().values()) {
-                                if (!relic.canUseAbility(stack, abilityData.getId()))
+                                String id = abilityData.getId();
+
+                                if (!relic.canUseAbility(stack, id) || !relic.canSeeAbility(player, stack, id))
                                     continue;
 
                                 CastData castData = abilityData.getCastData();
@@ -110,7 +115,9 @@ public enum RelicContainer implements IRelicContainer {
                         continue;
 
                     for (AbilityData abilityData : relic.getRelicData().getAbilities().getAbilities().values()) {
-                        if (!relic.canUseAbility(stack, abilityData.getId()))
+                        String id = abilityData.getId();
+
+                        if (!relic.canUseAbility(stack, id) || !relic.canSeeAbility(player, stack, id))
                             continue;
 
                         CastData castData = abilityData.getCastData();

@@ -101,7 +101,7 @@ public class SporeSackItem extends RelicItem {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
-                                        .predicate("spore", (player, stack) -> NBTUtils.getInt(stack, TAG_SPORES, 0) > 0)
+                                        .castPredicate("spore", (player, stack) -> NBTUtils.getInt(stack, TAG_SPORES, 0) > 0)
                                         .build())
                                 .stat(StatData.builder("size")
                                         .initialValue(0.05D, 0.25D)

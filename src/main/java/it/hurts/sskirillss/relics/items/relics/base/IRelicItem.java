@@ -418,7 +418,7 @@ public interface IRelicItem {
     default boolean testAbilityCastPredicates(Player player, ItemStack stack, String ability) {
         CastData data = getAbilityCastData(ability);
 
-        for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> entry : data.getPredicates().entrySet()) {
+        for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> entry : data.getCastPredicates().entrySet()) {
             if (!entry.getValue().apply(player, stack))
                 return false;
         }
@@ -559,6 +559,15 @@ public interface IRelicItem {
 
     default boolean canUseAbility(ItemStack stack, String ability) {
         return getLevel(stack) >= getAbilityData(ability).getRequiredLevel();
+    }
+
+    default boolean canSeeAbility(Player player, ItemStack stack, String ability) {
+        for (BiFunction<Player, ItemStack, Boolean> predicate : getAbilityCastData(ability).getVisibilityPredicates()) {
+            if (!predicate.apply(player, stack))
+                return false;
+        }
+
+        return true;
     }
 
     default void randomizeStat(ItemStack stack, String ability, String stat) {
