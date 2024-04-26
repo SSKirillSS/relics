@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraftforge.client.model.SeparateTransformsModel;
 
 public class ResearchingTableRenderer implements BlockEntityRenderer<ResearchingTableTile> {
     public ResearchingTableRenderer(BlockEntityRendererProvider.Context context) {
@@ -27,23 +26,11 @@ public class ResearchingTableRenderer implements BlockEntityRenderer<Researching
 
         matrixStack.pushPose();
 
-        boolean is3d = Minecraft.getInstance().getItemRenderer().getModel(stack, tileEntity.getLevel(), null, 0) instanceof SeparateTransformsModel.Baked;
-
-        if (is3d) {
-            matrixStack.translate(0.5F, 1.15F, 0.5F);
-        } else {
-            matrixStack.translate(0.5F, 0.96F, 0.5F);
-            matrixStack.scale(1.25F, 1.25F, 1.25F);
-        }
-
+        matrixStack.translate(0.5F, 0.96F, 0.5F);
+        matrixStack.scale(1.25F, 1.25F, 1.25F);
         matrixStack.mulPose(tileEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getRotation());
-
-        if (is3d) {
-            matrixStack.mulPose(Axis.XN.rotationDegrees(90));
-        } else {
-            matrixStack.mulPose(Axis.ZN.rotationDegrees(180));
-            matrixStack.translate(-0.025F, -0.125F, 0F);
-        }
+        matrixStack.mulPose(Axis.ZN.rotationDegrees(180));
+        matrixStack.translate(0f, -0.125F, 0F);
 
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 

@@ -1,12 +1,6 @@
 {
-  "parent": "forge:item/default",
-  "base": {
-    "parent": "relics:item/rage_glove_3d"
-  },
-  "loader": "forge:separate_transforms",
-  "perspectives": {
-    "gui": {
-      "parent": "relics:item/rage_glove_2d"
+  "parent": "item/generated",
+    "textures": {
+        "layer0": "relics:item/rage_glove"
     }
-  }
 }
