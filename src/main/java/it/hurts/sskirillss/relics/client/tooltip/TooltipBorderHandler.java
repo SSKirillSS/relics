@@ -31,7 +31,7 @@ public class TooltipBorderHandler {
 
         ItemStack stack = event.getStack();
 
-        if (!(stack.getItem() instanceof IRelicItem relic) || !relic.getStyleData().getTooltip().isTextured())
+        if (!(stack.getItem() instanceof IRelicItem relic) || !relic.getStyleData().getTooltip().apply(player, stack).isTextured())
             return;
 
         GuiGraphics graphics = event.getGraphics();
@@ -120,7 +120,7 @@ public class TooltipBorderHandler {
         if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
-        TooltipData tooltip = relic.getStyleData().getTooltip();
+        TooltipData tooltip = relic.getStyleData().getTooltip().apply(Minecraft.getInstance().player, stack);
 
         if (tooltip.getBorderTop() != -1)
             event.setBorderStart(tooltip.getBorderTop());
