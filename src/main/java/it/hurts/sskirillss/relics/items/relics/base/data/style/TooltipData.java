@@ -17,5 +17,10 @@ public class TooltipData {
     private int backgroundBottom = -1;
 
     @Builder.Default
+    @Deprecated(forRemoval = true)
     private boolean textured = false;
+
+    @Builder.Default
+    @Deprecated(forRemoval = true)
+    private String icon = "";
 }

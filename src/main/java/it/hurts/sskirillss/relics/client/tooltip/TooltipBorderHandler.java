@@ -31,7 +31,12 @@ public class TooltipBorderHandler {
 
         ItemStack stack = event.getStack();
 
-        if (!(stack.getItem() instanceof IRelicItem relic) || !relic.getStyleData().getTooltip().apply(player, stack).isTextured())
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return;
+
+        TooltipData tooltip = relic.getStyleData().getTooltip().apply(player, stack);
+
+        if (!tooltip.isTextured())
             return;
 
         GuiGraphics graphics = event.getGraphics();
@@ -43,7 +48,7 @@ public class TooltipBorderHandler {
         int x = event.getX();
         int y = event.getY();
 
-        String id = ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath();
+        String id = tooltip.getIcon().isEmpty() ? ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() : tooltip.getIcon();
 
         ResourceLocation texture = new ResourceLocation(Reference.MODID, "textures/gui/tooltip/frame/" + id + "_frame.png");
 
