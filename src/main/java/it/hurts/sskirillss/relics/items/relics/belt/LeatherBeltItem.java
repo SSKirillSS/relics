@@ -78,7 +78,7 @@ public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            relic.spreadExperience(entity, stack, 1);
+            relic.addExperience(entity, stack, 1);
         }
     }
 
