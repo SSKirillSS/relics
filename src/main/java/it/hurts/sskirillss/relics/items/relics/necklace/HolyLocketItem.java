@@ -4,13 +4,13 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
+import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
+import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
-import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -24,6 +24,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
@@ -33,13 +34,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -47,20 +42,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.antlr.v4.runtime.CodePointBuffer;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class HolyLocketItem extends RelicItem implements IRenderableCurio {
-    public static final String TAG_CHARGE = "charge";
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -69,7 +61,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
                         .ability(AbilityData.builder("belief")
                                 .active(CastData.builder()
-                                        .type(CastType.CYCLICAL)
+                                        .type(CastType.INSTANTANEOUS)
                                         .build())
                                 .stat(StatData.builder("radius")
                                         .initialValue(2D, 6D)
@@ -78,7 +70,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                         .build())
                                 .stat(StatData.builder("amount")
                                         .initialValue(0.1D, 0.25D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 100))
                                         .build())
                                 .build())
@@ -86,7 +78,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                         .ability(AbilityData.builder("buffer")
                                 .stat(StatData.builder("radius")
                                         .initialValue(2D, 6D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.35D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("capacity")
@@ -130,15 +122,8 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ability.equals("belief")) {
-            if (stage == CastStage.START) {
-                player.sendSystemMessage(Component.nullToEmpty(ability));
-            }
-        }
-        if (ability.equals("blessing")) {
-            if (stage == CastStage.START) {
-                player.sendSystemMessage(Component.nullToEmpty(ability));
-
-            }
+            boolean switchable = NBTUtils.getBoolean(stack, "switchable", true);
+            NBTUtils.setBoolean(stack, "switchable", !switchable);
         }
 
     }
@@ -149,33 +134,36 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                 !((player.tickCount % 80 == 0)))
             return;
         Level level = player.getCommandSenderWorld();
-        List<Monster> monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(32));
+        List<Monster> monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getAbilityValue(stack, "buffer", "radius")));
 
-        if (!monsters.isEmpty() && level.isClientSide)
+        if (!monsters.isEmpty() && level.isClientSide) {
             addCharge(stack, 1);
+            spreadExperience(player, stack, monsters.size() / 2);
+        }
 
         for (Monster entities : monsters) {
-            if (getAbilityValue(stack, "buffer", "radius") < player.position().distanceTo(entities.position()))
-                continue;
             entities.hurt(level.damageSources().generic(), 2);
             player.tickCount = 0;
         }
 
     }
 
-    public void addCharge(ItemStack stack, int amount) {
-        if (new Random().nextFloat() <= getAbilityValue(stack, "buffer", "chance")
-                || getMaxCharges(stack) <= getSpores(stack))
-            return;
-        NBTUtils.setInt(stack, TAG_CHARGE, getSpores(stack) + amount);
-    }
-
     public int getMaxCharges(ItemStack stack) {
         return (int) getAbilityValue(stack, "buffer", "capacity");
     }
 
-    public int getSpores(ItemStack stack) {
-        return NBTUtils.getInt(stack, TAG_CHARGE, 0);
+    public void setCharges(ItemStack stack, int amount) {
+        NBTUtils.setInt(stack, "buffer", Mth.clamp(amount, 0, getMaxCharges(stack)));
+    }
+
+    public void addCharge(ItemStack stack, int amount) {
+        if (amount < 0 && new Random().nextFloat() <= getAbilityValue(stack, "buffer", "chance"))
+            return;
+        setCharges(stack, getCharges(stack) + amount);
+    }
+
+    public int getCharges(ItemStack stack) {
+        return NBTUtils.getInt(stack, "buffer", 0);
     }
 
     @Override
@@ -223,5 +211,75 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     @Override
     public List<String> headParts() {
         return Lists.newArrayList("body");
+    }
+
+    @Mod.EventBusSubscriber
+    static class Events {
+        @SubscribeEvent
+        public static void onLivingHurt(LivingHurtEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
+
+            if (!(stack.getItem() instanceof HolyLocketItem relic) || !(NBTUtils.getBoolean(stack, "switchable", true)))
+                return;
+            Level level = player.level();
+
+            if (level.isClientSide())
+                return;
+            int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 1);
+
+            if (event.getAmount() >= 1)
+                relic.spreadExperience(player, stack, 1 + amount / 2);
+
+            relic.addCharge(stack, amount);
+            event.setAmount(event.getAmount() - amount);
+
+        }
+
+        @SubscribeEvent
+        public static void onLivingHeal(LivingHealEvent event) {
+            LivingEntity entity = event.getEntity();
+            Level level = entity.getCommandSenderWorld();
+            Player player = Minecraft.getInstance().player;
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
+
+            if ((NBTUtils.getBoolean(stack, "switchable", true)) || !(stack.getItem() instanceof HolyLocketItem relic))
+                return;
+
+            int buffer = relic.getCharges(stack);
+            if (entity.getStringUUID().equals(player.getStringUUID()) && buffer >= 1) {
+                int bufferMax = relic.getMaxCharges(stack);
+
+                double fillPercentage = (double) buffer / bufferMax;
+                int healAmount = (int) Math.ceil(fillPercentage * 2);
+
+
+                relic.addCharge(stack, -healAmount);
+
+                event.setAmount(event.getAmount() + healAmount);
+                return;
+            }
+
+            for (LivingEntity creatures : level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(relic.getAbilityValue(stack, "belief", "radius")))) {
+                if (entity.getStringUUID().equals(creatures.getStringUUID()))
+                    continue;
+
+                int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 1);
+
+                LifeEssenceEntity essence = new LifeEssenceEntity(creatures, amount);
+                essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
+                essence.setOwner(creatures);
+                level.addFreshEntity(essence);
+
+                relic.addCharge(stack, amount);
+                event.setAmount(event.getAmount() - amount);
+                if (event.getAmount() >= 1)
+                    relic.spreadExperience(creatures, stack, 1 + amount);
+
+            }
+        }
+
     }
 }

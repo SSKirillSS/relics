@@ -66,13 +66,14 @@
   "tooltip.relics.enders_hand.ability.swap.predicate.target": "Взгляд на цель",
 
   "item.relics.holy_locket": "Священный медальон",
-  "tooltip.relics.holy_locket.description": "+1 ед. опыта за каждое срабатывание способности «Божественное благословение» + 1 ед. опыта за каждую украденную единицу исцеления.",
-  "tooltip.relics.holy_locket.ability.steal": "Божественное благословение",
-  "tooltip.relics.holy_locket.ability.steal.description": "Перенаправляет часть регенерируемого здоровья ближайших существ носителю реликвии.",
-  "tooltip.relics.holy_locket.ability.steal.stat.amount.title": "Количество:",
-  "tooltip.relics.holy_locket.ability.steal.stat.amount.value": "%1$s%% от регенерируемого здоровья.",
-  "tooltip.relics.holy_locket.ability.steal.stat.radius.title": "Радиус:",
-  "tooltip.relics.holy_locket.ability.steal.stat.radius.value": "%1$s блоков.",
+  "tooltip.relics.holy_locket.description": "+1 ед. опыта за каждое срабатывание способности «Покаяние», +1 ед. опыта за каждую украденную единицу исцеления, +1 ед. опыта за конвертированный урон.",
+  "tooltip.relics.holy_locket.ability.belief": "Верование",
+  "tooltip.relics.holy_locket.ability.buffer": "Покаяние",
+  "tooltip.relics.holy_locket.ability.blessing": "Благословение",
+  "tooltip.relics.holy_locket.ability.belief.description": "Перенаправляет часть регенерируемого здоровья ближайших существ носителю реликвии.",
+  "tooltip.relics.holy_locket.ability.buffer.description": "Пассивно выжигает здоровье ближайшей нежити, заполняя при этом внутренний буфер верования.",
+  "tooltip.relics.holy_locket.ability.blessing.description": "Временно дарует игроку полную неуязвимость к любым типам урона, расходуя при этом буфер верования.",
+
 
   "item.relics.magic_mirror": "Волшебное зеркало",
   "tooltip.relics.magic_mirror.description": "+1 ед. опыта за каждое использование способности «Кротовая нора» + 1 ед. опыта за каждые 50 блоков до точки телепортации.",
@@ -433,5 +434,6 @@
 
   "command.relics.base.not_relic": "Предмет в руке должен являться реликвией!",
 
-  "key.relics.ability_list": "Открыть интерфейс активных способностей"
+  "key.relics.ability_list": "Открыть интерфейс активных способностей",
+  "tooltip.relics.holy_locket.ability.steal": "Divine Blessing"
 }
