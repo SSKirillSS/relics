@@ -16,6 +16,7 @@ import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityCache;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityReference;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
@@ -146,6 +147,23 @@ public class HUDRenderHandler {
         poseStack.popPose();
     }
 
+    public static void switchTextureAbility(LocalPlayer player, int realIndex) {
+        int relativeIndex = getRelativeIndex(realIndex);
+
+        AbilityReference ability = getAbilityByIndex(relativeIndex);
+        ItemStack stack = ability.getSlot().gatherStack(player);
+
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return;
+
+        boolean switchable = NBTUtils.getBoolean(stack, "switchable", true);
+        if (switchable && relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()).equals("belief")) {
+            ResourceLocation switchCard = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()) + "2" + ".png");
+
+            RenderSystem.setShaderTexture(0, switchCard);
+        }
+    }
+
     private static void drawAbility(GuiGraphics guiGraphics, LocalPlayer player, int realIndex, float x, float y, float partialTicks) {
         int relativeIndex = getRelativeIndex(realIndex);
 
@@ -167,6 +185,8 @@ public class HUDRenderHandler {
         ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()) + ".png");
 
         RenderSystem.setShaderTexture(0, card);
+
+        switchTextureAbility(player, realIndex);
 
         RenderSystem.enableBlend();
 
