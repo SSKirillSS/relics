@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -33,7 +34,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -49,6 +54,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class HolyLocketItem extends RelicItem implements IRenderableCurio {
@@ -212,72 +218,47 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     @Mod.EventBusSubscriber
     static class Events {
         @SubscribeEvent
-        public static void onLivingHurt(LivingHurtEvent event) {
-            if (!(event.getEntity() instanceof Player player))
-                return;
-
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
-
-            if (!(stack.getItem() instanceof HolyLocketItem relic) || !(NBTUtils.getBoolean(stack, "toggled", true)))
-                return;
-            
-            Level level = player.level();
-
-            if (level.isClientSide())
-                return;
-            
-            int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 1);
-
-            if (event.getAmount() >= 1)
-                relic.spreadExperience(player, stack, 1 + amount / 2);
-
-            relic.addCharge(stack, amount);
-            
-            event.setAmount(event.getAmount() - amount);
-        }
-
-        @SubscribeEvent
         public static void onLivingHeal(LivingHealEvent event) {
             LivingEntity entity = event.getEntity();
             Level level = entity.getCommandSenderWorld();
-            Player player = Minecraft.getInstance().player; // TODO: Get nearest players from the healed entity
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
-            
-            if ((NBTUtils.getBoolean(stack, "toggled", true)) || !(stack.getItem() instanceof HolyLocketItem relic))
+
+            Player playerLocal = Minecraft.getInstance().player;
+            ItemStack stackLocal = EntityUtils.findEquippedCurio(playerLocal, ItemRegistry.HOLY_LOCKET.get());
+
+            if (playerLocal == null)
                 return;
 
-            int buffer = relic.getCharges(stack);
-            
-            if (entity.getStringUUID().equals(player.getStringUUID()) && buffer >= 1) {
-                int healAmount = (int) Math.ceil(((double) buffer / relic.getMaxCharges(stack)) * 2D);
-                
-                relic.addCharge(stack, -healAmount);
+            if (stackLocal.getItem() instanceof HolyLocketItem relic && !(NBTUtils.getBoolean(stackLocal, "toggled", true))) {
+                for (LivingEntity entities : level.getEntitiesOfClass(LivingEntity.class, playerLocal.getBoundingBox().inflate(relic.getAbilityValue(stackLocal, "belief", "radius")))) {
+                    if (entities.getStringUUID().equals(playerLocal.getStringUUID()))
+                        continue;
 
-                event.setAmount(event.getAmount() + healAmount);
-                
+                    int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stackLocal, "belief", "amount")), 1);
+
+                    entities.hurt(level.damageSources().generic(), amount);
+
+                    relic.spreadExperience(playerLocal, stackLocal, amount);
+                    relic.addCharge(stackLocal, 1);
+                }
+
                 return;
             }
 
-            for (LivingEntity creatures : level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(relic.getAbilityValue(stack, "belief", "radius")))) {
-                if (entity.getStringUUID().equals(creatures.getStringUUID()))
+            for (LivingEntity entities : level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(32))) {
+                ItemStack stack = EntityUtils.findEquippedCurio(entities, ItemRegistry.HOLY_LOCKET.get());
+
+                if (!(stack.getItem() instanceof HolyLocketItem relic) || relic.getAbilityValue(stack, "belief", "radius") < entities.position().distanceTo(entity.position())
+                        || entity.getStringUUID().equals(entities.getStringUUID()))
                     continue;
 
-                int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 1);
+                int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 0.5);
 
-                LifeEssenceEntity essence = new LifeEssenceEntity(creatures, amount);
-                
-                essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
-                essence.setOwner(creatures);
-                
-                level.addFreshEntity(essence);
+                Objects.requireNonNull(level.getPlayerByUUID(playerLocal.getUUID())).heal(amount);
 
-                relic.addCharge(stack, amount);
-                
-                event.setAmount(event.getAmount() - amount);
-                
-                if (event.getAmount() >= 1)
-                    relic.spreadExperience(creatures, stack, 1 + amount);
+                relic.spreadExperience(playerLocal, stack, amount);
+                relic.addCharge(stack, 1);
             }
+
         }
     }
 }
