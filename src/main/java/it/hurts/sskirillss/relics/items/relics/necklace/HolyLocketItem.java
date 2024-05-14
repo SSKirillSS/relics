@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -98,17 +99,8 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .ability(AbilityData.builder("blessing")
                                 .active(CastData.builder()
-                                        .type(CastType.TOGGLEABLE)
-                                        .build())
-                                .stat(StatData.builder("radius")
-                                        .initialValue(2D, 6D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
-                                        .build())
-                                .stat(StatData.builder("amount")
-                                        .initialValue(0.1D, 0.25D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> (int) (MathUtils.round(value, 3) * 100))
+                                        .type(CastType.INSTANTANEOUS)
+                                        .castPredicate("blessing", (player, stack) -> getCharges(stack) > 0)
                                         .build())
                                 .build())
                         .build())
@@ -123,20 +115,44 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        if (ability.equals("belief"))
+        if (ability.equals("belief")) {
             NBTUtils.setBoolean(stack, "toggled", !NBTUtils.getBoolean(stack, "toggled", true));
+        }
+
+        if (ability.equals("blessing")) {
+            NBTUtils.setBoolean(stack, "toggledBlessing", false);
+
+            Objects.requireNonNull(player.getCommandSenderWorld().getPlayerByUUID(player.getUUID())).setInvulnerable(true);
+
+            setAbilityCooldown(stack, "blessing", getCharges(stack) * 20);
+
+        }
+
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !((player.tickCount % 80 == 0)))
+        if (!(slotContext.entity() instanceof Player player))
+            return;
+
+        if (!(NBTUtils.getBoolean(stack, "toggledBlessing", true))) {
+
+            addCharge(stack, -0.2F);
+            if (getAbilityCooldown(stack, "blessing") == 0) {
+                Objects.requireNonNull(player.getCommandSenderWorld().getPlayerByUUID(player.getUUID())).setInvulnerable(false);
+
+                NBTUtils.setBoolean(stack, "toggledBlessing", true);
+            }
+        }
+
+        if (!(player.tickCount % 80 == 0))
             return;
 
         Level level = player.getCommandSenderWorld();
 
         List<Monster> monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getAbilityValue(stack, "buffer", "radius")));
 
-        if (!monsters.isEmpty() && level.isClientSide) {
+        if (!monsters.isEmpty() && !level.isClientSide) {
             addCharge(stack, 1);
 
             spreadExperience(player, stack, monsters.size() / 2);
@@ -157,11 +173,11 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
         NBTUtils.setInt(stack, "buffer", Mth.clamp(amount, 0, getMaxCharges(stack)));
     }
 
-    public void addCharge(ItemStack stack, int amount) {
-        if (amount < 0 && new Random().nextFloat() <= getAbilityValue(stack, "buffer", "chance"))
+    public void addCharge(ItemStack stack, float amount) {
+        if (new Random().nextFloat() <= getAbilityValue(stack, "buffer", "chance"))
             return;
-        
-        setCharges(stack, getCharges(stack) + amount);
+
+        setCharges(stack, (int) (getCharges(stack) + amount));
     }
 
     public int getCharges(ItemStack stack) {
@@ -222,11 +238,12 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
             LivingEntity entity = event.getEntity();
             Level level = entity.getCommandSenderWorld();
 
-            Player playerLocal = Minecraft.getInstance().player;
+            if (Minecraft.getInstance().player == null)
+                return;
+
+            Player playerLocal = level.getPlayerByUUID(Minecraft.getInstance().player.getUUID());
             ItemStack stackLocal = EntityUtils.findEquippedCurio(playerLocal, ItemRegistry.HOLY_LOCKET.get());
 
-            if (playerLocal == null)
-                return;
 
             if (stackLocal.getItem() instanceof HolyLocketItem relic && !(NBTUtils.getBoolean(stackLocal, "toggled", true))) {
                 for (LivingEntity entities : level.getEntitiesOfClass(LivingEntity.class, playerLocal.getBoundingBox().inflate(relic.getAbilityValue(stackLocal, "belief", "radius")))) {
@@ -258,7 +275,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                 relic.spreadExperience(playerLocal, stack, amount);
                 relic.addCharge(stack, 1);
             }
-
         }
     }
 }
