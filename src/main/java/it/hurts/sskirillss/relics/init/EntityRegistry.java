@@ -37,6 +37,12 @@ public class EntityRegistry {
                     .build("life_essence")
     );
 
+    public static final RegistryObject<EntityType<DeathEssenceEntity>> DEATH_ESSENCE = ENTITIES.register("death_essence", () ->
+            EntityType.Builder.<DeathEssenceEntity>of(DeathEssenceEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .build("life_essence")
+    );
+
     public static final RegistryObject<EntityType<StalactiteEntity>> STALACTITE = ENTITIES.register("stalactite", () ->
             EntityType.Builder.<StalactiteEntity>of(StalactiteEntity::new, MobCategory.MISC)
                     .sized(0.35F, 0.35F)

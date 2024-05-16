@@ -19,54 +19,56 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public class LifeEssenceEntity extends ThrowableProjectile {
+public class DeathEssenceEntity extends ThrowableProjectile {
     @Setter
     @Getter
-    private float heal;
+    private float damage;
 
-    public LifeEssenceEntity(EntityType<? extends LifeEssenceEntity> type, Level worldIn) {
+    private static LivingEntity target;
+
+    public DeathEssenceEntity(EntityType<? extends DeathEssenceEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public LifeEssenceEntity(LivingEntity throwerIn, float heal) {
-        super(EntityRegistry.LIFE_ESSENCE.get(), throwerIn.getCommandSenderWorld());
+    public DeathEssenceEntity(LivingEntity throwerIn, LivingEntity targetIn, float damage) {
+        super(EntityRegistry.DEATH_ESSENCE.get(), throwerIn.getCommandSenderWorld());
 
         this.setOwner(throwerIn);
 
-        this.heal = heal;
+        target = targetIn;
+
+        this.damage = damage;
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (level().isClientSide())
+        if (level().isClientSide() || target == null)
             return;
 
-        RandomSource random = level().getRandom();
+        double size = 0.02D + damage * 0.001D;
 
-        double size = 0.02D + heal * 0.001D;
+        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(Color.DARK_GRAY.getRGB()), 0.1F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
+                this.xo, this.yo, this.zo, 1, size, size, size, 0.01F + damage * 0.0001F);
 
-        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.1F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F),
-                this.xo, this.yo, this.zo, 1, size, size, size, 0.01F + heal * 0.0001F);
-
-        if (!(getOwner() instanceof Player player) || player.isDeadOrDying()) {
+        if (target.isDeadOrDying()) {
             this.remove(RemovalReason.KILLED);
 
             return;
         }
 
-        for (LifeEssenceEntity essence : level().getEntitiesOfClass(LifeEssenceEntity.class, this.getBoundingBox().inflate(heal * 0.05F))) {
+        for (DeathEssenceEntity essence : level().getEntitiesOfClass(DeathEssenceEntity.class, this.getBoundingBox().inflate(damage * 0.05F))) {
             if (essence.getStringUUID().equals(this.getStringUUID()) || (essence.getOwner() instanceof Player p1
                     && this.getOwner() instanceof Player p2 && !p1.getStringUUID().equals(p2.getStringUUID())))
                 continue;
 
-            setHeal(getHeal() + essence.getHeal());
+            setDamage(getDamage() + essence.getDamage());
 
             essence.remove(RemovalReason.KILLED);
         }
 
-        double distance = this.position().distanceTo(player.position().add(0, player.getBbHeight() / 2, 0));
+        double distance = this.position().distanceTo(target.position().add(0, target.getBbHeight() / 2, 0));
 
         if (distance > 0.5) {
             if (distance > 32) {
@@ -75,9 +77,11 @@ public class LifeEssenceEntity extends ThrowableProjectile {
                 return;
             }
 
-            EntityUtils.moveTowardsPosition(this, player.position().add(0, player.getBbHeight() / 2, 0), 0.25F);
+            EntityUtils.moveTowardsPosition(this, target.position().add(0, target.getBbHeight() / 2, 0), 0.25F);
         } else {
-            player.heal(heal);
+            Level level = target.getCommandSenderWorld();
+
+            target.hurt(level.damageSources().generic(), damage);
 
             this.remove(RemovalReason.KILLED);
         }
