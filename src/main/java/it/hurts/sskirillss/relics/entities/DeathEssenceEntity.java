@@ -24,7 +24,7 @@ public class DeathEssenceEntity extends ThrowableProjectile {
     @Getter
     private float damage;
 
-    private static LivingEntity target;
+    private LivingEntity target;
 
     public DeathEssenceEntity(EntityType<? extends DeathEssenceEntity> type, Level worldIn) {
         super(type, worldIn);
@@ -32,10 +32,9 @@ public class DeathEssenceEntity extends ThrowableProjectile {
 
     public DeathEssenceEntity(LivingEntity throwerIn, LivingEntity targetIn, float damage) {
         super(EntityRegistry.DEATH_ESSENCE.get(), throwerIn.getCommandSenderWorld());
-
         this.setOwner(throwerIn);
 
-        target = targetIn;
+        this.target = targetIn;
 
         this.damage = damage;
     }
@@ -49,23 +48,13 @@ public class DeathEssenceEntity extends ThrowableProjectile {
 
         double size = 0.02D + damage * 0.001D;
 
-        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(Color.DARK_GRAY.getRGB()), 0.1F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
+        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(Color.BLUE.getRGB()), 0.1F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
                 this.xo, this.yo, this.zo, 1, size, size, size, 0.01F + damage * 0.0001F);
 
         if (target.isDeadOrDying()) {
             this.remove(RemovalReason.KILLED);
 
             return;
-        }
-
-        for (DeathEssenceEntity essence : level().getEntitiesOfClass(DeathEssenceEntity.class, this.getBoundingBox().inflate(damage * 0.05F))) {
-            if (essence.getStringUUID().equals(this.getStringUUID()) || (essence.getOwner() instanceof Player p1
-                    && this.getOwner() instanceof Player p2 && !p1.getStringUUID().equals(p2.getStringUUID())))
-                continue;
-
-            setDamage(getDamage() + essence.getDamage());
-
-            essence.remove(RemovalReason.KILLED);
         }
 
         double distance = this.position().distanceTo(target.position().add(0, target.getBbHeight() / 2, 0));
