@@ -68,7 +68,7 @@ public class LifeEssenceEntity extends ThrowableProjectile {
 
         double distance = this.position().distanceTo(player.position().add(0, player.getBbHeight() / 2, 0));
 
-        if (distance > 1) {
+        if (distance > 0.5) {
             if (distance > 32) {
                 this.remove(RemovalReason.KILLED);
 
