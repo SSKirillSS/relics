@@ -3,9 +3,14 @@ package it.hurts.sskirillss.relics.items.relics.necklace;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import it.hurts.sskirillss.relics.client.models.effects.StunStarModel;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
+import it.hurts.sskirillss.relics.client.models.parts.Halo;
+import it.hurts.sskirillss.relics.client.models.parts.Wings;
 import it.hurts.sskirillss.relics.entities.DeathEssenceEntity;
 import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -29,6 +34,7 @@ import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -38,6 +44,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,12 +56,18 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.joml.Quaternionf;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -200,6 +213,9 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
         matrixStack.scale(2F, 2F, 2F);
 
+//        Wings.createBodyLayer().bakeRoot().render(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityCutout(Wings.LAYER_LOCATION.getModel())),
+//                light, OverlayTexture.NO_OVERLAY);
+
         matrixStack.popPose();
     }
 
@@ -207,12 +223,12 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     @OnlyIn(Dist.CLIENT)
     public LayerDefinition constructLayerDefinition() {
         MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0.0F);
-
         PartDefinition bone = mesh.getRoot().addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 3).addBox(-8.0F, -1.15F, -4.15F, 16.0F, 7.0F, 8.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 1.15F, 0.0F));
 
         bone.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 18).addBox(-2.6096F, -0.8646F, -0.2F, 5.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0571F, 6.6447F, -4.9F, 0.0F, 0.0F, 0.2568F));
         bone.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(12, 18).addBox(-1.0F, -1.0F, -0.5F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.15F)), PartPose.offsetAndRotation(0.0877F, 6.2393F, -5.2F, 0.0F, 0.0F, 0.7854F));
         bone.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0322F, -2.5947F, -0.225F, 2.0F, 6.0F, 1.0F, new CubeDeformation(0.05F)), PartPose.offsetAndRotation(0.0571F, 6.6447F, -4.9F, 0.0F, 0.0F, -0.004F));
+        bone.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(15, 18).addBox(-1.0F, -1.0F, -0.5F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.15F)), PartPose.offsetAndRotation(0.0877F, 6.2393F, -5.2F, 0.0F, 0.0F, 0.7854F));
 
         return LayerDefinition.create(mesh, 64, 64);
     }
@@ -224,6 +240,35 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
     @Mod.EventBusSubscriber
     static class Events {
+        @SubscribeEvent
+        public static void onPlayerRender(RenderPlayerEvent event) {
+
+            LivingEntity entity = event.getEntity();
+
+            PoseStack poseStack = event.getPoseStack();
+
+            poseStack.pushPose();
+
+            poseStack.translate(0, entity.getBbHeight() - 0.350F, 0);
+            poseStack.scale(0.575F, 0.575F, 0.575F);
+
+            Halo.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Halo.LAYER_LOCATION.getModel())),
+                    event.getPackedLight(), OverlayTexture.NO_OVERLAY);
+
+            poseStack.popPose();
+            poseStack.pushPose();
+
+            poseStack.translate(0, entity.getBbHeight() - 0.5F, 0);
+            poseStack.mulPose(Axis.YP.rotationDegrees(-entity.yBodyRot)); // yaw (поворот по вертикальной оси)
+            poseStack.mulPose(Axis.XP.rotationDegrees(entity.xRotO)); // pitch (поворот по горизонтальной оси)
+
+            Wings.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Wings.LAYER_LOCATION.getModel())),
+                    event.getPackedLight(), OverlayTexture.NO_OVERLAY);
+
+            poseStack.popPose();
+
+        }
+
         @SubscribeEvent
         public static void onPlayerHurt(LivingHurtEvent event) {
             if (!(event.getEntity() instanceof Player player))
