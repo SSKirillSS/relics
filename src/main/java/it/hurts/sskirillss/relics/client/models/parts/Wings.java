@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
 public class Wings<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "textures/mob_effect/effects/a.png"), "a");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "textures/parts/wings.png"), "wings");
     private final ModelPart bone;
     private final ModelPart bone2;
     private final ModelPart bone3;

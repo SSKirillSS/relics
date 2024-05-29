@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Entity;
 
 public class Halo<T extends Entity> extends EntityModel<T> {
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "textures/mob_effect/effects/b.png"), "a");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "textures/parts/halo.png"), "halo");
 
     private final ModelPart bone;
 

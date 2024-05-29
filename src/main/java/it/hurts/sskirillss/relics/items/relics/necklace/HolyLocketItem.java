@@ -39,7 +39,9 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleTypes;
@@ -213,9 +215,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
         matrixStack.scale(2F, 2F, 2F);
 
-//        Wings.createBodyLayer().bakeRoot().render(matrixStack, renderTypeBuffer.getBuffer(RenderType.entityCutout(Wings.LAYER_LOCATION.getModel())),
-//                light, OverlayTexture.NO_OVERLAY);
-
         matrixStack.popPose();
     }
 
@@ -228,7 +227,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
         bone.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 18).addBox(-2.6096F, -0.8646F, -0.2F, 5.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0571F, 6.6447F, -4.9F, 0.0F, 0.0F, 0.2568F));
         bone.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(12, 18).addBox(-1.0F, -1.0F, -0.5F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.15F)), PartPose.offsetAndRotation(0.0877F, 6.2393F, -5.2F, 0.0F, 0.0F, 0.7854F));
         bone.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0322F, -2.5947F, -0.225F, 2.0F, 6.0F, 1.0F, new CubeDeformation(0.05F)), PartPose.offsetAndRotation(0.0571F, 6.6447F, -4.9F, 0.0F, 0.0F, -0.004F));
-        bone.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(15, 18).addBox(-1.0F, -1.0F, -0.5F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.15F)), PartPose.offsetAndRotation(0.0877F, 6.2393F, -5.2F, 0.0F, 0.0F, 0.7854F));
 
         return LayerDefinition.create(mesh, 64, 64);
     }
@@ -240,34 +238,42 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
     @Mod.EventBusSubscriber
     static class Events {
+
         @SubscribeEvent
         public static void onPlayerRender(RenderPlayerEvent event) {
-
             LivingEntity entity = event.getEntity();
 
-            PoseStack poseStack = event.getPoseStack();
+            ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.HOLY_LOCKET.get());
 
-            poseStack.pushPose();
+            if (stack.getItem() instanceof HolyLocketItem relic && relic.isAbilityOnCooldown(stack, "blessing")) {
+                PoseStack poseStack = event.getPoseStack();
 
-            poseStack.translate(0, entity.getBbHeight() - 0.350F, 0);
-            poseStack.scale(0.575F, 0.575F, 0.575F);
+                poseStack.pushPose();
 
-            Halo.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Halo.LAYER_LOCATION.getModel())),
-                    event.getPackedLight(), OverlayTexture.NO_OVERLAY);
+                poseStack.translate(0, entity.getBbHeight() - 0.350F, 0);
+                poseStack.scale(0.575F, 0.575F, 0.575F);
+                poseStack.mulPose(Axis.YP.rotationDegrees(-entity.yHeadRot));
+                poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
 
-            poseStack.popPose();
-            poseStack.pushPose();
+                Halo.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Halo.LAYER_LOCATION.getModel())),
+                        event.getPackedLight(), OverlayTexture.NO_OVERLAY);
 
-            poseStack.translate(0, entity.getBbHeight() - 0.5F, 0);
-            poseStack.mulPose(Axis.YP.rotationDegrees(-entity.yBodyRot)); // yaw (поворот по вертикальной оси)
-            poseStack.mulPose(Axis.XP.rotationDegrees(entity.xRotO)); // pitch (поворот по горизонтальной оси)
+                poseStack.popPose();
+                poseStack.pushPose();
 
-            Wings.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Wings.LAYER_LOCATION.getModel())),
-                    event.getPackedLight(), OverlayTexture.NO_OVERLAY);
+                poseStack.translate(0, entity.getBbHeight() - 0.4F, 0);
+                poseStack.mulPose(Axis.YP.rotationDegrees(-entity.yBodyRot));
+                poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
 
-            poseStack.popPose();
+                ICurioRenderer.rotateIfSneaking(poseStack, entity);
 
+                Wings.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Wings.LAYER_LOCATION.getModel())),
+                        event.getPackedLight(), OverlayTexture.NO_OVERLAY);
+
+                poseStack.popPose();
+            }
         }
+
 
         @SubscribeEvent
         public static void onPlayerHurt(LivingHurtEvent event) {
