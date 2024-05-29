@@ -3,9 +3,14 @@ package it.hurts.sskirillss.relics.items.relics.necklace;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import it.hurts.sskirillss.relics.client.models.effects.StunStarModel;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
+import it.hurts.sskirillss.relics.client.models.parts.Halo;
+import it.hurts.sskirillss.relics.client.models.parts.Wings;
 import it.hurts.sskirillss.relics.entities.DeathEssenceEntity;
 import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -25,36 +30,50 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.joml.Quaternionf;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -123,6 +142,10 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
+        Level level = player.getCommandSenderWorld();
+
+        if (level.isClientSide) return;
+
         if (getAbilityCooldown(stack, "blessing") == 1) {
             addCharge(stack, -getCharges(stack));
         }
@@ -130,11 +153,9 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
         if (!(player.tickCount % 80 == 0))
             return;
 
-        Level level = player.getCommandSenderWorld();
-
         List<Monster> monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getAbilityValue(stack, "buffer", "radius")));
 
-        if (!monsters.isEmpty() && !level.isClientSide) {
+        if (!monsters.isEmpty()) {
             addCharge(stack, 1);
 
             spreadExperience(player, stack, monsters.size() / 2);
@@ -142,8 +163,14 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
         for (Monster entities : monsters) {
             entities.hurt(level.damageSources().generic(), 2);
+            entities.setSecondsOnFire(3);
+
+            RandomSource random = level.getRandom();
 
             player.tickCount = 0;
+
+            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.7F, 20, 0.9F),
+                    entities.getX(), entities.getY() + 1.7, entities.getZ(), 7, 0.45, 0.1, 0.45, 0.02F);
         }
     }
 
@@ -195,7 +222,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     @OnlyIn(Dist.CLIENT)
     public LayerDefinition constructLayerDefinition() {
         MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0.0F);
-
         PartDefinition bone = mesh.getRoot().addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 3).addBox(-8.0F, -1.15F, -4.15F, 16.0F, 7.0F, 8.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 1.15F, 0.0F));
 
         bone.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 18).addBox(-2.6096F, -0.8646F, -0.2F, 5.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0571F, 6.6447F, -4.9F, 0.0F, 0.0F, 0.2568F));
@@ -212,6 +238,43 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
     @Mod.EventBusSubscriber
     static class Events {
+
+        @SubscribeEvent
+        public static void onPlayerRender(RenderPlayerEvent event) {
+            LivingEntity entity = event.getEntity();
+
+            ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.HOLY_LOCKET.get());
+
+            if (stack.getItem() instanceof HolyLocketItem relic && relic.isAbilityOnCooldown(stack, "blessing")) {
+                PoseStack poseStack = event.getPoseStack();
+
+                poseStack.pushPose();
+
+                poseStack.translate(0, entity.getBbHeight() - 0.350F, 0);
+                poseStack.scale(0.575F, 0.575F, 0.575F);
+                poseStack.mulPose(Axis.YP.rotationDegrees(-entity.yHeadRot));
+                poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
+
+                Halo.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Halo.LAYER_LOCATION.getModel())),
+                        event.getPackedLight(), OverlayTexture.NO_OVERLAY);
+
+                poseStack.popPose();
+                poseStack.pushPose();
+
+                poseStack.translate(0, entity.getBbHeight() - 0.4F, 0);
+                poseStack.mulPose(Axis.YP.rotationDegrees(-entity.yBodyRot));
+                poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
+
+                ICurioRenderer.rotateIfSneaking(poseStack, entity);
+
+                Wings.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Wings.LAYER_LOCATION.getModel())),
+                        event.getPackedLight(), OverlayTexture.NO_OVERLAY);
+
+                poseStack.popPose();
+            }
+        }
+
+
         @SubscribeEvent
         public static void onPlayerHurt(LivingHurtEvent event) {
             if (!(event.getEntity() instanceof Player player))
@@ -219,7 +282,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
 
-            if (stack.getItem() instanceof HolyLocketItem relic && relic.isAbilityOnCooldown(stack, "blessing")){
+            if (stack.getItem() instanceof HolyLocketItem relic && relic.isAbilityOnCooldown(stack, "blessing")) {
                 event.setCanceled(true);
             }
         }
@@ -244,7 +307,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
                     DeathEssenceEntity essence = new DeathEssenceEntity(playerLocal, entities, amount);
 
-                    essence.setPos(playerLocal.position());
+                    essence.setPos(playerLocal.position().add(0, entity.getBbHeight() / 2, 0));
                     essence.setOwner(playerLocal);
 
                     playerLocal.level().addFreshEntity(essence);
@@ -266,7 +329,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
                 LifeEssenceEntity essence = new LifeEssenceEntity(Objects.requireNonNull(player.level().getPlayerByUUID(Minecraft.getInstance().player.getUUID())), amount);
 
-                essence.setPos(entity.position());
+                essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
                 essence.setOwner(player);
 
                 player.level().addFreshEntity(essence);
