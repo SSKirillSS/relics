@@ -3,16 +3,10 @@ package it.hurts.sskirillss.relics.items.relics.necklace;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import it.hurts.sskirillss.relics.client.models.effects.StunStarModel;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
-import it.hurts.sskirillss.relics.client.models.parts.Halo;
-import it.hurts.sskirillss.relics.client.models.parts.Wings;
 import it.hurts.sskirillss.relics.entities.DeathEssenceEntity;
 import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
-import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -34,49 +28,33 @@ import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.joml.Quaternionf;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
@@ -238,43 +216,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
     @Mod.EventBusSubscriber
     static class Events {
-
-        @SubscribeEvent
-        public static void onPlayerRender(RenderPlayerEvent event) {
-            LivingEntity entity = event.getEntity();
-
-            ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.HOLY_LOCKET.get());
-
-            if (stack.getItem() instanceof HolyLocketItem relic && relic.isAbilityOnCooldown(stack, "blessing")) {
-                PoseStack poseStack = event.getPoseStack();
-
-                poseStack.pushPose();
-
-                poseStack.translate(0, entity.getBbHeight() - 0.350F, 0);
-                poseStack.scale(0.575F, 0.575F, 0.575F);
-                poseStack.mulPose(Axis.YP.rotationDegrees(-entity.yHeadRot));
-                poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
-
-                Halo.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Halo.LAYER_LOCATION.getModel())),
-                        event.getPackedLight(), OverlayTexture.NO_OVERLAY);
-
-                poseStack.popPose();
-                poseStack.pushPose();
-
-                poseStack.translate(0, entity.getBbHeight() - 0.4F, 0);
-                poseStack.mulPose(Axis.YP.rotationDegrees(-entity.yBodyRot));
-                poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-
-                ICurioRenderer.rotateIfSneaking(poseStack, entity);
-
-                Wings.createBodyLayer().bakeRoot().render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.entityCutout(Wings.LAYER_LOCATION.getModel())),
-                        event.getPackedLight(), OverlayTexture.NO_OVERLAY);
-
-                poseStack.popPose();
-            }
-        }
-
-
         @SubscribeEvent
         public static void onPlayerHurt(LivingHurtEvent event) {
             if (!(event.getEntity() instanceof Player player))

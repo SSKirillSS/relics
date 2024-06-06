@@ -1,55 +1,31 @@
 package it.hurts.sskirillss.relics.client.models.parts;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
-public class Wings<T extends Entity> extends EntityModel<T> {
+import javax.annotation.Nonnull;
+
+public class WingsModel extends HumanoidModel<LivingEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "textures/parts/wings.png"), "wings");
-    private final ModelPart bone;
-    private final ModelPart bone2;
-    private final ModelPart bone3;
-    private final ModelPart bone4;
-    private final ModelPart bone5;
-    private final ModelPart bone6;
-    private final ModelPart bone7;
-    private final ModelPart bone8;
-    private final ModelPart bone9;
-    private final ModelPart bone10;
-    private final ModelPart bone11;
-    private final ModelPart bone12;
-    private final ModelPart bone13;
-    private final ModelPart bone14;
 
-    public Wings(ModelPart root) {
-        this.bone = root.getChild("bone");
-        this.bone2 = root.getChild("bone2");
-        this.bone3 = root.getChild("bone3");
-        this.bone4 = root.getChild("bone4");
-        this.bone5 = root.getChild("bone5");
-        this.bone6 = root.getChild("bone6");
-        this.bone7 = root.getChild("bone7");
-        this.bone8 = root.getChild("bone8");
-        this.bone9 = root.getChild("bone9");
-        this.bone10 = root.getChild("bone10");
-        this.bone11 = root.getChild("bone11");
-        this.bone12 = root.getChild("bone12");
-        this.bone13 = root.getChild("bone13");
-        this.bone14 = root.getChild("bone14");
+    public WingsModel(ModelPart root) {
+        super(root);
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
+        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0.0F);
+        PartDefinition partdefinition = mesh.getRoot().getChild("body");
 
-        PartDefinition bone = partdefinition.addOrReplaceChild("bone", CubeListBuilder.create(), PartPose.offset(-13.9643F, 4.2569F, -4.4757F));
+        PartDefinition bone = partdefinition.addOrReplaceChild("wings", CubeListBuilder.create(), PartPose.offset(-13.9643F, 4.2569F, -4.4757F));
 
         PartDefinition cube_r1 = bone.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(36, 0).addBox(-9.6586F, -5.283F, -0.2953F, 7.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.0F, 7.0F, -0.0657F, -0.1133F, 0.8328F));
 
@@ -123,29 +99,25 @@ public class Wings<T extends Entity> extends EntityModel<T> {
 
         PartDefinition cube_r20 = bone14.addOrReplaceChild("cube_r20", CubeListBuilder.create().texOffs(36, 0).mirror().addBox(2.6586F, -5.283F, -0.2953F, 7.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -2.0F, 7.0F, -0.0657F, 0.1133F, -0.8328F));
 
-        return LayerDefinition.create(meshdefinition, 64, 64);
+        return LayerDefinition.create(mesh, 64, 64);
     }
 
     @Override
-    public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, float pRed, float pGreen, float pBlue, float pAlpha) {
+        body.skipDraw = true;
 
+        super.renderToBuffer(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pRed, pGreen, pBlue, pAlpha);
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone5.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone6.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone7.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone8.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone9.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone10.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone11.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone12.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone13.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone14.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    @Nonnull
+    protected Iterable<ModelPart> headParts() {
+        return ImmutableList.of();
+    }
+
+    @Override
+    @Nonnull
+    protected Iterable<ModelPart> bodyParts() {
+        return ImmutableList.of(this.body);
     }
 }
