@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -48,8 +49,10 @@ public class DeathEssenceEntity extends ThrowableProjectile {
 
         double size = 0.02D + damage * 0.001D;
 
-        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(Color.BLUE.getRGB()), 0.1F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
+        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(Color.BLUE.getRGB()), 0.5F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
                 this.xo, this.yo, this.zo, 1, size, size, size, 0.01F + damage * 0.0001F);
+        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(Color.BLUE.getRGB()), 0.5F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
+                this.xOld, this.yOld, this.zOld, 1, size, size, size, 0.01F + damage * 0.0001F);
 
         if (target.isDeadOrDying()) {
             this.remove(RemovalReason.KILLED);
@@ -65,8 +68,8 @@ public class DeathEssenceEntity extends ThrowableProjectile {
 
                 return;
             }
-
-            EntityUtils.moveTowardsPosition(this, target.position().add(0, target.getBbHeight() / 2, 0), 0.25F);
+            moveTowardsTargetInArc(target);
+            // EntityUtils.moveTowardsPosition(this, target.position().add(0, target.getBbHeight() / 2, 0), 0.25F);
         } else {
             Level level = target.getCommandSenderWorld();
 
@@ -74,6 +77,11 @@ public class DeathEssenceEntity extends ThrowableProjectile {
 
             this.remove(RemovalReason.KILLED);
         }
+    }
+
+    private void moveTowardsTargetInArc(Entity target) {
+        EntityUtils.moveTowardsPosition(this, target.position().add(0, target.getBbHeight() / 2, 0), 0.25F);
+
     }
 
     @Override

@@ -43,11 +43,11 @@ public class LifeEssenceEntity extends ThrowableProjectile {
         if (level().isClientSide())
             return;
 
-        RandomSource random = level().getRandom();
-
         double size = 0.02D + heal * 0.001D;
 
-        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.1F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F),
+        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new  Color(Color.YELLOW.getRGB()), 0.5F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F),
+                this.xo, this.yo, this.zo, 1, size, size, size, 0.01F + heal * 0.0001F);
+        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new  Color(Color.YELLOW.getRGB()), 0.5F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F),
                 this.xo, this.yo, this.zo, 1, size, size, size, 0.01F + heal * 0.0001F);
 
         if (!(getOwner() instanceof Player player) || player.isDeadOrDying()) {
