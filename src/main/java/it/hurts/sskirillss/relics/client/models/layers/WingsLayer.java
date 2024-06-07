@@ -33,7 +33,7 @@ public class WingsLayer<T extends LivingEntity, M extends EntityModel<T>> extend
 
         ICurioRenderer.followBodyRotations(pLivingEntity, haloModel);
 
-        haloModel.renderToBuffer(pPoseStack, pBuffer.getBuffer(RenderType.entityTranslucent(HaloModel.LAYER_LOCATION.getModel())), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        haloModel.renderToBuffer(pPoseStack, pBuffer.getBuffer(RenderType.entityTranslucentCull(HaloModel.LAYER_LOCATION.getModel())), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 
         pPoseStack.popPose();
 
@@ -41,7 +41,7 @@ public class WingsLayer<T extends LivingEntity, M extends EntityModel<T>> extend
 
         ICurioRenderer.followBodyRotations(pLivingEntity, wingsModel);
 
-        wingsModel.renderToBuffer(pPoseStack, pBuffer.getBuffer(RenderType.entityTranslucent(WingsModel.LAYER_LOCATION.getModel())), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, (float) (0.75F + (Math.sin(pLivingEntity.tickCount * 0.1F) * 0.25F)));
+        wingsModel.renderToBuffer(pPoseStack, pBuffer.getBuffer(RenderType.entityTranslucentCull(WingsModel.LAYER_LOCATION.getModel())), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, (float) (0.75F + (Math.cos(pLivingEntity.tickCount * 0.1F) * 0.25F)));
 
         pPoseStack.popPose();
     }
