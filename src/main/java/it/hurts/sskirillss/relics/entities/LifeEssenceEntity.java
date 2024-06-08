@@ -98,7 +98,7 @@ public class LifeEssenceEntity extends ThrowableProjectile {
 
         if (distance > 0) {
             Vec3 newPos = this.position().add(direction.add(perpendicular).scale(distance * 0.5));
-            Vec3 delta = newPos.subtract(this.position()).normalize().scale(0.3);
+            Vec3 delta = newPos.subtract(this.position()).normalize().scale(0.35);
 
            this.setDeltaMovement(delta.x, delta.y, delta.z);
         }
