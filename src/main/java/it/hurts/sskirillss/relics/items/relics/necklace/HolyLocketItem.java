@@ -272,8 +272,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                             || !(NBTUtils.getBoolean(stack, "toggled", true)))
                         continue;
 
-                    System.out.println(playerSearched);
-
                     int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 0.5);
 
                     LifeEssenceEntity essence = new LifeEssenceEntity(playerSearched, amount);
