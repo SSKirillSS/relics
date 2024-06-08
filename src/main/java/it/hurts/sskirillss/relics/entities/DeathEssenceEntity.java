@@ -15,10 +15,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.Random;
 
 public class DeathEssenceEntity extends ThrowableProjectile {
     @Setter
@@ -26,6 +28,8 @@ public class DeathEssenceEntity extends ThrowableProjectile {
     private float damage;
 
     private LivingEntity target;
+
+    private int directionChoice;
 
     public DeathEssenceEntity(EntityType<? extends DeathEssenceEntity> type, Level worldIn) {
         super(type, worldIn);
@@ -49,10 +53,10 @@ public class DeathEssenceEntity extends ThrowableProjectile {
 
         double size = 0.02D + damage * 0.001D;
 
-        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(Color.BLUE.getRGB()), 0.5F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
+        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 200 + random.nextInt(55)), 0.5F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
+                this.getX(), this.getY(), this.getZ(), 1, size, size, size, 0.01F + damage * 0.0001F);
+        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 200 + random.nextInt(55)), 0.5F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
                 this.xo, this.yo, this.zo, 1, size, size, size, 0.01F + damage * 0.0001F);
-        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(Color.BLUE.getRGB()), 0.5F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
-                this.xOld, this.yOld, this.zOld, 1, size, size, size, 0.01F + damage * 0.0001F);
 
         if (target.isDeadOrDying()) {
             this.remove(RemovalReason.KILLED);
@@ -62,14 +66,14 @@ public class DeathEssenceEntity extends ThrowableProjectile {
 
         double distance = this.position().distanceTo(target.position().add(0, target.getBbHeight() / 2, 0));
 
-        if (distance > 0.5) {
+        if (distance > 1) {
             if (distance > 32) {
                 this.remove(RemovalReason.KILLED);
 
                 return;
             }
-            moveTowardsTargetInArc(target);
-            // EntityUtils.moveTowardsPosition(this, target.position().add(0, target.getBbHeight() / 2, 0), 0.25F);
+
+            this.moveTowardsTargetInArc(target);
         } else {
             Level level = target.getCommandSenderWorld();
 
@@ -80,8 +84,21 @@ public class DeathEssenceEntity extends ThrowableProjectile {
     }
 
     private void moveTowardsTargetInArc(Entity target) {
-        EntityUtils.moveTowardsPosition(this, target.position().add(0, target.getBbHeight() / 2, 0), 0.25F);
+        Vec3 targetPos = new Vec3(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ());
+        Vec3 direction = targetPos.subtract(this.position()).normalize();
 
+        if (directionChoice == 0)
+            directionChoice = new Random().nextBoolean() ? 1 : -1;
+
+        Vec3 perpendicular = new Vec3(directionChoice * -direction.z, 0, directionChoice * direction.x).normalize();
+        double distance = this.position().distanceTo(targetPos);
+
+        if (distance > 0) {
+            Vec3 newPos = this.position().add(direction.add(perpendicular).scale(distance * 0.5));
+            Vec3 delta = newPos.subtract(this.position()).normalize().scale(0.3);
+
+            this.setDeltaMovement(delta.x, delta.y, delta.z);
+        }
     }
 
     @Override
