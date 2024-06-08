@@ -21,11 +21,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.network.packets.sync.SyncTargetPacket;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
@@ -36,6 +37,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -49,6 +51,7 @@ import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -215,7 +218,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     }
 
     @Mod.EventBusSubscriber
-    static class Events {
+    public static class Events {
         @SubscribeEvent
         public static void onPlayerHurt(LivingHurtEvent event) {
             if (!(event.getEntity() instanceof Player player))
@@ -230,53 +233,62 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
         @SubscribeEvent
         public static void onLivingHeal(LivingHealEvent event) {
-            LivingEntity entity = event.getEntity();
-            Level level = entity.getCommandSenderWorld();
+            if (event.getEntity() instanceof Player player) {
 
-            Player playerLocal = level.getPlayerByUUID(Minecraft.getInstance().player.getUUID());
-            ItemStack stackLocal = EntityUtils.findEquippedCurio(playerLocal, ItemRegistry.HOLY_LOCKET.get());
+                ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
+                Level level = player.getCommandSenderWorld();
 
-            if (stackLocal.getItem() instanceof HolyLocketItem relic && !(NBTUtils.getBoolean(stackLocal, "toggled", true))) {
-                if (!(entity instanceof Player))
+                if (!(stack.getItem() instanceof HolyLocketItem relic) || NBTUtils.getBoolean(stack, "toggled", true))
                     return;
 
-                for (LivingEntity entities : level.getEntitiesOfClass(LivingEntity.class, playerLocal.getBoundingBox().inflate(relic.getAbilityValue(stackLocal, "belief", "radius")))) {
-                    if (entities.getStringUUID().equals(playerLocal.getStringUUID()))
+                for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(relic.getAbilityValue(stack, "belief", "radius")))) {
+                    if (target.getStringUUID().equals(player.getStringUUID()))
                         continue;
 
-                    int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stackLocal, "belief", "amount")), 1);
+                    int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 1);
 
-                    DeathEssenceEntity essence = new DeathEssenceEntity(playerLocal, entities, amount);
+                    DeathEssenceEntity essence = new DeathEssenceEntity(player, target, amount);
 
-                    essence.setPos(playerLocal.position().add(0, entity.getBbHeight() / 2, 0));
-                    essence.setOwner(playerLocal);
+                    essence.setPos(player.position().add(0, player.getBbHeight() / 2, 0));
+                    essence.setOwner(player);
 
-                    playerLocal.level().addFreshEntity(essence);
+                    level.addFreshEntity(essence);
 
-                    relic.spreadExperience(playerLocal, stackLocal, amount);
-                    relic.addCharge(stackLocal, 1);
+                    if (!level.isClientSide())
+                        NetworkHandler.sendToClients(PacketDistributor.TRACKING_ENTITY.with(() -> essence), new SyncTargetPacket(essence.getId(), target.getId()));
+
+                    relic.spreadExperience(player, stack, amount);
+                    relic.addCharge(stack, 1);
+
                 }
+            } else {
+                LivingEntity entity = event.getEntity();
+                Level level = entity.getCommandSenderWorld();
 
-                return;
-            }
+                for (ServerPlayer playerSearched : level.getEntitiesOfClass(ServerPlayer.class, event.getEntity().getBoundingBox().inflate(32))) {
+                    ItemStack stack = EntityUtils.findEquippedCurio(playerSearched, ItemRegistry.HOLY_LOCKET.get());
 
-            for (LivingEntity player : level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(32))) {
-                ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
+                    if (!(stack.getItem() instanceof HolyLocketItem relic) || relic.getAbilityValue(stack, "belief", "radius") < playerSearched.position().distanceTo(event.getEntity().position())
+                            || !(NBTUtils.getBoolean(stack, "toggled", true)))
+                        continue;
 
-                if (!(stack.getItem() instanceof HolyLocketItem relic) || relic.getAbilityValue(stack, "belief", "radius") < player.position().distanceTo(entity.position())
-                        || entity.getStringUUID().equals(player.getStringUUID()))
-                    continue;
-                int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 0.5);
+                    System.out.println(playerSearched);
 
-                LifeEssenceEntity essence = new LifeEssenceEntity(Objects.requireNonNull(player.level().getPlayerByUUID(Minecraft.getInstance().player.getUUID())), amount);
+                    int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 0.5);
 
-                essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
-                essence.setOwner(player);
+                    LifeEssenceEntity essence = new LifeEssenceEntity(playerSearched, amount);
 
-                player.level().addFreshEntity(essence);
+                    essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
+                    essence.setOwner(playerSearched);
 
-                relic.spreadExperience(playerLocal, stack, amount);
-                relic.addCharge(stack, 1);
+                    playerSearched.level().addFreshEntity(essence);
+
+                    if (!level.isClientSide())
+                        NetworkHandler.sendToClients(PacketDistributor.TRACKING_ENTITY.with(() -> essence), new SyncTargetPacket(essence.getId(), playerSearched.getId()));
+
+                    relic.spreadExperience(playerSearched, stack, amount);
+                    relic.addCharge(stack, 1);
+                }
             }
         }
     }

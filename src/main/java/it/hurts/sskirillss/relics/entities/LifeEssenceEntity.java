@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.entities;
 
+import it.hurts.sskirillss.relics.entities.misc.ITargetableEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -15,17 +16,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Random;
 
-public class LifeEssenceEntity extends ThrowableProjectile {
+public class LifeEssenceEntity extends ThrowableProjectile implements ITargetableEntity {
     @Setter
     @Getter
     private float heal;
+
+    private LivingEntity target;
 
     private int directionChoice;
 
@@ -38,6 +43,8 @@ public class LifeEssenceEntity extends ThrowableProjectile {
 
         this.setOwner(throwerIn);
 
+        this.target = throwerIn;
+
         this.heal = heal;
     }
 
@@ -45,15 +52,19 @@ public class LifeEssenceEntity extends ThrowableProjectile {
     public void tick() {
         super.tick();
 
-        if (level().isClientSide())
+        if (target == null)
             return;
 
-        double size = 0.02D + heal * 0.001D;
+        int segments = 10;
 
-        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.5F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F),
-                this.getX(), this.getY(), this.getZ(), 1, size, size, size, 0.01F + heal * 0.0001F);
-        ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.5F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F),
-                this.xo, this.yo, this.zo, 1, size, size, size, 0.01F + heal * 0.0001F);
+        double dx = (this.getX() - xOld) / segments;
+        double dy = (this.getY() - yOld) / segments;
+        double dz = (this.getZ() - zOld) / segments;
+
+        for (int i = 0; i < segments; i++) {
+            level().addParticle(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.5F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F),
+                    this.getX() + dx * i, this.getY() + dy * i, this.getZ() + dz * i, -this.getDeltaMovement().x * 0.1 * Math.random(), -this.getDeltaMovement().y * 0.1 * Math.random(), -this.getDeltaMovement().z * 0.1 * Math.random());
+        }
 
         if (!(getOwner() instanceof Player player) || player.isDeadOrDying()) {
             this.remove(RemovalReason.KILLED);
@@ -86,6 +97,7 @@ public class LifeEssenceEntity extends ThrowableProjectile {
             this.remove(RemovalReason.KILLED);
         }
     }
+
     private void moveTowardsTargetInArc(Entity target) {
         Vec3 targetPos = new Vec3(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ());
         Vec3 direction = targetPos.subtract(this.position()).normalize();
@@ -103,6 +115,8 @@ public class LifeEssenceEntity extends ThrowableProjectile {
            this.setDeltaMovement(delta.x, delta.y, delta.z);
         }
     }
+
+
     @Override
     protected void defineSynchedData() {
 
@@ -113,8 +127,21 @@ public class LifeEssenceEntity extends ThrowableProjectile {
         return true;
     }
 
+
+    @Nullable
+    @Override
+    public LivingEntity getTarget() {
+        return target;
+    }
+
+    @Override
+    public void setTarget(LivingEntity target) {
+        this.target = target;
+    }
+
     @Override
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
+
 }

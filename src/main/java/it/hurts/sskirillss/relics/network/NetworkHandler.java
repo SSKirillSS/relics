@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
 import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacket;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketExperienceExchange;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
+import it.hurts.sskirillss.relics.network.packets.sync.SyncTargetPacket;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,6 +64,11 @@ public class NetworkHandler {
                 .encoder(PacketExperienceExchange::toBytes)
                 .decoder(PacketExperienceExchange::new)
                 .consumerMainThread(PacketExperienceExchange::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncTargetPacket.class, nextID())
+                .encoder(SyncTargetPacket::toBytes)
+                .decoder(SyncTargetPacket::new)
+                .consumerMainThread(SyncTargetPacket::handle)
                 .add();
     }
 
