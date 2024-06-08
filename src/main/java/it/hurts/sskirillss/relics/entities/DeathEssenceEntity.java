@@ -76,7 +76,7 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
         Vec3 perpendicular = new Vec3(directionChoice * -direction.z, 0, directionChoice * direction.x).normalize();
         double distance = this.position().distanceTo(targetPos);
 
-        if (distance > 0) {
+        if (distance > 1) {
             Vec3 newPos = this.position().add(direction.add(perpendicular).scale(distance * 0.5));
             Vec3 delta = newPos.subtract(this.position()).normalize();
 
