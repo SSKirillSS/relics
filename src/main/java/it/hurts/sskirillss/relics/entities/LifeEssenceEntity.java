@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -32,7 +35,7 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
 
     private LivingEntity target;
 
-    private int directionChoice;
+    private static final EntityDataAccessor<Integer> DIRECTION_CHOICE = SynchedEntityData.defineId(DeathEssenceEntity.class, EntityDataSerializers.INT);
 
     public LifeEssenceEntity(EntityType<? extends LifeEssenceEntity> type, Level worldIn) {
         super(type, worldIn);
@@ -40,12 +43,13 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
 
     public LifeEssenceEntity(LivingEntity throwerIn, float heal) {
         super(EntityRegistry.LIFE_ESSENCE.get(), throwerIn.getCommandSenderWorld());
-
         this.setOwner(throwerIn);
 
         this.target = throwerIn;
 
         this.heal = heal;
+
+        this.setDirectionChoice(new Random().nextBoolean() ? 1 : -1);
     }
 
     @Override
@@ -62,64 +66,48 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
         double dz = (this.getZ() - zOld) / segments;
 
         for (int i = 0; i < segments; i++) {
-            level().addParticle(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.5F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F),
+            level().addParticle((ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.5F + (heal * 0.01F), 20 + Math.round(heal * 0.025F), 0.9F)),
                     this.getX() + dx * i, this.getY() + dy * i, this.getZ() + dz * i, -this.getDeltaMovement().x * 0.1 * Math.random(), -this.getDeltaMovement().y * 0.1 * Math.random(), -this.getDeltaMovement().z * 0.1 * Math.random());
         }
 
-        if (!(getOwner() instanceof Player player) || player.isDeadOrDying()) {
-            this.remove(RemovalReason.KILLED);
+        this.moveTowardsTargetInArc(target);
 
-            return;
-        }
-
-        for (LifeEssenceEntity essence : level().getEntitiesOfClass(LifeEssenceEntity.class, this.getBoundingBox().inflate(heal * 0.05F))) {
-            if (essence.getStringUUID().equals(this.getStringUUID()) || (essence.getOwner() instanceof Player p1
-                    && this.getOwner() instanceof Player p2 && !p1.getStringUUID().equals(p2.getStringUUID())))
-                continue;
-
-            setHeal(getHeal() + essence.getHeal());
-
-            essence.remove(RemovalReason.KILLED);
-        }
-
-        double distance = this.position().distanceTo(player.position().add(0, player.getBbHeight() / 2, 0));
-
-        if (distance > 1) {
-            if (distance > 32) {
-                this.remove(RemovalReason.KILLED);
-
-                return;
-            }
-            moveTowardsTargetInArc(player);
-        } else {
-            player.heal(heal);
-
-            this.remove(RemovalReason.KILLED);
-        }
+        if (target.isDeadOrDying())
+            this.discard();
     }
 
     private void moveTowardsTargetInArc(Entity target) {
         Vec3 targetPos = new Vec3(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ());
         Vec3 direction = targetPos.subtract(this.position()).normalize();
 
-        if (directionChoice == 0)
-            directionChoice = new Random().nextBoolean() ? 1 : -1;
-
-        Vec3 perpendicular = new Vec3(directionChoice * -direction.z, 0, directionChoice * direction.x).normalize();
+        Vec3 perpendicular = new Vec3(getDirectionChoice() * -direction.z, 0, getDirectionChoice() * direction.x).normalize();
         double distance = this.position().distanceTo(targetPos);
 
         if (distance > 0) {
             Vec3 newPos = this.position().add(direction.add(perpendicular).scale(distance * 0.5));
-            Vec3 delta = newPos.subtract(this.position()).normalize().scale(0.35);
+            Vec3 delta = newPos.subtract(this.position()).normalize();
 
-           this.setDeltaMovement(delta.x, delta.y, delta.z);
+            this.setDeltaMovement(delta.x, delta.y, delta.z);
         }
+    }
+
+    @Override
+    protected void onHitEntity(EntityHitResult result) {
+        if (target == null)
+            return;
+
+        if (!(result.getEntity() instanceof LivingEntity entity) || entity.getUUID() != target.getUUID())
+            return;
+
+        entity.heal(getHeal() + this.getHeal());
+
+        this.discard();
     }
 
 
     @Override
     protected void defineSynchedData() {
-
+        this.entityData.define(DIRECTION_CHOICE, 0);
     }
 
     @Override
@@ -127,6 +115,13 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
         return true;
     }
 
+    public int getDirectionChoice() {
+        return this.entityData.get(DIRECTION_CHOICE);
+    }
+
+    public void setDirectionChoice(int value) {
+        this.entityData.set(DIRECTION_CHOICE, value);
+    }
 
     @Nullable
     @Override

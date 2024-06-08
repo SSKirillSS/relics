@@ -133,4 +133,5 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
+
 }
