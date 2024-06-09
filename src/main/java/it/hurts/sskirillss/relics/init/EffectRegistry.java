@@ -19,6 +19,7 @@ public class EffectRegistry {
     public static final RegistryObject<MobEffect> VANISHING = EFFECTS.register("vanishing", VanishingEffect::new);
     public static final RegistryObject<MobEffect> ANTI_HEAL = EFFECTS.register("anti_heal", AntiHealEffect::new);
     public static final RegistryObject<MobEffect> BLEEDING = EFFECTS.register("bleeding", BleedingEffect::new);
+    public static final RegistryObject<MobEffect> FROSTBITE = EFFECTS.register("frostbite", FrostbiteEffect::new);
 
     public static void register() {
         EFFECTS.register(FMLJavaModLoadingContext.get().getModEventBus());
