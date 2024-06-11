@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.Random;
 
 public class DeathEssenceEntity extends ThrowableProjectile implements ITargetableEntity {
     @Setter
@@ -60,7 +59,7 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
         double dx = (this.getX() - xOld) / segments;
         double dy = (this.getY() - yOld) / segments;
         double dz = (this.getZ() - zOld) / segments;
-
+      
         for (int i = 0; i < segments; i++) {
             level().addParticle(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 200 + random.nextInt(55)), 0.5F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
                     this.getX() + dx * i, this.getY() + dy * i, this.getZ() + dz * i, -this.getDeltaMovement().x * 0.1 * Math.random(), -this.getDeltaMovement().y * 0.1 * Math.random(), -this.getDeltaMovement().z * 0.1 * Math.random());
@@ -77,6 +76,7 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
         Vec3 direction = targetPos.subtract(this.position()).normalize();
 
         Vec3 perpendicular = new Vec3(getDirectionChoice() * -direction.z, 0, getDirectionChoice() * direction.x).normalize();
+
         double distance = this.position().distanceTo(targetPos);
 
         if (distance > 1) {
@@ -133,5 +133,4 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
-
 }

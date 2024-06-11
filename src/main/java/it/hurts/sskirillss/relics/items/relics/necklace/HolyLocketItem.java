@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.entities.DeathEssenceEntity;
-import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
@@ -57,7 +56,6 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Objects;
 
 public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
@@ -259,7 +257,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
                     relic.spreadExperience(player, stack, amount);
                     relic.addCharge(stack, 1);
-
                 }
             } else {
                 LivingEntity entity = event.getEntity();
