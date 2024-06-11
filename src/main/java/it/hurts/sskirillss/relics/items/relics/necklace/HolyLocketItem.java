@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.entities.DeathEssenceEntity;
+import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
+import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
@@ -55,10 +57,10 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.awt.*;
+import java.util.Comparator;
 import java.util.List;
 
 public class HolyLocketItem extends RelicItem implements IRenderableCurio {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -232,22 +234,25 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
         @SubscribeEvent
         public static void onLivingHeal(LivingHealEvent event) {
             if (event.getEntity() instanceof Player player) {
-
                 ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
                 Level level = player.getCommandSenderWorld();
 
                 if (!(stack.getItem() instanceof HolyLocketItem relic) || NBTUtils.getBoolean(stack, "toggled", true))
                     return;
 
-                for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(relic.getAbilityValue(stack, "belief", "radius")))) {
+                for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(relic.getAbilityValue(stack, "belief", "radius"))).stream()
+                        .filter(player::hasLineOfSight).sorted(Comparator.comparing(entity -> entity.position().distanceTo(player.position()))).limit(5).toList()) { // TODO: use custom value from leveling instead of constant 5
                     if (target.getStringUUID().equals(player.getStringUUID()))
                         continue;
 
                     int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 1);
 
-                    DeathEssenceEntity essence = new DeathEssenceEntity(player, target, amount);
+                    DeathEssenceEntity essence = new DeathEssenceEntity(EntityRegistry.DEATH_ESSENCE.get(), level);
 
                     essence.setPos(player.position().add(0, player.getBbHeight() / 2, 0));
+                    essence.setDirectionChoice(MathUtils.randomFloat(player.getRandom()));
+                    essence.setTarget(target);
+                    essence.setDamage(amount);
                     essence.setOwner(player);
 
                     level.addFreshEntity(essence);
