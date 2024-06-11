@@ -36,6 +36,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -230,17 +231,14 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
         @SubscribeEvent
         public static void onLivingHeal(LivingHealEvent event) {
-            if (!(event.getEntity() instanceof Player player))
-                return;
+            if (event.getEntity() instanceof Player player) {
 
-            Level level = player.getCommandSenderWorld();
+                ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
+                Level level = player.getCommandSenderWorld();
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
+                if (!(stack.getItem() instanceof HolyLocketItem relic) || NBTUtils.getBoolean(stack, "toggled", true))
+                    return;
 
-            if (!(stack.getItem() instanceof HolyLocketItem relic))
-                return;
-
-            if (!(NBTUtils.getBoolean(stack, "toggled", true))) {
                 for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(relic.getAbilityValue(stack, "belief", "radius")))) {
                     if (target.getStringUUID().equals(player.getStringUUID()))
                         continue;
@@ -260,28 +258,32 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                     relic.spreadExperience(player, stack, amount);
                     relic.addCharge(stack, 1);
                 }
-
-                return;
             } else {
-//            TODO: !!!
-//            for (LivingEntity player : level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(32))) {
-//                ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
-//
-//                if (!(stack.getItem() instanceof HolyLocketItem relic) || relic.getAbilityValue(stack, "belief", "radius") < player.position().distanceTo(entity.position())
-//                        || entity.getStringUUID().equals(player.getStringUUID()))
-//                    continue;
-//                int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 0.5);
-//
-//                LifeEssenceEntity essence = new LifeEssenceEntity(Objects.requireNonNull(player.level().getPlayerByUUID(Minecraft.getInstance().player.getUUID())), amount);
-//
-//                essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
-//                essence.setOwner(player);
-//
-//                player.level().addFreshEntity(essence);
-//
-//                relic.spreadExperience(playerLocal, stack, amount);
-//                relic.addCharge(stack, 1);
-//            }
+                LivingEntity entity = event.getEntity();
+                Level level = entity.getCommandSenderWorld();
+
+                for (ServerPlayer playerSearched : level.getEntitiesOfClass(ServerPlayer.class, event.getEntity().getBoundingBox().inflate(32))) {
+                    ItemStack stack = EntityUtils.findEquippedCurio(playerSearched, ItemRegistry.HOLY_LOCKET.get());
+
+                    if (!(stack.getItem() instanceof HolyLocketItem relic) || relic.getAbilityValue(stack, "belief", "radius") < playerSearched.position().distanceTo(event.getEntity().position())
+                            || !(NBTUtils.getBoolean(stack, "toggled", true)))
+                        continue;
+
+                    int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 0.5);
+
+                    LifeEssenceEntity essence = new LifeEssenceEntity(playerSearched, amount);
+
+                    essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
+                    essence.setOwner(playerSearched);
+
+                    playerSearched.level().addFreshEntity(essence);
+
+                    if (!level.isClientSide())
+                        NetworkHandler.sendToClients(PacketDistributor.TRACKING_ENTITY.with(() -> essence), new SyncTargetPacket(essence.getId(), playerSearched.getId()));
+
+                    relic.spreadExperience(playerSearched, stack, amount);
+                    relic.addCharge(stack, 1);
+                }
             }
         }
     }

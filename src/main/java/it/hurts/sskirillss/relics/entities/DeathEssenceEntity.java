@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,7 +30,7 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
 
     private LivingEntity target;
 
-    private int directionChoice;
+    private static final EntityDataAccessor<Integer> DIRECTION_CHOICE = SynchedEntityData.defineId(DeathEssenceEntity.class, EntityDataSerializers.INT);
 
     public DeathEssenceEntity(EntityType<? extends DeathEssenceEntity> type, Level worldIn) {
         super(type, worldIn);
@@ -40,6 +43,8 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
         this.target = targetIn;
 
         this.damage = damage;
+
+        this.setDirectionChoice(new Random().nextBoolean() ? 1 : -1);
     }
 
     @Override
@@ -54,7 +59,7 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
         double dx = (this.getX() - xOld) / segments;
         double dy = (this.getY() - yOld) / segments;
         double dz = (this.getZ() - zOld) / segments;
-
+      
         for (int i = 0; i < segments; i++) {
             level().addParticle(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 200 + random.nextInt(55)), 0.5F + (damage * 0.01F), 20 + Math.round(damage * 0.025F), 0.9F),
                     this.getX() + dx * i, this.getY() + dy * i, this.getZ() + dz * i, -this.getDeltaMovement().x * 0.1 * Math.random(), -this.getDeltaMovement().y * 0.1 * Math.random(), -this.getDeltaMovement().z * 0.1 * Math.random());
@@ -70,13 +75,11 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
         Vec3 targetPos = new Vec3(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ());
         Vec3 direction = targetPos.subtract(this.position()).normalize();
 
-        if (directionChoice == 0)
-            directionChoice = 1; // TODO: new Random().nextBoolean() ? 1 : -1;
+        Vec3 perpendicular = new Vec3(getDirectionChoice() * -direction.z, 0, getDirectionChoice() * direction.x).normalize();
 
-        Vec3 perpendicular = new Vec3(directionChoice * -direction.z, 0, directionChoice * direction.x).normalize();
         double distance = this.position().distanceTo(targetPos);
 
-        if (distance > 0) {
+        if (distance > 1) {
             Vec3 newPos = this.position().add(direction.add(perpendicular).scale(distance * 0.5));
             Vec3 delta = newPos.subtract(this.position()).normalize();
 
@@ -99,12 +102,20 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
 
     @Override
     protected void defineSynchedData() {
-
+        this.entityData.define(DIRECTION_CHOICE, 0);
     }
 
     @Override
     public boolean isNoGravity() {
         return true;
+    }
+
+    public int getDirectionChoice() {
+        return this.entityData.get(DIRECTION_CHOICE);
+    }
+
+    public void setDirectionChoice(int value) {
+        this.entityData.set(DIRECTION_CHOICE, value);
     }
 
     @Nullable
