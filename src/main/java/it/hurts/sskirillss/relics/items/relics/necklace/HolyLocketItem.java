@@ -59,6 +59,7 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
 import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     @Override
@@ -79,6 +80,11 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                         .initialValue(0.1D, 0.25D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 100))
+                                        .build())
+                                .stat(StatData.builder("count")
+                                        .initialValue(3, 3)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1)
+                                        .formatValue(value -> (int) (MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("buffer")
@@ -276,10 +282,12 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
                     int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 0.5);
 
-                    LifeEssenceEntity essence = new LifeEssenceEntity(playerSearched, amount);
+                    LifeEssenceEntity essence = new LifeEssenceEntity(EntityRegistry.LIFE_ESSENCE.get(), level);
 
                     essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
-                    essence.setOwner(playerSearched);
+                    essence.setDirectionChoice(MathUtils.randomFloat(playerSearched.getRandom()));
+                    essence.setTarget(playerSearched);
+                    essence.setHeal(amount);
 
                     playerSearched.level().addFreshEntity(essence);
 
@@ -291,5 +299,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                 }
             }
         }
+
     }
 }
