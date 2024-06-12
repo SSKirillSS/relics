@@ -49,7 +49,7 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
         double dz = (this.getZ() - zOld) / segments;
 
         for (int i = 0; i < segments; i++) {
-            level().addParticle((ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)),  0.25F + (heal * 0.05F), 20 + Math.round(heal * 0.025F), 0.9F)),
+            level().addParticle((ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.25F + (heal * 0.05F), 20 + Math.round(heal * 0.025F), 0.9F)),
                     this.getX() + dx * i, this.getY() + dy * i, this.getZ() + dz * i, -this.getDeltaMovement().x * 0.1 * Math.random(), -this.getDeltaMovement().y * 0.1 * Math.random(), -this.getDeltaMovement().z * 0.1 * Math.random());
         }
 
@@ -57,6 +57,14 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
 
         if (target.isDeadOrDying())
             this.discard();
+
+        if (this.distanceTo(target) <= 1) {
+            Level level = target.getCommandSenderWorld();
+
+            target.hurt(level.damageSources().generic(), heal);
+
+            this.remove(RemovalReason.KILLED);
+        }
     }
 
     private void moveTowardsTargetInArc(Entity target) {
@@ -69,17 +77,13 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
-        if (target == null)
-            return;
-
-        if (!(result.getEntity() instanceof LivingEntity entity) || entity.getUUID() != target.getUUID())
+        if (target == null || !(result.getEntity() instanceof LivingEntity entity) || entity.getUUID() != target.getUUID())
             return;
 
         entity.heal(getHeal() + this.getHeal());
 
         this.discard();
     }
-
 
     @Override
     protected void defineSynchedData() {

@@ -247,7 +247,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                     return;
 
                 for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(relic.getAbilityValue(stack, "belief", "radius"))).stream()
-                        .filter(player::hasLineOfSight).sorted(Comparator.comparing(entity -> entity.position().distanceTo(player.position()))).limit(5).toList()) { // TODO: use custom value from leveling instead of constant 5
+                        .filter(player::hasLineOfSight).sorted(Comparator.comparing(entity -> entity.position().distanceTo(player.position()))).limit((int) relic.getAbilityValue(stack, "belief", "count")).toList()) {
                     if (target.getStringUUID().equals(player.getStringUUID()))
                         continue;
 
