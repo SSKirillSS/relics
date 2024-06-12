@@ -26,8 +26,6 @@ public class ParticleRegistry {
     @SubscribeEvent
     public static void onParticleRegistry(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(RAINBOW_FIRE.get(), RainbowFireParticle.Factory::new);
-
     }
-
 
 }

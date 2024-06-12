@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.entities.DeathEssenceEntity;
 import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.init.ParticleRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -28,6 +29,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
@@ -46,6 +48,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
@@ -59,7 +62,6 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
 import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     @Override
@@ -124,29 +126,32 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
             setAbilityCooldown(stack, "blessing", getCharges(stack) * 20);
     }
 
+
+    private double interpolate(double start, double end) {
+
+        return start + (end - start) * Minecraft.getInstance().getPartialTick();
+    }
+
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide)
             return;
 
         Level level = player.getCommandSenderWorld();
 
-        if (level.isClientSide) return;
-
-        if (getAbilityCooldown(stack, "blessing") == 1) {
-            addCharge(stack, -getCharges(stack));
-        }
-
-        if (!(player.tickCount % 80 == 0))
-            return;
+        if (getAbilityCooldown(stack, "blessing") == 1) addCharge(stack, -getCharges(stack));
 
         List<Monster> monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getAbilityValue(stack, "buffer", "radius")));
+        if (monsters.isEmpty()) return;
 
-        if (!monsters.isEmpty()) {
-            addCharge(stack, 1);
+        ((ServerLevel) level).sendParticles(ParticleRegistry.RAINBOW_FIRE.get(),
+                interpolate(player.xo, player.getX()), interpolate(player.yo, player.getY()) + 1, interpolate(player.zo, player.getZ()), 1, 0, 0, 0, 0);
 
-            spreadExperience(player, stack, monsters.size() / 2);
-        }
+        if (!(player.tickCount % 80 == 0)) return;
+
+        addCharge(stack, 1);
+
+        spreadExperience(player, stack, monsters.size() / 2);
 
         for (Monster entities : monsters) {
             entities.hurt(level.damageSources().generic(), 2);

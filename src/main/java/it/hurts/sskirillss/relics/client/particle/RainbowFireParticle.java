@@ -4,16 +4,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
 import org.antlr.v4.runtime.misc.NotNull;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 public class RainbowFireParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
@@ -41,16 +40,29 @@ public class RainbowFireParticle extends TextureSheetParticle {
         }
     };
 
+    @Override
+    public void tick() {
+        if (this.age++ >= this.lifetime) {
+            this.remove();
+        }
+    }
+
+    @Override
+    protected int getLightColor(float pPartialTick) {
+        return 70;
+    }
+
     protected RainbowFireParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet sprites) {
         super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
         this.sprites = sprites;
         this.quadSize = 2;
+        this.lifetime = 1;
     }
 
     @Override
-    public void render(VertexConsumer vertexConsumer, Camera camera, float partialTicks) {
+    public void render(VertexConsumer pBuffer, Camera pRenderInfo, float pPartialTicks) {
         this.setSpriteFromAge(sprites);
-        super.render(vertexConsumer, camera, partialTicks);
+        super.render(pBuffer, pRenderInfo, pPartialTicks);
     }
 
     @Override
