@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.entities.DeathEssenceEntity;
 import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.init.ParticleRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -28,6 +29,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
@@ -46,8 +48,10 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -79,6 +83,11 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                         .initialValue(0.1D, 0.25D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 100))
+                                        .build())
+                                .stat(StatData.builder("count")
+                                        .initialValue(3, 3)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1)
+                                        .formatValue(value -> (int) (MathUtils.round(value, 1)))
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("buffer")
@@ -120,27 +129,21 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide)
             return;
 
         Level level = player.getCommandSenderWorld();
 
-        if (level.isClientSide) return;
-
-        if (getAbilityCooldown(stack, "blessing") == 1) {
-            addCharge(stack, -getCharges(stack));
-        }
-
-        if (!(player.tickCount % 80 == 0))
-            return;
+        if (getAbilityCooldown(stack, "blessing") == 1) addCharge(stack, -getCharges(stack));
 
         List<Monster> monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getAbilityValue(stack, "buffer", "radius")));
+        if (monsters.isEmpty()) return;
 
-        if (!monsters.isEmpty()) {
-            addCharge(stack, 1);
+        if (!(player.tickCount % 80 == 0)) return;
 
-            spreadExperience(player, stack, monsters.size() / 2);
-        }
+        addCharge(stack, 1);
+
+        spreadExperience(player, stack, monsters.size() / 2);
 
         for (Monster entities : monsters) {
             entities.hurt(level.damageSources().generic(), 2);
@@ -219,6 +222,19 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
     @Mod.EventBusSubscriber
     public static class Events {
+
+        @SubscribeEvent
+        public static void onPlayerRender(RenderPlayerEvent event) {
+            event.getEntity().getCommandSenderWorld().addParticle(ParticleRegistry.RAINBOW_FIRE.get(),
+                    interpolate(event.getEntity().xo, event.getEntity().getX(), event.getPartialTick()), interpolate(event.getEntity().yo, event.getEntity().getY(),event.getPartialTick()) + 1,
+                    interpolate(event.getEntity().zo, event.getEntity().getZ(), event.getPartialTick()), 1, 0, 0);
+        }
+
+        private static double interpolate(double start, double end, float p) {
+
+            return start + (end - start) * p;
+        }
+
         @SubscribeEvent
         public static void onPlayerHurt(LivingHurtEvent event) {
             if (!(event.getEntity() instanceof Player player))
@@ -241,7 +257,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                     return;
 
                 for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(relic.getAbilityValue(stack, "belief", "radius"))).stream()
-                        .filter(player::hasLineOfSight).sorted(Comparator.comparing(entity -> entity.position().distanceTo(player.position()))).limit(5).toList()) { // TODO: use custom value from leveling instead of constant 5
+                        .filter(player::hasLineOfSight).sorted(Comparator.comparing(entity -> entity.position().distanceTo(player.position()))).limit((int) relic.getAbilityValue(stack, "belief", "count")).toList()) {
                     if (target.getStringUUID().equals(player.getStringUUID()))
                         continue;
 
@@ -276,10 +292,12 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
                     int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 0.5);
 
-                    LifeEssenceEntity essence = new LifeEssenceEntity(playerSearched, amount);
+                    LifeEssenceEntity essence = new LifeEssenceEntity(EntityRegistry.LIFE_ESSENCE.get(), level);
 
                     essence.setPos(entity.position().add(0, entity.getBbHeight() / 2, 0));
-                    essence.setOwner(playerSearched);
+                    essence.setDirectionChoice(MathUtils.randomFloat(playerSearched.getRandom()));
+                    essence.setTarget(playerSearched);
+                    essence.setHeal(amount);
 
                     playerSearched.level().addFreshEntity(essence);
 
@@ -291,5 +309,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                 }
             }
         }
+
     }
 }

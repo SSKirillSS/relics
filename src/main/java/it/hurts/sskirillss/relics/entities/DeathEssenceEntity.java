@@ -57,6 +57,14 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
 
         if (target.isDeadOrDying())
             this.discard();
+
+        if (this.distanceTo(target) <= 1) {
+            Level level = target.getCommandSenderWorld();
+
+            target.hurt(level.damageSources().generic(), damage);
+
+            this.remove(RemovalReason.KILLED);
+        }
     }
 
     private void moveTowardsTargetInArc(Entity target) {
@@ -69,10 +77,7 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
-        if (target == null)
-            return;
-
-        if (!(result.getEntity() instanceof LivingEntity entity) || entity.getUUID() != target.getUUID())
+        if (target == null || !(result.getEntity() instanceof LivingEntity entity) || entity.getUUID() != target.getUUID())
             return;
 
         entity.hurt(level().damageSources().generic(), damage);
