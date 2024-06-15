@@ -47,11 +47,6 @@ public class RainbowFireParticle extends TextureSheetParticle {
         }
     }
 
-    @Override
-    protected int getLightColor(float pPartialTick) {
-        return 70;
-    }
-
     protected RainbowFireParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet sprites) {
         super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
         this.sprites = sprites;

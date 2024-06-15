@@ -51,6 +51,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -126,12 +127,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
             setAbilityCooldown(stack, "blessing", getCharges(stack) * 20);
     }
 
-
-    private double interpolate(double start, double end) {
-
-        return start + (end - start) * Minecraft.getInstance().getPartialTick();
-    }
-
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide)
@@ -143,9 +138,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
         List<Monster> monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getAbilityValue(stack, "buffer", "radius")));
         if (monsters.isEmpty()) return;
-
-        ((ServerLevel) level).sendParticles(ParticleRegistry.RAINBOW_FIRE.get(),
-                interpolate(player.xo, player.getX()), interpolate(player.yo, player.getY()) + 1, interpolate(player.zo, player.getZ()), 1, 0, 0, 0, 0);
 
         if (!(player.tickCount % 80 == 0)) return;
 
@@ -230,6 +222,19 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
     @Mod.EventBusSubscriber
     public static class Events {
+
+        @SubscribeEvent
+        public static void onPlayerRender(RenderPlayerEvent event) {
+            event.getEntity().getCommandSenderWorld().addParticle(ParticleRegistry.RAINBOW_FIRE.get(),
+                    interpolate(event.getEntity().xo, event.getEntity().getX(), event.getPartialTick()), interpolate(event.getEntity().yo, event.getEntity().getY(),event.getPartialTick()) + 1,
+                    interpolate(event.getEntity().zo, event.getEntity().getZ(), event.getPartialTick()), 1, 0, 0);
+        }
+
+        private static double interpolate(double start, double end, float p) {
+
+            return start + (end - start) * p;
+        }
+
         @SubscribeEvent
         public static void onPlayerHurt(LivingHurtEvent event) {
             if (!(event.getEntity() instanceof Player player))
