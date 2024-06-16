@@ -1,10 +1,18 @@
 {
-  "parent": "item/generated",
-    "textures": {
-        "layer0": "relics:item/horse_flute"
+  "parent": "forge:item/default",
+  "base": {
+    "parent": "relics:item/horse_flute_3d"
+  },
+  "loader": "forge:separate_transforms",
+  "perspectives": {
+    "ground": {
+      "parent": "relics:item/horse_flute_2d"
     },
-    "overrides": [
-        { "predicate": { "relics:broken": 1 }, "model": "relics:item/horse_flute_broken" }
-    ]
+    "gui": {
+      "parent": "relics:item/horse_flute_2d"
+    },
+    "fixed": {
+      "parent": "relics:item/horse_flute_2d"
+    }
+  }
 }
-

@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.init;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
+import it.hurts.sskirillss.relics.client.models.layers.WingsLayer;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
 import it.hurts.sskirillss.relics.client.renderer.items.items.CurioRenderer;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
@@ -25,7 +26,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -122,11 +125,23 @@ public class RemoteRegistry {
     }
 
     @SubscribeEvent
+    public static void onPlayerRendererRegister(EntityRenderersEvent.AddLayers event) {
+        for (String skinType : event.getSkins()) {
+            LivingEntityRenderer<?, ?> renderer = event.getSkin(skinType);
+
+            if (renderer instanceof PlayerRenderer playerRenderer) {
+                playerRenderer.addLayer(new WingsLayer<>(playerRenderer));
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void entityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityRegistry.SHADOW_GLAIVE.get(), ShadowGlaiveRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BLOCK_SIMULATION.get(), BlockSimulationRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SHOCKWAVE.get(), NullRenderer::new);
         event.registerEntityRenderer(EntityRegistry.LIFE_ESSENCE.get(), NullRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DEATH_ESSENCE.get(), NullRenderer::new);
         event.registerEntityRenderer(EntityRegistry.STALACTITE.get(), StalactiteRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DISSECTION.get(), DissectionRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SPORE.get(), SporeRenderer::new);

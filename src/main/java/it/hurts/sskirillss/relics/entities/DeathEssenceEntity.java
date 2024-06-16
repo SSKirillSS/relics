@@ -22,16 +22,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
-public class LifeEssenceEntity extends ThrowableProjectile implements ITargetableEntity {
+public class DeathEssenceEntity extends ThrowableProjectile implements ITargetableEntity {
     @Setter
     @Getter
-    private float heal;
+    private float damage;
 
     private LivingEntity target;
 
-    private static final EntityDataAccessor<Float> DIRECTION_CHOICE = SynchedEntityData.defineId(LifeEssenceEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DIRECTION_CHOICE = SynchedEntityData.defineId(DeathEssenceEntity.class, EntityDataSerializers.FLOAT);
 
-    public LifeEssenceEntity(EntityType<? extends LifeEssenceEntity> type, Level worldIn) {
+    public DeathEssenceEntity(EntityType<? extends DeathEssenceEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
@@ -49,7 +49,7 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
         double dz = (this.getZ() - zOld) / segments;
 
         for (int i = 0; i < segments; i++) {
-            level().addParticle((ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.25F + (heal * 0.05F), 20 + Math.round(heal * 0.025F), 0.9F)),
+            level().addParticle(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 200 + random.nextInt(55)), 0.25F + (damage * 0.05F), 20 + Math.round(damage * 0.025F), 0.9F),
                     this.getX() + dx * i, this.getY() + dy * i, this.getZ() + dz * i, -this.getDeltaMovement().x * 0.1 * Math.random(), -this.getDeltaMovement().y * 0.1 * Math.random(), -this.getDeltaMovement().z * 0.1 * Math.random());
         }
 
@@ -61,7 +61,7 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
         if (this.distanceTo(target) <= 1) {
             Level level = target.getCommandSenderWorld();
 
-            target.hurt(level.damageSources().generic(), heal);
+            target.hurt(level.damageSources().generic(), damage);
 
             this.remove(RemovalReason.KILLED);
         }
@@ -80,7 +80,7 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
         if (target == null || !(result.getEntity() instanceof LivingEntity entity) || entity.getUUID() != target.getUUID())
             return;
 
-        entity.heal(getHeal() + this.getHeal());
+        entity.hurt(level().damageSources().generic(), damage);
 
         this.discard();
     }
@@ -118,5 +118,4 @@ public class LifeEssenceEntity extends ThrowableProjectile implements ITargetabl
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
-
 }
