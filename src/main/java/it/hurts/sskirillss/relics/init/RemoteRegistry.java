@@ -7,7 +7,6 @@ import it.hurts.sskirillss.relics.client.renderer.entities.*;
 import it.hurts.sskirillss.relics.client.renderer.items.items.CurioRenderer;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
-import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -32,6 +31,7 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.WORLD_POSITION;
 
 @EventBusSubscriber(modid = Reference.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class RemoteRegistry {
@@ -86,7 +86,7 @@ public class RemoteRegistry {
                     (stack, world, entity, id) -> stack.getOrDefault(CHARGE, 0) > 0 ? 1 : 0);
 
             ItemProperties.register(ItemRegistry.BLAZING_FLASK.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "active"),
-                    (stack, world, entity, id) -> NBTUtils.getString(stack, BlazingFlaskItem.TAG_POSITION, "").isEmpty() ? 0 : 1);
+                    (stack, world, entity, id) -> stack.get(WORLD_POSITION) == null ? 0 : 1);
         });
 
         for (Item item : BuiltInRegistries.ITEM.stream().toList()) {

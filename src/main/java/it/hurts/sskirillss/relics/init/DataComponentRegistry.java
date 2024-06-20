@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import it.hurts.sskirillss.relics.components.DataComponent;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.data.WorldPosition;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
@@ -42,6 +43,12 @@ public class DataComponentRegistry {
                     .build()
     );
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COUNT = DATA_COMPONENTS.register("count",
+            () -> DataComponentType.<Integer>builder()
+                    .persistent(Codec.INT)
+                    .build()
+    );
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> TARGET = DATA_COMPONENTS.register("target",
             () -> DataComponentType.<String>builder()
                     .persistent(Codec.STRING)
@@ -51,6 +58,18 @@ public class DataComponentRegistry {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Double>> SPEED = DATA_COMPONENTS.register("speed",
             () -> DataComponentType.<Double>builder()
                     .persistent(Codec.DOUBLE)
+                    .build()
+    );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Double>> RADIUS = DATA_COMPONENTS.register("radius",
+            () -> DataComponentType.<Double>builder()
+                    .persistent(Codec.DOUBLE)
+                    .build()
+    );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<WorldPosition>> WORLD_POSITION = DATA_COMPONENTS.register("world_position",
+            () -> DataComponentType.<WorldPosition>builder()
+                    .persistent(WorldPosition.CODEC)
                     .build()
     );
 

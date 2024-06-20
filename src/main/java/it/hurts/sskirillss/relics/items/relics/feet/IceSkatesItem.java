@@ -70,7 +70,7 @@ public class IceSkatesItem extends RelicItem {
             return;
 
         Level level = player.getCommandSenderWorld();
-        BlockPos pos = player.blockPosition().atY((int) Math.floor(WorldUtils.getGroundHeight(level, player.position(), 16)));
+        BlockPos pos = player.blockPosition().atY((int) Math.floor(WorldUtils.getGroundHeight(player, player.position(), 16)));
 
         int duration = stack.getOrDefault(CHARGE, 0);
 

@@ -12,9 +12,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.WorldUtils;
+import it.hurts.sskirillss.relics.utils.data.WorldPosition;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -32,11 +32,9 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.awt.*;
 import java.util.List;
 
-public class BlazingFlaskItem extends RelicItem {
-    public static final String TAG_POSITION = "pos";
-    public static final String TAG_COUNT = "count";
-    public static final String TAG_RADIUS = "radius";
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.*;
 
+public class BlazingFlaskItem extends RelicItem {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -79,19 +77,18 @@ public class BlazingFlaskItem extends RelicItem {
         int fire = getFireAround(stack, world);
 
         if (fire <= 0) {
-            NBTUtils.clearTag(stack, TAG_POSITION);
-            NBTUtils.clearTag(stack, TAG_COUNT);
+            stack.set(WORLD_POSITION, null);
         } else {
-            NBTUtils.setInt(stack, TAG_COUNT, fire);
+            stack.set(COUNT, fire);
         }
 
-        Vec3 center = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
+        WorldPosition center = stack.get(WORLD_POSITION);
 
         if (center != null) {
-            double radius = NBTUtils.getDouble(stack, TAG_RADIUS, 0D);
+            double radius = stack.getOrDefault(RADIUS, 0D);
 
             if (!player.isCreative() && !player.isSpectator() && !player.getAbilities().flying && !player.getAbilities().mayfly) {
-                if (new Vec3(player.getX(), center.y(), player.getZ()).distanceTo(center) <= radius + 0.5F) {
+                if (new Vec3(player.getX(), center.getPos().y(), player.getZ()).distanceTo(center.getPos()) <= radius + 0.5F) {
                     player.fallDistance = 0F;
 
                     if (player.tickCount % 100 == 0)
@@ -104,7 +101,7 @@ public class BlazingFlaskItem extends RelicItem {
                             player.move(MoverType.SELF, player.getDeltaMovement().multiply(speed, 0, speed));
 
                         if (player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
-                                && (WorldUtils.getGroundHeight(level, player.position(), 64) + getStatValue(stack, "bonfire", "height")) - player.getY() > 0) {
+                                && (WorldUtils.getGroundHeight(player, player.position(), 64) + getStatValue(stack, "bonfire", "height")) - player.getY() > 0) {
                             Vec3 motion = player.getDeltaMovement();
 
                             if (motion.y() < 0)
@@ -116,7 +113,7 @@ public class BlazingFlaskItem extends RelicItem {
                 }
             }
 
-            double size = NBTUtils.getInt(stack, TAG_COUNT, 0) * getStatValue(stack, "bonfire", "step");
+            double size = stack.getOrDefault(COUNT, 0) * getStatValue(stack, "bonfire", "step");
             double step = 0.1D;
             int time = 0;
 
@@ -128,7 +125,7 @@ public class BlazingFlaskItem extends RelicItem {
 
                 time = 10;
 
-                NBTUtils.setDouble(stack, TAG_RADIUS, radius);
+                stack.set(RADIUS, radius);
             }
 
             if (radius > size) {
@@ -139,15 +136,15 @@ public class BlazingFlaskItem extends RelicItem {
 
                 time = 10;
 
-                NBTUtils.setDouble(stack, TAG_RADIUS, radius);
+                stack.set(RADIUS, radius);
             }
 
             if (radius <= step)
                 ParticleUtils.createBall(ParticleUtils.constructSimpleSpark(new Color(255, 100, 0), 0.3F, 20, 0.9F),
-                        center, level, 3, 0.2F);
+                        center.getPos(), level, 3, 0.2F);
 
             ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(255, 100, 0), 0.2F, time, 0.8F),
-                    center, level, radius, 0.15F);
+                    center.getPos(), level, radius, 0.15F);
         }
     }
 
@@ -164,12 +161,12 @@ public class BlazingFlaskItem extends RelicItem {
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 
         if (getFireAround(stack, end, level) > 0) {
-            Vec3 center = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
+            WorldPosition center = stack.get(WORLD_POSITION);
 
-            double radius = NBTUtils.getDouble(stack, TAG_RADIUS, 0D);
+            double radius = stack.getOrDefault(RADIUS, 0D);
 
-            NBTUtils.setDouble(stack, TAG_RADIUS, (center != null && end.distanceTo(center) <= radius) ? radius - center.distanceTo(end) : 0D);
-            NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(end));
+            stack.set(RADIUS, (center != null && end.distanceTo(center.getPos()) <= radius) ? radius - center.getPos().distanceTo(end) : 0D);
+            stack.set(WORLD_POSITION, new WorldPosition(player.level().dimension(), end));
 
             player.getCooldowns().addCooldown(this, 20);
         }
@@ -178,12 +175,12 @@ public class BlazingFlaskItem extends RelicItem {
     }
 
     public int getFireAround(ItemStack stack, Level level) {
-        Vec3 center = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
+        WorldPosition center = stack.get(WORLD_POSITION);
 
         if (center == null)
             return 0;
 
-        return getFireAround(stack, center, level);
+        return getFireAround(stack, center.getPos(), level);
     }
 
     public int getFireAround(ItemStack stack, Vec3 center, Level level) {
