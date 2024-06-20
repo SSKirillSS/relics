@@ -203,14 +203,8 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         return false;
     }
 
-//    @Override
-//    public float getGravity() {
-//        return 0F;
-//    }
-
-//    @Nonnull
-//    @Override
-//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-//        return NetworkHooks.getEntitySpawningPacket(this);
-//    }
+    @Override
+    protected double getDefaultGravity() {
+        return 0D;
+    }
 }

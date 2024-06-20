@@ -128,10 +128,10 @@ public class ShadowSawEntity extends ThrowableProjectile {
         this.setDeltaMovement(this.getDeltaMovement().multiply(1, 0, 1));
     }
 
-//    @Override
-//    protected float getGravity() {
-//        return 0.05F;
-//    }
+    @Override
+    protected double getDefaultGravity() {
+        return 0.05D;
+    }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {

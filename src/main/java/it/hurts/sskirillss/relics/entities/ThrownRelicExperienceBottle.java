@@ -22,10 +22,10 @@ public class ThrownRelicExperienceBottle extends ThrowableItemProjectile {
         return ItemRegistry.RELIC_EXPERIENCE_BOTTLE.get();
     }
 
-//    @Override
-//    protected float getGravity() {
-//        return 0.07F;
-//    }
+    @Override
+    protected double getDefaultGravity() {
+        return 0.07D;
+    }
 
     @Override
     protected void onHit(HitResult result) {
