@@ -8,8 +8,6 @@ import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -20,9 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkHooks;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -64,7 +60,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
-        if (entityData.get(BOUNCES) >= relic.getAbilityValue(stack, "glaive", "bounces")) {
+        if (entityData.get(BOUNCES) >= relic.getStatValue(stack, "glaive", "bounces")) {
             this.discard();
 
             return;
@@ -72,7 +68,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
 
         List<String> bouncedEntities = Arrays.asList(entityData.get(BOUNCED_ENTITIES).split(","));
         List<LivingEntity> entitiesAround = level().getEntitiesOfClass(LivingEntity.class,
-                this.getBoundingBox().inflate(relic.getAbilityValue(stack, "glaive", "radius")));
+                this.getBoundingBox().inflate(relic.getStatValue(stack, "glaive", "radius")));
 
         entitiesAround = entitiesAround.stream()
                 .filter(entity -> !bouncedEntities.contains(entity.getUUID().toString()))
@@ -153,7 +149,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
 
-                float damage = (float) relic.getAbilityValue(stack, "glaive", "damage");
+                float damage = (float) relic.getStatValue(stack, "glaive", "damage");
 
                 if (this.getOwner() instanceof Player player) {
                     if (EntityUtils.hurt(entity, level().damageSources().thrown(this, player), damage))
@@ -178,10 +174,10 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        entityData.define(BOUNCES, 0);
-        entityData.define(TARGET, "");
-        entityData.define(BOUNCED_ENTITIES, "");
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(BOUNCES, 0);
+        builder.define(TARGET, "");
+        builder.define(BOUNCED_ENTITIES, "");
     }
 
     @Override
@@ -207,14 +203,14 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         return false;
     }
 
-    @Override
-    protected float getGravity() {
-        return 0F;
-    }
+//    @Override
+//    public float getGravity() {
+//        return 0F;
+//    }
 
-    @Nonnull
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+//    @Nonnull
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+//        return NetworkHooks.getEntitySpawningPacket(this);
+//    }
 }

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.entity.EntityEvent;
 
 public class EntityBlockSpeedFactorEvent extends EntityEvent {
     @Getter

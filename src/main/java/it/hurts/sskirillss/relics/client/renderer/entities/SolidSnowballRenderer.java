@@ -12,8 +12,8 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SolidSnowballRenderer extends EntityRenderer<SolidSnowballEntity> {
@@ -38,14 +38,14 @@ public class SolidSnowballRenderer extends EntityRenderer<SolidSnowballEntity> {
 
         matrixStackIn.scale(scale, scale, scale);
 
-        new SolidSnowballModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Reference.MODID,
-                "textures/entities/solid_snowball.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        new SolidSnowballModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(Reference.MODID,
+                "textures/entities/solid_snowball.png"))), packedLightIn, OverlayTexture.NO_OVERLAY);
 
         matrixStackIn.popPose();
     }
 
     @Override
     public ResourceLocation getTextureLocation(SolidSnowballEntity entity) {
-        return new ResourceLocation(Reference.MODID, "textures/entities/solid_snowball.png");
+        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entities/solid_snowball.png");
     }
 }

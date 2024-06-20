@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -11,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -32,12 +32,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ComputeFovModifierEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -110,7 +111,7 @@ public class MagicMirrorItem extends RelicItem {
         player.teleportTo(data.getLeft(), pos.x() + 0.5F, pos.y() + 1.0F, pos.z() + 0.5F, player.getYRot(), player.getXRot());
 
         if (!player.isCreative())
-            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getAbilityValue(stack, "teleport", "cooldown") * 20));
+            player.getCooldowns().addCooldown(stack.getItem(), (int) Math.round(getStatValue(stack, "teleport", "cooldown") * 20));
 
         world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
@@ -126,7 +127,7 @@ public class MagicMirrorItem extends RelicItem {
         ServerLevel serverLevel = (ServerLevel) level;
 
         float radius = count * 0.075F;
-        double extraY = entity.getY() + 1.5F - Math.log((count + getUseDuration(stack) * 0.075F) * 0.1F);
+        double extraY = entity.getY() + 1.5F - Math.log((count + getUseDuration(stack, entity) * 0.075F) * 0.1F);
 
         RandomSource random = level.getRandom();
 
@@ -143,13 +144,13 @@ public class MagicMirrorItem extends RelicItem {
             double extraX = (double) (radius * Mth.sin((float) (Math.PI + angle))) + entity.getX();
             double extraZ = (double) (radius * Mth.cos(angle)) + entity.getZ();
 
-            serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, Math.max(0.2F, (getUseDuration(stack) - count) * 0.015F),
+            serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, Math.max(0.2F, (getUseDuration(stack, entity) - count) * 0.015F),
                     40, 0.92F), extraX, extraY, extraZ, 1, 0F, 0F, 0F, 0F);
         }
 
-        serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, (getUseDuration(stack) - count) * 0.005F, 10 + random.nextInt(50),
+        serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(color, (getUseDuration(stack, entity) - count) * 0.005F, 10 + random.nextInt(50),
                         0.95F), entity.getX(), entity.getY() + entity.getBbHeight() * 0.5F, entity.getZ(),
-                (int) ((getUseDuration(stack) - count) * 0.5F), 0.25F, entity.getBbHeight() * 0.4F, 0.25F, 0.025F);
+                (int) ((getUseDuration(stack, entity) - count) * 0.5F), 0.25F, entity.getBbHeight() * 0.4F, 0.25F, 0.025F);
     }
 
     @Override
@@ -158,7 +159,7 @@ public class MagicMirrorItem extends RelicItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack pStack) {
+    public int getUseDuration(ItemStack pStack, LivingEntity entity) {
         return 40;
     }
 
@@ -184,8 +185,7 @@ public class MagicMirrorItem extends RelicItem {
         if (world == null || pos == null)
             return null;
 
-        return Player.findRespawnPositionAndUseSpawnBlock(world, pos, player.getRespawnAngle(), true, !useAnchor)
-                .map(vec3 -> Pair.of(world, vec3)).orElse(null);
+        return Pair.of(world, player.findRespawnPositionAndUseSpawnBlock(!useAnchor, DimensionTransition.DO_NOTHING).pos());
     }
 
     private boolean canTeleport(ServerPlayer player, Pair<ServerLevel, Vec3> data, ItemStack stack) {
@@ -196,10 +196,10 @@ public class MagicMirrorItem extends RelicItem {
         ServerLevel level = data.getLeft();
 
         return !(player.position().distanceTo(new Vec3(pos.x(), player.getY(), pos.z())) * DimensionType.getTeleportationScale(player.level().dimensionType(),
-                level.dimensionType()) > getAbilityValue(stack, "teleport", "distance"));
+                level.dimensionType()) > getStatValue(stack, "teleport", "distance"));
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
     public static class ClientEvents {
         @SubscribeEvent
         public static void onFovUpdate(ComputeFovModifierEvent event) {
@@ -217,7 +217,7 @@ public class MagicMirrorItem extends RelicItem {
         }
     }
 
-    @Mod.EventBusSubscriber
+    @EventBusSubscriber
     public static class ServerEvents {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {

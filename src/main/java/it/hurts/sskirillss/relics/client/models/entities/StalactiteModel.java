@@ -31,7 +31,7 @@ public class StalactiteModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        stone.render(poseStack, buffer, packedLight, packedOverlay);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int seed) {
+        stone.render(poseStack, buffer, packedLight, packedOverlay, seed);
     }
 }

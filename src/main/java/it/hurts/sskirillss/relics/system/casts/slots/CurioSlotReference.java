@@ -20,7 +20,7 @@ public class CurioSlotReference extends SlotReference {
 
     @Override
     public ItemStack gatherStack(Player player) {
-        return CuriosApi.getCuriosInventory(player).resolve().map(itemHandler -> {
+        return CuriosApi.getCuriosInventory(player).map(itemHandler -> {
             IDynamicStackHandler stackHandler = itemHandler.getCurios().get(getType()).getStacks();
 
             int index = getIndex();

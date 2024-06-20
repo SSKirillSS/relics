@@ -2,6 +2,7 @@ package it.hurts.sskirillss.relics.utils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -30,7 +31,7 @@ public class WorldUtils {
     }
 
     public static double getGroundHeight(Level level, Vec3 position, int iterations) {
-        HitResult result = level.clip(new ClipContext(position, position.add(0, -iterations, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null));
+        HitResult result = level.clip(new ClipContext(position, position.add(0, -iterations, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, (Entity) null));
 
         if (result.getType() == HitResult.Type.BLOCK)
             return result.getLocation().y();
@@ -43,7 +44,7 @@ public class WorldUtils {
     }
 
     public static double getCeilHeight(Level level, Vec3 position, int iterations) {
-        HitResult result = level.clip(new ClipContext(position, position.add(0, iterations, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null));
+        HitResult result = level.clip(new ClipContext(position, position.add(0, iterations, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, (Entity) null));
 
         if (result.getType() == HitResult.Type.BLOCK)
             return result.getLocation().y();

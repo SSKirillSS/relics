@@ -8,21 +8,21 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Optional;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
 public class ArmorRenderHandler {
     private static final LoadingCache<Object, Deque<Runnable>> cache = CacheBuilder.newBuilder().weakKeys().build(new CacheLoader<Object, Deque<Runnable>>() {
         @Override
@@ -88,7 +88,7 @@ public class ArmorRenderHandler {
         if (ModList.get().isLoaded("cosmeticarmorreworked"))
             return false;
 
-        LazyOptional<ICuriosItemHandler> helper = CuriosApi.getCuriosHelper().getCuriosHandler(player);
+        Optional<ICuriosItemHandler> helper = CuriosApi.getCuriosHelper().getCuriosHandler(player);
 
         return helper.map(curios -> curios.getStacksHandler("feet").map(handler -> {
             for (int i = 0; i < handler.getSlots(); i++) {

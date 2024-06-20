@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -13,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -26,10 +26,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import java.util.Comparator;
 import java.util.Optional;
 
@@ -71,7 +70,7 @@ public class WoolMittenItem extends RelicItem {
                 .build();
     }
 
-    @Mod.EventBusSubscriber
+    @EventBusSubscriber
     public static class Events {
         @SubscribeEvent
         public static void onBlockClick(PlayerInteractEvent.RightClickBlock event) {
@@ -94,7 +93,7 @@ public class WoolMittenItem extends RelicItem {
 
             Inventory inventory = player.getInventory();
 
-            int size = (int) Math.round(relic.getAbilityValue(relicStack, "mold", "size"));
+            int size = (int) Math.round(relic.getStatValue(relicStack, "mold", "size"));
 
             Optional<Integer> slot = EntityUtils.getSlotsWithItem(player, ItemRegistry.SOLID_SNOWBALL.get()).stream()
                     .filter(id -> NBTUtils.getInt(inventory.getItem(id), SolidSnowballItem.TAG_SNOW, 0) < size)

@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -15,6 +14,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -25,11 +25,11 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(getAbilityValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("talisman", (int) Math.round(getStatValue(stack, "slots", "talisman"))))
                 .build();
     }
 
@@ -91,7 +91,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("body");
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
+    @EventBusSubscriber(modid = Reference.MODID)
     public static class HunterBeltEvents {
         @SubscribeEvent
         public static void onLivingDamage(LivingHurtEvent event) {
@@ -106,7 +106,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
 
             relic.spreadExperience(player, stack, 1);
 
-            event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "training", "damage")));
+            event.setAmount((float) (event.getAmount() * relic.getStatValue(stack, "training", "damage")));
         }
     }
 }

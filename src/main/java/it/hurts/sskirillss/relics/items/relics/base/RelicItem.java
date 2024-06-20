@@ -5,21 +5,22 @@ import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.items.ItemBase;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
+import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.registries.ForgeRegistries;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicItem {
     public RelicItem(Item.Properties properties) {
@@ -34,21 +35,21 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
 
     @Override
     @Deprecated(forRemoval = true)
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> modifiers = LinkedHashMultimap.create();
+    public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
+        Multimap<Holder<Attribute>, AttributeModifier> modifiers = LinkedHashMultimap.create();
 
-        RelicAttributeModifier attributes = getAttributeModifiers(stack);
+        RelicAttributeModifier attributes = getRelicAttributeModifiers(stack);
         RelicSlotModifier slots = getSlotModifiers(stack);
 
         if (attributes != null)
             attributes.getAttributes().forEach(attribute ->
-                    modifiers.put(attribute.getAttribute(), new AttributeModifier(uuid,
-                            ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "_" + ForgeRegistries.ATTRIBUTES.getKey(attribute.getAttribute()).getPath(),
+                    modifiers.put(attribute.getAttribute(), new AttributeModifier(
+                            ResourceLocation.fromNamespaceAndPath(Reference.MODID, BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "_" + BuiltInRegistries.ATTRIBUTE.getKey(attribute.getAttribute().value()).getPath()),
                             attribute.getMultiplier(), attribute.getOperation())));
 
         if (slots != null)
             slots.getModifiers().forEach(slot ->
-                    CuriosApi.addSlotModifier(modifiers, slot.getLeft(), uuid, slot.getRight(), AttributeModifier.Operation.ADDITION));
+                    CuriosApi.addSlotModifier(modifiers, slot.getLeft(), id, slot.getRight(), AttributeModifier.Operation.ADD_VALUE));
 
         return modifiers;
     }
@@ -71,15 +72,5 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
-    }
-
-    @Override
-    public boolean canBeHurtBy(DamageSource source) {
-        return false;
-    }
-
-    @Override
-    public boolean isFireResistant() {
-        return true;
     }
 }

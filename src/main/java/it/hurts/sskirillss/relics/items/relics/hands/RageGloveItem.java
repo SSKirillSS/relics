@@ -6,15 +6,14 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.models.items.SidedCurioModel;
 import it.hurts.sskirillss.relics.client.models.items.SidedFPRCurioModel;
-import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -24,6 +23,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
@@ -56,11 +56,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -68,10 +68,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RageGloveItem extends RelicItem implements IRenderableCurio {
-    public static final String TAG_STACKS = "stacks";
-    public static final String TAG_TIME = "time";
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.TIME;
 
+public class RageGloveItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -152,9 +152,9 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
         RandomSource random = level.getRandom();
 
         if (ability.equals("spurt")) {
-            int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
+            int stacks = stack.getOrDefault(CHARGE, 0);
 
-            double maxDistance = getAbilityValue(stack, "spurt", "distance");
+            double maxDistance = getStatValue(stack, "spurt", "distance");
 
             Vec3 view = player.getViewVector(0);
             Vec3 eyeVec = player.getEyePosition(0);
@@ -177,7 +177,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
             if (!level.isClientSide()) {
                 NetworkHandler.sendToClient(new PacketPlayerMotion(motion.x, motion.y, motion.z), (ServerPlayer) player);
 
-                setAbilityCooldown(stack, "spurt", (int) Math.round(getAbilityValue(stack, "spurt", "cooldown") * 20));
+                setAbilityCooldown(stack, "spurt", (int) Math.round(getStatValue(stack, "spurt", "cooldown") * 20));
             }
 
             player.fallDistance = 0F;
@@ -215,8 +215,8 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
             }
 
             if (!targets.isEmpty()) {
-                EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, Integer.MAX_VALUE, AttributeModifier.Operation.MULTIPLY_BASE);
-                EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_DAMAGE, (float) (getAbilityValue(stack, "spurt", "damage") * stacks), AttributeModifier.Operation.ADDITION);
+                EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, Integer.MAX_VALUE, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+                EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_DAMAGE, (float) (getStatValue(stack, "spurt", "damage") * stacks), AttributeModifier.Operation.ADD_VALUE);
 
                 for (LivingEntity entity : targets) {
                     if (entity.invulnerableTime > 0 || EntityUtils.isAlliedTo(player, entity))
@@ -226,15 +226,15 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
 
                     spreadExperience(player, stack, 1);
 
-                    entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 100, 0));
-                    entity.setSecondsOnFire(5);
+                    entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING, 100, 0));
+                    entity.setRemainingFireTicks(5 * 20);
                 }
 
-                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION);
-                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.MULTIPLY_BASE);
+                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_DAMAGE, AttributeModifier.Operation.ADD_VALUE);
+                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
             }
 
-            NBTUtils.clearTag(stack, TAG_STACKS);
+            stack.set(CHARGE, 0);
         }
     }
 
@@ -246,22 +246,22 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
         if (canUseAbility(stack, "phlebotomy")) {
             float percentage = 100F - (player.getHealth() / player.getMaxHealth() * 100F);
 
-            player.heal((float) getAbilityValue(stack, "phlebotomy", "heal") * percentage);
+            player.heal((float) getStatValue(stack, "phlebotomy", "heal") * percentage);
 
-            EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, (float) (getAbilityValue(stack, "phlebotomy", "attack_speed") * percentage), AttributeModifier.Operation.MULTIPLY_TOTAL);
-            EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (getAbilityValue(stack, "phlebotomy", "movement_speed") * percentage), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, (float) (getStatValue(stack, "phlebotomy", "attack_speed") * percentage), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (getStatValue(stack, "phlebotomy", "movement_speed") * percentage), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         }
 
         if (canUseAbility(stack, "rage")) {
-            int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
+            int stacks = stack.getOrDefault(CHARGE, 0);
 
             if (stacks > 0) {
-                int time = NBTUtils.getInt(stack, TAG_TIME, 0);
+                int time = stack.getOrDefault(TIME, 0);
 
                 if (time > 0)
-                    NBTUtils.setInt(stack, TAG_TIME, --time);
+                    stack.set(TIME, --time);
                 else {
-                    NBTUtils.setInt(stack, TAG_STACKS, 0);
+                    stack.set(CHARGE, 0);
                 }
             }
         }
@@ -273,11 +273,11 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                 || stack.getItem() == newStack.getItem())
             return;
 
-        EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
-        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
-        NBTUtils.clearTag(stack, TAG_STACKS);
-        NBTUtils.clearTag(stack, TAG_TIME);
+        stack.set(CHARGE, 0);
+        stack.set(TIME, 0);
     }
 
     @Override
@@ -305,11 +305,11 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
 
         ICurioRenderer.followBodyRotations(entity, sidedModel);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
 
         matrixStack.translate(0, 0, -0.025F);
 
-        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.popPose();
     }
@@ -335,7 +335,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("right_arm", "left_arm");
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
+    @EventBusSubscriber(modid = Reference.MODID)
     public static class Events {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
@@ -351,14 +351,14 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                     return;
 
                 if (relic.canUseAbility(stack, "rage")) {
-                    int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
+                    int stacks = stack.getOrDefault(CHARGE, 0);
 
-                    NBTUtils.setInt(stack, TAG_STACKS, ++stacks);
-                    NBTUtils.setInt(stack, TAG_TIME, (int) Math.round(relic.getAbilityValue(stack, "rage", "duration") * 20));
+                    stack.set(CHARGE, ++stacks);
+                    stack.set(TIME, (int) Math.round(relic.getStatValue(stack, "rage", "duration") * 20));
 
                     relic.spreadExperience(player, stack, 1);
 
-                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * relic.getAbilityValue(stack, "rage", "dealt_damage")))));
+                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * relic.getStatValue(stack, "rage", "dealt_damage")))));
                 }
             } else if (event.getEntity() instanceof Player player) {
                 ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.RAGE_GLOVE.get());
@@ -367,12 +367,12 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                     return;
 
                 if (relic.canUseAbility(stack, "rage")) {
-                    int stacks = NBTUtils.getInt(stack, TAG_STACKS, 0);
+                    int stacks = stack.getOrDefault(CHARGE, 0);
 
                     if (stacks <= 0)
                         return;
 
-                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * relic.getAbilityValue(stack, "rage", "incoming_damage")))));
+                    event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * relic.getStatValue(stack, "rage", "incoming_damage")))));
                 }
             }
         }

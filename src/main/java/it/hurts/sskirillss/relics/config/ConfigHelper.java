@@ -9,8 +9,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollection;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.fml.loading.FMLPaths;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.nio.file.Path;
@@ -29,7 +29,7 @@ public class ConfigHelper {
         if (ConfigHelper.CACHE.containsKey(relic))
             return ConfigHelper.CACHE.get(relic);
 
-        Path path = FMLPaths.CONFIGDIR.get().resolve(ForgeRegistries.ITEMS.getKey(relic.getItem()).getNamespace()).resolve(ForgeRegistries.ITEMS.getKey(relic.getItem()).getPath() + ".json");
+        Path path = FMLPaths.CONFIGDIR.get().resolve(BuiltInRegistries.ITEM.getKey(relic.getItem()).getNamespace()).resolve(BuiltInRegistries.ITEM.getKey(relic.getItem()).getPath() + ".json");
 
         ConfigHelper.CACHE.put(relic, path);
 
@@ -42,7 +42,7 @@ public class ConfigHelper {
     }
 
     public static void readConfigs() {
-        List<IRelicItem> relics = ForgeRegistries.ITEMS.getValues().stream().filter(entry -> entry instanceof IRelicItem).map(entry -> (IRelicItem) entry).toList();
+        List<IRelicItem> relics = BuiltInRegistries.ITEM.stream().filter(entry -> entry instanceof IRelicItem).map(entry -> (IRelicItem) entry).toList();
 
         if (relics.isEmpty())
             return;
@@ -113,7 +113,7 @@ public class ConfigHelper {
     }
 
     public static void constructConfigs() {
-        List<IRelicItem> relics = ForgeRegistries.ITEMS.getValues().stream().filter(entry -> entry instanceof IRelicItem).map(entry -> (IRelicItem) entry).toList();
+        List<IRelicItem> relics = BuiltInRegistries.ITEM.stream().filter(entry -> entry instanceof IRelicItem).map(entry -> (IRelicItem) entry).toList();
 
         if (relics.isEmpty())
             return;

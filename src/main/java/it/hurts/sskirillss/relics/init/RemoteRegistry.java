@@ -1,64 +1,50 @@
 package it.hurts.sskirillss.relics.init;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.client.gui.layers.ActiveAbilitiesLayer;
+import it.hurts.sskirillss.relics.client.gui.layers.InfoTileLayer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
 import it.hurts.sskirillss.relics.client.renderer.items.items.CurioRenderer;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
 import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
-import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
-import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
-import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
-import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
-import it.hurts.sskirillss.relics.items.relics.feet.AquaWalkerItem;
-import it.hurts.sskirillss.relics.items.relics.feet.MagmaWalkerItem;
-import it.hurts.sskirillss.relics.items.relics.feet.RollerSkatesItem;
-import it.hurts.sskirillss.relics.system.casts.handlers.HUDRenderHandler;
-import it.hurts.sskirillss.relics.tiles.base.IHasHUDInfo;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
-import static it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem.*;
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Reference.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class RemoteRegistry {
     @SubscribeEvent
     public static void setupClient(final FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.RESEARCHING_TABLE.get(), RenderType.cutout());
 
         event.enqueueWork(() -> {
-            ItemProperties.register(ItemRegistry.INFINITY_HAM.get(), new ResourceLocation(Reference.MODID, "pieces"),
-                    (stack, world, entity, id) -> Math.min(10, NBTUtils.getInt(stack, InfinityHamItem.TAG_PIECES, 0)));
-            ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
-                    (stack, world, entity, id) -> Math.min(8, NBTUtils.getInt(stack, ShadowGlaiveItem.TAG_CHARGES, 0)));
-            ItemProperties.register(ItemRegistry.MAGIC_MIRROR.get(), new ResourceLocation(Reference.MODID, "world"),
+            ItemProperties.register(ItemRegistry.INFINITY_HAM.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "pieces"),
+                    (stack, world, entity, id) -> Math.min(10, stack.getOrDefault(CHARGE, 0)));
+            ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "charges"),
+                    (stack, world, entity, id) -> Math.min(8, stack.getOrDefault(CHARGE, 0)));
+            ItemProperties.register(ItemRegistry.MAGIC_MIRROR.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "world"),
                     (stack, world, entity, id) -> {
                         Entity e = Minecraft.getInstance().getCameraEntity();
 
@@ -72,38 +58,38 @@ public class RemoteRegistry {
                             default -> 0;
                         };
                     });
-            ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), new ResourceLocation(Reference.MODID, "charges"),
-                    (stack, world, entity, id) -> Math.min(8, NBTUtils.getInt(stack, ShadowGlaiveItem.TAG_CHARGES, 0)));
-            ItemProperties.register(ItemRegistry.MAGMA_WALKER.get(), new ResourceLocation(Reference.MODID, "heat"),
-                    (stack, world, entity, id) -> NBTUtils.getInt(stack, MagmaWalkerItem.TAG_HEAT, 0) >= ((IRelicItem) stack.getItem()).getAbilityValue(stack, "pace", "time") ? 1 : 0);
-            ItemProperties.register(ItemRegistry.AQUA_WALKER.get(), new ResourceLocation(Reference.MODID, "drench"),
-                    (stack, world, entity, id) -> NBTUtils.getInt(stack, AquaWalkerItem.TAG_DRENCH, 0) >= ((IRelicItem) stack.getItem()).getAbilityValue(stack, "walking", "time") ? 1 : 0);
-            ItemProperties.register(ItemRegistry.ARROW_QUIVER.get(), new ResourceLocation(Reference.MODID, "fullness"),
-                    (stack, world, entity, id) -> {
-                        int maxAmount = ((ArrowQuiverItem) stack.getItem()).getSlotsAmount(stack);
-                        int amount = getArrows(stack).size();
-
-                        return amount > 0 ? (int) Math.floor(amount / (maxAmount / 2F)) + 1 : 0;
-                    });
-            ItemProperties.register(ItemRegistry.ELYTRA_BOOSTER.get(), new ResourceLocation(Reference.MODID, "fuel"),
-                    (stack, world, entity, id) -> NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0) > 0 ? 1 : 0);
-            ItemProperties.register(ItemRegistry.SOLID_SNOWBALL.get(), new ResourceLocation(Reference.MODID, "snow"),
+            ItemProperties.register(ItemRegistry.SHADOW_GLAIVE.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "charges"),
+                    (stack, world, entity, id) -> Math.min(8, stack.getOrDefault(CHARGE, 0)));
+            ItemProperties.register(ItemRegistry.MAGMA_WALKER.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "heat"),
+                    (stack, world, entity, id) -> stack.getOrDefault(CHARGE, 0) >= ((IRelicItem) stack.getItem()).getStatValue(stack, "pace", "time") ? 1 : 0);
+            ItemProperties.register(ItemRegistry.AQUA_WALKER.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "drench"),
+                    (stack, world, entity, id) -> stack.getOrDefault(CHARGE, 0) >= ((IRelicItem) stack.getItem()).getStatValue(stack, "walking", "time") ? 1 : 0);
+//            ItemProperties.register(ItemRegistry.ARROW_QUIVER.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "fullness"),
+//                    (stack, world, entity, id) -> {
+//                        int maxAmount = ((ArrowQuiverItem) stack.getItem()).getSlotsAmount(stack);
+//                        int amount = getArrows(world.registryAccess(), stack).size();
+//
+//                        return amount > 0 ? (int) Math.floor(amount / (maxAmount / 2F)) + 1 : 0;
+//                    });
+            ItemProperties.register(ItemRegistry.ELYTRA_BOOSTER.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "fuel"),
+                    (stack, world, entity, id) -> stack.getOrDefault(CHARGE, 0) > 0 ? 1 : 0);
+            ItemProperties.register(ItemRegistry.SOLID_SNOWBALL.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "snow"),
                     (stack, world, entity, id) -> {
                         ItemStack relic = EntityUtils.findEquippedCurio(entity, ItemRegistry.WOOL_MITTEN.get());
 
                         if (relic.isEmpty())
                             return 3;
 
-                        return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (((IRelicItem) relic.getItem()).getAbilityValue(relic, "mold", "size") / 3F));
+                        return (int) Math.floor(NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0) / (((IRelicItem) relic.getItem()).getStatValue(relic, "mold", "size") / 3F));
                     });
-            ItemProperties.register(ItemRegistry.ROLLER_SKATES.get(), new ResourceLocation(Reference.MODID, "active"),
-                    (stack, world, entity, id) -> NBTUtils.getInt(stack, RollerSkatesItem.TAG_SKATING_DURATION, 0) > 0 ? 1 : 0);
+            ItemProperties.register(ItemRegistry.ROLLER_SKATES.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "active"),
+                    (stack, world, entity, id) -> stack.getOrDefault(CHARGE, 0) > 0 ? 1 : 0);
 
-            ItemProperties.register(ItemRegistry.BLAZING_FLASK.get(), new ResourceLocation(Reference.MODID, "active"),
+            ItemProperties.register(ItemRegistry.BLAZING_FLASK.get(), ResourceLocation.fromNamespaceAndPath(Reference.MODID, "active"),
                     (stack, world, entity, id) -> NBTUtils.getString(stack, BlazingFlaskItem.TAG_POSITION, "").isEmpty() ? 0 : 1);
         });
 
-        for (Item item : ForgeRegistries.ITEMS.getValues()) {
+        for (Item item : BuiltInRegistries.ITEM.stream().toList()) {
             if (!(item instanceof IRenderableCurio))
                 continue;
 
@@ -113,7 +99,7 @@ public class RemoteRegistry {
 
     @SubscribeEvent
     public static void registerLayers(final EntityRenderersEvent.RegisterLayerDefinitions event) {
-        for (Item item : ForgeRegistries.ITEMS.getValues()) {
+        for (Item item : BuiltInRegistries.ITEM.stream().toList()) {
             if (!(item instanceof IRenderableCurio renderable))
                 continue;
 
@@ -132,44 +118,21 @@ public class RemoteRegistry {
         event.registerEntityRenderer(EntityRegistry.SPORE.get(), SporeRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SHADOW_SAW.get(), ShadowSawRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SOLID_SNOWBALL.get(), SolidSnowballRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.ARROW_RAIN.get(), NullRenderer::new);
+//        event.registerEntityRenderer(EntityRegistry.ARROW_RAIN.get(), NullRenderer::new);
         event.registerEntityRenderer(EntityRegistry.RELIC_EXPERIENCE_ORB.get(), RelicExperienceOrbRenderer::new);
         event.registerEntityRenderer(EntityRegistry.THROWN_RELIC_EXPERIENCE_BOTTLE.get(), ThrownItemRenderer::new);
 
         event.registerBlockEntityRenderer(TileRegistry.RESEARCHING_TABLE.get(), ResearchingTableRenderer::new);
     }
 
-    @SubscribeEvent
-    public static void onTooltipRegistry(RegisterClientTooltipComponentFactoriesEvent event) {
-        event.register(ArrowQuiverTooltip.class, ClientArrowQuiverTooltip::new);
-    }
+//    @SubscribeEvent
+//    public static void onTooltipRegistry(RegisterClientTooltipComponentFactoriesEvent event) {
+//        event.register(ArrowQuiverTooltip.class, ClientArrowQuiverTooltip::new);
+//    }
 
     @SubscribeEvent
-    public static void onOverlayRegistry(RegisterGuiOverlaysEvent event) {
-        event.registerBelowAll("researching_hint", (forgeGui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
-            Minecraft MC = Minecraft.getInstance();
-            ClientLevel level = MC.level;
-            PoseStack poseStack = guiGraphics.pose();
-
-            if (level == null)
-                return;
-
-            HitResult hit = MC.hitResult;
-
-            if (hit == null || hit.getType() != HitResult.Type.BLOCK)
-                return;
-
-            BlockPos pos = ((BlockHitResult) MC.hitResult).getBlockPos();
-            BlockEntity tile = level.getBlockEntity(pos);
-
-            if (!(tile instanceof IHasHUDInfo infoTile))
-                return;
-
-            infoTile.renderHUDInfo(poseStack, MC.getWindow());
-        });
-
-        event.registerBelowAll("active_abilities", (ForgeGui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
-            HUDRenderHandler.render(guiGraphics, partialTick);
-        });
+    public static void onOverlayRegistry(RegisterGuiLayersEvent event) {
+        event.registerBelowAll(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "info_tile"), new InfoTileLayer());
+        event.registerBelowAll(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "active_abilities"), new ActiveAbilitiesLayer());
     }
 }

@@ -8,73 +8,36 @@ import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacke
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketExperienceExchange;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class NetworkHandler {
-    private static SimpleChannel INSTANCE;
-    private static int ID = 0;
+    @SubscribeEvent
+    public static void onRegisterPayloadHandler(final RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar(Reference.MODID)
+                .versioned("1.0")
+                .optional();
 
-    private static int nextID() {
-        return ID++;
+        registrar.playToClient(PacketPlayerMotion.TYPE, PacketPlayerMotion.STREAM_CODEC, PacketPlayerMotion::handle);
+        registrar.playToClient(PacketItemActivation.TYPE, PacketItemActivation.STREAM_CODEC, PacketItemActivation::handle);
+        registrar.playToServer(PacketRelicTweak.TYPE, PacketRelicTweak.STREAM_CODEC, PacketRelicTweak::handle);
+        registrar.playToClient(PacketSyncEntityEffects.TYPE, PacketSyncEntityEffects.STREAM_CODEC, PacketSyncEntityEffects::handle);
+        registrar.playToClient(CapabilitySyncPacket.TYPE, CapabilitySyncPacket.STREAM_CODEC, CapabilitySyncPacket::handle);
+        registrar.playToServer(SpellCastPacket.TYPE, SpellCastPacket.STREAM_CODEC, SpellCastPacket::handle);
+        registrar.playToServer(PacketExperienceExchange.TYPE, PacketExperienceExchange.STREAM_CODEC, PacketExperienceExchange::handle);
     }
 
-    public static void register() {
-        INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MODID, "network"),
-                () -> "1.0",
-                s -> true,
-                s -> true);
-
-        INSTANCE.messageBuilder(PacketPlayerMotion.class, nextID())
-                .encoder(PacketPlayerMotion::toBytes)
-                .decoder(PacketPlayerMotion::new)
-                .consumerMainThread(PacketPlayerMotion::handle)
-                .add();
-        INSTANCE.messageBuilder(PacketItemActivation.class, nextID())
-                .encoder(PacketItemActivation::toBytes)
-                .decoder(PacketItemActivation::new)
-                .consumerMainThread(PacketItemActivation::handle)
-                .add();
-        INSTANCE.messageBuilder(PacketRelicTweak.class, nextID())
-                .encoder(PacketRelicTweak::toBytes)
-                .decoder(PacketRelicTweak::new)
-                .consumerMainThread(PacketRelicTweak::handle)
-                .add();
-        INSTANCE.messageBuilder(PacketSyncEntityEffects.class, nextID())
-                .encoder(PacketSyncEntityEffects::toBytes)
-                .decoder(PacketSyncEntityEffects::new)
-                .consumerMainThread(PacketSyncEntityEffects::handle)
-                .add();
-        INSTANCE.messageBuilder(CapabilitySyncPacket.class, nextID())
-                .encoder(CapabilitySyncPacket::toBytes)
-                .decoder(CapabilitySyncPacket::new)
-                .consumerMainThread(CapabilitySyncPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(SpellCastPacket.class, nextID())
-                .encoder(SpellCastPacket::toBytes)
-                .decoder(SpellCastPacket::new)
-                .consumerMainThread(SpellCastPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(PacketExperienceExchange.class, nextID())
-                .encoder(PacketExperienceExchange::toBytes)
-                .decoder(PacketExperienceExchange::new)
-                .consumerMainThread(PacketExperienceExchange::handle)
-                .add();
+    public static <MSG extends CustomPacketPayload> void sendToServer(MSG message) {
+        PacketDistributor.sendToServer(message);
     }
 
-    public static void sendToClient(Object packet, ServerPlayer player) {
-        INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-    }
-
-    public static void sendToServer(Object packet) {
-        INSTANCE.sendToServer(packet);
-    }
-
-    public static void sendToClients(PacketDistributor.PacketTarget target, Object packet) {
-        INSTANCE.send(target, packet);
+    public static <MSG extends CustomPacketPayload> void sendToClient(MSG message, ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player, message);
     }
 }

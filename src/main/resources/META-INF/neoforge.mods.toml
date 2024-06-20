@@ -1,8 +1,11 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[1,)"
 license = "All Rights Reserved"
 issueTrackerURL = "https://discord.gg/pHren9yxzW"
 logoFile = "logo.png"
+
+[[mixins]]
+config = "${mod_id}.mixins.json"
 
 [[mods]]
 modId = "${mod_id}"
@@ -14,25 +17,25 @@ description = '''Just a mod about useful relics with unique mechanics ;)'''
 
 [[dependencies.${mod_id}]]
     modId = "minecraft"
-    mandatory = true
-    versionRange = "[1.20.1,1.21)"
+    type="required"
+    versionRange = "[1.21, 1.22)"
     ordering = "NONE"
     side = "BOTH"
 [[dependencies.${mod_id}]]
-    modId = "forge"
-    mandatory = true
-    versionRange = "[47,)"
+    modId = "neoforge"
+    type="required"
+    versionRange = "[21.0.10-beta,)"
     ordering = "NONE"
     side = "BOTH"
 [[dependencies.${mod_id}]]
     modId = "curios"
-    mandatory = true
-    versionRange = "[5.2.0+1.20.1,)"
+    type="required"
+    versionRange = "[9.0.0+1.21,)"
     ordering = "NONE"
     side = "BOTH"
 [[dependencies.${mod_id}]]
     modId = "octolib"
-    mandatory = true
+    type="required"
     versionRange = "[0.3,)"
     ordering = "NONE"
     side = "BOTH"

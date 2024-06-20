@@ -13,25 +13,25 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.RenderLivingEvent;
 
 public class StunEffect extends MobEffect {
     public StunEffect() {
         super(MobEffectCategory.HARMFUL, 0X6836AA);
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
     public static class ClientEvents {
         @SubscribeEvent
         public static void onMouseInput(InputEvent.InteractionKeyMappingTriggered event) {
             Player player = Minecraft.getInstance().player;
 
-            if (player != null && player.hasEffect(EffectRegistry.STUN.get())) {
+            if (player != null && player.hasEffect(EffectRegistry.STUN)) {
                 event.setSwingHand(false);
 
                 event.setCanceled(true);
@@ -39,10 +39,10 @@ public class StunEffect extends MobEffect {
         }
 
         @SubscribeEvent
-        public void onBlockHighlight(RenderHighlightEvent.Block event) {
+        public static void onBlockHighlight(RenderHighlightEvent.Block event) {
             Player player = Minecraft.getInstance().player;
 
-            if (player != null && player.hasEffect(EffectRegistry.STUN.get()))
+            if (player != null && player.hasEffect(EffectRegistry.STUN))
                 event.setCanceled(true);
         }
 
@@ -50,7 +50,7 @@ public class StunEffect extends MobEffect {
         public static void onEntityRender(RenderLivingEvent.Pre<?, ?> event) {
             LivingEntity entity = event.getEntity();
 
-            if (!entity.hasEffect(EffectRegistry.STUN.get()) || entity.isDeadOrDying())
+            if (!entity.hasEffect(EffectRegistry.STUN) || entity.isDeadOrDying())
                 return;
 
             PoseStack poseStack = event.getPoseStack();

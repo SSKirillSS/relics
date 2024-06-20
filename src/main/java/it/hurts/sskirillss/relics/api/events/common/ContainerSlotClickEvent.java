@@ -6,11 +6,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.eventbus.api.Cancelable;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 
-@Cancelable
-public class ContainerSlotClickEvent extends PlayerContainerEvent {
+public class ContainerSlotClickEvent extends PlayerContainerEvent implements ICancellableEvent {
     @Getter
     private final Slot slot;
     @Getter

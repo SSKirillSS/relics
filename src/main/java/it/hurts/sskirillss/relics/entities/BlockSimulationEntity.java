@@ -9,13 +9,13 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,8 +57,8 @@ public class BlockSimulationEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(BLOCK_STATE, Blocks.AIR.defaultBlockState());
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(BLOCK_STATE, Blocks.AIR.defaultBlockState());
     }
 
     @Override
@@ -79,9 +79,9 @@ public class BlockSimulationEntity extends Entity {
         return false;
     }
 
-    @Nonnull
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+//    @Nonnull
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
+//        return NetworkHooks.getEntitySpawningPacket(this);
+//    }
 }

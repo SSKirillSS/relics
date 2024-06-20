@@ -9,7 +9,6 @@
     "EnderManMixin",
     "EntityMixin",
     "ItemMixin",
-    "ItemStackMixin",
     "LivingEntityMixin",
     "PiglinAiMixin",
     "PowderSnowBlockMixin",

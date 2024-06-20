@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.StalactiteEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -18,11 +17,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -41,20 +40,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
 
-public class ReflectionNecklaceItem extends RelicItem implements IRenderableCurio {
-    public static final String TAG_CHARGE = "charge";
-    public static final String TAG_TIME = "time";
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.TIME;
 
+public class ReflectionNecklaceItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -98,13 +97,11 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
                 || player.tickCount % 20 != 0)
             return;
 
-        int time = NBTUtils.getInt(stack, TAG_TIME, 0);
-        double charge = NBTUtils.getDouble(stack, TAG_CHARGE, 0);
+        int time = stack.getOrDefault(TIME, 0);
+        double charge = stack.getOrDefault(CHARGE, 0);
 
-        if (time > 0 && charge < getAbilityValue(stack, "explode", "capacity")) {
-            --time;
-
-            NBTUtils.setInt(stack, TAG_TIME, time);
+        if (time > 0 && charge < getStatValue(stack, "explode", "capacity")) {
+            stack.set(TIME, --time);
         } else if (charge > 0) {
             Level level = player.level();
             RandomSource random = player.getRandom();
@@ -131,8 +128,8 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
                             continue;
 
                         StalactiteEntity stalactite = new StalactiteEntity(level,
-                                (float) (charge * getAbilityValue(stack, "explode", "damage")),
-                                (float) (charge * getAbilityValue(stack, "explode", "stun")));
+                                (float) (charge * getStatValue(stack, "explode", "damage")),
+                                (float) (charge * getStatValue(stack, "explode", "stun")));
 
                         stalactite.setOwner(player);
                         stalactite.setPos(pos);
@@ -145,8 +142,8 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
 
             spreadExperience(player, stack, (int) Math.floor(charge / 10F));
 
-            NBTUtils.setDouble(stack, TAG_CHARGE, 0);
-            NBTUtils.setInt(stack, TAG_TIME, 0);
+            stack.set(CHARGE, 0);
+            stack.set(TIME, 0);
         }
     }
 
@@ -167,11 +164,11 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
 
         ICurioRenderer.followBodyRotations(entity, model);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
 
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
-        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.scale(2F, 2F, 2F);
 
@@ -197,7 +194,7 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
         return Lists.newArrayList("body");
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
+    @EventBusSubscriber(modid = Reference.MODID)
     public static class ReflectionNecklaceServerEvents {
         @SubscribeEvent
         public static void onEntityHurt(LivingHurtEvent event) {
@@ -209,13 +206,13 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            double charge = NBTUtils.getDouble(stack, TAG_CHARGE, 0);
-            double capacity = relic.getAbilityValue(stack, "explode", "capacity");
+            double charge = stack.getOrDefault(CHARGE, 0);
+            double capacity = relic.getStatValue(stack, "explode", "capacity");
 
             if (charge < capacity) {
-                NBTUtils.setDouble(stack, TAG_CHARGE, Math.min(capacity, charge + (event.getAmount())));
+                stack.set(CHARGE, (int) Math.min(capacity, charge + (event.getAmount())));
 
-                NBTUtils.setInt(stack, TAG_TIME, 5);
+                stack.set(TIME, 5);
             }
         }
     }

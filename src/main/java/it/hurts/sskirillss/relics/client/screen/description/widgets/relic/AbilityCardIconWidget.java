@@ -19,12 +19,12 @@ import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.awt.*;
 import java.util.List;
@@ -58,7 +58,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         boolean canUse = relic.canUseAbility(screen.stack, ability);
         boolean canUpgrade = relic.mayPlayerUpgrade(MC.player, screen.stack, ability);
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(MC.player, screen.stack, ability) + ".png");
+        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/cards/" + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(MC.player, screen.stack, ability) + ".png");
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, card);
@@ -87,7 +87,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
             guiGraphics.blit(RelicDescriptionScreen.TEXTURE, -(width / 2), -(height / 2), 302, 61, width, height, 512, 512);
 
             if (isHovered()) {
-                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/card_highlight_unlocked.png"));
+                RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/card_highlight_unlocked.png"));
 
                 RenderSystem.enableBlend();
 
@@ -112,7 +112,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
             guiGraphics.blit(RelicDescriptionScreen.TEXTURE, -(width / 2) - 1, -(height / 2), 333, 61, width + 1, height, 512, 512);
 
             if (isHovered()) {
-                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/card_highlight_locked.png"));
+                RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/card_highlight_locked.png"));
 
                 RenderSystem.enableBlend();
 
@@ -136,7 +136,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         }
 
         if (canUpgrade) {
-            ResourceLocation icon = new ResourceLocation(Reference.MODID, "textures/gui/description/upgrade_available.png");
+            ResourceLocation icon = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/upgrade_available.png");
 
             RenderSystem.setShaderTexture(0, icon);
 
@@ -233,7 +233,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
         int renderWidth = 0;
 
         List<MutableComponent> entries = Lists.newArrayList(
-                Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD)
+                Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD)
         );
 
         int level = relic.getLevel(screen.stack);
@@ -270,7 +270,7 @@ public class AbilityCardIconWidget extends AbstractDescriptionWidget implements 
 
         poseStack.translate((getX() + (getWidth() / 2F)) / scale, (getY() + (getHeight() / 2F)) / scale, 0);
 
-        ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+        ScreenUtils.drawTexturedTooltipBorder(guiGraphics, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                 renderWidth, height, -((renderWidth + 19) / 2), y);
 
         int yOff = 0;

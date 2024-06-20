@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,9 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +78,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
                 if (!level.isClientSide()) {
                     float damage = radius * this.damage / step;
 
-                    for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(p, p.above(3)).inflate(0.5F))) {
+                    for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(Vec3.atCenterOf(p), Vec3.atCenterOf(p.above(3))).inflate(0.5F))) {
                         if (owner != null && entity.getStringUUID().equals(owner.getStringUUID()))
                             continue;
 
@@ -117,7 +114,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
 
     }
 
@@ -138,9 +135,9 @@ public class ShockwaveEntity extends ThrowableProjectile {
         return false;
     }
 
-    @Nonnull
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+//    @Nonnull
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+//        return NetworkHooks.getEntitySpawningPacket(this);
+//    }
 }

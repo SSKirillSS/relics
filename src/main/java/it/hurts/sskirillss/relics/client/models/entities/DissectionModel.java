@@ -42,14 +42,14 @@ public class DissectionModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int seed) {
         Minecraft MC = Minecraft.getInstance();
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null)
             return;
 
-        float time = (float) Math.sin((player.tickCount + (MC.isPaused() ? 0 : MC.getFrameTime())) / 20F) * 50F;
+        float time = (float) Math.sin((player.tickCount + (MC.isPaused() ? 0 : MC.getTimer().getGameTimeDeltaPartialTick(true))) / 20F) * 50F;
 
         poseStack.pushPose();
 

@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.api.events.common.FluidCollisionEvent;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.models.items.SidedCurioModel;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -19,10 +18,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -39,20 +38,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID)
-public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
-    public static final String TAG_HEAT = "heat";
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
 
+@EventBusSubscriber(modid = Reference.MODID)
+public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -80,18 +79,18 @@ public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
-        int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
+        int heat = stack.getOrDefault(CHARGE, 0);
 
         if (!(entity instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
         if (heat > 0) {
-            if (heat > getAbilityValue(stack, "pace", "time"))
-                player.hurt(level.damageSources().hotFloor(), (float) (1F + ((heat - getAbilityValue(stack, "pace", "time")) / 10F)));
+            if (heat > getStatValue(stack, "pace", "time"))
+                player.hurt(level.damageSources().hotFloor(), (float) (1F + ((heat - getStatValue(stack, "pace", "time")) / 10F)));
 
             if (!level.getFluidState(player.blockPosition().below()).is(FluidTags.LAVA)
                     && !level.getFluidState(player.blockPosition()).is(FluidTags.LAVA))
-                NBTUtils.setInt(stack, TAG_HEAT, --heat);
+                stack.set(CHARGE, --heat);
         }
     }
 
@@ -120,11 +119,11 @@ public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
 
         ICurioRenderer.followBodyRotations(entity, sidedModel);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
 
         matrixStack.translate(0, 0, -0.025F);
 
-        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.popPose();
     }
@@ -161,7 +160,7 @@ public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
         ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
         if (stack.getItem() instanceof IRelicItem relic && event.getSource() == event.getEntity().level().damageSources().hotFloor()
-                && NBTUtils.getInt(stack, TAG_HEAT, 0) <= relic.getAbilityValue(stack, "pace", "time")) {
+                && stack.getOrDefault(CHARGE, 0) <= relic.getStatValue(stack, "pace", "time")) {
             event.setCanceled(true);
         }
     }
@@ -175,9 +174,9 @@ public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
             return;
 
         if (player.tickCount % 20 == 0) {
-            int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
+            int heat = stack.getOrDefault(CHARGE, 0);
 
-            NBTUtils.setInt(stack, TAG_HEAT, ++heat);
+            stack.set(CHARGE, ++heat);
 
             if (heat % 5 == 0)
                 relic.spreadExperience(player, stack, 1);

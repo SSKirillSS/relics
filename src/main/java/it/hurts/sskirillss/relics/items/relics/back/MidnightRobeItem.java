@@ -20,7 +20,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
@@ -39,11 +38,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import javax.annotation.Nullable;
@@ -51,9 +50,9 @@ import java.awt.*;
 import java.util.List;
 import java.util.UUID;
 
-public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
-    private static final String TAG_TARGET = "target";
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.TARGET;
 
+public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -98,8 +97,11 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
     }
 
     @Override
-    public void curioTick(String identifier, int index, LivingEntity entity, ItemStack stack) {
-        Level level = entity.getCommandSenderWorld();
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player))
+            return;
+
+        Level level = player.getCommandSenderWorld();
 
         if (level.isClientSide())
             return;
@@ -108,7 +110,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         LivingEntity target = getTarget(serverLevel, stack);
 
         if (target != null) {
-            double radius = getAbilityValue(stack, "backstab", "distance");
+            double radius = getStatValue(stack, "backstab", "distance");
             double step = 0.15D;
             int offset = 16;
 
@@ -166,15 +168,15 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
             }
         }
 
-        if (!canHide(entity)) {
-            EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        if (!canHide(player)) {
+            EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
-            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(entity.position()) >= getAbilityValue(stack, "backstab", "distance")))
-                NBTUtils.clearTag(stack, TAG_TARGET);
+            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(player.position()) >= getStatValue(stack, "backstab", "distance")))
+                stack.set(TARGET, "");
         } else {
-            entity.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
+            player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
 
-            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, (float) getAbilityValue(stack, "vanish", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) getStatValue(stack, "vanish", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         }
     }
 
@@ -185,13 +187,13 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
 
         ServerLevel serverLevel = (ServerLevel) level;
 
-        String string = NBTUtils.getString(stack, TAG_TARGET, "");
+        String string = stack.getOrDefault(TARGET, "");
 
         if (string.isEmpty())
             return null;
 
         if (!(serverLevel.getEntity(UUID.fromString(string)) instanceof LivingEntity target) || target.isDeadOrDying()) {
-            NBTUtils.clearTag(stack, TAG_TARGET);
+            stack.set(TARGET, "");
 
             return null;
         }
@@ -208,15 +210,15 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         Level world = entity.getCommandSenderWorld();
         BlockPos position = entity.blockPosition().above();
 
-        double light = relic.getAbilityValue(stack, "vanish", "light");
+        double light = relic.getStatValue(stack, "vanish", "light");
 
-        return relic.isAbilityTicking(stack, "vanish") && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
+        return relic.isAbilityTicking(stack, "vanish") && stack.getOrDefault(TARGET, "").isEmpty()
                 && world.getBrightness(LightLayer.BLOCK, position) + world.getBrightness(LightLayer.SKY, position) / 2D <= (world.isNight() ? light * 1.5D : light);
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
     @Override
@@ -256,7 +258,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("right_arm", "left_arm", "body");
     }
 
-    @Mod.EventBusSubscriber
+    @EventBusSubscriber
     public static class ServerEvents {
         @SubscribeEvent
         public static void onLivingHurt(LivingHurtEvent event) {
@@ -270,14 +272,14 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.MIDNIGHT_ROBE.get());
 
             if (!(stack.getItem() instanceof IRelicItem relic) || !canHide(player) || player.position().distanceTo(new Vec3(target.getX(),
-                    player.getY(), target.getZ())) > relic.getAbilityValue(stack, "backstab", "distance"))
+                    player.getY(), target.getZ())) > relic.getStatValue(stack, "backstab", "distance"))
                 return;
 
             relic.spreadExperience(player, stack, Math.round(event.getAmount() * 0.5F));
 
-            event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "backstab", "damage")));
+            event.setAmount((float) (event.getAmount() * relic.getStatValue(stack, "backstab", "damage")));
 
-            NBTUtils.setString(stack, TAG_TARGET, target.getStringUUID());
+            stack.set(TARGET, target.getStringUUID());
         }
     }
 }

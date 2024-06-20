@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 
 public class StunStarModel extends HumanoidModel<LivingEntity> {
-    public static final ModelLayerLocation TEXTURE = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "textures/mob_effect/effects/stun_star.png"), "star");
+    public static final ModelLayerLocation TEXTURE = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/mob_effect/effects/stun_star.png"), "star");
 
     private final ModelPart star;
 
@@ -34,7 +34,7 @@ public class StunStarModel extends HumanoidModel<LivingEntity> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        star.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int seed) {
+        star.render(poseStack, vertexConsumer, packedLight, packedOverlay, seed);
     }
 }

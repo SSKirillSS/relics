@@ -2,6 +2,9 @@ package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -18,16 +21,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 public class EntityUtils {
@@ -125,51 +125,41 @@ public class EntityUtils {
         return entity == null ? null : new EntityHitResult(entity, vector3d);
     }
 
-    private static String getAttributeName(ItemStack stack, Attribute attribute) {
-        return ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "_" + ForgeRegistries.ATTRIBUTES.getKey(attribute).getPath();
+    private static ResourceLocation getAttributeId(ItemStack stack, Attribute attribute) {
+        return ResourceLocation.fromNamespaceAndPath(Reference.MODID,BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "_" + BuiltInRegistries.ATTRIBUTE.getKey(attribute).getPath());
     }
 
-    public static void applyAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
-        String name = getAttributeName(stack, attribute);
+    public static void applyAttribute(LivingEntity entity, ItemStack stack, Holder<Attribute> attributeHolder, float value, AttributeModifier.Operation operation) {
+        Attribute attribute = attributeHolder.value();
 
-        if (name.equals(""))
+        ResourceLocation id = getAttributeId(stack, attribute);
+        AttributeInstance instance = entity.getAttribute(attributeHolder);
+
+        if (instance == null || instance.hasModifier(id))
             return;
 
-        UUID uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
-
-        AttributeInstance instance = entity.getAttribute(attribute);
-        AttributeModifier modifier = new AttributeModifier(uuid, name, value, operation);
-
-        if (instance == null || instance.hasModifier(modifier))
-            return;
-
-        instance.addTransientModifier(modifier);
+        instance.addTransientModifier(new AttributeModifier(id, value, operation));
     }
 
-    public static void removeAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, AttributeModifier.Operation operation) {
-        String name = getAttributeName(stack, attribute);
+    public static void removeAttribute(LivingEntity entity, ItemStack stack, Holder<Attribute> attributeHolder, AttributeModifier.Operation operation) {
+        Attribute attribute = attributeHolder.value();
 
-        if (name.equals(""))
-            return;
+        ResourceLocation id = getAttributeId(stack, attribute);
 
-        UUID uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
-
-        AttributeInstance instance = entity.getAttribute(attribute);
+        AttributeInstance instance = entity.getAttribute(attributeHolder);
 
         if (instance == null)
             return;
 
-        AttributeModifier modifier = new AttributeModifier(uuid, name, instance.getValue(), operation);
-
-        if (!instance.hasModifier(modifier))
+        if (!instance.hasModifier(id))
             return;
 
-        instance.removeModifier(modifier);
+        instance.removeModifier(new AttributeModifier(id, instance.getValue(), operation));
     }
 
-    public static void resetAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
-        removeAttribute(entity, stack, attribute, operation);
-        applyAttribute(entity, stack, attribute, value, operation);
+    public static void resetAttribute(LivingEntity entity, ItemStack stack, Holder<Attribute> attributeHolder, float value, AttributeModifier.Operation operation) {
+        removeAttribute(entity, stack, attributeHolder, operation);
+        applyAttribute(entity, stack, attributeHolder, value, operation);
     }
 
     public static ItemStack findEquippedCurio(Entity entity, Item item) {

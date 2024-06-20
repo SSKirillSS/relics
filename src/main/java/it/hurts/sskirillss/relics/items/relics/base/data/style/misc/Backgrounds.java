@@ -22,6 +22,6 @@ public class Backgrounds {
     }
 
     public static ResourceLocation background(String modid, String name) {
-        return new ResourceLocation(modid, "textures/gui/description/backgrounds/" + name.toLowerCase(Locale.ROOT) + ".png");
+        return ResourceLocation.fromNamespaceAndPath(modid, "textures/gui/description/backgrounds/" + name.toLowerCase(Locale.ROOT) + ".png");
     }
 }

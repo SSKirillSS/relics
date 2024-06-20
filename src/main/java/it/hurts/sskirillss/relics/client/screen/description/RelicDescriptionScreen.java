@@ -29,6 +29,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -36,9 +37,8 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.awt.*;
 import java.util.List;
@@ -48,7 +48,7 @@ import java.util.Map;
 public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen {
     private final Minecraft MC = Minecraft.getInstance();
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/relic_background.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic_background.png");
 
     public final BlockPos pos;
     public ItemStack stack;
@@ -179,7 +179,9 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderBackground(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
+
         LocalPlayer player = MC.player;
 
         if (stack == null || !(stack.getItem() instanceof IRelicItem relic) || player == null)
@@ -192,8 +194,6 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         PoseStack pPoseStack = guiGraphics.pose();
         TextureManager manager = MC.getTextureManager();
-
-        this.renderBackground(guiGraphics);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, TEXTURE);
@@ -219,7 +219,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
         boolean hoveredRelicExperience = ScreenUtils.isHovered(x + 30, y + 72, 206, 3, pMouseX, pMouseY);
 
         if (hoveredRelicExperience) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/relic_experience_highlight.png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic_experience_highlight.png"));
 
             RenderSystem.enableBlend();
 
@@ -250,7 +250,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
         boolean hoveredVanillaExperience = ScreenUtils.isHovered(x + 30, y + 85, 206, 3, pMouseX, pMouseY);
 
         if (hoveredVanillaExperience) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/experience_highlight.png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/experience_highlight.png"));
 
             RenderSystem.enableBlend();
 
@@ -355,7 +355,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         pPoseStack.popPose();
 
-        String registryName = ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath();
+        String registryName = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
 
         pPoseStack.pushPose();
 
@@ -378,7 +378,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
             MutableComponent value = Component.literal(String.valueOf(points)).withStyle(ChatFormatting.BOLD);
 
-            ResourceLocation icon = new ResourceLocation(Reference.MODID, "textures/gui/description/leveling_point.png");
+            ResourceLocation icon = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/leveling_point.png");
 
             manager.bindForSetup(icon);
 
@@ -392,19 +392,18 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             pPoseStack.popPose();
         }
 
-        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         if (hoveredRelicExperience) {
             pPoseStack.pushPose();
 
             pPoseStack.translate(0, 0, 10);
 
-            List<FormattedCharSequence> tooltip = Lists.newArrayList();
+            java.util.List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
             int maxWidth = 200;
             int renderWidth = 0;
 
-            List<MutableComponent> entries = Lists.newArrayList(
+            java.util.List<MutableComponent> entries = Lists.newArrayList(
                     Component.translatable("tooltip.relics.relic.relic_experience.title").withStyle(ChatFormatting.BOLD)
             );
 
@@ -430,7 +429,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             int renderX = pMouseX - 9 - (renderWidth / 2);
             int renderY = y + 77;
 
-            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                     renderWidth, height, renderX, renderY);
 
             yOff = 0;
@@ -453,12 +452,12 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
             pPoseStack.translate(0, 0, 10);
 
-            List<FormattedCharSequence> tooltip = Lists.newArrayList();
+            java.util.List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
             int maxWidth = 200;
             int renderWidth = 0;
 
-            List<MutableComponent> entries = Lists.newArrayList(
+            java.util.List<MutableComponent> entries = Lists.newArrayList(
                     Component.translatable("tooltip.relics.relic.vanilla_experience.title").withStyle(ChatFormatting.BOLD),
                     Component.literal(" "),
                     Component.literal("● ").append(Component.translatable("tooltip.relics.relic.vanilla_experience.current_amount", (player.totalExperience - EntityUtils.getTotalExperienceForLevel(player.experienceLevel)),
@@ -481,7 +480,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             int renderX = pMouseX - 9 - (renderWidth / 2);
             int renderY = y + 90;
 
-            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                     renderWidth, height, renderX, renderY);
 
             yOff = 0;
@@ -500,7 +499,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
         }
 
         if (points > 0 && ScreenUtils.isHovered(x + backgroundWidth + 5, y - 2, 50, 31, pMouseX, pMouseY)) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/leveling_point_highlight.png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/leveling_point_highlight.png"));
 
             RenderSystem.enableBlend();
 
@@ -525,7 +524,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
             pPoseStack.translate(0, 0, 10);
 
-            List<FormattedCharSequence> tooltip = Lists.newArrayList();
+            java.util.List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
             int maxWidth = 200;
             int renderWidth = 0;
@@ -548,7 +547,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             int renderX = pMouseX + 1;
             int renderY = pMouseY + 1;
 
-            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                     renderWidth, height, renderX, renderY);
 
             yOff = 0;
@@ -565,6 +564,12 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
             pPoseStack.popPose();
         }
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         for (GuiEventListener listener : this.children()) {
             if (listener instanceof AbstractButton button && button.isHovered()

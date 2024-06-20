@@ -8,16 +8,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -51,16 +50,16 @@ public class ItemMixin {
     }
 
     @Inject(method = "appendHoverText", at = @At("HEAD"))
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced, CallbackInfo ci) {
-        relics$processTooltip(stack, level, tooltip);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag, CallbackInfo ci) {
+        relics$processTooltip(stack, context, tooltip);
     }
 
     @Unique
     @OnlyIn(Dist.CLIENT)
-    private void relics$processTooltip(ItemStack stack, @Nullable Level level, List<Component> tooltip) {
+    private void relics$processTooltip(ItemStack stack, Item.TooltipContext context, List<Component> tooltip) {
         Item item = stack.getItem();
 
-        if (!(item instanceof IRelicItem relic) || (level == null || !level.isClientSide()))
+        if (!(item instanceof IRelicItem relic))
             return;
 
         LocalPlayer player = Minecraft.getInstance().player;
@@ -80,7 +79,7 @@ public class ItemMixin {
                         .append(Component.translatable("tooltip.relics.relic.tooltip.abilities").withStyle(ChatFormatting.GREEN)));
 
                 for (Map.Entry<String, AbilityData> entry : abilities.entrySet()) {
-                    String id = ForgeRegistries.ITEMS.getKey(item).getPath();
+                    String id = BuiltInRegistries.ITEM.getKey(item).getPath();
                     String name = entry.getKey();
 
                     if (!relic.canUseAbility(stack, name))

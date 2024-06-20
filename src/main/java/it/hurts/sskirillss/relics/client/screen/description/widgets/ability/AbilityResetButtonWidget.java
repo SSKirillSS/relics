@@ -72,7 +72,7 @@ public class AbilityResetButtonWidget extends AbstractDescriptionWidget implemen
         guiGraphics.blit(AbilityDescriptionScreen.TEXTURE, getX(), getY(), isLocked() ? 320 : 302, 106, width, height, 512, 512);
 
         if (isHovered) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/reset_highlight_" + (isLocked() ? "locked" : "unlocked") + ".png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/reset_highlight_" + (isLocked() ? "locked" : "unlocked") + ".png"));
 
             RenderSystem.enableBlend();
 
@@ -157,7 +157,7 @@ public class AbilityResetButtonWidget extends AbstractDescriptionWidget implemen
         int renderX = getX() + width + 1;
         int renderY = mouseY - (height / 2) - 9;
 
-        ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+        ScreenUtils.drawTexturedTooltipBorder(guiGraphics, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                 renderWidth, height, renderX, renderY);
 
         int yOff = 0;

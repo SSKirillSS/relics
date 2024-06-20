@@ -4,8 +4,10 @@ import it.hurts.sskirillss.octolib.config.data.ConfigContext;
 import it.hurts.sskirillss.octolib.config.data.OctoConfig;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.capability.utils.CapabilityUtils;
+import it.hurts.sskirillss.relics.components.*;
 import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
+import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -15,6 +17,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
@@ -25,7 +28,7 @@ import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacke
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -35,12 +38,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -70,7 +75,7 @@ public interface IRelicItem {
     }
 
     @Nullable
-    default RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
+    default RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder().build();
     }
 
@@ -78,7 +83,6 @@ public interface IRelicItem {
     default RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder().build();
     }
-
 
     default RelicData getRelicData() {
         if (!RelicStorage.RELICS.containsKey(this))
@@ -91,12 +95,16 @@ public interface IRelicItem {
         RelicStorage.RELICS.put(this, data);
     }
 
+    default AbilitiesData getAbilitiesData() {
+        return getRelicData().getAbilities();
+    }
+
     default AbilityData getAbilityData(String ability) {
-        return getRelicData().getAbilities().getAbilities().get(ability);
+        return getAbilitiesData().getAbilities().get(ability);
     }
 
     default StatData getStatData(String ability, String stat) {
-        return getRelicData().getAbilities().getAbilities().get(ability).getStats().get(stat);
+        return getAbilityData(ability).getStats().get(stat);
     }
 
     default LevelingData getLevelingData() {
@@ -114,7 +122,7 @@ public interface IRelicItem {
     default boolean isItemResearched(Player player) {
         Item item = getItem();
 
-        return item != null && CapabilityUtils.getRelicsCapability(player).getResearchData().getBoolean(ForgeRegistries.ITEMS.getKey(item).getPath() + "_researched");
+        return item != null && CapabilityUtils.getRelicsCapability(player).getResearchData().getBoolean(BuiltInRegistries.ITEM.getKey(item).getPath() + "_researched");
     }
 
     default void setItemResearched(Player player, boolean researched) {
@@ -123,10 +131,10 @@ public interface IRelicItem {
         if (item == null)
             return;
 
-        CapabilityUtils.getRelicsCapability(player).getResearchData().putBoolean(ForgeRegistries.ITEMS.getKey(item).getPath() + "_researched", researched);
+        CapabilityUtils.getRelicsCapability(player).getResearchData().putBoolean(BuiltInRegistries.ITEM.getKey(item).getPath() + "_researched", researched);
 
         if (!player.level().isClientSide())
-            NetworkHandler.sendToClient(new CapabilitySyncPacket(CapabilityUtils.getRelicsCapability(player).serializeNBT()), (ServerPlayer) player);
+            NetworkHandler.sendToClient(new CapabilitySyncPacket(CapabilityUtils.getRelicsCapability(player).serializeNBT(player.registryAccess())), (ServerPlayer) player);
     }
 
     default int getMaxQuality() {
@@ -141,7 +149,7 @@ public interface IRelicItem {
 
         Function<Double, ? extends Number> format = statData.getFormatValue();
 
-        double initial = format.apply(getAbilityInitialValue(stack, ability, stat)).doubleValue();
+        double initial = format.apply(getStatInitialValue(stack, ability, stat)).doubleValue();
 
         double min = format.apply(statData.getInitialValue().getKey()).doubleValue();
         double max = format.apply(statData.getInitialValue().getValue()).doubleValue();
@@ -203,24 +211,16 @@ public interface IRelicItem {
         return Mth.clamp(sum / size, 0, getMaxQuality());
     }
 
-    default CompoundTag getLevelingTag(ItemStack stack) {
-        return NBTUtils.getCompound(stack, "leveling", new CompoundTag());
-    }
-
-    default void setLevelingTag(ItemStack stack, CompoundTag data) {
-        NBTUtils.setCompound(stack, "leveling", data);
-    }
-
     default int getPoints(ItemStack stack) {
-        return getLevelingTag(stack).getInt("points");
+        return getLevelingComponent(stack).getPoints();
     }
 
     default void setPoints(ItemStack stack, int amount) {
-        CompoundTag tag = getLevelingTag(stack);
+        LevelingComponent levelingComponent = getLevelingComponent(stack);
 
-        tag.putInt("points", Math.max(0, amount));
+        levelingComponent.setPoints(Math.max(0, amount));
 
-        setLevelingTag(stack, tag);
+        setLevelingComponent(stack, levelingComponent);
     }
 
     default void addPoints(ItemStack stack, int amount) {
@@ -228,15 +228,15 @@ public interface IRelicItem {
     }
 
     default int getLevel(ItemStack stack) {
-        return getLevelingTag(stack).getInt("level");
+        return getLevelingComponent(stack).getLevel();
     }
 
     default void setLevel(ItemStack stack, int level) {
-        CompoundTag tag = getLevelingTag(stack);
+        LevelingComponent levelingComponent = getLevelingComponent(stack);
 
-        tag.putInt("level", Mth.clamp(level, 0, getLevelingData().getMaxLevel()));
+        levelingComponent.setLevel(Math.max(0, level));
 
-        setLevelingTag(stack, tag);
+        setLevelingComponent(stack, levelingComponent);
     }
 
     default void addLevel(ItemStack stack, int amount) {
@@ -247,7 +247,7 @@ public interface IRelicItem {
     }
 
     default int getExperience(ItemStack stack) {
-        return getLevelingTag(stack).getInt("experience");
+        return getLevelingComponent(stack).getExperience();
     }
 
     default void setExperience(ItemStack stack, int experience) {
@@ -258,21 +258,21 @@ public interface IRelicItem {
 
         int requiredExp = getExperienceBetweenLevels(stack, level, level + 1);
 
-        CompoundTag data = getLevelingTag(stack);
+        LevelingComponent levelingComponent = getLevelingComponent(stack);
 
         if (experience >= requiredExp) {
             int sumExp = getTotalExperienceForLevel(stack, level) + experience;
             int resultLevel = getLevelFromExperience(stack, sumExp);
 
-            data.putInt("experience", Math.max(0, sumExp - getTotalExperienceForLevel(stack, resultLevel)));
+            levelingComponent.setExperience(Math.max(0, sumExp - getTotalExperienceForLevel(stack, resultLevel)));
 
-            setLevelingTag(stack, data);
+            setLevelingComponent(stack, levelingComponent);
             addPoints(stack, resultLevel - level);
             setLevel(stack, resultLevel);
         } else {
-            data.putInt("experience", Mth.clamp(experience, 0, requiredExp));
+            levelingComponent.setExperience(Mth.clamp(experience, 0, requiredExp));
 
-            setLevelingTag(stack, data);
+            setLevelingComponent(stack, levelingComponent);
         }
     }
 
@@ -283,7 +283,7 @@ public interface IRelicItem {
     default boolean addExperience(@Nullable LivingEntity entity, ItemStack stack, int amount) {
         ExperienceAddEvent event = new ExperienceAddEvent(entity instanceof LivingEntity ? entity : null, stack, amount);
 
-        MinecraftForge.EVENT_BUS.post(event);
+        NeoForge.EVENT_BUS.post(event);
 
         if (!event.isCanceled()) {
             setExperience(stack, getExperience(stack) + event.getAmount());
@@ -312,7 +312,7 @@ public interface IRelicItem {
         List<ItemStack> relics = new ArrayList<>();
 
         for (RelicContainer source : RelicContainer.values())
-            relics.addAll(source.gatherRelics().apply(entity).stream().filter(entry -> !isMaxLevel(entry) && !stack.equals(entry, true)).toList());
+            relics.addAll(source.gatherRelics().apply(entity).stream().filter(entry -> !isMaxLevel(entry) && !stack.equals(entry)).toList());
 
         if (relics.isEmpty())
             return;
@@ -426,84 +426,186 @@ public interface IRelicItem {
         return true;
     }
 
-    default CompoundTag getAbilitiesTag(ItemStack stack) {
-        return stack.getOrCreateTag().getCompound("abilities");
-    }
+    default DataComponent getDataComponent(ItemStack stack) {
+        DataComponent dataComponent = stack.get(DataComponentRegistry.DATA);
 
-    default void setAbilitiesTag(ItemStack stack, CompoundTag nbt) {
-        stack.getOrCreateTag().put("abilities", nbt);
-    }
+        if (dataComponent == null) {
+            dataComponent = new DataComponent();
 
-    default CompoundTag getAbilityTag(ItemStack stack, String ability) {
-        CompoundTag data = getAbilitiesTag(stack);
-
-        if (data.isEmpty())
-            return new CompoundTag();
-
-        return data.getCompound(ability);
-    }
-
-    default void setAbilityTag(ItemStack stack, String ability, CompoundTag nbt) {
-        CompoundTag data = getAbilitiesTag(stack);
-
-        data.put(ability, nbt);
-
-        setAbilitiesTag(stack, data);
-    }
-
-    default CompoundTag getAbilityTempTag(ItemStack stack, String ability) {
-        CompoundTag data = getAbilityTag(stack, ability);
-
-        if (data.isEmpty())
-            return new CompoundTag();
-
-        return data.getCompound("temp");
-    }
-
-    default void setAbilityTempTag(ItemStack stack, String ability, CompoundTag nbt) {
-        CompoundTag data = getAbilityTag(stack, ability);
-
-        data.put("temp", nbt);
-
-        setAbilityTag(stack, ability, data);
-    }
-
-    default Map<String, Double> getAbilityInitialValues(ItemStack stack, String ability) {
-        CompoundTag abilityTag = getAbilityTag(stack, ability);
-
-        Map<String, Double> result = new HashMap<>();
-
-        if (abilityTag.isEmpty())
-            return result;
-
-        CompoundTag statTag = abilityTag.getCompound("stats");
-
-        if (statTag.isEmpty())
-            return result;
-
-        statTag.getAllKeys().forEach(entry -> result.put(entry, statTag.getDouble(entry)));
-
-        return result;
-    }
-
-    default double getAbilityInitialValue(ItemStack stack, String ability, String stat) {
-        double result;
-
-        try {
-            result = getAbilityInitialValues(stack, ability).get(stat);
-        } catch (NullPointerException exception) {
-            if (getStatData(ability, stat) != null) {
-                randomizeStats(stack, ability);
-
-                result = getAbilityInitialValues(stack, ability).get(stat);
-            } else
-                result = 0D;
+            setDataComponent(stack, dataComponent);
         }
 
-        return result;
+        return dataComponent;
     }
 
-    default double getAbilityValue(ItemStack stack, String ability, String stat, int points) {
+    default void setDataComponent(ItemStack stack, DataComponent component) {
+        stack.set(DataComponentRegistry.DATA, component);
+    }
+
+    default LevelingComponent getLevelingComponent(ItemStack stack) {
+        DataComponent dataComponent = getDataComponent(stack);
+        LevelingComponent levelingComponent = dataComponent.getLeveling();
+
+        if (levelingComponent == null) {
+            levelingComponent = new LevelingComponent();
+
+            dataComponent.setLeveling(levelingComponent);
+        }
+
+        return levelingComponent;
+    }
+
+    default void setLevelingComponent(ItemStack stack, LevelingComponent component) {
+        DataComponent dataComponent = getDataComponent(stack);
+
+        dataComponent.setLeveling(component);
+
+        setDataComponent(stack, dataComponent);
+    }
+
+    default AbilitiesComponent getAbilitiesComponent(ItemStack stack) {
+        DataComponent dataComponent = getDataComponent(stack);
+        AbilitiesComponent abilitiesComponent = dataComponent.getAbilities();
+
+        if (abilitiesComponent == null) {
+            abilitiesComponent = new AbilitiesComponent();
+
+            dataComponent.setAbilities(abilitiesComponent);
+        }
+
+        return abilitiesComponent;
+    }
+
+    default void setAbilitiesComponent(ItemStack stack, AbilitiesComponent component) {
+        DataComponent dataComponent = getDataComponent(stack);
+
+        dataComponent.setAbilities(component);
+
+        setDataComponent(stack, dataComponent);
+    }
+
+    @Nullable
+    default AbilityComponent getAbilityComponent(ItemStack stack, String ability) {
+        AbilitiesComponent abilitiesComponent = getAbilitiesComponent(stack);
+
+        Map<String, AbilityComponent> abilities = abilitiesComponent.getAbilities();
+
+        AbilityComponent abilityComponent = abilities.get(ability);
+
+        if (abilityComponent != null)
+            return abilityComponent;
+        else if (getAbilityData(ability) != null) {
+            abilityComponent = new AbilityComponent();
+
+            abilities.put(ability, abilityComponent);
+            abilitiesComponent.setAbilities(abilities);
+
+            return abilityComponent;
+        } else
+            return null;
+    }
+
+    default void setAbilityComponent(ItemStack stack, String ability, AbilityComponent component) {
+        AbilitiesComponent abilitiesComponent = getAbilitiesComponent(stack);
+
+        abilitiesComponent.getAbilities().put(ability, component);
+
+        setAbilitiesComponent(stack, abilitiesComponent);
+    }
+
+    @Nullable
+    default StatComponent getStatComponent(ItemStack stack, String ability, String stat) {
+        AbilityComponent abilityComponent = getAbilityComponent(stack, ability);
+
+        Map<String, StatComponent> stats = abilityComponent.getStats();
+
+        StatComponent statComponent = stats.get(stat);
+
+        StatData statData = getStatData(ability, stat);
+
+        if (statComponent != null)
+            return statComponent;
+        else if (statData != null) {
+            statComponent = new StatComponent();
+
+            statComponent.setInitialValue(MathUtils.round(MathUtils.randomBetween(new Random(), statData.getInitialValue().getKey(), statData.getInitialValue().getValue()), 5));
+
+            stats.put(stat, statComponent);
+            abilityComponent.setStats(stats);
+
+            return statComponent;
+        } else
+            return null;
+    }
+
+    default void setStatComponent(ItemStack stack, String ability, StatComponent component) {
+        AbilityComponent abilityComponent = getAbilityComponent(stack, ability);
+
+        abilityComponent.getStats().put(ability, component);
+
+        setAbilityComponent(stack, ability, abilityComponent);
+    }
+
+    default double getStatInitialValue(ItemStack stack, String ability, String stat) {
+        return getStatComponent(stack, ability, stat).getInitialValue();
+    }
+
+    default void setStatInitialValue(ItemStack stack, String ability, String stat, double value) {
+        StatComponent statComponent = getStatComponent(stack, ability, stat);
+
+        statComponent.setInitialValue(value);
+
+        setStatComponent(stack, ability, statComponent);
+    }
+
+    default void addStatInitialValue(ItemStack stack, String ability, String stat, double value) {
+        setStatInitialValue(stack, ability, stat, getStatInitialValue(stack, ability, stat) + value);
+    }
+
+    default int getAbilityPoints(ItemStack stack, String ability) {
+        return getAbilityComponent(stack, ability).getPoints();
+    }
+
+    default void setAbilityPoints(ItemStack stack, String ability, int points) {
+        AbilityComponent abilityComponent = getAbilityComponent(stack, ability);
+
+        abilityComponent.setPoints(points);
+
+        setAbilityComponent(stack, ability, abilityComponent);
+    }
+
+    default void addAbilityPoints(ItemStack stack, String ability, int points) {
+        setAbilityPoints(stack, ability, getAbilityPoints(stack, ability) + points);
+    }
+
+    @Deprecated(forRemoval = true)
+    default AbilityComponent randomizeAbility(ItemStack stack, String ability) {
+        for (String stat : getAbilityData(ability).getStats().keySet())
+            randomizeStat(stack, ability, stat);
+
+        return getAbilityComponent(stack, ability);
+    }
+
+    @Deprecated(forRemoval = true)
+    default StatComponent randomizeStat(ItemStack stack, String ability, String stat) {
+        StatData entry = getStatData(ability, stat);
+
+        double result = MathUtils.round(MathUtils.randomBetween(new Random(), entry.getInitialValue().getKey(), entry.getInitialValue().getValue()), 5);
+
+        setStatInitialValue(stack, ability, stat, result);
+
+        return getStatComponent(stack, ability, stat);
+    }
+
+    @Deprecated(forRemoval = true)
+    default void randomizeStats(ItemStack stack, String ability) {
+        AbilityData entry = getAbilityData(ability);
+
+        for (String stat : entry.getStats().keySet())
+            randomizeStat(stack, ability, stat);
+    }
+
+    default double getStatValue(ItemStack stack, String ability, String stat, int points) {
         StatData data = getStatData(ability, stat);
 
         double result = 0D;
@@ -511,7 +613,7 @@ public interface IRelicItem {
         if (data == null)
             return result;
 
-        double current = getAbilityInitialValue(stack, ability, stat);
+        double current = getStatInitialValue(stack, ability, stat);
         double step = data.getUpgradeModifier().getValue();
 
         switch (data.getUpgradeModifier().getKey()) {
@@ -525,36 +627,8 @@ public interface IRelicItem {
         return MathUtils.round(Mth.clamp(result, threshold.getKey(), threshold.getValue()), 5);
     }
 
-    default double getAbilityValue(ItemStack stack, String ability, String stat) {
-        return getAbilityValue(stack, ability, stat, getAbilityPoints(stack, ability));
-    }
-
-    default void setAbilityValue(ItemStack stack, String ability, String stat, double value) {
-        CompoundTag data = getAbilitiesTag(stack);
-        CompoundTag abilityTag = getAbilityTag(stack, ability);
-        CompoundTag statTag = abilityTag.getCompound("stats");
-
-        statTag.putDouble(stat, value);
-        abilityTag.put("stats", statTag);
-        data.put(ability, abilityTag);
-
-        setAbilitiesTag(stack, data);
-    }
-
-    default void addAbilityValue(ItemStack stack, String ability, String stat, double value) {
-        setAbilityValue(stack, ability, stat, getAbilityValue(stack, ability, stat) + value);
-    }
-
-    default int getAbilityPoints(ItemStack stack, String ability) {
-        return getAbilityTag(stack, ability).getInt("points");
-    }
-
-    default void setAbilityPoints(ItemStack stack, String ability, int amount) {
-        getAbilityTag(stack, ability).putInt("points", Math.max(0, amount));
-    }
-
-    default void addAbilityPoints(ItemStack stack, String ability, int amount) {
-        getAbilityTag(stack, ability).putInt("points", Math.max(0, getAbilityPoints(stack, ability) + amount));
+    default double getStatValue(ItemStack stack, String ability, String stat) {
+        return getStatValue(stack, ability, stat, getAbilityPoints(stack, ability));
     }
 
     default boolean canUseAbility(ItemStack stack, String ability) {
@@ -568,21 +642,6 @@ public interface IRelicItem {
         }
 
         return true;
-    }
-
-    default void randomizeStat(ItemStack stack, String ability, String stat) {
-        StatData entry = getStatData(ability, stat);
-
-        double result = MathUtils.round(MathUtils.randomBetween(new Random(), entry.getInitialValue().getKey(), entry.getInitialValue().getValue()), 5);
-
-        setAbilityValue(stack, ability, stat, result);
-    }
-
-    default void randomizeStats(ItemStack stack, String ability) {
-        AbilityData entry = getAbilityData(ability);
-
-        for (String stat : entry.getStats().keySet())
-            randomizeStat(stack, ability, stat);
     }
 
     default int getUpgradeRequiredExperience(ItemStack stack, String ability) {
@@ -644,48 +703,48 @@ public interface IRelicItem {
     }
 
     default int getAbilityCooldownCap(ItemStack stack, String ability) {
-        return getAbilityTempTag(stack, ability).getInt("cooldown_cap");
+        return getAbilityComponent(stack, ability).getCooldownCap();
     }
 
     default void setAbilityCooldownCap(ItemStack stack, String ability, int amount) {
-        CompoundTag data = getAbilityTempTag(stack, ability);
+        AbilityComponent abilityComponent = getAbilityComponent(stack, ability);
 
-        data.putInt("cooldown_cap", amount);
+        abilityComponent.setCooldownCap(amount);
 
-        setAbilityTempTag(stack, ability, data);
+        setAbilityComponent(stack, ability, abilityComponent);
     }
 
     default int getAbilityCooldown(ItemStack stack, String ability) {
-        return getAbilityTempTag(stack, ability).getInt("cooldown");
+        return getAbilityComponent(stack, ability).getCooldown();
     }
 
     default void setAbilityCooldown(ItemStack stack, String ability, int amount) {
-        CompoundTag data = getAbilityTempTag(stack, ability);
+        AbilityComponent abilityComponent = getAbilityComponent(stack, ability);
 
-        data.putInt("cooldown", amount);
-        data.putInt("cooldown_cap", amount);
+        abilityComponent.setCooldownCap(amount);
+        abilityComponent.setCooldown(amount);
 
-        setAbilityTempTag(stack, ability, data);
+        setAbilityComponent(stack, ability, abilityComponent);
     }
 
     default void addAbilityCooldown(ItemStack stack, String ability, int amount) {
-        CompoundTag data = getAbilityTempTag(stack, ability);
+        AbilityComponent abilityComponent = getAbilityComponent(stack, ability);
 
-        data.putInt("cooldown", getAbilityCooldown(stack, ability) + amount);
+        abilityComponent.setCooldown(getAbilityCooldown(stack, ability) + amount);
 
-        setAbilityTempTag(stack, ability, data);
+        setAbilityComponent(stack, ability, abilityComponent);
     }
 
     default void setAbilityTicking(ItemStack stack, String ability, boolean ticking) {
-        CompoundTag data = getAbilityTempTag(stack, ability);
+        AbilityComponent abilityComponent = getAbilityComponent(stack, ability);
 
-        data.putBoolean("ticking", ticking);
+        abilityComponent.setTicking(ticking);
 
-        setAbilityTempTag(stack, ability, data);
+        setAbilityComponent(stack, ability, abilityComponent);
     }
 
     default boolean isAbilityTicking(ItemStack stack, String ability) {
-        return getAbilityTempTag(stack, ability).getBoolean("ticking");
+        return getAbilityComponent(stack, ability).isTicking();
     }
 
     default boolean isAbilityOnCooldown(ItemStack stack, String ability) {

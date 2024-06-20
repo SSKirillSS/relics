@@ -1,25 +1,15 @@
-buildscript {
-    repositories {
-        mavenCentral()
-
-        maven { url = 'https://maven.parchmentmc.org' }
-    }
-    dependencies {
-        classpath 'org.parchmentmc:librarian:1.+'
-    }
-}
-
 plugins {
+    id 'java-library'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle' version '[6.0.13, 6.2)'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.142'
     id 'io.freefair.lombok' version '8.4'
 }
 
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'java'
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
 
 version = minecraft_version + "-" + mod_version
 group = mod_group_id
@@ -28,72 +18,43 @@ base {
     archivesName = mod_id
 }
 
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
-
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-
-mixin {
-    add sourceSets.main, "relics.refmap.json"
-    config "relics.mixins.json"
-
-    debug.verbose = true
-    debug.export = true
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 minecraft {
-    mappings channel: 'parchment', version: '2023.09.03-1.20.1'
-
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    copyIdeResources = true
+    accessTransformers {
+        file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
 
     runs {
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            systemProperty 'forge.logging.console.level', 'debug'
+
+            modSource project.sourceSets.main
+        }
+
         client {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            jvmArg "-XX:+AllowEnhancedClassRedefinition"
-            jvmArg "-XX:+AllowRedefinitionToAddDeleteMethods"
-
-            arg "-mixin.config=" + mod_id + ".mixins.json"
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
+            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         }
 
         server {
-            workingDirectory project.file('run')
+            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            jvmArg "-XX:+AllowEnhancedClassRedefinition"
-            jvmArg "-XX:+AllowRedefinitionToAddDeleteMethods"
-
-            arg "-mixin.config=" + mod_id + ".mixins.json"
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
+            programArgument '--nogui'
         }
     }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
 repositories {
+    mavenLocal()
     flatDir {
         dirs 'libs'
-    }
-    maven {
-        url = "https://maven.theillusivec4.top/"
     }
     maven {
         name = "Blamejared maven"
@@ -102,6 +63,10 @@ repositories {
     maven {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
+    }
+    maven {
+        name = "OctoStudios"
+        url = uri("https://maven.octo-studios.com/releases")
     }
     exclusiveContent {
         forRepository {
@@ -116,21 +81,11 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
-
-    if (System.getProperty("idea.sync.active") != "true") {
-        annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
-    }
+    implementation "net.neoforged:neoforge:${neoforge_version}"
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+1.20.1")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+1.20.1:api")
-
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:15.2.0.27"))
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:15.2.0.27"))
-
-    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:15.2.0.27"))
+    implementation 'top.theillusivec4.curios:curios-neoforge:9.0.1+1.21'
 
     if (file("libs").isDirectory()) {
         file("libs").eachFile { file ->
@@ -144,7 +99,7 @@ dependencies {
                 def modreference = "lib:$modartifact:$modversion"
 
                 dependencies {
-                    implementation fg.deobf(project.dependencies.create(modreference) {
+                    implementation (project.dependencies.create(modreference) {
                         transitive = false
                     })
                 }
@@ -153,18 +108,18 @@ dependencies {
     } else file("libs").mkdir()
 }
 
-def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
-def replaceProperties = [
-        minecraft_version: minecraft_version, forge_version: forge_version,
-        mod_id           : mod_id, mod_name: mod_name, mod_version: mod_version,
-        mod_authors      : mod_authors
-]
-
-processResources {
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            forge_version          : neoforge_version,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors
+    ]
     inputs.properties replaceProperties
-    replaceProperties.put 'project', project
 
-    filesMatching(resourceTargets) {
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
         expand replaceProperties
     }
 }
@@ -172,7 +127,6 @@ processResources {
 jar {
     manifest {
         attributes([
-                "MixinConfigs"            : mod_id + ".mixins.json",
                 "Specification-Title"     : mod_id,
                 "Specification-Vendor"    : mod_authors,
                 "Specification-Version"   : "1",
@@ -184,8 +138,13 @@ jar {
     }
 }
 
-jar.finalizedBy('reobfJar')
-
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
 }

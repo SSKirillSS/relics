@@ -3,27 +3,31 @@ package it.hurts.sskirillss.relics.init;
 import it.hurts.sskirillss.relics.blocks.ResearchingTableBlock;
 import it.hurts.sskirillss.relics.items.BlockItemBase;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BlockRegistry {
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MODID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MODID);
+    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, Reference.MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, Reference.MODID);
 
-    public static final RegistryObject<ResearchingTableBlock> RESEARCHING_TABLE = BLOCKS.register("researching_table", ResearchingTableBlock::new);
+    public static final DeferredHolder<Block, ResearchingTableBlock> RESEARCHING_TABLE = BLOCKS.register("researching_table", () -> new ResearchingTableBlock(BlockBehaviour.Properties.of()
+            .lightLevel((s) -> 15)
+            .strength(1.5F)
+            .sound(SoundType.WOOD)
+            .noOcclusion()));
 
-    public static void register() {
-        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+    public static void register(IEventBus bus) {
+        BLOCKS.register(bus);
 
-        for (RegistryObject<? extends Block> block : BLOCKS.getEntries())
+        for (DeferredHolder<? extends Block, ? extends Block> block : BLOCKS.getEntries())
             ITEMS.register(block.getId().getPath(), () -> new BlockItemBase(block.get(), new Item.Properties()));
 
-        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ITEMS.register(bus);
     }
 }

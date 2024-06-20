@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.ring;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -11,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -26,9 +26,9 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.EntityTeleportEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import javax.annotation.Nullable;
@@ -87,7 +87,7 @@ public class ChorusInhibitorItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        double distance = getAbilityValue(stack, "blink", "distance");
+        double distance = getStatValue(stack, "blink", "distance");
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
@@ -111,7 +111,7 @@ public class ChorusInhibitorItem extends RelicItem {
         return null;
     }
 
-    @Mod.EventBusSubscriber
+    @EventBusSubscriber
     public static class Events {
         @SubscribeEvent
         public static void onChorusTeleport(EntityTeleportEvent.ChorusFruit event) {
@@ -134,7 +134,7 @@ public class ChorusInhibitorItem extends RelicItem {
 
             player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
             player.level().playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1F, 1F);
-            player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, Math.max((int) Math.round(relic.getAbilityValue(stack, "blink", "cooldown") * 20D), 0));
+            player.getCooldowns().addCooldown(Items.CHORUS_FRUIT, Math.max((int) Math.round(relic.getStatValue(stack, "blink", "cooldown") * 20D), 0));
         }
     }
 }

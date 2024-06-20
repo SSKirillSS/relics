@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.Abil
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.AbilityUpgradeButtonWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
+import it.hurts.sskirillss.relics.components.StatComponent;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -32,6 +33,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -39,19 +41,19 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class AbilityDescriptionScreen extends Screen implements IAutoScaledScreen {
     private final Minecraft MC = Minecraft.getInstance();
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/ability_background.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/ability_background.png");
 
     public final BlockPos pos;
     public ItemStack stack;
@@ -140,7 +142,9 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderBackground(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
+
         LocalPlayer player = MC.player;
 
         if (stack == null || !(stack.getItem() instanceof IRelicItem relic) || player == null)
@@ -158,8 +162,6 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         PoseStack pPoseStack = guiGraphics.pose();
         TextureManager manager = MC.getTextureManager();
-
-        this.renderBackground(guiGraphics);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, TEXTURE);
@@ -181,7 +183,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         boolean hoveredVanillaExperience = ScreenUtils.isHovered(x + 30, y + 81, 206, 3, pMouseX, pMouseY);
 
         if (hoveredVanillaExperience) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/experience_highlight.png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/experience_highlight.png"));
 
             RenderSystem.enableBlend();
 
@@ -227,14 +229,14 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         int level = relic.getAbilityPoints(stack, ability);
         int maxLevel = abilityData.getMaxLevel() == -1 ? (relicData.getLeveling().getMaxLevel() / abilityData.getRequiredPoints()) : abilityData.getMaxLevel();
 
-        MutableComponent name = Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability);
+        MutableComponent name = Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability);
 
         if (!abilityData.getStats().isEmpty())
             name.append(Component.translatable("tooltip.relics.relic.ability.level", level, maxLevel == -1 ? "∞" : maxLevel));
 
         guiGraphics.drawString(MC.font, name.withStyle(ChatFormatting.BOLD), (x + 62) * 2, (y + 20) * 2 - 1, 0x412708, false);
 
-        List<FormattedCharSequence> lines = MC.font.split(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 350);
+        List<FormattedCharSequence> lines = MC.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 350);
 
         for (int i = 0; i < lines.size(); i++) {
             guiGraphics.drawString(MC.font, lines.get(i), (x + 62) * 2, (y + 28 + (i * 5)) * 2, 0x412708, false);
@@ -251,14 +253,16 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         boolean isHoveredReroll = !isLocked && rerollButton.isHovered();
         boolean isHoveredReset = !isLocked && resetButton.isHovered();
 
-        for (String stat : relic.getAbilityInitialValues(stack, ability).keySet()) {
+        for (Map.Entry<String, StatComponent> entry : relic.getAbilityComponent(stack, ability).getStats().entrySet()) {
+            String stat = entry.getKey();
+            StatComponent statComponent = entry.getValue();
             StatData statData = relic.getStatData(ability, stat);
 
             if (statData != null) {
-                MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat))));
+                MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat))));
 
                 if (isHoveredUpgrade && level < maxLevel) {
-                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat, level + 1)));
+                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat, level + 1)));
                 }
 
                 if (isHoveredReroll) {
@@ -266,16 +270,16 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
                 }
 
                 if (isHoveredReset && level > 0) {
-                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat, 0)));
+                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat, 0)));
                 }
 
                 pPoseStack.pushPose();
 
                 pPoseStack.scale(0.5F, 0.5F, 0.5F);
 
-                guiGraphics.drawString(MC.font, Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title"), (x + 35) * 2, (y + yOff + 102) * 2, 0x412708, false);
+                guiGraphics.drawString(MC.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title"), (x + 35) * 2, (y + yOff + 102) * 2, 0x412708, false);
 
-                guiGraphics.drawString(MC.font, Component.literal("● ").append(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), (x + 40) * 2, (y + yOff + 107) * 2, 0x412708, false);
+                guiGraphics.drawString(MC.font, Component.literal("● ").append(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), (x + 40) * 2, (y + yOff + 107) * 2, 0x412708, false);
 
                 pPoseStack.popPose();
 
@@ -304,7 +308,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             }
         }
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + abilityData.getIcon().apply(player, stack, ability) + ".png");
+        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/cards/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + abilityData.getIcon().apply(player, stack, ability) + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 
@@ -343,7 +347,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             MutableComponent value = Component.literal(String.valueOf(points)).withStyle(ChatFormatting.BOLD);
 
-            ResourceLocation icon = new ResourceLocation(Reference.MODID, "textures/gui/description/leveling_point.png");
+            ResourceLocation icon = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/leveling_point.png");
 
             manager.bindForSetup(icon);
 
@@ -356,8 +360,6 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             pPoseStack.popPose();
         }
-
-        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         if (hoveredVanillaExperience) {
             pPoseStack.pushPose();
@@ -392,7 +394,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             int renderX = pMouseX - 9 - (renderWidth / 2);
             int renderY = y + 87;
 
-            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                     renderWidth, height, renderX, renderY);
 
             yOff = 0;
@@ -411,7 +413,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         }
 
         if (points > 0 && ScreenUtils.isHovered(x + backgroundWidth + 5, y - 2, 50, 31, pMouseX, pMouseY)) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/gui/description/leveling_point_highlight.png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/leveling_point_highlight.png"));
 
             RenderSystem.enableBlend();
 
@@ -459,7 +461,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             int renderX = pMouseX + 1;
             int renderY = pMouseY + 1;
 
-            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+            ScreenUtils.drawTexturedTooltipBorder(guiGraphics, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                     renderWidth, height, renderX, renderY);
 
             yOff = 0;
@@ -476,6 +478,12 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             pPoseStack.popPose();
         }
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        this.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         for (GuiEventListener listener : this.children()) {
             if (listener instanceof AbstractButton button && button.isHovered()

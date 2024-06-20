@@ -37,9 +37,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
@@ -91,10 +91,10 @@ public class BastionRingItem extends RelicItem {
 
         ServerLevel serverLevel = (ServerLevel) world;
 
-        ResourceKey.create(Registries.STRUCTURE, new ResourceLocation("bastion_remnant"));
+        ResourceKey.create(Registries.STRUCTURE, ResourceLocation.parse("bastion_remnant"));
 
         Optional<HolderSet<Structure>> optional = serverLevel.registryAccess().registryOrThrow(Registries.STRUCTURE)
-                .getHolder(ResourceKey.create(Registries.STRUCTURE, new ResourceLocation("bastion_remnant")))
+                .getHolder(ResourceKey.create(Registries.STRUCTURE, ResourceLocation.parse("bastion_remnant")))
                 .map(HolderSet::direct);
 
         if (optional.isEmpty())
@@ -138,7 +138,7 @@ public class BastionRingItem extends RelicItem {
         return true;
     }
 
-    @Mod.EventBusSubscriber
+    @EventBusSubscriber
     public static class Events {
         @SubscribeEvent
         public static void onLivingDeath(LivingDeathEvent event) {

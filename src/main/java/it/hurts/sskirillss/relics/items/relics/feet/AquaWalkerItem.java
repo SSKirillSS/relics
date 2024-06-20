@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.api.events.common.FluidCollisionEvent;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.models.items.SidedCurioModel;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -19,11 +18,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -40,19 +39,19 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID)
-public class AquaWalkerItem extends RelicItem implements IRenderableCurio {
-    public static final String TAG_DRENCH = "drench";
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
 
+@EventBusSubscriber(modid = Reference.MODID)
+public class AquaWalkerItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -82,13 +81,13 @@ public class AquaWalkerItem extends RelicItem implements IRenderableCurio {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
-        int drench = NBTUtils.getInt(stack, TAG_DRENCH, 0);
+        int drench = stack.getOrDefault(CHARGE, 0);
 
         if (!(entity instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
         if (drench > 0 && !player.isInWater() && !player.level().getFluidState(player.blockPosition().below()).is(FluidTags.WATER))
-            NBTUtils.setInt(stack, TAG_DRENCH, --drench);
+            stack.set(CHARGE, --drench);
     }
 
     @Override
@@ -116,11 +115,11 @@ public class AquaWalkerItem extends RelicItem implements IRenderableCurio {
 
         ICurioRenderer.followBodyRotations(entity, sidedModel);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
 
         matrixStack.translate(0, 0, -0.025F);
 
-        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.popPose();
     }
@@ -161,14 +160,14 @@ public class AquaWalkerItem extends RelicItem implements IRenderableCurio {
         if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
-        int drench = NBTUtils.getInt(stack, TAG_DRENCH, 0);
+        int drench = stack.getOrDefault(CHARGE, 0);
 
-        if (!(event.getEntity() instanceof Player player) || drench > relic.getAbilityValue(stack, "walking", "time")
+        if (!(event.getEntity() instanceof Player player) || drench > relic.getStatValue(stack, "walking", "time")
                 || !event.getFluid().is(FluidTags.WATER) || player.isShiftKeyDown())
             return;
 
         if (player.tickCount % 20 == 0) {
-            NBTUtils.setInt(stack, TAG_DRENCH, ++drench);
+            stack.set(CHARGE, ++drench);
 
             if (drench % 5 == 0)
                 relic.spreadExperience(player, stack, 1);

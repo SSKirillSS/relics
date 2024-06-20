@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -31,15 +32,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -87,7 +86,7 @@ public class HUDRenderHandler {
         drawAbility(guiGraphics, player, 1, x + 37 + shakeOffset, y, partialTicks);
         drawAbility(guiGraphics, player, 2, x + 70 + shakeOffset, y, partialTicks);
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
+        RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/background.png"));
 
         RenderSystem.enableBlend();
 
@@ -109,7 +108,7 @@ public class HUDRenderHandler {
 
         ItemStack stack = selectedAbility.getSlot().gatherStack(player);
 
-        String registryName = ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath();
+        String registryName = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
 
         MutableComponent name = Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.getId());
 
@@ -130,7 +129,7 @@ public class HUDRenderHandler {
             String predicateName = entry.getKey();
             boolean isCompleted = entry.getValue();
 
-            RenderSystem.setShaderTexture(0, isCompleted ? new ResourceLocation(Reference.MODID, "textures/gui/description/icons/completed.png") : new ResourceLocation(Reference.MODID, "textures/gui/description/icons/" + registryName + "/" + predicateName + ".png"));
+            RenderSystem.setShaderTexture(0, isCompleted ? ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/icons/completed.png") : ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/icons/" + registryName + "/" + predicateName + ".png"));
 
             RenderUtils.renderTextureFromCenter(poseStack, x, y + yOff, 0, 0, 16, 16, 16, 16, 0.5F);
 
@@ -164,7 +163,7 @@ public class HUDRenderHandler {
 
         boolean isLocked = !relic.canPlayerUseActiveAbility(player, stack, ability.getId());
 
-        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()) + ".png");
+        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/cards/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()) + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 
@@ -196,7 +195,7 @@ public class HUDRenderHandler {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         }
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
+        RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/background.png"));
 
         RenderUtils.renderTextureFromCenter(poseStack, x, y, 0, isLocked ? 43 : 0, 256, 256, 30, 42, scale);
 
@@ -204,7 +203,7 @@ public class HUDRenderHandler {
             CastType type = relic.getAbilityData(ability.getId()).getCastData().getType();
 
             if (type == CastType.TOGGLEABLE) {
-                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png"));
+                RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png"));
 
                 RenderSystem.enableBlend();
 
@@ -220,7 +219,7 @@ public class HUDRenderHandler {
 
                 RenderSystem.enableBlend();
 
-                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/cyclical.png"));
+                RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/cyclical.png"));
 
                 RenderUtils.renderTextureFromCenter(poseStack, x - scale / 2F, y - scale / 2F, 31, 43, scale);
 
@@ -231,13 +230,13 @@ public class HUDRenderHandler {
         }
 
         if (realIndex == 0) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/background.png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/background.png"));
 
             RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 21, isLocked ? 38 : 31, 33, 256, 256, 6, 11, scale);
         }
 
         if (cooldown > 0) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/cooldown.png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/icons/cooldown.png"));
 
             RenderSystem.enableBlend();
 
@@ -267,7 +266,7 @@ public class HUDRenderHandler {
             int failedPredicates = infoEntries.size() - successPredicates;
 
             if (failedPredicates > 0) {
-                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/locked.png"));
+                RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/icons/locked.png"));
 
                 RenderSystem.enableBlend();
 
@@ -349,7 +348,7 @@ public class HUDRenderHandler {
         selectedIndex = sum > max ? sum - max - 1 : sum < 0 ? max : sum;
     }
 
-    @Mod.EventBusSubscriber(value = Dist.CLIENT)
+    @EventBusSubscriber(value = Dist.CLIENT)
     public static class GeneralEvents {
         @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
@@ -358,26 +357,23 @@ public class HUDRenderHandler {
 
             int current = selectedIndex;
 
-            applyDelta(event.getScrollDelta() > 0 ? -1 : 1);
+            applyDelta(event.getScrollDeltaY() > 0 ? -1 : 1);
 
             if (current != selectedIndex) {
-                mouseDelta = event.getScrollDelta() > 0 ? -10 : 10;
+                mouseDelta = event.getScrollDeltaY() > 0 ? -10 : 10;
 
                 LocalPlayer player = Minecraft.getInstance().player;
 
                 if (player != null)
-                    player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 0.5F, 1.5F + player.getRandom().nextFloat() * 0.25F);
+                    player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.5F, 1.5F + player.getRandom().nextFloat() * 0.25F);
             }
 
             event.setCanceled(true);
         }
 
         @SubscribeEvent
-        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-            if (event.side != LogicalSide.CLIENT || event.phase != TickEvent.Phase.END)
-                return;
-
-            Player player = event.player;
+        public static void onPlayerTick(PlayerTickEvent.Post event) {
+            Player player = event.getEntity();
 
             if (!(player instanceof LocalPlayer))
                 return;
@@ -419,7 +415,7 @@ public class HUDRenderHandler {
         }
     }
 
-    @Mod.EventBusSubscriber(value = Dist.CLIENT)
+    @EventBusSubscriber(value = Dist.CLIENT)
     public static class CastEvents {
         @SubscribeEvent
         public static void onKeyPressed(InputEvent.MouseButton.Pre event) {
@@ -469,26 +465,26 @@ public class HUDRenderHandler {
 
             switch (type) {
                 case INSTANTANEOUS -> {
-                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.INSTANTANEOUS, CastStage.END, ability));
+                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.INSTANTANEOUS, CastStage.END, ability.serializeNBT()));
 
                     relic.castActiveAbility(stack, player, ability.getId(), type, CastStage.END);
                 }
                 case CYCLICAL -> {
-                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.CYCLICAL, CastStage.START, ability));
+                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.CYCLICAL, CastStage.START, ability.serializeNBT()));
 
                     relic.castActiveAbility(stack, player, ability.getId(), type, CastStage.START);
                 }
                 case INTERRUPTIBLE -> {
                     CastStage stage = isTicking ? CastStage.END : CastStage.START;
 
-                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.INTERRUPTIBLE, stage, ability));
+                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.INTERRUPTIBLE, stage, ability.serializeNBT()));
 
                     relic.castActiveAbility(stack, player, ability.getId(), type, stage);
                 }
                 case TOGGLEABLE -> {
                     CastStage stage = isTicking ? CastStage.END : CastStage.START;
 
-                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.TOGGLEABLE, stage, ability));
+                    NetworkHandler.sendToServer(new SpellCastPacket(CastType.TOGGLEABLE, stage, ability.serializeNBT()));
 
                     relic.castActiveAbility(stack, player, ability.getId(), type, stage);
                 }
@@ -500,14 +496,8 @@ public class HUDRenderHandler {
         }
 
         @SubscribeEvent
-        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-            if (event.side != LogicalSide.CLIENT || event.phase != TickEvent.Phase.END)
-                return;
-
-            Player player = event.player;
-
-            if (player == null)
-                return;
+        public static void onPlayerTick(PlayerTickEvent.Post event) {
+            Player player = event.getEntity();
 
             AbilityReference ability = getAbilityByIndex(selectedIndex);
 
@@ -533,11 +523,11 @@ public class HUDRenderHandler {
                 case CYCLICAL -> {
                     if (isTicking) {
                         if (isCasting) {
-                            NetworkHandler.sendToServer(new SpellCastPacket(CastType.CYCLICAL, CastStage.TICK, ability));
+                            NetworkHandler.sendToServer(new SpellCastPacket(CastType.CYCLICAL, CastStage.TICK, ability.serializeNBT()));
 
                             relic.castActiveAbility(stack, player, ability.getId(), type, CastStage.TICK);
                         } else {
-                            NetworkHandler.sendToServer(new SpellCastPacket(CastType.CYCLICAL, CastStage.END, ability));
+                            NetworkHandler.sendToServer(new SpellCastPacket(CastType.CYCLICAL, CastStage.END, ability.serializeNBT()));
 
                             relic.castActiveAbility(stack, player, ability.getId(), type, CastStage.END);
                         }
@@ -545,14 +535,14 @@ public class HUDRenderHandler {
                 }
                 case INTERRUPTIBLE -> {
                     if (isTicking) {
-                        NetworkHandler.sendToServer(new SpellCastPacket(CastType.INTERRUPTIBLE, CastStage.TICK, ability));
+                        NetworkHandler.sendToServer(new SpellCastPacket(CastType.INTERRUPTIBLE, CastStage.TICK, ability.serializeNBT()));
 
                         relic.castActiveAbility(stack, player, ability.getId(), type, CastStage.TICK);
                     }
                 }
                 case TOGGLEABLE -> {
                     if (isTicking) {
-                        NetworkHandler.sendToServer(new SpellCastPacket(CastType.TOGGLEABLE, CastStage.TICK, ability));
+                        NetworkHandler.sendToServer(new SpellCastPacket(CastType.TOGGLEABLE, CastStage.TICK, ability.serializeNBT()));
 
                         relic.castActiveAbility(stack, player, ability.getId(), type, CastStage.TICK);
                     }

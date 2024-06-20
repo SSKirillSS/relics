@@ -11,8 +11,6 @@ import lombok.Setter;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -26,9 +24,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
@@ -207,7 +203,7 @@ public class DissectionEntity extends Entity {
 
                 target.fallDistance = 0F;
 
-                ((LivingEntity) target).addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
+                ((LivingEntity) target).addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
 
                 serverLevel.sendParticles(ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(100), 100, 0), 0.2F, 20, 0.9F),
                         target.getX(), target.getY() + 1.25F, target.getZ(), Math.round(target.getBbHeight() * 3), 0.1F, 0.1F, 0.1F, 0.05F);
@@ -257,8 +253,8 @@ public class DissectionEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        entityData.define(LIFE_TIME, 100);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(LIFE_TIME, 100);
     }
 
     @Override
@@ -280,9 +276,9 @@ public class DissectionEntity extends Entity {
         return false;
     }
 
-    @Nonnull
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+//    @Nonnull
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+//        return NetworkHooks.getEntitySpawningPacket(this);
+//    }
 }

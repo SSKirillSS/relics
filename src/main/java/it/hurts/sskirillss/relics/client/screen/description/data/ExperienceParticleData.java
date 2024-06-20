@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 
 public class ExperienceParticleData extends ParticleData {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/experience_particle.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/experience_particle.png");
 
     public ExperienceParticleData(Color color, float xStart, float yStart, float scale, int lifeTime) {
         super(TEXTURE, color, xStart, yStart, scale, lifeTime);

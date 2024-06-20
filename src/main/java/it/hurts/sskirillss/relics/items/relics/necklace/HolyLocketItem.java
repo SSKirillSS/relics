@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -18,6 +17,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.EntityModel;
@@ -33,11 +33,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -87,11 +87,11 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
         ICurioRenderer.followBodyRotations(entity, model);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
 
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
-        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.scale(2F, 2F, 2F);
 
@@ -117,7 +117,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("body");
     }
 
-    @Mod.EventBusSubscriber
+    @EventBusSubscriber
     static class Events {
         @SubscribeEvent
         public static void onLivingHurt(LivingHealEvent event) {
@@ -127,11 +127,11 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
             for (Player player : level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(32))) {
                 ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
 
-                if (!(stack.getItem() instanceof IRelicItem relic) || relic.getAbilityValue(stack, "steal", "radius") < player.position().distanceTo(entity.position())
+                if (!(stack.getItem() instanceof IRelicItem relic) || relic.getStatValue(stack, "steal", "radius") < player.position().distanceTo(entity.position())
                         || entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
 
-                float amount = (float) (event.getAmount() * relic.getAbilityValue(stack, "steal", "amount"));
+                float amount = (float) (event.getAmount() * relic.getStatValue(stack, "steal", "amount"));
 
                 LifeEssenceEntity essence = new LifeEssenceEntity(player, amount);
 

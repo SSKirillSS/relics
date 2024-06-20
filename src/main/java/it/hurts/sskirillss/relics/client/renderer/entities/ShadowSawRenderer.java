@@ -12,8 +12,8 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ShadowSawRenderer extends EntityRenderer<ShadowSawEntity> {
@@ -37,14 +37,14 @@ public class ShadowSawRenderer extends EntityRenderer<ShadowSawEntity> {
 
         matrixStackIn.scale(1.5F, -1F, 1.5F);
 
-        new ShadowSawModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(Reference.MODID,
-                "textures/entities/shadow_saw.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        new ShadowSawModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(ResourceLocation.fromNamespaceAndPath(Reference.MODID,
+                "textures/entities/shadow_saw.png"))), packedLightIn, OverlayTexture.NO_OVERLAY);
 
         matrixStackIn.popPose();
     }
 
     @Override
     public ResourceLocation getTextureLocation(ShadowSawEntity entity) {
-        return new ResourceLocation(Reference.MODID, "textures/entities/shadow_saw.png");
+        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entities/shadow_saw.png");
     }
 }

@@ -16,7 +16,7 @@ public class KeyboardHandlerMixin {
     public void onKeyPress(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
         Player player = Minecraft.getInstance().player;
 
-        if (key != GLFW.GLFW_KEY_ESCAPE && player != null && player.hasEffect(EffectRegistry.STUN.get()))
+        if (key != GLFW.GLFW_KEY_ESCAPE && player != null && player.hasEffect(EffectRegistry.STUN))
             ci.cancel();
     }
 }

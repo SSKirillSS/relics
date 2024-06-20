@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.tiles.base.IHasHUDInfo;
-import it.hurts.sskirillss.relics.tiles.base.TileBase;
 import it.hurts.sskirillss.relics.utils.Reference;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,17 +14,18 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
-public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
+public class ResearchingTableTile extends BlockEntity implements IHasHUDInfo {
     @Getter
     @Setter
     private ItemStack stack = ItemStack.EMPTY;
@@ -44,30 +44,25 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
 
-        stack = ItemStack.of((CompoundTag) compound.get("stack"));
+        stack = ItemStack.parseOptional(provider, compound.getCompound("stack"));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.saveAdditional(compound, provider);
 
-        if (stack != null) {
-            CompoundTag itemStack = new CompoundTag();
-
-            stack.save(itemStack);
-
-            compound.put("stack", itemStack);
-        }
+        if (stack != null && !stack.isEmpty())
+            compound.put("stack", stack.save(provider, new CompoundTag()));
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = super.getUpdateTag(provider);
 
-        this.saveAdditional(tag);
+        this.saveAdditional(tag, provider);
 
         return tag;
     }
@@ -75,13 +70,6 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        super.onDataPacket(net, pkt);
-
-        this.load(pkt.getTag());
     }
 
     @Override
@@ -100,7 +88,7 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
         int scale = 2;
 
         if (!stack.isEmpty()) {
-            ResourceLocation texture = new ResourceLocation(Reference.MODID, "textures/hud/info/crouch_rmb.png");
+            ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/info/crouch_rmb.png");
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.setShaderTexture(0, texture);
@@ -122,7 +110,7 @@ public class ResearchingTableTile extends TileBase implements IHasHUDInfo {
 
             RenderSystem.disableBlend();
         } else if (player.getMainHandItem().getItem() instanceof IRelicItem) {
-            ResourceLocation texture = new ResourceLocation(Reference.MODID, "textures/hud/info/rmb.png");
+            ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/info/rmb.png");
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.setShaderTexture(0, texture);

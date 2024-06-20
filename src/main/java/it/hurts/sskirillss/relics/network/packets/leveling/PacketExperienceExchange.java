@@ -1,43 +1,44 @@
 package it.hurts.sskirillss.relics.network.packets.leveling;
 
+import io.netty.buffer.ByteBuf;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
-
-public class PacketExperienceExchange {
+@Data
+@AllArgsConstructor
+public class PacketExperienceExchange implements CustomPacketPayload {
     private final BlockPos pos;
     private final int amount;
 
-    public PacketExperienceExchange(FriendlyByteBuf buf) {
-        pos = buf.readBlockPos();
-        amount = buf.readInt();
+    public static final CustomPacketPayload.Type<PacketExperienceExchange> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "experience_exchange"));
+
+    public static final StreamCodec<ByteBuf, PacketExperienceExchange> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PacketExperienceExchange::getPos,
+            ByteBufCodecs.INT, PacketExperienceExchange::getAmount,
+            PacketExperienceExchange::new
+    );
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
-    public PacketExperienceExchange(BlockPos pos, int amount) {
-        this.pos = pos;
-        this.amount = amount;
-    }
-
-    public void toBytes(FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
-        buf.writeInt(amount);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            ServerPlayer player = ctx.get().getSender();
-
-            if (player == null)
-                return;
-
+    public void handle(IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Player player = ctx.player();
             Level world = player.level();
 
             if (!(world.getBlockEntity(pos) instanceof ResearchingTableTile tile))
@@ -77,9 +78,7 @@ public class PacketExperienceExchange {
 
             relic.addExperience(player, stack, toAdd);
 
-            world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+            tile.setChanged();
         });
-
-        return true;
     }
 }

@@ -24,7 +24,6 @@ public class SporeModel<T extends Entity> extends EntityModel<T> {
         PartDefinition cube_r3 = spore.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -21.0F, -7.0F, 0.0F, 14.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 14.0F, 0.0F, 0.0F, -1.5708F, 0.0F));
 
         this.spore = LayerDefinition.create(meshdefinition, 64, 64).bakeRoot().getChild("spore");
-        ;
     }
 
     @Override
@@ -33,7 +32,7 @@ public class SporeModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        spore.render(poseStack, buffer, packedLight, packedOverlay);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int seed) {
+        spore.render(poseStack, buffer, packedLight, packedOverlay, seed);
     }
 }

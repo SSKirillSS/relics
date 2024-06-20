@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.blocks;
 
+import com.mojang.serialization.MapCodec;
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.init.TileRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -14,32 +15,26 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ResearchingTableBlock extends HorizontalDirectionalBlock implements EntityBlock {
-    public ResearchingTableBlock() {
-        super(Properties.of()
-                .lightLevel((s) -> 15)
-                .strength(1.5F)
-                .sound(SoundType.WOOD)
-                .noOcclusion());
+    public ResearchingTableBlock(BlockBehaviour.Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -89,7 +84,12 @@ public class ResearchingTableBlock extends HorizontalDirectionalBlock implements
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
-    @Mod.EventBusSubscriber
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return simpleCodec(ResearchingTableBlock::new);
+    }
+
+    @EventBusSubscriber
     public static class Events {
         @SubscribeEvent
         public static void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {

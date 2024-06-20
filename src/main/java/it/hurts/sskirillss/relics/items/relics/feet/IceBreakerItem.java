@@ -1,13 +1,12 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
 import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.ShockwaveEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -17,6 +16,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -31,8 +31,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class IceBreakerItem extends RelicItem {
@@ -78,9 +78,9 @@ public class IceBreakerItem extends RelicItem {
     }
 
     @Override
-    public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
+    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, (float) getAbilityValue(stack, "sustainability", "modifier")))
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, (float) getStatValue(stack, "sustainability", "modifier")))
                 .build();
     }
 
@@ -129,8 +129,8 @@ public class IceBreakerItem extends RelicItem {
             spreadExperience(player, stack, (int) Math.min(10, Math.round(distance / 3F)));
 
             ShockwaveEntity shockwave = new ShockwaveEntity(level,
-                    (int) Math.round(Math.min(getAbilityValue(stack, "impact", "size"), distance * 0.25D)),
-                    (float) getAbilityValue(stack, "impact", "damage"));
+                    (int) Math.round(Math.min(getStatValue(stack, "impact", "size"), distance * 0.25D)),
+                    (float) getStatValue(stack, "impact", "damage"));
 
             BlockPos pos = player.getOnPos();
 
@@ -152,7 +152,7 @@ public class IceBreakerItem extends RelicItem {
         NBTUtils.clearTag(stack, TAG_FALLING_POINT);
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MODID)
+    @EventBusSubscriber(modid = Reference.MODID)
     public static class Events {
         @SubscribeEvent
         public static void onLivingSlipping(LivingSlippingEvent event) {

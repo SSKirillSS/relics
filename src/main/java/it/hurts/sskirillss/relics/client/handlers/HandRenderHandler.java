@@ -12,15 +12,15 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderArmEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderArmEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Reference.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class HandRenderHandler {
     @SubscribeEvent
     public static void onRenderHand(RenderArmEvent event) {
@@ -60,8 +60,7 @@ public class HandRenderHandler {
                             poseStack.translate(0.01, -0.7, 0);
                         }
 
-                        model.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(event.getMultiBufferSource(), RenderType.armorCutoutNoCull(renderable.getTexture(stack)), false, stack.hasFoil()),
-                                event.getPackedLight(), OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+                        model.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(event.getMultiBufferSource(), RenderType.armorCutoutNoCull(renderable.getTexture(stack)), stack.hasFoil()), event.getPackedLight(), OverlayTexture.NO_OVERLAY);
 
                         poseStack.popPose();
                     }

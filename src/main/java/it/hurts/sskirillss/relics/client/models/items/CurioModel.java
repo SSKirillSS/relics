@@ -7,10 +7,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 
@@ -33,9 +33,9 @@ public class CurioModel extends HumanoidModel<LivingEntity> {
     }
 
     public static ModelLayerLocation getLayerLocation(Item item) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
 
-        return new ModelLayerLocation(new ResourceLocation(id.getNamespace(), id.getPath()), id.getPath());
+        return new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath()), id.getPath());
     }
 
     public static ModelPart constructRoot(Item item) {

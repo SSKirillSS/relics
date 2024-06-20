@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
@@ -34,14 +34,14 @@ public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(time * 40F));
         matrixStackIn.scale(0.35F, 0.35F, 0.35F);
 
-        new ShadowGlaiveModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Reference.MODID,
-                "textures/entities/shadow_glaive.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        new ShadowGlaiveModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(Reference.MODID,
+                "textures/entities/shadow_glaive.png"))), packedLightIn, OverlayTexture.NO_OVERLAY);
 
         matrixStackIn.popPose();
     }
 
     @Override
     public ResourceLocation getTextureLocation(ShadowGlaiveEntity entity) {
-        return new ResourceLocation(Reference.MODID, "textures/entities/shadow_glaive.png");
+        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entities/shadow_glaive.png");
     }
 }

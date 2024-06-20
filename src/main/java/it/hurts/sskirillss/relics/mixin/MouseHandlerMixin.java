@@ -15,7 +15,7 @@ public class MouseHandlerMixin {
     public void onKeyPress(CallbackInfo ci) {
         Player player = Minecraft.getInstance().player;
 
-        if (player != null && player.hasEffect(EffectRegistry.STUN.get()))
+        if (player != null && player.hasEffect(EffectRegistry.STUN))
             ci.cancel();
     }
 }

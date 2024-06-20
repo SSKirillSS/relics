@@ -9,8 +9,6 @@ import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -28,9 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.network.NetworkHooks;
-
-import javax.annotation.Nonnull;
 
 public class SolidSnowballEntity extends ThrowableProjectile {
     private static final EntityDataAccessor<Integer> SIZE = SynchedEntityData.defineId(SolidSnowballEntity.class, EntityDataSerializers.INT);
@@ -91,7 +86,7 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         if (stack.getItem() instanceof IRelicItem relic) {
             boolean mayContinue = false;
 
-            float damage = (float) (getSize() * relic.getAbilityValue(stack, "mold", "damage"));
+            float damage = (float) (getSize() * relic.getStatValue(stack, "mold", "damage"));
 
             if (this.getOwner() instanceof Player player) {
                 if (EntityUtils.hurt(entity, level().damageSources().thrown(this, player), damage))
@@ -102,7 +97,7 @@ public class SolidSnowballEntity extends ThrowableProjectile {
             }
 
             if (mayContinue)
-                entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) Math.round(getSize() * relic.getAbilityValue(stack, "mold", "stun")) * 20, 0, true, false));
+                entity.addEffect(new MobEffectInstance(EffectRegistry.STUN, (int) Math.round(getSize() * relic.getStatValue(stack, "mold", "stun")) * 20, 0, true, false));
         }
 
         this.discard();
@@ -127,7 +122,7 @@ public class SolidSnowballEntity extends ThrowableProjectile {
 
         for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(getSize() / 15F))) {
             if (!entity.getStringUUID().equals(owner.getStringUUID()))
-                entity.setTicksFrozen((int) (100 + Math.round(getSize() * relic.getAbilityValue(EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get()), "mold", "freeze"))));
+                entity.setTicksFrozen((int) (100 + Math.round(getSize() * relic.getStatValue(EntityUtils.findEquippedCurio(owner, ItemRegistry.WOOL_MITTEN.get()), "mold", "freeze"))));
         }
 
         if (owner instanceof LivingEntity entity)
@@ -137,8 +132,8 @@ public class SolidSnowballEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        entityData.define(SIZE, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(SIZE, 0);
     }
 
     @Override
@@ -156,9 +151,9 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         return false;
     }
 
-    @Nonnull
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+//    @Nonnull
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+//        return NetworkHooks.getEntitySpawningPacket(this);
+//    }
 }

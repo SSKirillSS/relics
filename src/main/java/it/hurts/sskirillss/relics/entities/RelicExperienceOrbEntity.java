@@ -4,8 +4,6 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -16,8 +14,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,12 +140,12 @@ public class RelicExperienceOrbEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        entityData.define(EXPERIENCE, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(EXPERIENCE, 0);
     }
 
     @Override
-    protected BlockPos getBlockPosBelowThatAffectsMyMovement() {
+    public BlockPos getBlockPosBelowThatAffectsMyMovement() {
         return this.getOnPos(0.999F);
     }
 
@@ -160,11 +157,6 @@ public class RelicExperienceOrbEntity extends Entity {
     @Override
     public boolean isAttackable() {
         return false;
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override

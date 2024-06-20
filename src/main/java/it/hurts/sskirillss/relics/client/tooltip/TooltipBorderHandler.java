@@ -11,16 +11,16 @@ import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import org.lwjgl.opengl.GL11;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Reference.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class TooltipBorderHandler {
     @SubscribeEvent
     public static void onTooltipDisplay(TooltipDisplayEvent event) {
@@ -48,9 +48,9 @@ public class TooltipBorderHandler {
         int x = event.getX();
         int y = event.getY();
 
-        String id = tooltip.getIcon().isEmpty() ? ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() : tooltip.getIcon();
+        String id = tooltip.getIcon().isEmpty() ? BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() : tooltip.getIcon();
 
-        ResourceLocation texture = new ResourceLocation(Reference.MODID, "textures/gui/tooltip/frame/" + id + "_frame.png");
+        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/frame/" + id + "_frame.png");
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, texture);
@@ -91,7 +91,7 @@ public class TooltipBorderHandler {
         graphics.blit(texture, x + (width - middleWidth) / 2, y - middleHeight + 1, cornerWidth, offset, middleWidth, middleHeight, texWidth, texHeight);
         graphics.blit(texture, x + (width - middleWidth) / 2, y + height - 1, cornerWidth, middleHeight + offset, middleWidth, middleHeight, texWidth, texHeight);
 
-        texture = new ResourceLocation(Reference.MODID, "textures/gui/tooltip/frame/" + id + "_star.png");
+        texture = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/frame/" + id + "_star.png");
 
         RenderSystem.setShaderTexture(0, texture);
 

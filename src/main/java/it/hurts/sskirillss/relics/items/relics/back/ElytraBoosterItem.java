@@ -5,11 +5,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -19,9 +18,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -41,24 +40,22 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber
-public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
-    public static final String TAG_FUEL = "fuel";
-    public static final String TAG_SPEED = "speed";
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.SPEED;
 
+@EventBusSubscriber
+public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -67,7 +64,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.CYCLICAL)
-                                        .castPredicate("fuel", (player, stack) -> NBTUtils.getInt(stack, TAG_FUEL, 0) > 0)
+                                        .castPredicate("fuel", (player, stack) -> stack.getOrDefault(CHARGE, 0) > 0)
                                         .castPredicate("elytra", (player, stack) -> player.isFallFlying())
                                         .build())
                                 .stat(StatData.builder("capacity")
@@ -93,29 +90,29 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
     }
 
     public int getBreathCapacity(ItemStack stack) {
-        return (int) Math.round(getAbilityValue(stack, "boost", "capacity"));
+        return (int) Math.round(getStatValue(stack, "boost", "capacity"));
     }
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ability.equals("boost")) {
             if (stage == CastStage.TICK) {
-                int fuel = NBTUtils.getInt(stack, TAG_FUEL, 0);
+                int fuel = stack.getOrDefault(CHARGE, 0);
 
                 if (fuel > 0 && player.tickCount % 20 == 0)
-                    NBTUtils.setInt(stack, TAG_FUEL, --fuel);
+                    stack.set(CHARGE, --fuel);
 
-                double speed = NBTUtils.getDouble(stack, TAG_SPEED, 1D);
+                double speed = stack.getOrDefault(SPEED, 0D);
 
                 if (player.tickCount % 3 == 0) {
-                    double maxSpeed = getAbilityValue(stack, "boost", "speed");
+                    double maxSpeed = getStatValue(stack, "boost", "speed");
 
                     if (speed < maxSpeed) {
                         speed = Math.min(maxSpeed, speed + ((maxSpeed - 1D) / 100D));
 
-                        NBTUtils.setDouble(stack, TAG_SPEED, speed);
+                        stack.set(SPEED, speed);
                     } else {
-                        player.startAutoSpinAttack(5);
+                        player.startAutoSpinAttack(5, 0F, ItemStack.EMPTY);
                     }
                 }
 
@@ -136,7 +133,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
                             0, 0, 0);
 
                 if (player.tickCount % Math.max(1, (int) Math.round((10 - speed * 2) / (player.isInWaterOrRain() ? 2 : 1))) == 0)
-                    NBTUtils.setInt(stack, TAG_FUEL, --fuel);
+                    stack.set(CHARGE, --fuel);
             }
         }
     }
@@ -148,16 +145,16 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
         if (!(entity instanceof Player player))
             return;
 
-        double speed = NBTUtils.getDouble(stack, TAG_SPEED, 1D);
-        int fuel = NBTUtils.getInt(stack, TAG_FUEL, 0);
+        double speed = stack.getOrDefault(SPEED, 0D);
+        int fuel = stack.getOrDefault(CHARGE, 0);
 
         if (speed > 1 && (fuel <= 0 || !player.isFallFlying()))
-            NBTUtils.setDouble(stack, TAG_SPEED, 1D);
+            stack.set(SPEED, 1D);
     }
 
     @Override
     public ResourceLocation getTexture(ItemStack stack) {
-        return new ResourceLocation(Reference.MODID, "textures/models/items/elytra_booster_" + (NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0) > 0 ? 1 : 0) + ".png");
+        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/models/items/elytra_booster_" + (stack.getOrDefault(CHARGE, 0) > 0 ? 1 : 0) + ".png");
     }
 
     @Override
@@ -174,9 +171,9 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
 
         ICurioRenderer.followBodyRotations(entity, model);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
 
-        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.popPose();
     }
@@ -219,15 +216,15 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
         if (!(slotStack.getItem() instanceof ElytraBoosterItem booster))
             return;
 
-        int time = ForgeHooks.getBurnTime(heldStack, RecipeType.SMELTING) / 20;
-        int amount = NBTUtils.getInt(slotStack, TAG_FUEL, 0);
+        int time = 100; // TODO: ForgeHooks.getBurnTime(heldStack, RecipeType.SMELTING) / 20;
+        int amount = slotStack.getOrDefault(CHARGE, 0);
         int capacity = booster.getBreathCapacity(slotStack);
         int sum = amount + time;
 
         if (time <= 0)
             return;
 
-        NBTUtils.setInt(slotStack, TAG_FUEL, Math.min(capacity, sum));
+        slotStack.set(CHARGE, Math.min(capacity, sum));
 
         int left = sum > capacity ? time - (sum - capacity) : time;
 
