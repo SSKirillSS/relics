@@ -492,10 +492,15 @@ public interface IRelicItem {
 
         AbilityComponent abilityComponent = abilities.get(ability);
 
+        AbilityData abilityData = getAbilityData(ability);
+
         if (abilityComponent != null)
             return abilityComponent;
-        else if (getAbilityData(ability) != null) {
+        else if (abilityData != null) {
             abilityComponent = new AbilityComponent();
+
+            if (abilityData.getCastData().getType() == CastType.TOGGLEABLE)
+                abilityComponent.setTicking(true);
 
             abilities.put(ability, abilityComponent);
             abilitiesComponent.setAbilities(abilities);
