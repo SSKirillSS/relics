@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.init;
 import it.hurts.sskirillss.relics.client.gui.layers.ActiveAbilitiesLayer;
 import it.hurts.sskirillss.relics.client.gui.layers.InfoTileLayer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
+import it.hurts.sskirillss.relics.client.models.layers.WingsLayer;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
 import it.hurts.sskirillss.relics.client.renderer.items.items.CurioRenderer;
 import it.hurts.sskirillss.relics.client.renderer.tiles.ResearchingTableRenderer;
@@ -15,11 +16,15 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -104,6 +109,17 @@ public class RemoteRegistry {
                 continue;
 
             event.registerLayerDefinition(CurioModel.getLayerLocation(item), renderable::constructLayerDefinition);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRendererRegister(EntityRenderersEvent.AddLayers event) {
+        for (PlayerSkin.Model skinType : event.getSkins()) {
+            EntityRenderer<? extends Player> renderer = event.getSkin(skinType);
+
+            if (renderer instanceof PlayerRenderer playerRenderer) {
+                playerRenderer.addLayer(new WingsLayer<>(playerRenderer));
+            }
         }
     }
 

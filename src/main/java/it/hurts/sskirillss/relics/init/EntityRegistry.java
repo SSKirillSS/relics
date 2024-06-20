@@ -83,6 +83,11 @@ public class EntityRegistry {
                     .sized(0.25F, 0.25F)
                     .build("thrown_relic_experience_bottle")
     );
+    public static final DeferredHolder<EntityType<?>, EntityType<DeathEssenceEntity>> DEATH_ESSENCE = ENTITIES.register("death_essence", () ->
+            EntityType.Builder.<DeathEssenceEntity>of(DeathEssenceEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .build("death_essence")
+    );
 
     public static void register(IEventBus bus) {
         ENTITIES.register(bus);

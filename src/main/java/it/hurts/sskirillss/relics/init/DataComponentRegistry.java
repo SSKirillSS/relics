@@ -31,6 +31,12 @@ public class DataComponentRegistry {
                     .build()
     );
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> TOGGLED = DATA_COMPONENTS.register("toggled",
+            () -> DataComponentType.<Boolean>builder()
+                    .persistent(Codec.BOOL)
+                    .build()
+    );
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> TIME = DATA_COMPONENTS.register("time",
             () -> DataComponentType.<Integer>builder()
                     .persistent(Codec.INT)
