@@ -253,7 +253,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         boolean isHoveredReroll = !isLocked && rerollButton.isHovered();
         boolean isHoveredReset = !isLocked && resetButton.isHovered();
 
-        for (Map.Entry<String, StatComponent> entry : relic.getAbilityComponent(stack, ability).getStats().entrySet()) {
+        for (Map.Entry<String, StatComponent> entry : relic.getAbilityComponent(stack, ability).stats().entrySet()) {
             String stat = entry.getKey();
             StatComponent statComponent = entry.getValue();
             StatData statData = relic.getStatData(ability, stat);
