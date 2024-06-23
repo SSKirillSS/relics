@@ -4,6 +4,7 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -97,5 +98,26 @@ public class ItemMixin {
             tooltip.add(Component.translatable("tooltip.relics.relic.tooltip.table").withStyle(ChatFormatting.GRAY));
 
         tooltip.add(Component.literal(" "));
+    }
+
+    @Inject(method = "verifyComponentsAfterLoad", at = @At("HEAD"))
+    public void onVerifyComponentsAfterLoad(ItemStack stack, CallbackInfo ci) {
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return;
+
+        for (AbilityData abilityData : relic.getAbilitiesData().getAbilities().values()) {
+            String abilityId = abilityData.getId();
+
+            if (relic.getAbilityComponent(stack, abilityId) == null)
+                relic.randomizeAbility(stack, abilityId);
+            else {
+                for (StatData statData : relic.getAbilityData(abilityId).getStats().values()) {
+                    String statId = statData.getId();
+
+                    if (relic.getStatComponent(stack, abilityId, statId) == null)
+                        relic.randomizeStat(stack, abilityId, statId);
+                }
+            }
+        }
     }
 }

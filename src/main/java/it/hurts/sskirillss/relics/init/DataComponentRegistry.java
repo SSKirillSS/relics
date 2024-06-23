@@ -97,6 +97,6 @@ public class DataComponentRegistry {
 
     @SubscribeEvent
     public static void modifyComponents(ModifyDefaultComponentsEvent event) {
-        event.modifyMatching(item -> item instanceof IRelicItem, builder -> builder.set(DATA.get(), new DataComponent()));
+        event.modifyMatching(item -> item instanceof IRelicItem, builder -> builder.set(DATA.get(), DataComponent.EMPTY));
     }
 }

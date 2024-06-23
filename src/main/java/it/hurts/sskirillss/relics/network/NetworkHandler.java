@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -39,5 +40,13 @@ public class NetworkHandler {
 
     public static <MSG extends CustomPacketPayload> void sendToClient(MSG message, ServerPlayer player) {
         PacketDistributor.sendToPlayer(player, message);
+    }
+
+    public static <MSG extends CustomPacketPayload> void sendToClientsTrackingEntity(MSG message, Entity entity) {
+        PacketDistributor.sendToPlayersTrackingEntity(entity, message);
+    }
+
+    public static <MSG extends CustomPacketPayload> void sendToClientsTrackingEntityAndSelf(MSG message, Entity entity) {
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
     }
 }
