@@ -24,7 +24,7 @@
     }
   },
   "result": {
-    "item": "relics:researching_table",
+    "id": "relics:researching_table",
     "count": 1
   }
 }
