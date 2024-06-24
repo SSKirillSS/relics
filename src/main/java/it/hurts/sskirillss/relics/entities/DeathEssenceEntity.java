@@ -4,6 +4,8 @@ import it.hurts.sskirillss.relics.entities.misc.ITargetableEntity;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -14,8 +16,9 @@ import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 
 public class DeathEssenceEntity extends ThrowableProjectile implements ITargetableEntity {
@@ -82,6 +85,11 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(DIRECTION_CHOICE, 0F);
+    }
+
+    @Override
     public boolean isNoGravity() {
         return true;
     }
@@ -105,10 +113,6 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
         this.target = target;
     }
 
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder p_326003_) {
-
-    }
 //    @Override
 //    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
 //        return NetworkHooks.getEntitySpawningPacket(this);

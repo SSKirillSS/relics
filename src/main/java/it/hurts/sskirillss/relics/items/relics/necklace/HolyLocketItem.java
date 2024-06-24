@@ -41,6 +41,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -178,7 +179,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
             addCharge(stack, 1);
 
             entity.setLastHurtByPlayer(player);
-             entity.setRemainingFireTicks(10);
+            entity.setRemainingFireTicks(10);
 
             spreadExperience(player, stack, 1);
 
@@ -322,12 +323,11 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                     essence.setDirectionChoice(MathUtils.randomFloat(player.getRandom()));
                     essence.setTarget(target);
                     essence.setDamage(amount);
-                    essence.setOwner(player);
 
                     level.addFreshEntity(essence);
 
-//                    if (!level.isClientSide())
-//                        NetworkHandler.sendToClient(PacketDistributor.TRACKING_ENTITY.with(() -> essence), new SyncTargetPacket(essence.getId(), target.getId()));
+                    if (!level.isClientSide())
+                        ((ServerLevel) level).getChunkSource().broadcastAndSend(player, new ClientboundCustomPayloadPacket(new SyncTargetPacket(essence.getId(), target.getId())));
 
                     relic.spreadExperience(player, stack, amount);
                     relic.addCharge(stack, 1);
@@ -354,8 +354,8 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
                     playerSearched.level().addFreshEntity(essence);
 
-//                    if (!level.isClientSide())
-//                        NetworkHandler.sendToClients(PacketDistributor.TRACKING_ENTITY.with(() -> essence), new SyncTargetPacket(essence.getId(), playerSearched.getId()));
+                    if (!level.isClientSide())
+                        ((ServerLevel) level).getChunkSource().broadcastAndSend(playerSearched, new ClientboundCustomPayloadPacket(new SyncTargetPacket(essence.getId(), playerSearched.getId())));
 
                     relic.spreadExperience(playerSearched, stack, amount);
                     relic.addCharge(stack, 1);
