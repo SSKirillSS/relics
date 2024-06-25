@@ -37,7 +37,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -143,7 +143,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
     @EventBusSubscriber(modid = Reference.MODID)
     public static class Events {
         @SubscribeEvent
-        public static void onEntityHurt(LivingHurtEvent event) {
+        public static void onEntityHurt(LivingIncomingDamageEvent event) {
             if (!(event.getSource().getEntity() instanceof Player player)
                     || !player.isUnderWater() || !event.getEntity().isUnderWater())
                 return;

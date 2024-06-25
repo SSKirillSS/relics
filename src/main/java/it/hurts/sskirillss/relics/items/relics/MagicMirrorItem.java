@@ -38,7 +38,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -220,7 +220,7 @@ public class MagicMirrorItem extends RelicItem {
     @EventBusSubscriber
     public static class ServerEvents {
         @SubscribeEvent
-        public static void onLivingHurt(LivingHurtEvent event) {
+        public static void onLivingHurt(LivingIncomingDamageEvent event) {
             Item item = ItemRegistry.MAGIC_MIRROR.get();
 
             if (!(event.getEntity() instanceof Player player) || !player.isUsingItem()

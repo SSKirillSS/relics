@@ -73,7 +73,7 @@
 //import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 //import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 //import net.neoforged.neoforge.event.entity.living.LivingGetProjectileEvent;
-//import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+//import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 //import net.neoforged.neoforge.event.entity.player.ArrowLooseEvent;
 //import top.theillusivec4.curios.api.SlotContext;
 //import top.theillusivec4.curios.api.client.ICurioRenderer;
@@ -642,7 +642,7 @@
 //        }
 //
 //        @SubscribeEvent
-//        public static void onLivingHurt(LivingHurtEvent event) {
+//        public static void onLivingHurt(LivingIncomingDamageEvent event) {
 //            if (!(event.getSource().getDirectEntity() instanceof AbstractArrow arrow)
 //                    || !(arrow.getOwner() instanceof Player player))
 //                return;

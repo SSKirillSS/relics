@@ -60,7 +60,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -338,7 +338,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
     @EventBusSubscriber(modid = Reference.MODID)
     public static class Events {
         @SubscribeEvent
-        public static void onLivingHurt(LivingHurtEvent event) {
+        public static void onLivingHurt(LivingIncomingDamageEvent event) {
             Entity source = event.getSource().getDirectEntity();
 
             if (source instanceof Player player) {

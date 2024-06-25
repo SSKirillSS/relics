@@ -42,7 +42,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import javax.annotation.Nullable;
@@ -261,7 +261,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
     @EventBusSubscriber
     public static class ServerEvents {
         @SubscribeEvent
-        public static void onLivingHurt(LivingHurtEvent event) {
+        public static void onLivingHurt(LivingIncomingDamageEvent event) {
             LivingEntity target = event.getEntity();
             Level level = target.getCommandSenderWorld();
 

@@ -44,7 +44,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -197,7 +197,7 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
     @EventBusSubscriber(modid = Reference.MODID)
     public static class ReflectionNecklaceServerEvents {
         @SubscribeEvent
-        public static void onEntityHurt(LivingHurtEvent event) {
+        public static void onEntityHurt(LivingIncomingDamageEvent event) {
             if (!(event.getEntity() instanceof Player))
                 return;
 
