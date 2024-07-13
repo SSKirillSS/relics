@@ -213,6 +213,9 @@ public class WoolMittenItem extends RelicItem {
             if (!(event.getSource().getEntity() instanceof Player player))
                 return;
 
+            if (!player.getMainHandItem().isEmpty())
+                return;
+
             ItemStack relicStack = EntityUtils.findEquippedCurio(player, ItemRegistry.WOOL_MITTEN.get());
             LivingEntity target = event.getEntity();
 
