@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 @Data
@@ -54,6 +55,8 @@ public class PacketExperienceExchange implements CustomPacketPayload {
             if (playerExperience <= 0)
                 return;
 
+            BlockState state = world.getBlockState(pos);
+
             int exchanges = relic.getExchanges(stack);
             int level = relic.getLevel(stack);
 
@@ -78,7 +81,10 @@ public class PacketExperienceExchange implements CustomPacketPayload {
 
             relic.addExperience(player, stack, toAdd);
 
+            tile.setStack(stack);
             tile.setChanged();
+
+            world.sendBlockUpdated(pos, state, world.getBlockState(pos), 3);
         });
     }
 }
