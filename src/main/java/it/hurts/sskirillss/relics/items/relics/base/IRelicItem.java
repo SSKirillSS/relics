@@ -258,6 +258,7 @@ public interface IRelicItem {
         NeoForge.EVENT_BUS.post(event);
 
         if (!event.isCanceled()) {
+            int currentExperience = getExperience(stack);
             int currentLevel = getLevel(stack);
 
             int toAdd = event.getAmount();
@@ -269,14 +270,16 @@ public interface IRelicItem {
                 if (resultLevel >= getLevelingData().getMaxLevel())
                     break;
 
-                int currentExperience = getExperience(stack);
+                int requiredExperience = getExperienceBetweenLevels(resultLevel, resultLevel + 1);
 
-                int diff = getExperienceBetweenLevels(resultLevel, resultLevel + 1) - currentExperience;
+                int diff = requiredExperience - currentExperience;
 
                 if (toAdd >= diff) {
                     toAdd -= diff;
 
                     resultLevel++;
+
+                    currentExperience = 0;
                 } else {
                     resultExperience = currentExperience + toAdd;
 
