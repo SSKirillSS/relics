@@ -136,7 +136,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
             {
                 int relicLevel = relic.getLevel(stack);
 
-                float percentage = relic.isMaxLevel(stack) ? 100F : relic.getExperience(stack) / (relic.getExperienceBetweenLevels(stack, relicLevel, relicLevel + 1) / 100F);
+                float percentage = relic.isMaxLevel(stack) ? 100F : relic.getExperience(stack) / (relic.getExperienceBetweenLevels(relicLevel, relicLevel + 1) / 100F);
 
                 int sourceWidth = 206;
                 int maxWidth = (int) (sourceWidth * (percentage / 100F));
@@ -210,7 +210,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
 
         int level = relic.getLevel(stack);
 
-        float percentage = relic.getExperience(stack) / (relic.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
+        float percentage = relic.getExperience(stack) / (relic.getExperienceBetweenLevels(level, level + 1) / 100F);
 
         boolean isMaxLevel = relic.isMaxLevel(stack);
 
@@ -411,8 +411,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen 
                 entries.add(Component.literal(" "));
 
                 entries.add(Component.literal("● ").append(Component.translatable("tooltip.relics.relic.relic_experience.current_amount", relic.getExperience(stack),
-                        relic.getExperienceBetweenLevels(stack, level, level + 1),
-                        MathUtils.round((relic.getExperience(stack) / (relic.getExperienceBetweenLevels(stack, level, level + 1) / 100F)), 1))));
+                        relic.getExperienceBetweenLevels(level, level + 1), MathUtils.round((relic.getExperience(stack) / (relic.getExperienceBetweenLevels(level, level + 1) / 100F)), 1))));
             }
 
             for (MutableComponent entry : entries) {

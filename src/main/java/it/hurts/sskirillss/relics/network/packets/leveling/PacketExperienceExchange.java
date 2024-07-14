@@ -68,7 +68,7 @@ public class PacketExperienceExchange implements CustomPacketPayload {
                 if (playerExperience < toTake + oneCost)
                     break;
 
-                toAdd += (int) Math.ceil(relic.getExperienceBetweenLevels(stack, level, level + 1) / 100F);
+                toAdd += (int) Math.ceil(relic.getExperienceBetweenLevels(level, level + 1) / 100F);
                 toTake += oneCost;
 
                 relic.addExchanges(stack, 1);

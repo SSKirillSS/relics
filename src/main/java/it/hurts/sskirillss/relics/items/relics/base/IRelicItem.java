@@ -243,28 +243,9 @@ public interface IRelicItem {
     }
 
     default void setExperience(ItemStack stack, int experience) {
-        int level = getLevel(stack);
-
-        if (level >= getLevelingData().getMaxLevel())
-            return;
-
-        int requiredExp = getExperienceBetweenLevels(stack, level, level + 1);
-
-        LevelingComponent levelingComponent = getLevelingComponent(stack);
-
-        if (experience >= requiredExp) {
-            int sumExp = getTotalExperienceForLevel(stack, level) + experience;
-            int resultLevel = getLevelFromExperience(stack, sumExp);
-
-            levelingComponent = levelingComponent.toBuilder().experience(Math.max(0, sumExp - getTotalExperienceForLevel(stack, resultLevel))).build();
-
-            addPoints(stack, resultLevel - level);
-            setLevel(stack, resultLevel);
-        } else {
-            levelingComponent = levelingComponent.toBuilder().experience(Mth.clamp(experience, 0, requiredExp)).build();
-        }
-
-        setLevelingComponent(stack, levelingComponent);
+        setLevelingComponent(stack, getLevelingComponent(stack).toBuilder()
+                .experience(Math.clamp(experience, 0, getTotalExperienceForLevel(getLevel(stack) + 1)))
+                .build());
     }
 
     default boolean addExperience(ItemStack stack, int amount) {
@@ -277,7 +258,36 @@ public interface IRelicItem {
         NeoForge.EVENT_BUS.post(event);
 
         if (!event.isCanceled()) {
-            setExperience(stack, getExperience(stack) + event.getAmount());
+            int currentLevel = getLevel(stack);
+
+            int toAdd = event.getAmount();
+
+            int resultLevel = currentLevel;
+            int resultExperience = 0;
+
+            while (toAdd > 0) {
+                if (resultLevel >= getLevelingData().getMaxLevel())
+                    break;
+
+                int currentExperience = getExperience(stack);
+
+                int diff = getExperienceBetweenLevels(resultLevel, resultLevel + 1) - currentExperience;
+
+                if (toAdd >= diff) {
+                    toAdd -= diff;
+
+                    resultLevel++;
+                } else {
+                    resultExperience = currentExperience + toAdd;
+
+                    break;
+                }
+            }
+
+            setExperience(stack, resultExperience);
+
+            if (currentLevel != resultLevel)
+                setLevel(stack, resultLevel);
 
             return true;
         }
@@ -341,14 +351,14 @@ public interface IRelicItem {
     default int getExperienceLeftForLevel(ItemStack stack, int level) {
         int currentLevel = getLevel(stack);
 
-        return getExperienceBetweenLevels(stack, currentLevel, level) - getExperience(stack);
+        return getExperienceBetweenLevels(currentLevel, level) - getExperience(stack);
     }
 
-    default int getExperienceBetweenLevels(ItemStack stack, int from, int to) {
-        return getTotalExperienceForLevel(stack, to) - getTotalExperienceForLevel(stack, from);
+    default int getExperienceBetweenLevels(int from, int to) {
+        return getTotalExperienceForLevel(to) - getTotalExperienceForLevel(from);
     }
 
-    default int getTotalExperienceForLevel(ItemStack stack, int level) {
+    default int getTotalExperienceForLevel(int level) {
         if (level <= 0)
             return 0;
 
@@ -372,7 +382,7 @@ public interface IRelicItem {
         do {
             ++result;
 
-            amount = getTotalExperienceForLevel(stack, result);
+            amount = getTotalExperienceForLevel(result);
         } while (amount <= experience);
 
         return result - 1;
