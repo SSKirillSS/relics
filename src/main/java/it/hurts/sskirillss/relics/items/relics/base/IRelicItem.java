@@ -289,8 +289,11 @@ public interface IRelicItem {
 
             setExperience(stack, resultExperience);
 
-            if (currentLevel != resultLevel)
+            if (currentLevel != resultLevel) {
                 setLevel(stack, resultLevel);
+
+                addPoints(stack, resultLevel - currentLevel);
+            }
 
             return true;
         }
