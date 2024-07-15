@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -14,6 +15,11 @@ import net.minecraft.world.phys.Vec3;
 public class WorldPosition {
     private ResourceKey<Level> level;
     private Vec3 pos;
+
+    public WorldPosition(Entity entity) {
+        this.level = entity.level().dimension();
+        this.pos = entity.position();
+    }
 
     public static final Codec<WorldPosition> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(ResourceKey.codec(Registries.DIMENSION).fieldOf("level").forGetter(WorldPosition::getLevel),

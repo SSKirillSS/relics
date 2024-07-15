@@ -20,8 +20,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.data.WorldPosition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -35,9 +35,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import top.theillusivec4.curios.api.SlotContext;
 
-public class IceBreakerItem extends RelicItem {
-    public static final String TAG_FALLING_POINT = "point";
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.WORLD_POSITION;
 
+public class IceBreakerItem extends RelicItem {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -86,9 +86,8 @@ public class IceBreakerItem extends RelicItem {
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        if (ability.equals("impact")) {
-            NBTUtils.setString(stack, TAG_FALLING_POINT, NBTUtils.writePosition(player.position()));
-        }
+        if (ability.equals("impact"))
+            stack.set(WORLD_POSITION, new WorldPosition(player));
     }
 
     @Override
@@ -96,16 +95,18 @@ public class IceBreakerItem extends RelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        Vec3 position = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_FALLING_POINT, ""));
+        WorldPosition position = stack.get(WORLD_POSITION);
 
         if (position == null)
             return;
+
+        Vec3 pos = position.getPos();
 
         if (!player.onGround()) {
             Vec3 motion = player.getDeltaMovement();
 
             if (player.onGround() || player.isSpectator()) {
-                NBTUtils.clearTag(stack, TAG_FALLING_POINT);
+                stack.set(WORLD_POSITION, null);
 
                 return;
             }
@@ -119,9 +120,9 @@ public class IceBreakerItem extends RelicItem {
         } else {
             Level level = player.getCommandSenderWorld();
 
-            double distance = (position.y() + Math.abs(level.getMinBuildHeight())) - (player.getY() + Math.abs(level.getMinBuildHeight()));
+            double distance = (pos.y() + Math.abs(level.getMinBuildHeight())) - (player.getY() + Math.abs(level.getMinBuildHeight()));
 
-            NBTUtils.clearTag(stack, TAG_FALLING_POINT);
+            stack.set(WORLD_POSITION, null);
 
             if (distance <= 0)
                 return;
@@ -132,10 +133,10 @@ public class IceBreakerItem extends RelicItem {
                     (int) Math.round(Math.min(getStatValue(stack, "impact", "size"), distance * 0.25D)),
                     (float) getStatValue(stack, "impact", "damage"));
 
-            BlockPos pos = player.getOnPos();
+            BlockPos blockPos = player.getOnPos();
 
             shockwave.setOwner(player);
-            shockwave.setPos(pos.getX(), pos.getY(), pos.getZ());
+            shockwave.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
             level.addFreshEntity(shockwave);
 
@@ -149,7 +150,7 @@ public class IceBreakerItem extends RelicItem {
         if (stack.getItem() == newStack.getItem())
             return;
 
-        NBTUtils.clearTag(stack, TAG_FALLING_POINT);
+        stack.set(WORLD_POSITION, null);
     }
 
     @EventBusSubscriber(modid = Reference.MODID)
