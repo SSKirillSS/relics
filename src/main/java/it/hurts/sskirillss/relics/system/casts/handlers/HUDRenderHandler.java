@@ -499,6 +499,9 @@ public class HUDRenderHandler {
         public static void onPlayerTick(PlayerTickEvent.Post event) {
             Player player = event.getEntity();
 
+            if (!(player instanceof LocalPlayer))
+                return;
+
             AbilityReference ability = getAbilityByIndex(selectedIndex);
 
             if (ability == null)
