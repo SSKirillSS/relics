@@ -509,7 +509,7 @@ public class HUDRenderHandler {
 
             ItemStack stack = ability.getSlot().gatherStack(player);
 
-            if (!(stack.getItem() instanceof IRelicItem relic))
+            if (!(stack.getItem() instanceof IRelicItem relic) || !relic.getAbilitiesData().getAbilities().containsKey(ability.getId()))
                 return;
 
             boolean isTicking = relic.isAbilityTicking(stack, ability.getId());
