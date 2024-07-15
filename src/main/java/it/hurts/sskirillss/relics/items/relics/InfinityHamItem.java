@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
+import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -12,25 +13,28 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
 import static it.hurts.sskirillss.relics.init.DataComponentRegistry.TIME;
@@ -131,7 +135,6 @@ public class InfinityHamItem extends RelicItem {
             return;
 
         int pieces = stack.getOrDefault(CHARGE, 0);
-        CompoundTag nbt = NBTUtils.getOrCreateTag(stack);
 
         if (pieces > 0) {
             stack.set(CHARGE, --pieces);
@@ -142,33 +145,30 @@ public class InfinityHamItem extends RelicItem {
 
             spreadExperience(player, stack, Math.max(1, Math.min(20 - player.getFoodData().getFoodLevel(), feed)));
 
-            if (!canUseAbility(stack, "infusion") || !nbt.contains(TAG_POTION, 9))
+            PotionContents contents = stack.get(DataComponents.POTION_CONTENTS);
+
+            if (!canUseAbility(stack, "infusion") || contents == null)
                 return;
 
             int duration = (int) Math.round(getStatValue(stack, "infusion", "duration") * 20);
 
-            ListTag list = nbt.getList(TAG_POTION, 10);
+            contents.forEachEffect(effect -> {
+                if (!effect.getEffect().value().isInstantenous()) {
+                    MobEffectInstance currentEffect = player.getEffect(effect.getEffect());
 
-            for (int i = 0; i < list.size(); ++i) {
-                MobEffectInstance effect = MobEffectInstance.load(list.getCompound(i));
+                    player.addEffect(new MobEffectInstance(effect.getEffect(), currentEffect == null ? duration : currentEffect.getDuration() + duration, effect.getAmplifier()));
+                }
+            });
 
-                if (effect == null || effect.getEffect().value().isInstantenous())
-                    continue;
-
-                MobEffectInstance currentEffect = player.getEffect(effect.getEffect());
-
-                player.addEffect(new MobEffectInstance(effect.getEffect(), currentEffect == null ? duration : currentEffect.getDuration() + duration, effect.getAmplifier()));
-            }
-
-            if (pieces <= 0 && nbt.contains(TAG_POTION))
-                nbt.remove(TAG_POTION);
+            if (pieces <= 0)
+                stack.set(DataComponents.POTION_CONTENTS, null);
         } else
             player.stopUsingItem();
     }
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return NBTUtils.getOrCreateTag(stack).contains(TAG_POTION);
+        return stack.get(DataComponents.POTION_CONTENTS) != null;
     }
 
     @Override
@@ -186,54 +186,50 @@ public class InfinityHamItem extends RelicItem {
         return false;
     }
 
-//    @EventBusSubscriber
-//    public static class Events {
-//        @SubscribeEvent
-//        public static void onSlotClick(ContainerSlotClickEvent event) {
-//            if (event.getAction() != ClickAction.PRIMARY)
-//                return;
-//
-//            Player player = event.getEntity();
-//
-//            ItemStack heldStack = event.getHeldStack();
-//            ItemStack slotStack = event.getSlotStack();
-//
-//            if (!(heldStack.getItem() instanceof PotionItem) || !(slotStack.getItem() instanceof InfinityHamItem relic)
-//                    || !relic.canUseAbility(slotStack, "infusion"))
-//                return;
-//
-//            CompoundTag tag = NBTUtils.getOrCreateTag(slotStack);
-//            ListTag list = tag.getList(TAG_POTION, 9);
-//
-//            List<MobEffectInstance> effects = PotionUtils.getMobEffects(heldStack);
-//
-//            if (effects.isEmpty()) {
-//                NBTUtils.clearTag(slotStack, TAG_POTION);
-//            } else {
-//                effects = effects.stream().filter(effect -> effect != null && !effect.getEffect().isInstantenous()).toList();
-//
-//                if (effects.isEmpty())
-//                    return;
-//
-//                for (MobEffectInstance effect : effects)
-//                    list.add(effect.save(new CompoundTag()));
-//
-//                tag.put(TAG_POTION, list);
-//            }
-//
-//            ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
-//
-//            if (player.containerMenu.getCarried().getCount() <= 1)
-//                player.containerMenu.setCarried(bottle);
-//            else {
-//                player.containerMenu.getCarried().shrink(1);
-//
-//                EntityUtils.addItem(player, bottle);
-//            }
-//
-//            player.playSound(SoundEvents.BOTTLE_FILL, 1F, 1F);
-//
-//            event.setCanceled(true);
-//        }
-//    }
+    @EventBusSubscriber
+    public static class Events {
+        @SubscribeEvent
+        public static void onSlotClick(ContainerSlotClickEvent event) {
+            if (event.getAction() != ClickAction.PRIMARY)
+                return;
+
+            Player player = event.getEntity();
+
+            ItemStack heldStack = event.getHeldStack();
+            ItemStack slotStack = event.getSlotStack();
+
+            if (!(heldStack.getItem() instanceof PotionItem) || !(slotStack.getItem() instanceof InfinityHamItem relic)
+                    || !relic.canUseAbility(slotStack, "infusion"))
+                return;
+
+            PotionContents contents = heldStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+
+            List<MobEffectInstance> effects = StreamSupport.stream(contents.getAllEffects().spliterator(), false).toList();
+
+            if (effects.isEmpty()) {
+                slotStack.set(DataComponents.POTION_CONTENTS, null);
+            } else {
+                effects = effects.stream().filter(effect -> !effect.getEffect().value().isInstantenous()).toList();
+
+                if (effects.isEmpty())
+                    return;
+
+                slotStack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.empty(), effects));
+            }
+
+            ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+
+            if (player.containerMenu.getCarried().getCount() <= 1)
+                player.containerMenu.setCarried(bottle);
+            else {
+                player.containerMenu.getCarried().shrink(1);
+
+                EntityUtils.addItem(player, bottle);
+            }
+
+            player.playSound(SoundEvents.BOTTLE_FILL, 1F, 1F);
+
+            event.setCanceled(true);
+        }
+    }
 }
