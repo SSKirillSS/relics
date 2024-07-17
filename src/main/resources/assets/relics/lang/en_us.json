@@ -416,6 +416,20 @@
   "tooltip.relics.wool_mitten.ability.mold.stat.stun.value": "%1$s seconds per unit size.",
   "tooltip.relics.wool_mitten.ability.mold.stat.freeze.title": "Frostbite:",
   "tooltip.relics.wool_mitten.ability.mold.stat.freeze.value": "%1$s seconds per unit size.",
+  "tooltip.relics.wool_mitten.ability.frosty_shroud": "Frosty Shroud",
+  "tooltip.relics.wool_mitten.ability.frosty_shroud.description": "All nearby entities in a small area receive a cumulative frostbite effect.",
+  "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.radius.title": "Radius:",
+  "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.radius.value": "%1$s per unit size.",
+  "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.duration.title": "Duration:",
+  "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.duration.value": "%1$s seconds per unit size.",
+  "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.cooldown.title": "Cooldown:",
+  "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.cooldown.value": "%1$s seconds per unit size.",
+  "tooltip.relics.wool_mitten.ability.cold_touch": "Cold Touch",
+  "tooltip.relics.wool_mitten.ability.cold_touch.description": "The number of charges with ice cubes is drawn above the attacked targets. Each attack fills 1 charge. Over time, the charges “melt” one by one. When the charge bar is filled to its maximum, the gauge is reset to zero, the target is stunned and frostbitten, and nearby units receive one charge of this ability and are pushed to the sides.",
+  "tooltip.relics.wool_mitten.ability.cold_touch.stat.max_charges.title": "Maximum Charges:",
+  "tooltip.relics.wool_mitten.ability.cold_touch.stat.max_charges.value": "%1$s units.",
+  "tooltip.relics.wool_mitten.ability.cold_touch.stat.melt_time.title": "Melting time:",
+  "tooltip.relics.wool_mitten.ability.cold_touch.stat.melt_time.value": "%1$s seconds per unit size.",
 
   "item.relics.roller_skates": "Roller Skates",
   "tooltip.relics.roller_skates.description": "+1 experience point for each second of acceleration from the ability «Acceleration».",
@@ -445,6 +459,7 @@
   "effect.relics.vanishing": "Vanishing",
   "effect.relics.anti_heal": "Anti-Heal",
   "effect.relics.bleeding": "Bleeding",
+  "effect.relics.frostbite": "Frostbite",
 
   "command.relics.base.not_relic": "The item in hand must be a relic!",
 

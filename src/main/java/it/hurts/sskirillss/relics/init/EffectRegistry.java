@@ -17,6 +17,7 @@ public class EffectRegistry {
     public static final DeferredHolder<MobEffect, MobEffect> VANISHING = EFFECTS.register("vanishing", VanishingEffect::new);
     public static final DeferredHolder<MobEffect, MobEffect> ANTI_HEAL = EFFECTS.register("anti_heal", AntiHealEffect::new);
     public static final DeferredHolder<MobEffect, MobEffect> BLEEDING = EFFECTS.register("bleeding", BleedingEffect::new);
+    public static final DeferredHolder<MobEffect, MobEffect> FROSTBITE = EFFECTS.register("frostbite", FrostbiteEffect::new);
 
     public static void register(IEventBus bus) {
         EFFECTS.register(bus);
