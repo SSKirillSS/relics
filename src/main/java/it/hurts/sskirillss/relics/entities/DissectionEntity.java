@@ -238,8 +238,8 @@ public class DissectionEntity extends Entity {
     }
 
     @Override
-    public void onRemovedFromWorld() {
-        super.onRemovedFromWorld();
+    public void onRemovedFromLevel() {
+        super.onRemovedFromLevel();
 
         if (this.isMaster())
             return;

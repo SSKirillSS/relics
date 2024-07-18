@@ -104,7 +104,7 @@ public class SolidSnowballEntity extends ThrowableProjectile {
     }
 
     @Override
-    public void onRemovedFromWorld() {
+    public void onRemovedFromLevel() {
         ParticleUtils.createBall(ParticleTypes.SNOWFLAKE, this.position(), level(), 1 + (getSize() / 10), 0.1F + getSize() * 0.005F);
 
         if (level().isClientSide())

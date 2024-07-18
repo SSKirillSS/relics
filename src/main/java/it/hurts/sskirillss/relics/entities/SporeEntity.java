@@ -131,7 +131,7 @@ public class SporeEntity extends ThrowableProjectile {
     }
 
     @Override
-    public void onRemovedFromWorld() {
+    public void onRemovedFromLevel() {
         ItemStack stack = getStack();
 
         if (!(stack.getItem() instanceof IRelicItem relic))
@@ -185,7 +185,7 @@ public class SporeEntity extends ThrowableProjectile {
             }
         }
 
-        super.onRemovedFromWorld();
+        super.onRemovedFromLevel();
     }
 
     @Override
