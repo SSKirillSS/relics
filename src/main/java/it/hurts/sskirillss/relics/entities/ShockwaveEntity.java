@@ -78,6 +78,9 @@ public class ShockwaveEntity extends ThrowableProjectile {
                 if (!level.isClientSide()) {
                     float damage = radius * this.damage / step;
 
+                    if (Float.isNaN(damage))
+                        damage = 1F;
+
                     for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(Vec3.atCenterOf(p), Vec3.atCenterOf(p.above(3))).inflate(0.5F))) {
                         if (owner != null && entity.getStringUUID().equals(owner.getStringUUID()))
                             continue;
@@ -134,10 +137,4 @@ public class ShockwaveEntity extends ThrowableProjectile {
     public boolean isPushedByFluid() {
         return false;
     }
-
-//    @Nonnull
-//    @Override
-//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-//        return NetworkHooks.getEntitySpawningPacket(this);
-//    }
 }
