@@ -44,7 +44,7 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
         if (attributes != null)
             attributes.getAttributes().forEach(attribute ->
                     modifiers.put(attribute.getAttribute(), new AttributeModifier(
-                            ResourceLocation.fromNamespaceAndPath(Reference.MODID, BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "_" + BuiltInRegistries.ATTRIBUTE.getKey(attribute.getAttribute().value()).getPath()),
+                            ResourceLocation.fromNamespaceAndPath(Reference.MODID, BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "_" + BuiltInRegistries.ATTRIBUTE.getKey(attribute.getAttribute().value()).getPath() + "_" + slotContext.identifier() + "_" + slotContext.index()),
                             attribute.getMultiplier(), attribute.getOperation())));
 
         if (slots != null)
