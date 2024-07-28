@@ -107,7 +107,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(getStatValue(stack, "slots", "charm"))))
+                .entry(Pair.of("charm", (int) Math.round(getStatValue(stack, "slots", "charm"))))
                 .build();
     }
 
