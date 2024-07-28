@@ -5,11 +5,9 @@ import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.network.packets.PacketSyncEntityEffects;
 import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
 import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacket;
-import it.hurts.sskirillss.relics.network.packets.leveling.PacketExperienceExchange;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.network.packets.sync.SyncTargetPacket;
 import it.hurts.sskirillss.relics.utils.Reference;
-import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -33,7 +31,6 @@ public class NetworkHandler {
         registrar.playToClient(PacketSyncEntityEffects.TYPE, PacketSyncEntityEffects.STREAM_CODEC, PacketSyncEntityEffects::handle);
         registrar.playToClient(CapabilitySyncPacket.TYPE, CapabilitySyncPacket.STREAM_CODEC, CapabilitySyncPacket::handle);
         registrar.playToServer(SpellCastPacket.TYPE, SpellCastPacket.STREAM_CODEC, SpellCastPacket::handle);
-        registrar.playToServer(PacketExperienceExchange.TYPE, PacketExperienceExchange.STREAM_CODEC, PacketExperienceExchange::handle);
         registrar.playToClient(SyncTargetPacket.TYPE, SyncTargetPacket.STREAM_CODEC, SyncTargetPacket::handle);
     }
 

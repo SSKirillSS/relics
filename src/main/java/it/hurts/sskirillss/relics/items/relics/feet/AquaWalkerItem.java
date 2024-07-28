@@ -20,7 +20,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -71,7 +70,6 @@ public class AquaWalkerItem extends RelicItem implements IRenderableCurio {
                                 .borderBottom(0xff163d30)
                                 .textured(true)
                                 .build())
-                        .background(Backgrounds.AQUATIC)
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.AQUATIC)

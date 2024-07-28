@@ -14,7 +14,6 @@
   "tooltip.relics.relic.ability.tooltip.low_level": "Para usar, você precisa aumentar o nível da relíquia para %1$s %2$s.",
   "tooltip.relics.relic.ability.tooltip.no_stats": "Esta habilidade não possui estatísticas atualizáveis e não afeta a qualidade do relicário.",
 
-  "tooltip.relics.relic.max_level": "-= MÁX =-",
   "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
 
   "tooltip.relics.relic.status.positive": "§2§l[§2§l✔§2§l]",

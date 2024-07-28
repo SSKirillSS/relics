@@ -49,6 +49,21 @@ import static it.hurts.sskirillss.relics.system.casts.handlers.CacheHandler.REFE
 
 @OnlyIn(value = Dist.CLIENT)
 public class HUDRenderHandler {
+    public static final ResourceLocation CARD_FRAME_ACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/card_frame_active.png");
+    public static final ResourceLocation CARD_FRAME_INACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/card_frame_inactive.png");
+
+    public static final ResourceLocation CARD_POINTER_ACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/card_pointer_active.png");
+    public static final ResourceLocation CARD_POINTER_INACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/card_pointer_inactive.png");
+
+    public static final ResourceLocation ARROW_RIGHT = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/arrow_right.png");
+    public static final ResourceLocation ARROW_LEFT = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/arrow_left.png");
+
+    public static final ResourceLocation ARROW_RIGHT_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/arrow_right_outline.png");
+    public static final ResourceLocation ARROW_LEFT_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/arrow_left_outline.png");
+
+    public static final ResourceLocation STATE_TOGGLEABLE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png");
+    public static final ResourceLocation STATE_CYCLICAL = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/cyclical.png");
+
     private static final Minecraft MC = Minecraft.getInstance();
 
     private static int selectedIndex = 0;
@@ -80,23 +95,29 @@ public class HUDRenderHandler {
 
         float shakeOffset = castShakeDelta > 0 ? ((castShakeDelta - partialTicks) * 0.25F) : 0;
 
-        drawAbility(guiGraphics, player, -2, x - 70 - shakeOffset, y, partialTicks);
-        drawAbility(guiGraphics, player, -1, x - 37 - shakeOffset, y, partialTicks);
+        drawAbility(guiGraphics, player, -2, x - 74 - shakeOffset, y, partialTicks);
+        drawAbility(guiGraphics, player, -1, x - 39 - shakeOffset, y, partialTicks);
         drawAbility(guiGraphics, player, 0, x, y, partialTicks);
-        drawAbility(guiGraphics, player, 1, x + 37 + shakeOffset, y, partialTicks);
-        drawAbility(guiGraphics, player, 2, x + 70 + shakeOffset, y, partialTicks);
+        drawAbility(guiGraphics, player, 1, x + 39 + shakeOffset, y, partialTicks);
+        drawAbility(guiGraphics, player, 2, x + 74 + shakeOffset, y, partialTicks);
 
-        RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/background.png"));
+        RenderSystem.setShaderTexture(0, ARROW_LEFT);
+        RenderUtils.renderTextureFromCenter(poseStack, x - 100 - shakeOffset, y + 2, 0, 0, 11, 30, 11, 30, 1F + (mouseDelta < 0 ? Math.abs(mouseDelta) * 0.01F : 0));
 
-        RenderSystem.enableBlend();
+        if (mouseDelta < 0) {
+            RenderSystem.setShaderTexture(0, ARROW_LEFT_OUTLINE);
 
-        RenderUtils.renderTextureFromCenter(poseStack, x - 96 - shakeOffset, y + 2, 43, 2, 256, 256, 11, 30, 1F + (mouseDelta < 0 ? Math.abs(mouseDelta) * 0.01F : 0));
-        if (mouseDelta < 0)
-            RenderUtils.renderTextureFromCenter(poseStack, x - 96 - shakeOffset, y + 2, 72, 0, 256, 256, 15, 34, 1F + Math.abs(mouseDelta) * 0.01F);
+            RenderUtils.renderTextureFromCenter(poseStack, x - 100 - shakeOffset, y + 2, 0, 0, 13, 32, 13, 32, 1F + Math.abs(mouseDelta) * 0.01F);
+        }
 
-        RenderUtils.renderTextureFromCenter(poseStack, x + 96 + shakeOffset, y + 2, 31, 2, 256, 256, 11, 30, 1F + (mouseDelta > 0 ? Math.abs(mouseDelta) * 0.01F : 0));
-        if (mouseDelta > 0)
-            RenderUtils.renderTextureFromCenter(poseStack, x + 96 + shakeOffset, y + 2, 56, 0, 256, 256, 15, 34, 1F + Math.abs(mouseDelta) * 0.01F);
+        RenderSystem.setShaderTexture(0, ARROW_RIGHT);
+        RenderUtils.renderTextureFromCenter(poseStack, x + 100 + shakeOffset, y + 2, 0, 0, 11, 30, 11, 30, 1F + (mouseDelta > 0 ? Math.abs(mouseDelta) * 0.01F : 0));
+
+        if (mouseDelta > 0) {
+            RenderSystem.setShaderTexture(0, ARROW_RIGHT_OUTLINE);
+
+            RenderUtils.renderTextureFromCenter(poseStack, x + 100 + shakeOffset, y + 2, 0, 0, 13, 32, 13, 32, 1F + Math.abs(mouseDelta) * 0.01F);
+        }
 
         RenderSystem.disableBlend();
 
@@ -174,9 +195,9 @@ public class HUDRenderHandler {
         int width = 20;
         int height = 29;
 
-        float scale = (float) ((1F + Mth.clamp(Math.pow(13.5F, -Math.abs(realIndex)), 0F, 0.2F)) + (realIndex == 0 ? (Math.sin((player.tickCount + partialTicks) * 0.1F) * 0.05F + (castShakeDelta > 0 ? ((castShakeDelta - partialTicks) * 0.02F) : 0F)) : 0F));
+        float scale = (float) ((1F + Mth.clamp(Math.pow(15F, -Math.abs(realIndex)), 0F, 0.2F)) + (realIndex == 0 ? (Math.sin((player.tickCount + partialTicks) * 0.1F) * 0.05F + (castShakeDelta > 0 ? ((castShakeDelta - partialTicks) * 0.02F) : 0F)) : 0F));
 
-        RenderUtils.renderTextureFromCenter(poseStack, x - scale, y - scale + 2, width, height, scale + 0.025F);
+        RenderUtils.renderTextureFromCenter(poseStack, x - scale + 1, y - scale + 2, width, height, scale + 0.025F);
 
         int cooldown = relic.getAbilityCooldown(stack, ability.getId());
         int cap = relic.getAbilityCooldownCap(stack, ability.getId());
@@ -195,33 +216,34 @@ public class HUDRenderHandler {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         }
 
-        RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/background.png"));
+        RenderSystem.setShaderTexture(0, isLocked ? CARD_FRAME_INACTIVE : CARD_FRAME_ACTIVE);
 
-        RenderUtils.renderTextureFromCenter(poseStack, x, y, 0, isLocked ? 43 : 0, 256, 256, 30, 42, scale);
+        RenderUtils.renderTextureFromCenter(poseStack, x, y + 1, 0,0, 30, 41, 30, 41, scale);
 
         if (relic.isAbilityTicking(stack, ability.getId())) {
             CastType type = relic.getAbilityData(ability.getId()).getCastData().getType();
 
             if (type == CastType.TOGGLEABLE) {
-                RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png"));
+                RenderSystem.setShaderTexture(0, STATE_TOGGLEABLE);
 
                 RenderSystem.enableBlend();
 
-                RenderUtils.renderAnimatedTextureFromCenter(poseStack, x - 0.5F, y - 0.5F, 31, 473, 31, 43, scale, AnimationData.builder()
+                RenderUtils.renderAnimatedTextureFromCenter(poseStack, x, y + 1, 34, 630, 34, 45, scale, AnimationData.builder()
                         .frame(0, 1).frame(1, 1).frame(2, 1)
                         .frame(3, 1).frame(4, 1).frame(5, 1)
                         .frame(6, 1).frame(7, 1).frame(8, 1)
-                        .frame(9, 1).frame(10, 1));
+                        .frame(9, 1).frame(10, 1).frame(11, 1)
+                        .frame(12, 1).frame(13, 1));
 
                 RenderSystem.disableBlend();
             } else {
-                RenderSystem.setShaderColor(1F, 1F, 1F, (float) ((Math.sin(player.tickCount * 0.25F) * 0.25F) + 0.75F));
+                RenderSystem.setShaderColor(1F, 1F, 1F, (float) ((Math.sin(player.tickCount * 0.5F) * 0.25F) + 0.75F));
 
                 RenderSystem.enableBlend();
 
-                RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/cyclical.png"));
+                RenderSystem.setShaderTexture(0, STATE_CYCLICAL);
 
-                RenderUtils.renderTextureFromCenter(poseStack, x - scale / 2F, y - scale / 2F, 31, 43, scale);
+                RenderUtils.renderTextureFromCenter(poseStack, x - 0.5F, y + 1, 33, 45, scale);
 
                 RenderSystem.disableBlend();
 
@@ -230,9 +252,9 @@ public class HUDRenderHandler {
         }
 
         if (realIndex == 0) {
-            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/background.png"));
+            RenderSystem.setShaderTexture(0, isLocked ? CARD_POINTER_INACTIVE : CARD_POINTER_ACTIVE);
 
-            RenderUtils.renderTextureFromCenter(poseStack, x - 1, y - 21, isLocked ? 38 : 31, 33, 256, 256, 6, 11, scale);
+            RenderUtils.renderTextureFromCenter(poseStack, x, y - 20, 0, 0, 6, 11, 6, 11, scale);
         }
 
         if (cooldown > 0) {
@@ -240,12 +262,13 @@ public class HUDRenderHandler {
 
             RenderSystem.enableBlend();
 
-            drawAbilityStatusIcon(cache, guiGraphics, x - scale, y - scale, 20, 300, scale - 0.1F, AnimationData.builder()
+            drawAbilityStatusIcon(cache, guiGraphics, x - scale, y - scale, 22, 352, scale - 0.1F, AnimationData.builder()
                             .frame(0, 2).frame(1, 2).frame(2, 2)
                             .frame(3, 2).frame(4, 2).frame(5, 2)
                             .frame(6, 2).frame(7, 2).frame(8, 2)
-                            .frame(9, 2).frame(10, 8).frame(11, 2)
-                            .frame(12, 2).frame(13, 2).frame(14, 2),
+                            .frame(9, 1).frame(10, 1).frame(11, 1)
+                            .frame(12, 1).frame(13, 1).frame(14, 1)
+                            .frame(15, 1),
                     cap - cooldown, partialTicks);
 
             RenderSystem.disableBlend();
@@ -281,9 +304,9 @@ public class HUDRenderHandler {
         if (!iconDescription.isEmpty()) {
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            guiGraphics.drawString(MC.font, iconDescription, (x - 1) * 2F - (MC.font.width(iconDescription) / 2F), (y - 6 + scale * 15) * 2F, 0xFFFFFF, true);
+            MutableComponent descriptionComponent = Component.literal(iconDescription).withStyle(ChatFormatting.BOLD);
 
-            poseStack.scale(2F, 2F, 2F);
+            guiGraphics.drawString(MC.font, descriptionComponent, (int) (x * 2F - (MC.font.width(descriptionComponent) / 2F)), (int) ((y - 6 + scale * 15) * 2F), 0xFFFFFF, true);
         }
 
         poseStack.popPose();
@@ -294,7 +317,7 @@ public class HUDRenderHandler {
 
         poseStack.pushPose();
 
-        poseStack.translate(x, y, 0);
+        poseStack.translate(x + 1, y, 0);
 
         if (cache.getIconShakeDelta() != 0) {
             float color = cache.getIconShakeDelta() * 0.04F;

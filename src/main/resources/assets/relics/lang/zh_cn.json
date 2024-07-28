@@ -14,8 +14,6 @@
   "tooltip.relics.relic.ability.tooltip.low_level": "使用该技能需要遗物的等级提高到%1$s %2$s。",
   "tooltip.relics.relic.ability.tooltip.no_stats": "该技能没有可改变的属性，不会影响遗物的质量。",
 
-  "tooltip.relics.relic.max_level": "-= 满级 =-",
-
   "tooltip.relics.relic.ability.level": " 【%1$s/%2$s】",
 
   "tooltip.relics.relic.status.positive": "§2§l【§2§l✔§2§l】",

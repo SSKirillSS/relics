@@ -4,43 +4,41 @@
   "curios.identifier.talisman": "Талисман",
   "curios.identifier.feet": "Ноги",
 
-  "tooltip.relics.relic.tooltip.table": "Узнать о реликвии больше можно на столе исследователя.",
-  "tooltip.relics.relic.tooltip.shift": "Удерживай [Шифт] для подробной информации.",
+  "tooltip.relics.researching.info": "Удерживай [Шифт] для исследования...",
 
   "tooltip.relics.relic.tooltip.abilities": "Способности:",
 
-  "tooltip.relics.relic.ability.tooltip.low_level": "Для использования необходимо повысить уровень реликвии до %1$s %2$s.",
-  "tooltip.relics.relic.ability.tooltip.no_stats": "Способность не имеет улучшаемых характеристик и не влияет на качество реликвии.",
-  "tooltip.relics.relic.ability.tooltip.ready_to_upgrade": "Способность готова к улучшению %1$s .",
+  "tooltip.relics.researching.general.leveling_point.title": "Очки улучшения:",
+  "tooltip.relics.researching.general.leveling_point.extra_info": "Получается при повышении уровня реликвии и используется для повышения уровня способностей.",
 
-  "tooltip.relics.relic.leveling_points.title": "Очки прокачки",
+  "tooltip.relics.researching.relic.card.low_level": "Для использования необходимо повысить уровень реликвии до %1$s!",
+  "tooltip.relics.researching.relic.card.no_stats": "Способность не имеет улучшаемых характеристик и не влияет на качество реликвии!",
+  "tooltip.relics.researching.relic.card.ready_to_upgrade": "Способность готова к улучшению!",
 
-  "tooltip.relics.relic.vanilla_experience.title": "Ванильный опыт Minecraft",
-  "tooltip.relics.relic.vanilla_experience.current_amount": "Текущее количество: %1$s/%2$s [%3$s%%]",
-  "tooltip.relics.relic.vanilla_experience.total_amount": "Общее количество: %1$s",
+  "tooltip.relics.researching.general.extra_info": "Удерживай [Шифт] для подробной информации",
 
-  "tooltip.relics.relic.relic_experience.title": "Опыт реликвии",
-  "tooltip.relics.relic.relic_experience.current_amount": "Текущее количество: %1$s/%2$s [%3$s%%]",
+  "tooltip.relics.researching.relic.info.level": "Уровень реликвии:",
+  "tooltip.relics.researching.relic.info.quality": "Качество реликвии:",
+  "tooltip.relics.researching.relic.info.extra_info": "Качество реликвии представляет собой среднее арифметическое качества всех разблокированных на данный момент способностей и измеряется в виде очков от 1 до 5 с шагом в 0.5. Является исключительно визуальной метрикой и показывает насколько стартовые случайные характеристики предмета близки к идеально возможным. Для повышения общего качества реликвии необходимо рассматривать каждую способность по отдельности.",
 
-  "tooltip.relics.relic.max_level": "MAX",
+  "tooltip.relics.researching.relic.experience.title": "Опыт реликвии:",
+  "tooltip.relics.researching.relic.experience.extra_info": "Получается при использовании способностей реликвии по прямому назначению, а также при получении опыта другими реликвиями. При достижении максимального значения опыта уровень реликвии и запас очков улучшения увеличивается на 1, позволяя разблокировать ранее недоступные способности или улучшить уже существующие.",
 
-  "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
+  "tooltip.relics.researching.ability.info.level": "Уровень способности:",
+  "tooltip.relics.researching.ability.info.quality": "Качество способности:",
+  "tooltip.relics.researching.ability.info.extra_info": "Качество способности, по аналогии с качеством реликвии, представляет собой среднее арифметическое качества всех имеющихся у способности характеристик и измеряется в виде очков от 1 до 5 с шагом в 0.5. Является исключительно визуальной метрикой и показывает насколько стартовые случайные характеристики способности близки к идеально возможным. Для повышения качества способности необходимо сбрасывать её случайные характеристики до получения лучшего значения.",
 
   "tooltip.relics.relic.status.positive": "§2§l[§2§l✔§2§l]",
   "tooltip.relics.relic.status.negative": "§4§l[§4§l✘§4§l]",
 
-  "tooltip.relics.relic.exchange.description": "Конвертация опыта",
-  "tooltip.relics.relic.exchange.cost": "Преобразовать %1$s ванильного опыта Minecraft в 1%% от максимального опыта для текущего уровня реликвии. Стоимость обмена увеличивается за каждое использование %2$s.",
-  "tooltip.relics.relic.exchange.locked": "Реликвия достигла максимального уровня.",
-
   "tooltip.relics.relic.upgrade.description": "Повышение уровня",
-  "tooltip.relics.relic.upgrade.cost": "Стоимость: %1$s очков прокачки %2$s, %3$s единиц опыта %4$s.",
+  "tooltip.relics.relic.upgrade.cost": "Стоимость: %1$s очков улучшения %2$s, %3$s единиц опыта %4$s.",
   "tooltip.relics.relic.upgrade.locked": "Способность достигла максимального уровня.",
 
   "tooltip.relics.relic.reroll.description": "Сброс случайных характеристик",
   "tooltip.relics.relic.reroll.cost": "Стоимость: %1$s единиц опыта %2$s.",
 
-  "tooltip.relics.relic.reset.description": "Сброс очков прокачки",
+  "tooltip.relics.relic.reset.description": "Сброс очков улучшения",
   "tooltip.relics.relic.reset.cost": "Стоимость: %1$s единиц опыта %2$s.",
   "tooltip.relics.relic.reset.locked": "Для использования необходимо улучшить способность хотя бы 1 раз.",
 
@@ -437,7 +435,7 @@
 
   "item.relics.relic_experience_bottle": "Пузырёк опыта реликвии",
 
-  "block.relics.researching_table": "Стол исследователя",
+  "block.relics.researching_table": "Стол исследователя [Удалено из мода]",
 
   "effect.relics.stun": "Оглушение",
   "effect.relics.paralysis": "Паралич",
@@ -447,6 +445,8 @@
   "effect.relics.bleeding": "Кровотечение",
 
   "command.relics.base.not_relic": "Предмет в руке должен являться реликвией!",
+
+  "info.relics.researching.wrong_container": "Работа с реликвией в этом инвентаре невозможна. Перемести предмет в обычный инвентарь игрока и попробуй ещё раз.",
 
   "key.relics.ability_list": "Открыть интерфейс активных способностей"
 }
