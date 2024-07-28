@@ -1,7 +1,6 @@
 {
   "itemGroup.relics": "Реликвии",
 
-  "curios.identifier.talisman": "Талисман",
   "curios.identifier.feet": "Ноги",
 
   "tooltip.relics.researching.info": "Удерживай [Шифт] для исследования...",
@@ -291,8 +290,8 @@
   "tooltip.relics.drowned_belt.description": "+1 ед. опыта за каждый уровень зачарования «Тягун» на трезубце при его использовании.",
   "tooltip.relics.drowned_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.drowned_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
-  "tooltip.relics.drowned_belt.ability.slots.stat.talisman.title": "Талисманы:",
-  "tooltip.relics.drowned_belt.ability.slots.stat.talisman.value": "+%1$s слотов.",
+  "tooltip.relics.drowned_belt.ability.slots.stat.charm.title": "Амулеты:",
+  "tooltip.relics.drowned_belt.ability.slots.stat.charm.value": "+%1$s слотов.",
   "tooltip.relics.drowned_belt.ability.anchor": "Мёртвый груз",
   "tooltip.relics.drowned_belt.ability.anchor.description": "Уменьшает скорость плаванья и увеличивает скорость потопления носителя.",
   "tooltip.relics.drowned_belt.ability.anchor.stat.slowness.title": "Замедление плаванья:",
@@ -312,19 +311,19 @@
   "tooltip.relics.hunter_belt.description": "+1 ед. опыта за каждую атаку, совершённую питомцем.",
   "tooltip.relics.hunter_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.hunter_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
-  "tooltip.relics.hunter_belt.ability.slots.stat.talisman.title": "Талисманы:",
-  "tooltip.relics.hunter_belt.ability.slots.stat.talisman.value": "+%1$s слотов.",
+  "tooltip.relics.hunter_belt.ability.slots.stat.charm.title": "Амулеты:",
+  "tooltip.relics.hunter_belt.ability.slots.stat.charm.value": "+%1$s слотов.",
   "tooltip.relics.hunter_belt.ability.training": "Дрессировка",
   "tooltip.relics.hunter_belt.ability.training.description": "Повышает наносимый питомцами носителя урон.",
   "tooltip.relics.hunter_belt.ability.training.stat.damage.title": "Множитель урона:",
   "tooltip.relics.hunter_belt.ability.training.stat.damage.value": "+%1$s%%.",
 
   "item.relics.leather_belt": "Кожаный пояс",
-  "tooltip.relics.leather_belt.description": "+1 ед. опыта за каждое получение опыта экипированными талисманами.",
+  "tooltip.relics.leather_belt.description": "+1 ед. опыта за каждое получение опыта экипированными амулетами.",
   "tooltip.relics.leather_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.leather_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
-  "tooltip.relics.leather_belt.ability.slots.stat.talisman.title": "Талисманы:",
-  "tooltip.relics.leather_belt.ability.slots.stat.talisman.value": "+%1$s слотов.",
+  "tooltip.relics.leather_belt.ability.slots.stat.charm.title": "Амулеты:",
+  "tooltip.relics.leather_belt.ability.slots.stat.charm.value": "+%1$s слотов.",
 
   "item.relics.rage_glove": "Перчатка ярости",
   "tooltip.relics.rage_glove.description": "+1 ед. опыта за каждые 3 заряда от способности «Ярость берсерка» при их обнулении.\n+1 ед. опыта за каждую цель, поражённую способностью «Рывок».",

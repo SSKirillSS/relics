@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.items.relics.talisman;
+package it.hurts.sskirillss.relics.items.relics.charm;
 
 import it.hurts.sskirillss.relics.entities.SporeEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;

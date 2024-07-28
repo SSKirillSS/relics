@@ -1,7 +1,6 @@
 {
   "itemGroup.relics": "Relics",
 
-  "curios.identifier.talisman": "Talisman",
   "curios.identifier.feet": "Feet",
 
   "tooltip.relics.researching.info": "Hold [Shift] to research...",
@@ -291,8 +290,8 @@
   "tooltip.relics.drowned_belt.description": "+1 experience point for each level of enchantment «Riptide» on the trident when using it.",
   "tooltip.relics.drowned_belt.ability.slots": "Load Capacity",
   "tooltip.relics.drowned_belt.ability.slots.description": "Increases the maximum number of slots for equipping relics.",
-  "tooltip.relics.drowned_belt.ability.slots.stat.talisman.title": "Talismans:",
-  "tooltip.relics.drowned_belt.ability.slots.stat.talisman.value": "+%1$s slots.",
+  "tooltip.relics.drowned_belt.ability.slots.stat.charm.title": "Charms:",
+  "tooltip.relics.drowned_belt.ability.slots.stat.charm.value": "+%1$s slots.",
   "tooltip.relics.drowned_belt.ability.anchor": "Dead Weight",
   "tooltip.relics.drowned_belt.ability.anchor.description": "Reduces the swimming speed and increases the sinking speed of the wearer.",
   "tooltip.relics.drowned_belt.ability.anchor.stat.slowness.title": "Slowing down swimming:",
@@ -312,19 +311,19 @@
   "tooltip.relics.hunter_belt.description": "+1 experience point for each attack made by the wearer's pet.",
   "tooltip.relics.hunter_belt.ability.slots": "Load Capacity",
   "tooltip.relics.hunter_belt.ability.slots.description": "Increases the maximum number of slots for equipping relics.",
-  "tooltip.relics.hunter_belt.ability.slots.stat.talisman.title": "Talismans:",
-  "tooltip.relics.hunter_belt.ability.slots.stat.talisman.value": "+%1$s slots.",
+  "tooltip.relics.hunter_belt.ability.slots.stat.charm.title": "Charms:",
+  "tooltip.relics.hunter_belt.ability.slots.stat.charm.value": "+%1$s slots.",
   "tooltip.relics.hunter_belt.ability.training": "Training",
   "tooltip.relics.hunter_belt.ability.training.description": "Increases the damage inflicted by the wearer's pets.",
   "tooltip.relics.hunter_belt.ability.training.stat.damage.title": "Damage multiplier:",
   "tooltip.relics.hunter_belt.ability.training.stat.damage.value": "+%1$s%%.",
 
   "item.relics.leather_belt": "Leather Belt",
-  "tooltip.relics.leather_belt.description": "+1 experience point for each experience gained by equipped talismans.",
+  "tooltip.relics.leather_belt.description": "+1 experience point for each experience gained by equipped charms.",
   "tooltip.relics.leather_belt.ability.slots": "Load Capacity",
   "tooltip.relics.leather_belt.ability.slots.description": "Increases the maximum number of slots for equipping relics.",
-  "tooltip.relics.leather_belt.ability.slots.stat.talisman.title": "Talismans:",
-  "tooltip.relics.leather_belt.ability.slots.stat.talisman.value": "+%1$s slots.",
+  "tooltip.relics.leather_belt.ability.slots.stat.charm.title": "Charms:",
+  "tooltip.relics.leather_belt.ability.slots.stat.charm.value": "+%1$s slots.",
 
   "item.relics.rage_glove": "Rage Glove",
   "tooltip.relics.rage_glove.description": "+1 experience point for every 3 charges from the ability «Berserker Rage» when they are reset.\n+1 experience point for each target hit by the «Spurt» ability.",

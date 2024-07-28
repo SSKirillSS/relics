@@ -48,7 +48,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("slots")
                                 .requiredPoints(2)
-                                .stat(StatData.builder("talisman")
+                                .stat(StatData.builder("charm")
                                         .initialValue(0D, 2D)
                                         .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 0)))
@@ -107,7 +107,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(getStatValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("talisman", (int) Math.round(getStatValue(stack, "slots", "charm"))))
                 .build();
     }
 

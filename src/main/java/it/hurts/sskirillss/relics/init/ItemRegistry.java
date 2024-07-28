@@ -18,7 +18,7 @@ import it.hurts.sskirillss.relics.items.relics.necklace.JellyfishNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.necklace.ReflectionNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.ring.BastionRingItem;
 import it.hurts.sskirillss.relics.items.relics.ring.ChorusInhibitorItem;
-import it.hurts.sskirillss.relics.items.relics.talisman.SporeSackItem;
+import it.hurts.sskirillss.relics.items.relics.charm.SporeSackItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
