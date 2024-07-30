@@ -114,8 +114,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         if (relicData == null)
             return;
 
-        int level = relic.getLevel(stack);
-        int points = relic.getAbilityPoints(stack, ability);
+        int level = relic.getAbilityPoints(stack, ability);
 
         PoseStack poseStack = guiGraphics.pose();
 
@@ -168,7 +167,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             poseStack.pushPose();
 
-            MutableComponent pointsComponent = Component.literal(String.valueOf(points)).withStyle(ChatFormatting.BOLD);
+            MutableComponent pointsComponent = Component.literal(String.valueOf(level)).withStyle(ChatFormatting.BOLD);
 
             poseStack.scale(0.75F, 0.75F, 1F);
 
