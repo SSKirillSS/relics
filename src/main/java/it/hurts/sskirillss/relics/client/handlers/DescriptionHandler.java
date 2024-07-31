@@ -24,7 +24,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class DescriptionHandler {
-    private static final int REQUIRED_TIME = 30;
+    private static final int REQUIRED_TIME = 20;
 
     private static int ticksCount;
 
