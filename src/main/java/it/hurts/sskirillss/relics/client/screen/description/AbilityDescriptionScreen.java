@@ -190,7 +190,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 350)) {
+            for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 340)) {
                 guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 73) * 2 + yOff, 0x662f13, false);
 
                 yOff += 9;
