@@ -33,7 +33,7 @@ public class WingsLayer<T extends LivingEntity, M extends EntityModel<T>> extend
     public void render(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         ItemStack stackLocal = EntityUtils.findEquippedCurio(Minecraft.getInstance().player, ItemRegistry.HOLY_LOCKET.get());
 
-        if (!(stackLocal.getItem() instanceof HolyLocketItem relic) || !relic.isAbilityTicking(stackLocal, "blessing"))
+        if (!(stackLocal.getItem() instanceof HolyLocketItem relic) || !relic.isAbilityOnCooldown(stackLocal, "blessing"))
             return;
 
         pPoseStack.pushPose();

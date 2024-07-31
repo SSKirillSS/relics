@@ -4,6 +4,8 @@ import it.hurts.sskirillss.relics.entities.misc.ITargetableEntity;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -14,6 +16,8 @@ import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -68,7 +72,7 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
         Vec3 direction = targetPos.subtract(this.position()).normalize();
 
         this.setDeltaMovement(this.position().add(direction.add(new Vec3(getDirectionChoice() * -direction.z, 0, getDirectionChoice() * direction.x)))
-                .subtract(this.position()).normalize().scale(this.position().distanceTo(targetPos) * (this.tickCount * 0.01F)));
+                .subtract(this.position()).normalize().scale(this.position().distanceTo(targetPos) * (this.tickCount * 0.005F)));
     }
 
     @Override
@@ -108,5 +112,10 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
     @Override
     public void setTarget(LivingEntity target) {
         this.target = target;
+    }
+
+    @Override
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

@@ -1,43 +1,46 @@
 {
   "itemGroup.relics": "Реликвии",
 
+  "curios.identifier.talisman": "Талисман",
   "curios.identifier.feet": "Ноги",
 
-  "tooltip.relics.researching.info": "Удерживай [Шифт] для исследования...",
+  "tooltip.relics.relic.tooltip.table": "Узнать о реликвии больше можно на столе исследователя.",
+  "tooltip.relics.relic.tooltip.shift": "Удерживай [Шифт] для подробной информации.",
 
   "tooltip.relics.relic.tooltip.abilities": "Способности:",
 
-  "tooltip.relics.researching.general.leveling_point.title": "Очки улучшения:",
-  "tooltip.relics.researching.general.leveling_point.extra_info": "Получается при повышении уровня реликвии и используется для повышения уровня способностей.",
+  "tooltip.relics.relic.ability.tooltip.low_level": "Для использования необходимо повысить уровень реликвии до %1$s %2$s.",
+  "tooltip.relics.relic.ability.tooltip.no_stats": "Способность не имеет улучшаемых характеристик и не влияет на качество реликвии.",
+  "tooltip.relics.relic.ability.tooltip.ready_to_upgrade": "Способность готова к улучшению %1$s .",
 
-  "tooltip.relics.researching.relic.card.low_level": "Для использования необходимо повысить уровень реликвии до %1$s!",
-  "tooltip.relics.researching.relic.card.no_stats": "Способность не имеет улучшаемых характеристик и не влияет на качество реликвии!",
-  "tooltip.relics.researching.relic.card.ready_to_upgrade": "Способность готова к улучшению!",
+  "tooltip.relics.relic.leveling_points.title": "Очки прокачки",
 
-  "tooltip.relics.researching.general.extra_info": "Удерживай [Шифт] для подробной информации",
+  "tooltip.relics.relic.vanilla_experience.title": "Ванильный опыт Minecraft",
+  "tooltip.relics.relic.vanilla_experience.current_amount": "Текущее количество: %1$s/%2$s [%3$s%%]",
+  "tooltip.relics.relic.vanilla_experience.total_amount": "Общее количество: %1$s",
 
-  "tooltip.relics.researching.relic.info.level": "Уровень реликвии:",
-  "tooltip.relics.researching.relic.info.quality": "Качество реликвии:",
-  "tooltip.relics.researching.relic.info.extra_info": "Качество реликвии представляет собой среднее арифметическое качества всех разблокированных на данный момент способностей и измеряется в виде очков от 1 до 5 с шагом в 0.5. Является исключительно визуальной метрикой и показывает насколько стартовые случайные характеристики предмета близки к идеально возможным. Для повышения общего качества реликвии необходимо рассматривать каждую способность по отдельности.",
+  "tooltip.relics.relic.relic_experience.title": "Опыт реликвии",
+  "tooltip.relics.relic.relic_experience.current_amount": "Текущее количество: %1$s/%2$s [%3$s%%]",
 
-  "tooltip.relics.researching.relic.experience.title": "Опыт реликвии:",
-  "tooltip.relics.researching.relic.experience.extra_info": "Получается при использовании способностей реликвии по прямому назначению, а также при получении опыта другими реликвиями. При достижении максимального значения опыта уровень реликвии и запас очков улучшения увеличивается на 1, позволяя разблокировать ранее недоступные способности или улучшить уже существующие.",
+  "tooltip.relics.relic.max_level": "MAX",
 
-  "tooltip.relics.researching.ability.info.level": "Уровень способности:",
-  "tooltip.relics.researching.ability.info.quality": "Качество способности:",
-  "tooltip.relics.researching.ability.info.extra_info": "Качество способности, по аналогии с качеством реликвии, представляет собой среднее арифметическое качества всех имеющихся у способности характеристик и измеряется в виде очков от 1 до 5 с шагом в 0.5. Является исключительно визуальной метрикой и показывает насколько стартовые случайные характеристики способности близки к идеально возможным. Для повышения качества способности необходимо сбрасывать её случайные характеристики до получения лучшего значения.",
+  "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
 
   "tooltip.relics.relic.status.positive": "§2§l[§2§l✔§2§l]",
   "tooltip.relics.relic.status.negative": "§4§l[§4§l✘§4§l]",
 
+  "tooltip.relics.relic.exchange.description": "Конвертация опыта",
+  "tooltip.relics.relic.exchange.cost": "Преобразовать %1$s ванильного опыта Minecraft в 1%% от максимального опыта для текущего уровня реликвии. Стоимость обмена увеличивается за каждое использование %2$s.",
+  "tooltip.relics.relic.exchange.locked": "Реликвия достигла максимального уровня.",
+
   "tooltip.relics.relic.upgrade.description": "Повышение уровня",
-  "tooltip.relics.relic.upgrade.cost": "Стоимость: %1$s очков улучшения %2$s, %3$s единиц опыта %4$s.",
+  "tooltip.relics.relic.upgrade.cost": "Стоимость: %1$s очков прокачки %2$s, %3$s единиц опыта %4$s.",
   "tooltip.relics.relic.upgrade.locked": "Способность достигла максимального уровня.",
 
   "tooltip.relics.relic.reroll.description": "Сброс случайных характеристик",
   "tooltip.relics.relic.reroll.cost": "Стоимость: %1$s единиц опыта %2$s.",
 
-  "tooltip.relics.relic.reset.description": "Сброс очков улучшения",
+  "tooltip.relics.relic.reset.description": "Сброс очков прокачки",
   "tooltip.relics.relic.reset.cost": "Стоимость: %1$s единиц опыта %2$s.",
   "tooltip.relics.relic.reset.locked": "Для использования необходимо улучшить способность хотя бы 1 раз.",
 
@@ -63,28 +66,14 @@
   "tooltip.relics.enders_hand.ability.swap.predicate.target": "Взгляд на цель",
 
   "item.relics.holy_locket": "Священный медальон",
-  "tooltip.relics.holy_locket.description": "Наделяет носителя способностью обращать исцеление противников против них самих.",
+  "tooltip.relics.holy_locket.description": "+1 ед. опыта за каждое срабатывание способности «Покаяние», +1 ед. опыта за каждую украденную единицу исцеления, +1 ед. опыта за конвертированный урон.",
   "tooltip.relics.holy_locket.ability.belief": "Верование",
-  "tooltip.relics.holy_locket.ability.belief.description": "Переключаемая способность с двумя режимами: святость и нечестивость. Срабатывание способности в любом режиме заполняет внутренний буфер на 1 единицу. В режиме святости перенаправляет часть исцеления носителя в виде урона в ближайшие цели и понижает получаемый урон на 1% за заряд. В режиме нечестивости поглощает часть исцеления ближайших целей и увеличивает наносимый урон на 1% за заряд.",
-  "tooltip.relics.holy_locket.ability.belief.stat.radius.title": "Радиус:",
-  "tooltip.relics.holy_locket.ability.belief.stat.radius.value": "%1$s блоков.",
-  "tooltip.relics.holy_locket.ability.belief.stat.amount.title": "Модификатор исцеления/урона снаряда:",
-  "tooltip.relics.holy_locket.ability.belief.stat.amount.value": "%1$s%% от исходного значения.",
-  "tooltip.relics.holy_locket.ability.belief.stat.count.title": "Максимальное количество снарядов:",
-  "tooltip.relics.holy_locket.ability.belief.stat.count.value": "%1$s штук.",
-  "tooltip.relics.holy_locket.ability.belief.stat.capacity.title": "Ёмкость буфера:",
-  "tooltip.relics.holy_locket.ability.belief.stat.capacity.value": "%1$s единиц.",
-  "tooltip.relics.holy_locket.ability.repentance": "Покаяние",
-  "tooltip.relics.holy_locket.ability.repentance.description": "Выжигает здоровье ближайшей нежити.",
-  "tooltip.relics.holy_locket.ability.repentance.stat.radius.title": "Радиус:",
-  "tooltip.relics.holy_locket.ability.repentance.stat.radius.value": "%1$s блоков.",
-  "tooltip.relics.holy_locket.ability.repentance.stat.damage.title": "Наносимый урон:",
-  "tooltip.relics.holy_locket.ability.repentance.stat.damage.value": "%1$s за каждый заряд.",
-  "tooltip.relics.holy_locket.ability.blessing": "Благославение",
-  "tooltip.relics.holy_locket.ability.blessing.description": "При активации наделяет носителя времменным бессмертием, расходуя каждую секунду заряды из внутреннего буфера реликвии.",
-  "tooltip.relics.holy_locket.ability.blessing.stat.consumption.title": "Потребление зарядов:",
-  "tooltip.relics.holy_locket.ability.blessing.stat.consumption.value": "%1$s в секунду.",
-  "tooltip.relics.holy_locket.ability.blessing.predicate.blessing": "Заряды во внутреннем буфере",
+  "tooltip.relics.holy_locket.ability.buffer": "Покаяние",
+  "tooltip.relics.holy_locket.ability.blessing": "Благословение",
+  "tooltip.relics.holy_locket.ability.belief.description": "Перенаправляет часть регенерируемого здоровья ближайших существ носителю реликвии.",
+  "tooltip.relics.holy_locket.ability.buffer.description": "Пассивно выжигает здоровье ближайшей нежити, заполняя при этом внутренний буфер верования.",
+  "tooltip.relics.holy_locket.ability.blessing.description": "Временно дарует игроку полную неуязвимость к любым типам урона, расходуя при этом буфер верования.",
+
 
   "item.relics.magic_mirror": "Волшебное зеркало",
   "tooltip.relics.magic_mirror.description": "+1 ед. опыта за каждое использование способности «Кротовая нора» + 1 ед. опыта за каждые 50 блоков до точки телепортации.",
@@ -290,8 +279,8 @@
   "tooltip.relics.drowned_belt.description": "+1 ед. опыта за каждый уровень зачарования «Тягун» на трезубце при его использовании.",
   "tooltip.relics.drowned_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.drowned_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
-  "tooltip.relics.drowned_belt.ability.slots.stat.charm.title": "Амулеты:",
-  "tooltip.relics.drowned_belt.ability.slots.stat.charm.value": "+%1$s слотов.",
+  "tooltip.relics.drowned_belt.ability.slots.stat.talisman.title": "Талисманы:",
+  "tooltip.relics.drowned_belt.ability.slots.stat.talisman.value": "+%1$s слотов.",
   "tooltip.relics.drowned_belt.ability.anchor": "Мёртвый груз",
   "tooltip.relics.drowned_belt.ability.anchor.description": "Уменьшает скорость плаванья и увеличивает скорость потопления носителя.",
   "tooltip.relics.drowned_belt.ability.anchor.stat.slowness.title": "Замедление плаванья:",
@@ -311,19 +300,19 @@
   "tooltip.relics.hunter_belt.description": "+1 ед. опыта за каждую атаку, совершённую питомцем.",
   "tooltip.relics.hunter_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.hunter_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
-  "tooltip.relics.hunter_belt.ability.slots.stat.charm.title": "Амулеты:",
-  "tooltip.relics.hunter_belt.ability.slots.stat.charm.value": "+%1$s слотов.",
+  "tooltip.relics.hunter_belt.ability.slots.stat.talisman.title": "Талисманы:",
+  "tooltip.relics.hunter_belt.ability.slots.stat.talisman.value": "+%1$s слотов.",
   "tooltip.relics.hunter_belt.ability.training": "Дрессировка",
   "tooltip.relics.hunter_belt.ability.training.description": "Повышает наносимый питомцами носителя урон.",
   "tooltip.relics.hunter_belt.ability.training.stat.damage.title": "Множитель урона:",
   "tooltip.relics.hunter_belt.ability.training.stat.damage.value": "+%1$s%%.",
 
   "item.relics.leather_belt": "Кожаный пояс",
-  "tooltip.relics.leather_belt.description": "+1 ед. опыта за каждое получение опыта экипированными амулетами.",
+  "tooltip.relics.leather_belt.description": "+1 ед. опыта за каждое получение опыта экипированными талисманами.",
   "tooltip.relics.leather_belt.ability.slots": "Грузоподъемность",
   "tooltip.relics.leather_belt.ability.slots.description": "Увеличивает максимальное количество слотов для экипировки реликвий.",
-  "tooltip.relics.leather_belt.ability.slots.stat.charm.title": "Амулеты:",
-  "tooltip.relics.leather_belt.ability.slots.stat.charm.value": "+%1$s слотов.",
+  "tooltip.relics.leather_belt.ability.slots.stat.talisman.title": "Талисманы:",
+  "tooltip.relics.leather_belt.ability.slots.stat.talisman.value": "+%1$s слотов.",
 
   "item.relics.rage_glove": "Перчатка ярости",
   "tooltip.relics.rage_glove.description": "+1 ед. опыта за каждые 3 заряда от способности «Ярость берсерка» при их обнулении.\n+1 ед. опыта за каждую цель, поражённую способностью «Рывок».",
@@ -434,7 +423,7 @@
 
   "item.relics.relic_experience_bottle": "Пузырёк опыта реликвии",
 
-  "block.relics.researching_table": "Стол исследователя [Удалено из мода]",
+  "block.relics.researching_table": "Стол исследователя",
 
   "effect.relics.stun": "Оглушение",
   "effect.relics.paralysis": "Паралич",
@@ -445,7 +434,6 @@
 
   "command.relics.base.not_relic": "Предмет в руке должен являться реликвией!",
 
-  "info.relics.researching.wrong_container": "Работа с реликвией в этом инвентаре невозможна. Перемести предмет в обычный инвентарь игрока и попробуй ещё раз.",
-
-  "key.relics.ability_list": "Открыть интерфейс активных способностей"
+  "key.relics.ability_list": "Открыть интерфейс активных способностей",
+  "tooltip.relics.holy_locket.ability.steal": "Divine Blessing"
 }
