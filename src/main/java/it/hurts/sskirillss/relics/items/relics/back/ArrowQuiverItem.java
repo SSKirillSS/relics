@@ -66,14 +66,14 @@
 //import net.minecraft.world.phys.EntityHitResult;
 //import net.minecraft.world.phys.HitResult;
 //import net.minecraft.world.phys.Vec3;
-//import net.neoforged.api.distmarker.Dist;
-//import net.neoforged.api.distmarker.OnlyIn;
-//import net.neoforged.bus.api.SubscribeEvent;
-//import net.neoforged.fml.common.EventBusSubscriber;
+//import net.minecraftforge.api.distmarker.Dist;
+//import net.minecraftforge.api.distmarker.OnlyIn;
+//import net.minecraftforge.eventbus.api.SubscribeEvent;
+//import net.minecraftforge.fml.common.Mod;
 //import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 //import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 //import net.neoforged.neoforge.event.entity.living.LivingGetProjectileEvent;
-//import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+//import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 //import net.neoforged.neoforge.event.entity.player.ArrowLooseEvent;
 //import top.theillusivec4.curios.api.SlotContext;
 //import top.theillusivec4.curios.api.client.ICurioRenderer;
@@ -515,7 +515,7 @@
 //
 //    @OnlyIn(Dist.CLIENT)
 //    public record ClientArrowQuiverTooltip(@Getter ArrowQuiverTooltip tooltip) implements ClientTooltipComponent {
-//        public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/arrow_quiver/empty_arrow.png");
+//        public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/tooltip/arrow_quiver/empty_arrow.png");
 //
 //        @Override
 //        public int getHeight() {
@@ -567,7 +567,7 @@
 //        }
 //    }
 //
-//    @EventBusSubscriber
+//    @Mod.EventBusSubscriber
 //    public static class Events {
 //        @SubscribeEvent
 //        public static void onSlotClick(ContainerSlotClickEvent event) {
@@ -642,7 +642,7 @@
 //        }
 //
 //        @SubscribeEvent
-//        public static void onLivingHurt(LivingIncomingDamageEvent event) {
+//        public static void onLivingHurt(LivingHurtEvent event) {
 //            if (!(event.getSource().getDirectEntity() instanceof AbstractArrow arrow)
 //                    || !(arrow.getOwner() instanceof Player player))
 //                return;

@@ -13,7 +13,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.core.component.DataComponents;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -23,10 +25,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -34,11 +36,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.TIME;
-
 public class InfinityHamItem extends RelicItem {
     private static final String TAG_POTION = "potion";
+    public static final String TAG_PIECES = "pieces";
+    private static final String TAG_CHARGE = "charge";
 
     public InfinityHamItem() {
         super(new Item.Properties()
@@ -77,7 +78,7 @@ public class InfinityHamItem extends RelicItem {
     public List<ItemStack> processCreativeTab() {
         ItemStack stack = this.getDefaultInstance();
 
-        stack.set(CHARGE, 10);
+        NBTUtils.setInt(stack, TAG_PIECES, 10);
 
         return Lists.newArrayList(stack);
     }
@@ -88,18 +89,18 @@ public class InfinityHamItem extends RelicItem {
                 || player.isUsingItem())
             return;
 
-        int pieces = stack.getOrDefault(CHARGE, 0);
+        int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
 
         if (pieces >= 10)
             return;
 
-        int charge = stack.getOrDefault(TIME, 0);
+        int charge = NBTUtils.getInt(stack, TAG_CHARGE, 0);
 
         if (charge >= 10) {
-            stack.set(CHARGE, ++pieces);
-            stack.set(TIME, 0);
+            NBTUtils.setInt(stack, TAG_PIECES, pieces + 1);
+            NBTUtils.setInt(stack, TAG_CHARGE, 0);
         } else
-            stack.set(TIME, ++charge);
+            NBTUtils.setInt(stack, TAG_CHARGE, charge + 1);
 
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
@@ -108,7 +109,7 @@ public class InfinityHamItem extends RelicItem {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (stack.getOrDefault(CHARGE, 0) > 0
+        if (NBTUtils.getInt(stack, TAG_PIECES, 0) > 0
                 && (player.getFoodData().needsFood() || player.isCreative()))
             player.startUsingItem(hand);
 
@@ -129,45 +130,49 @@ public class InfinityHamItem extends RelicItem {
         if (player.tickCount % 10 != 0)
             return;
 
-        int pieces = stack.getOrDefault(CHARGE, 0);
+        int pieces = NBTUtils.getInt(stack, TAG_PIECES, 0);
+        CompoundTag nbt = stack.getOrCreateTag();
 
         if (pieces > 0) {
-            stack.set(CHARGE, --pieces);
+            NBTUtils.setInt(stack, TAG_PIECES, --pieces);
 
-            int feed = (int) Math.round(getStatValue(stack, "autophagy", "feed"));
+            int feed = (int) Math.round(getAbilityValue(stack, "autophagy", "feed"));
 
             player.getFoodData().eat(feed, feed);
 
             spreadExperience(player, stack, Math.max(1, Math.min(20 - player.getFoodData().getFoodLevel(), feed)));
 
-            PotionContents contents = stack.get(DataComponents.POTION_CONTENTS);
-
-            if (!canUseAbility(stack, "infusion") || contents == null)
+            if (!canUseAbility(stack, "infusion") || !nbt.contains(TAG_POTION, 9))
                 return;
 
-            int duration = (int) Math.round(getStatValue(stack, "infusion", "duration") * 20);
+            int duration = (int) Math.round(getAbilityValue(stack, "infusion", "duration") * 20);
 
-            contents.forEachEffect(effect -> {
-                if (!effect.getEffect().value().isInstantenous()) {
-                    MobEffectInstance currentEffect = player.getEffect(effect.getEffect());
+            ListTag list = nbt.getList(TAG_POTION, 10);
 
-                    player.addEffect(new MobEffectInstance(effect.getEffect(), currentEffect == null ? duration : currentEffect.getDuration() + duration, effect.getAmplifier()));
-                }
-            });
+            for (int i = 0; i < list.size(); ++i) {
+                MobEffectInstance effect = MobEffectInstance.load(list.getCompound(i));
 
-            if (pieces <= 0)
-                stack.set(DataComponents.POTION_CONTENTS, null);
+                if (effect == null || effect.getEffect().isInstantenous())
+                    continue;
+
+                MobEffectInstance currentEffect = player.getEffect(effect.getEffect());
+
+                player.addEffect(new MobEffectInstance(effect.getEffect(), currentEffect == null ? duration : currentEffect.getDuration() + duration, effect.getAmplifier()));
+            }
+
+            if (pieces <= 0 && nbt.contains(TAG_POTION))
+                nbt.remove(TAG_POTION);
         } else
             player.stopUsingItem();
     }
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return stack.get(DataComponents.POTION_CONTENTS) != null;
+        return stack.getOrCreateTag().contains(TAG_POTION);
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity) {
+    public int getUseDuration(@NotNull ItemStack stack) {
         return 50;
     }
 
@@ -181,7 +186,7 @@ public class InfinityHamItem extends RelicItem {
         return false;
     }
 
-    @EventBusSubscriber
+    @Mod.EventBusSubscriber
     public static class Events {
         @SubscribeEvent
         public static void onSlotClick(ContainerSlotClickEvent event) {
@@ -197,19 +202,23 @@ public class InfinityHamItem extends RelicItem {
                     || !relic.canUseAbility(slotStack, "infusion"))
                 return;
 
-            PotionContents contents = heldStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+            CompoundTag tag = slotStack.getOrCreateTag();
+            ListTag list = tag.getList(TAG_POTION, 9);
 
-            List<MobEffectInstance> effects = StreamSupport.stream(contents.getAllEffects().spliterator(), false).toList();
+            List<MobEffectInstance> effects = PotionUtils.getMobEffects(heldStack);
 
             if (effects.isEmpty()) {
-                slotStack.set(DataComponents.POTION_CONTENTS, null);
+                NBTUtils.clearTag(slotStack, TAG_POTION);
             } else {
-                effects = effects.stream().filter(effect -> !effect.getEffect().value().isInstantenous()).toList();
+                effects = effects.stream().filter(effect -> effect != null && !effect.getEffect().isInstantenous()).toList();
 
                 if (effects.isEmpty())
                     return;
 
-                slotStack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.empty(), effects));
+                for (MobEffectInstance effect : effects)
+                    list.add(effect.save(new CompoundTag()));
+
+                tag.put(TAG_POTION, list);
             }
 
             ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);

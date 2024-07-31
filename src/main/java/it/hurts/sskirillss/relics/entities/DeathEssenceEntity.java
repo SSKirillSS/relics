@@ -82,8 +82,8 @@ public class DeathEssenceEntity extends ThrowableProjectile implements ITargetab
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(DIRECTION_CHOICE, 0F);
+    protected void defineSynchedData() {
+        this.entityData.define(DIRECTION_CHOICE, 0F);
     }
 
     @Override

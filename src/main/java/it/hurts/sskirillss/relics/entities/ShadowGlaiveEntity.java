@@ -60,7 +60,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
         if (!(stack.getItem() instanceof IRelicItem relic))
             return;
 
-        if (entityData.get(BOUNCES) >= relic.getStatValue(stack, "glaive", "bounces")) {
+        if (entityData.get(BOUNCES) >= relic.getAbilityValue(stack, "glaive", "bounces")) {
             this.discard();
 
             return;
@@ -68,7 +68,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
 
         List<String> bouncedEntities = Arrays.asList(entityData.get(BOUNCED_ENTITIES).split(","));
         List<LivingEntity> entitiesAround = level().getEntitiesOfClass(LivingEntity.class,
-                this.getBoundingBox().inflate(relic.getStatValue(stack, "glaive", "radius")));
+                this.getBoundingBox().inflate(relic.getAbilityValue(stack, "glaive", "radius")));
 
         entitiesAround = entitiesAround.stream()
                 .filter(entity -> !bouncedEntities.contains(entity.getUUID().toString()))
@@ -149,7 +149,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
                 String bouncedEntitiesString = entityData.get(BOUNCED_ENTITIES);
                 List<String> bouncedEntities = Arrays.asList(bouncedEntitiesString.split(","));
 
-                float damage = (float) relic.getStatValue(stack, "glaive", "damage");
+                float damage = (float) relic.getAbilityValue(stack, "glaive", "damage");
 
                 if (this.getOwner() instanceof Player player) {
                     if (EntityUtils.hurt(entity, level().damageSources().thrown(this, player), damage))
@@ -174,10 +174,10 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(BOUNCES, 0);
-        builder.define(TARGET, "");
-        builder.define(BOUNCED_ENTITIES, "");
+    protected void defineSynchedData() {
+        entityData.define(BOUNCES, 0);
+        entityData.define(TARGET, "");
+        entityData.define(BOUNCED_ENTITIES, "");
     }
 
     @Override
@@ -204,7 +204,7 @@ public class ShadowGlaiveEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected double getDefaultGravity() {
-        return 0D;
+    protected float getGravity() {
+        return 0F;
     }
 }

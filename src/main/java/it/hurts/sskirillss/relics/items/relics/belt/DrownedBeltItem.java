@@ -21,6 +21,7 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -28,14 +29,15 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -94,27 +96,27 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
             return;
 
         if (player.isEyeInFluid(FluidTags.WATER) && !player.onGround())
-            EntityUtils.applyAttribute(player, stack, Attributes.GRAVITY, (float) getStatValue(stack, "anchor", "sinking"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), (float) getAbilityValue(stack, "anchor", "sinking"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         else
-            EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            EntityUtils.removeAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(slotContext.entity(), stack, ForgeMod.ENTITY_GRAVITY.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("charm", (int) Math.round(getStatValue(stack, "slots", "charm"))))
+                .entry(Pair.of("charm", (int) Math.round(getAbilityValue(stack, "slots", "charm"))))
                 .build();
     }
 
     @Override
-    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
+    public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(NeoForgeMod.SWIM_SPEED, (float) -getStatValue(stack, "anchor", "slowness")))
+                .attribute(new RelicAttributeModifier.Modifier(Holder.direct(ForgeMod.SWIM_SPEED.get()), (float) -getAbilityValue(stack, "anchor", "slowness")))
                 .build();
     }
 
@@ -135,10 +137,10 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("body");
     }
 
-    @EventBusSubscriber(modid = Reference.MODID)
+    @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class Events {
         @SubscribeEvent
-        public static void onEntityHurt(LivingIncomingDamageEvent event) {
+        public static void onEntityHurt(LivingHurtEvent event) {
             if (!(event.getSource().getEntity() instanceof Player player)
                     || !player.isUnderWater() || !event.getEntity().isUnderWater())
                 return;
@@ -148,7 +150,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            event.setAmount((float) (event.getAmount() * relic.getStatValue(stack, "pressure", "damage")));
+            event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "pressure", "damage")));
         }
 
         @SubscribeEvent
@@ -174,15 +176,15 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
                 return;
 
 
-            int duration = trident.getItem().getUseDuration(trident, player) - event.getDuration();
-            int enchantment = trident.getEnchantmentLevel(player.level().holderLookup(Registries.ENCHANTMENT).getOrThrow(Enchantments.RIPTIDE));
+            int duration = trident.getItem().getUseDuration(trident) - event.getDuration();
+            int enchantment = EnchantmentHelper.getRiptide(trident);
 
             if (duration < 10 || enchantment <= 0)
                 return;
 
             relic.spreadExperience(player, stack, enchantment);
 
-            player.getCooldowns().addCooldown(trident.getItem(), (int) Math.round(relic.getStatValue(stack, "riptide", "cooldown") * enchantment * 20));
+            player.getCooldowns().addCooldown(trident.getItem(), (int) Math.round(relic.getAbilityValue(stack, "riptide", "cooldown") * enchantment * 20));
         }
     }
 }

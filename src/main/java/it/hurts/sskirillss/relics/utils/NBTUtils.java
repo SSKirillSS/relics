@@ -17,73 +17,86 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
 public class NBTUtils {
     public static void setBoolean(ItemStack stack, String tag, boolean value) {
-       getOrCreateTag(stack).putBoolean(tag, value);
+        stack.getOrCreateTag().putBoolean(tag, value);
     }
 
     public static void setInt(ItemStack stack, String tag, int value) {
-        getOrCreateTag(stack).putInt(tag, value);
+        stack.getOrCreateTag().putInt(tag, value);
     }
 
     public static void setLong(ItemStack stack, String tag, long value) {
-       getOrCreateTag(stack).putLong(tag, value);
+        stack.getOrCreateTag().putLong(tag, value);
     }
 
     public static void setFloat(ItemStack stack, String tag, float value) {
-       getOrCreateTag(stack).putFloat(tag, value);
+        stack.getOrCreateTag().putFloat(tag, value);
     }
 
     public static void setDouble(ItemStack stack, String tag, double value) {
-       getOrCreateTag(stack).putDouble(tag, value);
+        stack.getOrCreateTag().putDouble(tag, value);
     }
 
     public static void setString(ItemStack stack, String tag, String value) {
-       getOrCreateTag(stack).putString(tag, value);
+        stack.getOrCreateTag().putString(tag, value);
     }
 
     public static void setCompound(ItemStack stack, String tag, CompoundTag value) {
-       getOrCreateTag(stack).put(tag, value);
+        stack.getOrCreateTag().put(tag, value);
     }
 
     public static boolean getBoolean(ItemStack stack, String tag, boolean defaultValue) {
-        return safeCheck(stack, tag) ? getOrCreateTag(stack).getBoolean(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getBoolean(tag) : defaultValue;
     }
 
     public static int getInt(ItemStack stack, String tag, int defaultValue) {
-        return safeCheck(stack, tag) ? getOrCreateTag(stack).getInt(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getInt(tag) : defaultValue;
     }
 
     public static long getLong(ItemStack stack, String tag, long defaultValue) {
-        return safeCheck(stack, tag) ? getOrCreateTag(stack).getLong(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getLong(tag) : defaultValue;
     }
 
     public static float getFloat(ItemStack stack, String tag, float defaultValue) {
-        return safeCheck(stack, tag) ? getOrCreateTag(stack).getFloat(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getFloat(tag) : defaultValue;
     }
 
     public static double getDouble(ItemStack stack, String tag, double defaultValue) {
-        return safeCheck(stack, tag) ? getOrCreateTag(stack).getDouble(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getDouble(tag) : defaultValue;
     }
 
     public static String getString(ItemStack stack, String tag, String defaultValue) {
-        return safeCheck(stack, tag) ? getOrCreateTag(stack).getString(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getString(tag) : defaultValue;
     }
 
     public static CompoundTag getCompound(ItemStack stack, String tag, CompoundTag defaultValue) {
-        return safeCheck(stack, tag) ? getOrCreateTag(stack).getCompound(tag) : defaultValue;
+        return safeCheck(stack, tag) ? stack.getTag().getCompound(tag) : defaultValue;
     }
 
-    public static CompoundTag getOrCreateTag(ItemStack stack) {
-        return new CompoundTag();
-    }
-
-    private static boolean safeCheck(ItemStack stack, String tag) {
-        return getOrCreateTag(stack).contains(tag);
+    public static boolean safeCheck(ItemStack stack, String tag) {
+        return !stack.isEmpty() && stack.getTag() != null && stack.getTag().contains(tag);
     }
 
     public static void clearTag(ItemStack stack, String tag) {
-       getOrCreateTag(stack).remove(tag);
+        stack.getOrCreateTag().remove(tag);
     }
 
     public static String writePosition(Vec3 vec) {
@@ -127,7 +140,7 @@ public class NBTUtils {
 
     @Nullable
     public static ServerLevel parseLevel(Level world, String value) {
-        return world.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(value)));
+        return world.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(value)));
     }
 
     private static final Gson LIST_SERIALIZER = new GsonBuilder()

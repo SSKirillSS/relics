@@ -32,7 +32,7 @@ public class SporeModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int seed) {
-        spore.render(poseStack, buffer, packedLight, packedOverlay, seed);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        spore.render(poseStack, buffer, packedLight, packedOverlay);
     }
 }

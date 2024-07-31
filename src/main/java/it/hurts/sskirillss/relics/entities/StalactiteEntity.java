@@ -90,13 +90,13 @@ public class StalactiteEntity extends ThrowableProjectile {
         }
 
         if (mayContinue)
-            entity.addEffect(new MobEffectInstance(EffectRegistry.STUN, Math.round(stun), 0, true, false));
+            entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), Math.round(stun), 0, true, false));
 
         this.discard();
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData() {
 
     }
 

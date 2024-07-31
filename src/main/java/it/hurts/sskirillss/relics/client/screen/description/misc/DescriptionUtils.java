@@ -6,11 +6,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class DescriptionUtils {
-    private static final ResourceLocation TOOLTIP = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/tooltip.png");
+    private static final ResourceLocation TOOLTIP = new ResourceLocation(Reference.MODID, "textures/gui/description/general/tooltip.png");
 
     @OnlyIn(Dist.CLIENT)
     public static void drawTooltipBackground(GuiGraphics guiGraphics, int width, int height, int x, int y) {

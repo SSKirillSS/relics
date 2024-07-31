@@ -70,9 +70,4 @@ public class ResearchingTableBlock extends HorizontalDirectionalBlock implements
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
-
-    @Override
-    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return simpleCodec(ResearchingTableBlock::new);
-    }
 }

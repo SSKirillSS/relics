@@ -18,6 +18,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
@@ -36,11 +37,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
 import javax.annotation.Nullable;
@@ -48,9 +49,9 @@ import java.awt.*;
 import java.util.List;
 import java.util.UUID;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.TARGET;
-
 public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
+    private static final String TAG_TARGET = "target";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -105,7 +106,7 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         LivingEntity target = getTarget(serverLevel, stack);
 
         if (target != null) {
-            double radius = getStatValue(stack, "backstab", "distance");
+            double radius = getAbilityValue(stack, "backstab", "distance");
             double step = 0.15D;
             int offset = 16;
 
@@ -164,14 +165,14 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         }
 
         if (!canHide(player)) {
-            EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(player.position()) >= getStatValue(stack, "backstab", "distance")))
-                stack.set(TARGET, "");
+            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(player.position()) >= getAbilityValue(stack, "backstab", "distance")))
+                NBTUtils.clearTag(stack, TAG_TARGET);
         } else {
-            player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
+            player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
 
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) getStatValue(stack, "vanish", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) getAbilityValue(stack, "vanish", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         }
     }
 
@@ -182,13 +183,13 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
 
         ServerLevel serverLevel = (ServerLevel) level;
 
-        String string = stack.getOrDefault(TARGET, "");
+        String string = NBTUtils.getString(stack, TAG_TARGET, "");
 
         if (string.isEmpty())
             return null;
 
         if (!(serverLevel.getEntity(UUID.fromString(string)) instanceof LivingEntity target) || target.isDeadOrDying()) {
-            stack.set(TARGET, "");
+            NBTUtils.clearTag(stack, TAG_TARGET);
 
             return null;
         }
@@ -205,15 +206,15 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         Level world = entity.getCommandSenderWorld();
         BlockPos position = entity.blockPosition().above();
 
-        double light = relic.getStatValue(stack, "vanish", "light");
+        double light = relic.getAbilityValue(stack, "vanish", "light");
 
-        return relic.isAbilityTicking(stack, "vanish") && stack.getOrDefault(TARGET, "").isEmpty()
+        return relic.isAbilityTicking(stack, "vanish") && NBTUtils.getString(stack, TAG_TARGET, "").isEmpty()
                 && world.getBrightness(LightLayer.BLOCK, position) + world.getBrightness(LightLayer.SKY, position) / 2D <= (world.isNight() ? light * 1.5D : light);
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 
     @Override
@@ -253,10 +254,10 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("right_arm", "left_arm", "body");
     }
 
-    @EventBusSubscriber
+    @Mod.EventBusSubscriber
     public static class ServerEvents {
         @SubscribeEvent
-        public static void onLivingHurt(LivingIncomingDamageEvent event) {
+        public static void onLivingHurt(LivingHurtEvent event) {
             LivingEntity target = event.getEntity();
             Level level = target.getCommandSenderWorld();
 
@@ -267,14 +268,14 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
             ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.MIDNIGHT_ROBE.get());
 
             if (!(stack.getItem() instanceof IRelicItem relic) || !canHide(player) || player.position().distanceTo(new Vec3(target.getX(),
-                    player.getY(), target.getZ())) > relic.getStatValue(stack, "backstab", "distance"))
+                    player.getY(), target.getZ())) > relic.getAbilityValue(stack, "backstab", "distance"))
                 return;
 
             relic.spreadExperience(player, stack, Math.round(event.getAmount() * 0.5F));
 
-            event.setAmount((float) (event.getAmount() * relic.getStatValue(stack, "backstab", "damage")));
+            event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "backstab", "damage")));
 
-            stack.set(TARGET, target.getStringUUID());
+            NBTUtils.setString(stack, TAG_TARGET, target.getStringUUID());
         }
     }
 }

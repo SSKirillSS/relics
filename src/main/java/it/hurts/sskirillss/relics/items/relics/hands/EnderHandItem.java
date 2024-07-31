@@ -41,8 +41,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -61,7 +61,7 @@ public class EnderHandItem extends RelicItem implements IRenderableCurio {
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
                                         .castPredicate("target", (player, stack) -> {
-                                            EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getStatValue(stack, "swap", "distance"));
+                                            EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(stack, "swap", "distance"));
 
                                             return result != null && result.getEntity() instanceof LivingEntity;
                                         })
@@ -88,7 +88,7 @@ public class EnderHandItem extends RelicItem implements IRenderableCurio {
 
             Level level = player.level();
 
-            EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getStatValue(stack, "swap", "distance"));
+            EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getAbilityValue(stack, "swap", "distance"));
 
             if (result == null || !(result.getEntity() instanceof LivingEntity entity))
                 return;
@@ -135,11 +135,11 @@ public class EnderHandItem extends RelicItem implements IRenderableCurio {
 
         ICurioRenderer.followBodyRotations(entity, sidedModel);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
 
         matrixStack.translate(0, 0, -0.025F);
 
-        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
+        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 
         matrixStack.popPose();
     }

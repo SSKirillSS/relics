@@ -34,7 +34,7 @@ public abstract class AbstractPlateWidget extends AbstractDescriptionWidget impl
     public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         guiGraphics.blit(DescriptionTextures.PLATE_BACKGROUND, getX(), getY(), 0, 0, width, height, width, height);
 
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/icons/" + icon + ".png"), getX() + 3, getY() + 2, 0, 0, 14, 14, 14, 14);
+        guiGraphics.blit(new ResourceLocation(Reference.MODID, "textures/gui/description/general/icons/" + icon + ".png"), getX() + 3, getY() + 2, 0, 0, 14, 14, 14, 14);
 
         MutableComponent value = Component.literal(getValue(provider.getStack())).withStyle(ChatFormatting.BOLD);
 

@@ -2,8 +2,10 @@ package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,9 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.awt.*;
-
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.SAW;
 
 public class ShadowSawEntity extends ThrowableProjectile {
     @Getter
@@ -65,9 +64,9 @@ public class ShadowSawEntity extends ThrowableProjectile {
                         if (stack.getItem() != ItemRegistry.SHADOW_GLAIVE.get())
                             continue;
 
-                        if (stack.getOrDefault(SAW, "").equals(this.getStringUUID())) {
-                            stack.set(CHARGE, 8);
-                            stack.set(SAW, "");
+                        if (NBTUtils.getString(stack, ShadowGlaiveItem.TAG_SAW, "").equals(this.getStringUUID())) {
+                            NBTUtils.setInt(stack, ShadowGlaiveItem.TAG_CHARGES, 8);
+                            NBTUtils.clearTag(stack, ShadowGlaiveItem.TAG_SAW);
 
                             break;
                         }
@@ -84,10 +83,10 @@ public class ShadowSawEntity extends ThrowableProjectile {
                 this.setDeltaMovement(this.getDeltaMovement().add(0F, -0.05F, 0F));
         }
 
-        int speed = (int) Math.round(relic.getStatValue(stack, "saw", "speed"));
+        int speed = (int) Math.round(relic.getAbilityValue(stack, "saw", "speed"));
 
         if (this.tickCount % speed == 0) {
-            float damage = (float) Math.max(relic.getStatValue(stack, "saw", "damage"), 0.1D);
+            float damage = (float) Math.max(relic.getAbilityValue(stack, "saw", "damage"), 0.1D);
 
             for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5D))) {
                 boolean mayContinue = false;
@@ -129,12 +128,12 @@ public class ShadowSawEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected double getDefaultGravity() {
-        return 0.05D;
+    protected float getGravity() {
+        return 0.05F;
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData() {
 
     }
 

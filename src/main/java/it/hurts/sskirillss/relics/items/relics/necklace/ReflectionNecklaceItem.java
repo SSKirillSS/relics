@@ -21,6 +21,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -39,20 +40,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.TIME;
-
 public class ReflectionNecklaceItem extends RelicItem implements IRenderableCurio {
+    public static final String TAG_CHARGE = "charge";
+    public static final String TAG_TIME = "time";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -95,11 +96,13 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
                 || player.tickCount % 20 != 0)
             return;
 
-        int time = stack.getOrDefault(TIME, 0);
-        double charge = stack.getOrDefault(CHARGE, 0);
+        int time = NBTUtils.getInt(stack, TAG_TIME, 0);
+        double charge = NBTUtils.getDouble(stack, TAG_CHARGE, 0);
 
-        if (time > 0 && charge < getStatValue(stack, "explode", "capacity")) {
-            stack.set(TIME, --time);
+        if (time > 0 && charge < getAbilityValue(stack, "explode", "capacity")) {
+            --time;
+
+            NBTUtils.setInt(stack, TAG_TIME, time);
         } else if (charge > 0) {
             Level level = player.level();
             RandomSource random = player.getRandom();
@@ -126,8 +129,8 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
                             continue;
 
                         StalactiteEntity stalactite = new StalactiteEntity(level,
-                                (float) (charge * getStatValue(stack, "explode", "damage")),
-                                (float) (charge * getStatValue(stack, "explode", "stun")));
+                                (float) (charge * getAbilityValue(stack, "explode", "damage")),
+                                (float) (charge * getAbilityValue(stack, "explode", "stun")));
 
                         stalactite.setOwner(player);
                         stalactite.setPos(pos);
@@ -140,8 +143,8 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
 
             spreadExperience(player, stack, (int) Math.floor(charge / 10F));
 
-            stack.set(CHARGE, 0);
-            stack.set(TIME, 0);
+            NBTUtils.setDouble(stack, TAG_CHARGE, 0);
+            NBTUtils.setInt(stack, TAG_TIME, 0);
         }
     }
 
@@ -162,11 +165,11 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
 
         ICurioRenderer.followBodyRotations(entity, model);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
 
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
-        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
+        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
         matrixStack.scale(2F, 2F, 2F);
 
@@ -192,10 +195,10 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
         return Lists.newArrayList("body");
     }
 
-    @EventBusSubscriber(modid = Reference.MODID)
+    @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class ReflectionNecklaceServerEvents {
         @SubscribeEvent
-        public static void onEntityHurt(LivingIncomingDamageEvent event) {
+        public static void onEntityHurt(LivingHurtEvent event) {
             if (!(event.getEntity() instanceof Player))
                 return;
 
@@ -204,13 +207,13 @@ public class ReflectionNecklaceItem extends RelicItem implements IRenderableCuri
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            double charge = stack.getOrDefault(CHARGE, 0);
-            double capacity = relic.getStatValue(stack, "explode", "capacity");
+            double charge = NBTUtils.getDouble(stack, TAG_CHARGE, 0);
+            double capacity = relic.getAbilityValue(stack, "explode", "capacity");
 
             if (charge < capacity) {
-                stack.set(CHARGE, (int) Math.min(capacity, charge + (event.getAmount())));
+                NBTUtils.setDouble(stack, TAG_CHARGE, Math.min(capacity, charge + (event.getAmount())));
 
-                stack.set(TIME, 5);
+                NBTUtils.setInt(stack, TAG_TIME, 5);
             }
         }
     }

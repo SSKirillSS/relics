@@ -15,6 +15,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -32,9 +33,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.*;
-
 public class ShadowGlaiveItem extends RelicItem {
+    public static final String TAG_CHARGES = "charges";
+    public static final String TAG_TIME = "time";
+    public static final String TAG_SAW = "saw";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -87,7 +90,7 @@ public class ShadowGlaiveItem extends RelicItem {
     public List<ItemStack> processCreativeTab() {
         ItemStack stack = this.getDefaultInstance();
 
-        stack.set(CHARGE, 8);
+        NBTUtils.setInt(stack, TAG_CHARGES, 8);
 
         return Lists.newArrayList(stack);
     }
@@ -97,27 +100,27 @@ public class ShadowGlaiveItem extends RelicItem {
         if (worldIn.isClientSide())
             return;
 
-        int charges = stack.getOrDefault(CHARGE, 0);
+        int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
 
         if (entityIn.tickCount % 20 != 0 || charges >= 8)
             return;
 
-        int time = stack.getOrDefault(TIME, 0);
+        int time = NBTUtils.getInt(stack, TAG_TIME, 0);
 
         if (getSaw(stack, worldIn) != null)
             return;
 
-        if (time >= getStatValue(stack, "glaive", "recharge")) {
-            stack.set(CHARGE, charges + 1);
-            stack.set(TIME, 0);
+        if (time >= getAbilityValue(stack, "glaive", "recharge")) {
+            NBTUtils.setInt(stack, TAG_CHARGES, charges + 1);
+            NBTUtils.setInt(stack, TAG_TIME, 0);
         } else
-            stack.set(TIME, ++time);
+            NBTUtils.setInt(stack, TAG_TIME, time + 1);
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
-        int charges = stack.getOrDefault(CHARGE, 0);
+        int charges = NBTUtils.getInt(stack, TAG_CHARGES, 0);
         RandomSource random = playerIn.getRandom();
 
         if (playerIn.getCooldowns().isOnCooldown(stack.getItem()))
@@ -143,8 +146,8 @@ public class ShadowGlaiveItem extends RelicItem {
                     worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW.get(),
                             SoundSource.MASTER, 0.5F, 0.35F + (random.nextFloat() * 0.25F));
 
-                    stack.set(CHARGE, 0);
-                    stack.set(SAW, saw.getStringUUID());
+                    NBTUtils.setInt(stack, TAG_CHARGES, 0);
+                    NBTUtils.setString(stack, TAG_SAW, saw.getStringUUID());
                 }
             } else {
                 if (charges > 0) {
@@ -167,7 +170,7 @@ public class ShadowGlaiveItem extends RelicItem {
                     worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundRegistry.THROW.get(),
                             SoundSource.MASTER, 0.5F, 0.75F + (random.nextFloat() * 0.5F));
 
-                    stack.set(CHARGE, charges - 1);
+                    NBTUtils.setInt(stack, TAG_CHARGES, charges - 1);
                 }
             }
         }
@@ -178,7 +181,7 @@ public class ShadowGlaiveItem extends RelicItem {
     @Nullable
     public ShadowSawEntity getSaw(ItemStack stack, Level level) {
         try {
-            UUID uuid = UUID.fromString(stack.getOrDefault(SAW, ""));
+            UUID uuid = UUID.fromString(NBTUtils.getString(stack, TAG_SAW, ""));
 
             if (level.isClientSide())
                 return null;
@@ -189,7 +192,7 @@ public class ShadowGlaiveItem extends RelicItem {
             if (entity instanceof ShadowSawEntity saw)
                 return saw;
 
-            stack.set(SAW, "");
+            NBTUtils.clearTag(stack, TAG_SAW);
 
             return null;
         } catch (IllegalArgumentException e) {

@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items;
 import it.hurts.sskirillss.relics.entities.SolidSnowballEntity;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -17,9 +18,9 @@ import net.minecraft.world.level.Level;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-
 public class SolidSnowballItem extends ItemBase {
+    public static final String TAG_SNOW = "snow";
+
     public SolidSnowballItem() {
         super(new Item.Properties()
                 .stacksTo(1)
@@ -45,7 +46,7 @@ public class SolidSnowballItem extends ItemBase {
         SolidSnowballEntity entity = new SolidSnowballEntity(level);
 
         entity.setOwner(player);
-        entity.setSize(stack.getOrDefault(CHARGE, 0));
+        entity.setSize(NBTUtils.getInt(stack, TAG_SNOW, 0));
         entity.setPos(player.getX(), player.getEyeY(), player.getZ());
         entity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
 

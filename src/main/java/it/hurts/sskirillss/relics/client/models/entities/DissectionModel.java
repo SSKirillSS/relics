@@ -13,7 +13,6 @@ import net.minecraft.world.entity.Entity;
 
 public class DissectionModel<T extends Entity> extends EntityModel<T> {
     private final ModelPart center;
-
     private final ModelPart ring1;
     private final ModelPart ring2;
     private final ModelPart ring3;
@@ -42,14 +41,14 @@ public class DissectionModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int seed) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         Minecraft MC = Minecraft.getInstance();
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null)
             return;
 
-        float time = (float) Math.sin((player.tickCount + (MC.isPaused() ? 0 : MC.getTimer().getGameTimeDeltaPartialTick(true))) / 20F) * 50F;
+        float time = (float) Math.sin((player.tickCount + (MC.isPaused() ? 0 : MC.getFrameTime())) / 20F) * 50F;
 
         poseStack.pushPose();
 

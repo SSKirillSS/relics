@@ -26,16 +26,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Random;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-
 public class SporeSackItem extends RelicItem {
+    private static final String TAG_SPORES = "spores";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -101,7 +101,7 @@ public class SporeSackItem extends RelicItem {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
-                                        .castPredicate("spore", (player, stack) -> stack.getOrDefault(CHARGE, 0) > 0)
+                                        .castPredicate("spore", (player, stack) -> NBTUtils.getInt(stack, TAG_SPORES, 0) > 0)
                                         .build())
                                 .stat(StatData.builder("size")
                                         .initialValue(0.05D, 0.25D)
@@ -120,20 +120,20 @@ public class SporeSackItem extends RelicItem {
     }
 
     public int getMaxSpores(ItemStack stack) {
-        return (int) Math.round(canUseAbility(stack, "buffer") ? getStatValue(stack, "buffer", "capacity") : 1);
+        return (int) Math.round(canUseAbility(stack, "buffer") ? getAbilityValue(stack, "buffer", "capacity") : 1);
     }
 
     public int getSpores(ItemStack stack) {
-        return stack.getOrDefault(CHARGE, 0);
+        return NBTUtils.getInt(stack, TAG_SPORES, 0);
     }
 
     public void setSpores(ItemStack stack, int amount) {
-        stack.set(CHARGE, Mth.clamp(amount, 0, getMaxSpores(stack)));
+        NBTUtils.setInt(stack, TAG_SPORES, Mth.clamp(amount, 0, getMaxSpores(stack)));
     }
 
     public void addSpores(ItemStack stack, int amount) {
         if (canUseAbility(stack, "buffer") && amount < 0
-                && new Random().nextFloat() <= getStatValue(stack, "buffer", "chance"))
+                && new Random().nextFloat() <= getAbilityValue(stack, "buffer", "chance"))
             return;
 
         setSpores(stack, getSpores(stack) + amount);
@@ -160,7 +160,7 @@ public class SporeSackItem extends RelicItem {
                     spore.setStack(stack);
                     spore.setDeltaMovement(motion);
                     spore.setPos(player.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
-                    spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + (player.getMaxHealth() - player.getHealth()) * getStatValue(stack, "explosion", "size")));
+                    spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + (player.getMaxHealth() - player.getHealth()) * getAbilityValue(stack, "explosion", "size")));
 
                     level.addFreshEntity(spore);
 
@@ -173,16 +173,16 @@ public class SporeSackItem extends RelicItem {
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide() || getSpores(stack) >= getMaxSpores(stack)
-                || player.tickCount % Math.round(getStatValue(stack, "spore", "cooldown") * 20) != 0)
+                || player.tickCount % Math.round(getAbilityValue(stack, "spore", "cooldown") * 20) != 0)
             return;
 
         addSpores(stack, 1);
     }
 
-    @EventBusSubscriber(modid = Reference.MODID)
+    @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class Events {
         @SubscribeEvent
-        public static void onLivingHurt(LivingIncomingDamageEvent event) {
+        public static void onLivingHurt(LivingHurtEvent event) {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
@@ -208,7 +208,7 @@ public class SporeSackItem extends RelicItem {
             spore.setStack(stack.copy());
             spore.setDeltaMovement(motion);
             spore.setPos(player.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
-            spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + event.getAmount() * relic.getStatValue(stack, "spore", "size")));
+            spore.setSize((float) Math.min(player.getMaxHealth(), 0.1F + event.getAmount() * relic.getAbilityValue(stack, "spore", "size")));
 
             level.addFreshEntity(spore);
 

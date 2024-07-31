@@ -13,7 +13,6 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.Rero
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.ResetActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.UpgradeActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PointsPlateWidget;
-import it.hurts.sskirillss.relics.components.StatComponent;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -28,15 +27,15 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
 
 import java.util.Map;
 
@@ -101,8 +100,8 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        super.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
+    public void renderBackground(GuiGraphics guiGraphics) {
+        super.renderBackground(guiGraphics);
 
         LocalPlayer player = minecraft.player;
 
@@ -137,7 +136,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         );
 
         {
-            ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/cards/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, stack, ability) + ".png");
+            ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, stack, ability) + ".png");
 
             float color = (float) (1.05F + (Math.sin((player.tickCount + (ability.length() * 10)) * 0.2F) * 0.1F));
 
@@ -179,7 +178,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             poseStack.scale(0.75F, 0.75F, 0.75F);
 
-            guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability)
+            guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability)
                     .withStyle(ChatFormatting.BOLD), (int) ((x + 113) * 1.33F), (int) ((y + 66) * 1.33F), 0x662f13, false);
 
             yOff = 9;
@@ -190,7 +189,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 340)) {
+            for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 340)) {
                 guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 73) * 2 + yOff, 0x662f13, false);
 
                 yOff += 9;
@@ -215,15 +214,14 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         yOff = 0;
 
-        for (Map.Entry<String, StatComponent> entry : relic.getAbilityComponent(stack, ability).stats().entrySet()) {
-            String stat = entry.getKey();
+        for (String stat : relic.getAbilityInitialValues(stack, ability).keySet()) {
             StatData statData = relic.getStatData(ability, stat);
 
             if (statData != null) {
-                MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat))));
+                MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat))));
 
                 if (isHoveredUpgrade && level < maxLevel) {
-                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat, level + 1)));
+                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat, level + 1)));
                 }
 
                 if (isHoveredReroll) {
@@ -231,16 +229,16 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
                 }
 
                 if (isHoveredReset && level > 0) {
-                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat, 0)));
+                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getAbilityValue(stack, ability, stat, 0)));
                 }
 
                 poseStack.pushPose();
 
                 poseStack.scale(0.5F, 0.5F, 0.5F);
 
-                guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title").withStyle(ChatFormatting.BOLD), (x + 85) * 2, (y + yOff + 151) * 2, 0x662f13, false);
+                guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title").withStyle(ChatFormatting.BOLD), (x + 85) * 2, (y + yOff + 151) * 2, 0x662f13, false);
 
-                guiGraphics.drawString(minecraft.font, Component.literal("● ").append(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), (x + 90) * 2, (y + yOff + 157) * 2, 0x662f13, false);
+                guiGraphics.drawString(minecraft.font, Component.literal("● ").append(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), (x + 90) * 2, (y + yOff + 157) * 2, 0x662f13, false);
 
                 poseStack.popPose();
 
@@ -273,6 +271,8 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        this.renderBackground(guiGraphics);
+
         super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         for (GuiEventListener listener : this.children()) {

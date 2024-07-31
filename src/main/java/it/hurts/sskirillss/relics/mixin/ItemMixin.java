@@ -14,14 +14,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -49,13 +50,13 @@ public class ItemMixin {
     }
 
     @Inject(method = "appendHoverText", at = @At("HEAD"))
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag, CallbackInfo ci) {
-        relics$processTooltip(stack, context, tooltip);
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced, CallbackInfo ci) {
+        relics$processTooltip(stack, level, tooltip);
     }
 
     @Unique
     @OnlyIn(Dist.CLIENT)
-    private void relics$processTooltip(ItemStack stack, Item.TooltipContext context, List<Component> tooltip) {
+    private void relics$processTooltip(ItemStack stack, @Nullable Level level, List<Component> tooltip) {
         Item item = stack.getItem();
 
         if (!(item instanceof IRelicItem))
@@ -67,26 +68,5 @@ public class ItemMixin {
             tooltip.add(Component.translatable("tooltip.relics.researching.info").withStyle(ChatFormatting.GRAY));
 
         tooltip.add(Component.literal(" "));
-    }
-
-    @Inject(method = "verifyComponentsAfterLoad", at = @At("HEAD"))
-    public void onVerifyComponentsAfterLoad(ItemStack stack, CallbackInfo ci) {
-        if (!(stack.getItem() instanceof IRelicItem relic))
-            return;
-
-        for (AbilityData abilityData : relic.getAbilitiesData().getAbilities().values()) {
-            String abilityId = abilityData.getId();
-
-            if (relic.getAbilityComponent(stack, abilityId) == null)
-                relic.randomizeAbility(stack, abilityId);
-            else {
-                for (StatData statData : relic.getAbilityData(abilityId).getStats().values()) {
-                    String statId = statData.getId();
-
-                    if (relic.getStatComponent(stack, abilityId, statId) == null)
-                        relic.randomizeStat(stack, abilityId, statId);
-                }
-            }
-        }
     }
 }

@@ -57,8 +57,8 @@ public class BlockSimulationEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(BLOCK_STATE, Blocks.AIR.defaultBlockState());
+    protected void defineSynchedData() {
+        this.entityData.define(BLOCK_STATE, Blocks.AIR.defaultBlockState());
     }
 
     @Override

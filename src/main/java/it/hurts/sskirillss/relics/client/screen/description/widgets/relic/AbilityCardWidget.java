@@ -25,7 +25,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -77,13 +77,13 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         boolean canUse = relic.canUseAbility(screen.stack, ability);
         boolean canUpgrade = relic.mayPlayerUpgrade(MC.player, screen.stack, ability);
 
-        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/cards/" + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(MC.player, screen.stack, ability) + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(MC.player, screen.stack, ability) + ".png");
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         poseStack.pushPose();
 
-        float partialTicks = MC.getTimer().getGameTimeDeltaPartialTick(false);
+        float partialTicks = MC.getFrameTime();
 
         float lerpedScale = Mth.lerp(partialTicks, scaleOld, scale);
 
@@ -239,7 +239,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         int renderWidth = 0;
 
         List<MutableComponent> entries = Lists.newArrayList(
-                Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)
+                Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(screen.stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)
         );
 
         int level = relic.getLevel(screen.stack);
@@ -272,7 +272,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         int y = getHeight() / 2;
 
-        float partialTicks = MC.getTimer().getGameTimeDeltaPartialTick(false);
+        float partialTicks = MC.getFrameTime();
 
         float lerpedScale = Mth.lerp(partialTicks, scaleOld, scale);
 

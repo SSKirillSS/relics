@@ -3,10 +3,11 @@ package it.hurts.sskirillss.relics.api.events.common;
 import lombok.Getter;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.bus.api.ICancellableEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.eventbus.api.Cancelable;
 
-public class FluidCollisionEvent extends LivingEvent implements ICancellableEvent {
+@Cancelable
+public class FluidCollisionEvent extends LivingEvent {
     @Getter
     private final FluidState fluid;
 

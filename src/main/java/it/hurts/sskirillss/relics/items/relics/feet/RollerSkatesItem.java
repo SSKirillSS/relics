@@ -14,19 +14,21 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-
 public class RollerSkatesItem extends RelicItem {
+    public static final String TAG_SKATING_DURATION = "duration";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -57,24 +59,24 @@ public class RollerSkatesItem extends RelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        int duration = stack.getOrDefault(CHARGE, 0);
+        int duration = NBTUtils.getInt(stack, TAG_SKATING_DURATION, 0);
 
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
             if (player.tickCount % 20 == 0)
                 spreadExperience(player, stack, 1);
 
-            if (duration < getStatValue(stack, "skating", "duration") && player.tickCount % 4 == 0)
-                stack.set(CHARGE, duration + 1);
+            if (duration < getAbilityValue(stack, "skating", "duration") && player.tickCount % 4 == 0)
+                NBTUtils.setInt(stack, TAG_SKATING_DURATION, duration + 1);
         } else if (duration > 0)
-            stack.set(CHARGE, --duration);
+            NBTUtils.setInt(stack, TAG_SKATING_DURATION, --duration);
 
-        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         if (duration > 0) {
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getStatValue(stack, "skating", "speed")), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-            EntityUtils.applyAttribute(player, stack, Attributes.STEP_HEIGHT, 0.6F, AttributeModifier.Operation.ADD_VALUE);
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
-            EntityUtils.removeAttribute(player, stack, Attributes.STEP_HEIGHT, AttributeModifier.Operation.ADD_VALUE);
+            EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
     }
 
     @Override
@@ -84,11 +86,11 @@ public class RollerSkatesItem extends RelicItem {
 
         LivingEntity entity = slotContext.entity();
 
-        EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        EntityUtils.removeAttribute(entity, stack, Attributes.STEP_HEIGHT, AttributeModifier.Operation.ADD_VALUE);
+        EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
     }
 
-    @EventBusSubscriber(modid = Reference.MODID)
+    @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class Events {
         @SubscribeEvent
         public static void onLivingSlipping(LivingSlippingEvent event) {

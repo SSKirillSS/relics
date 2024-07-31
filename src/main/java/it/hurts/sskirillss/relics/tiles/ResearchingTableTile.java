@@ -6,6 +6,7 @@ import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -31,27 +32,39 @@ public class ResearchingTableTile extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.loadAdditional(compound, provider);
+    public void load(CompoundTag compound) {
+        super.load(compound);
 
-        stack = ItemStack.parseOptional(provider, compound.getCompound("stack"));
+        stack = ItemStack.of((CompoundTag) compound.get("stack"));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.saveAdditional(compound, provider);
+    protected void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
 
-        if (stack != null && !stack.isEmpty())
-            compound.put("stack", stack.save(provider, new CompoundTag()));
+        if (stack != null) {
+            CompoundTag itemStack = new CompoundTag();
+
+            stack.save(itemStack);
+
+            compound.put("stack", itemStack);
+        }
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag tag = super.getUpdateTag(provider);
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = new CompoundTag();
 
-        this.saveAdditional(tag, provider);
+        this.saveAdditional(tag);
 
         return tag;
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        super.onDataPacket(net, pkt);
+
+        this.load(pkt.getTag());
     }
 
     @Override

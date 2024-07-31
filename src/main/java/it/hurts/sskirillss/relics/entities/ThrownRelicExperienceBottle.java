@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -23,8 +23,8 @@ public class ThrownRelicExperienceBottle extends ThrowableItemProjectile {
     }
 
     @Override
-    protected double getDefaultGravity() {
-        return 0.07D;
+    protected float getGravity() {
+        return 0.07f;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ThrownRelicExperienceBottle extends ThrowableItemProjectile {
         super.onHit(result);
 
         if (this.level() instanceof ServerLevel) {
-            this.level().levelEvent(2002, this.blockPosition(), PotionContents.getColor(Potions.LUCK));
+            this.level().levelEvent(2002, this.blockPosition(), PotionUtils.getColor(Potions.LUCK));
 
             int steps = 10 + random.nextInt(10);
 

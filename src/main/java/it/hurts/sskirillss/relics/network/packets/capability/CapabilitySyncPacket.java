@@ -1,39 +1,33 @@
 package it.hurts.sskirillss.relics.network.packets.capability;
 
-import io.netty.buffer.ByteBuf;
-import it.hurts.sskirillss.relics.utils.Reference;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import it.hurts.sskirillss.relics.capability.utils.CapabilityUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.NetworkEvent;
 
-@Data
-@AllArgsConstructor
-public class CapabilitySyncPacket implements CustomPacketPayload {
+import java.util.function.Supplier;
+
+public class CapabilitySyncPacket {
     private final CompoundTag data;
 
-    public static final CustomPacketPayload.Type<CapabilitySyncPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "capability_sync"));
-
-    public static final StreamCodec<ByteBuf, CapabilitySyncPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.COMPOUND_TAG, CapabilitySyncPacket::getData,
-            CapabilitySyncPacket::new
-    );
-
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public CapabilitySyncPacket(FriendlyByteBuf buf) {
+        data = buf.readNbt();
     }
 
-    public boolean handle(IPayloadContext ctx) {
-        ctx.enqueueWork(this::doSync);
+    public CapabilitySyncPacket(CompoundTag data) {
+        this.data = data;
+    }
+
+    public void toBytes(FriendlyByteBuf buf) {
+        buf.writeNbt(data);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(this::doSync);
 
         return true;
     }

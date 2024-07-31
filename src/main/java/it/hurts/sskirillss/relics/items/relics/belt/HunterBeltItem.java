@@ -23,11 +23,11 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -63,7 +63,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("charm", (int) Math.round(getStatValue(stack, "slots", "charm"))))
+                .entry(Pair.of("charm", (int) Math.round(getAbilityValue(stack, "slots", "charm"))))
                 .build();
     }
 
@@ -86,10 +86,10 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("body");
     }
 
-    @EventBusSubscriber(modid = Reference.MODID)
+    @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class HunterBeltEvents {
         @SubscribeEvent
-        public static void onLivingDamage(LivingIncomingDamageEvent event) {
+        public static void onLivingDamage(LivingHurtEvent event) {
             if (!(event.getSource().getEntity() instanceof TamableAnimal pet)
                     || !(pet.getOwner() instanceof Player player))
                 return;
@@ -101,7 +101,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
 
             relic.spreadExperience(player, stack, 1);
 
-            event.setAmount((float) (event.getAmount() * relic.getStatValue(stack, "training", "damage")));
+            event.setAmount((float) (event.getAmount() * relic.getAbilityValue(stack, "training", "damage")));
         }
     }
 }

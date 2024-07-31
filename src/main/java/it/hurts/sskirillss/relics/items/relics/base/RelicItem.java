@@ -7,7 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -21,6 +21,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicItem {
     public RelicItem(Item.Properties properties) {
@@ -35,21 +36,21 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
 
     @Override
     @Deprecated(forRemoval = true)
-    public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
-        Multimap<Holder<Attribute>, AttributeModifier> modifiers = LinkedHashMultimap.create();
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
+        Multimap<Attribute, AttributeModifier> modifiers = LinkedHashMultimap.create();
 
-        RelicAttributeModifier attributes = getRelicAttributeModifiers(stack);
+        RelicAttributeModifier attributes = getAttributeModifiers(stack);
         RelicSlotModifier slots = getSlotModifiers(stack);
 
         if (attributes != null)
             attributes.getAttributes().forEach(attribute ->
-                    modifiers.put(attribute.getAttribute(), new AttributeModifier(
-                            ResourceLocation.fromNamespaceAndPath(Reference.MODID, BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "_" + BuiltInRegistries.ATTRIBUTE.getKey(attribute.getAttribute().value()).getPath() + "_" + slotContext.identifier() + "_" + slotContext.index()),
+                    modifiers.put(attribute.getAttribute().get(), new AttributeModifier(uuid,
+                            ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "_" + ForgeRegistries.ATTRIBUTES.getKey(attribute.getAttribute().get()).getPath(),
                             attribute.getMultiplier(), attribute.getOperation())));
 
         if (slots != null)
             slots.getModifiers().forEach(slot ->
-                    CuriosApi.addSlotModifier(modifiers, slot.getLeft(), id, slot.getRight(), AttributeModifier.Operation.ADD_VALUE));
+                    CuriosApi.addSlotModifier(modifiers, slot.getLeft(), uuid, slot.getRight(), AttributeModifier.Operation.ADDITION));
 
         return modifiers;
     }

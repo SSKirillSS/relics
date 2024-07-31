@@ -26,15 +26,15 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
 
 import java.awt.*;
 import java.util.Set;
@@ -120,8 +120,10 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        super.renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
+    public void renderBackground(GuiGraphics guiGraphics) {
+        super.renderBackground(guiGraphics);
+
+        float pPartialTick = Minecraft.getInstance().getFrameTime();
 
         LocalPlayer player = minecraft.player;
 
@@ -136,6 +138,8 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
         int level = relic.getLevel(stack);
 
         PoseStack poseStack = guiGraphics.pose();
+
+        RenderSystem.enableBlend();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, DescriptionTextures.SPACE_BACKGROUND);
@@ -154,6 +158,8 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
                 .frame(12, 2).frame(13, 2).frame(14, 2)
                 .frame(15, 2)
         );
+
+        RenderSystem.disableBlend();
 
         {
             guiGraphics.blit(DescriptionTextures.RELIC_BACKGROUND, x + 60, y + 47, 0, 0, 243, 90, 243, 90);
@@ -211,7 +217,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
 
             yOff = 9;
 
-            for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".description"), 340)) {
+            for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + ".description"), 340)) {
                 guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 73) * 2 + yOff, 0x662f13, false);
 
                 yOff += 9;
@@ -227,6 +233,8 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        renderBackground(guiGraphics);
+
         super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         for (GuiEventListener listener : this.children()) {

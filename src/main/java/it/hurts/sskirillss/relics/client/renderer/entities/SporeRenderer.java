@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SporeRenderer extends EntityRenderer<SporeEntity> {
@@ -43,7 +43,7 @@ public class SporeRenderer extends EntityRenderer<SporeEntity> {
         if (stack.getItem() instanceof IRelicItem relic) {
             double inlinedSize = Math.pow(Math.log10(1 + entityIn.getSize()), 1D / 3D);
 
-            int maxLifetime = (int) Math.round(relic.getStatValue(entityIn.getStack(), "spore", "duration") * 20);
+            int maxLifetime = (int) Math.round(relic.getAbilityValue(entityIn.getStack(), "spore", "duration") * 20);
             int lifetime = entityIn.getLifetime();
 
             float scale = (float) (inlinedSize + (Math.abs(Math.sin((entityIn.tickCount + (Minecraft.getInstance().isPaused() ? 0 : partialTicks)) * 0.2F)) * 0.05F)
@@ -52,14 +52,14 @@ public class SporeRenderer extends EntityRenderer<SporeEntity> {
             matrixStackIn.scale(scale, scale, scale);
         }
 
-        new SporeModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(Reference.MODID,
-                "textures/entities/spore.png"))), packedLightIn, OverlayTexture.NO_OVERLAY);
+        new SporeModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Reference.MODID,
+                "textures/entities/spore.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 
         matrixStackIn.popPose();
     }
 
     @Override
     public ResourceLocation getTextureLocation(SporeEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entities/spore.png");
+        return new ResourceLocation(Reference.MODID, "textures/entities/spore.png");
     }
 }

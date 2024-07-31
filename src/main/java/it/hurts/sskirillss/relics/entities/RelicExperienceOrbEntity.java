@@ -14,7 +14,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,8 +140,8 @@ public class RelicExperienceOrbEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(EXPERIENCE, 0);
+    protected void defineSynchedData() {
+        entityData.define(EXPERIENCE, 0);
     }
 
     @Override

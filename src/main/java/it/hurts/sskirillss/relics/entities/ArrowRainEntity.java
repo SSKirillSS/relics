@@ -25,8 +25,8 @@
 //import net.minecraft.world.phys.AABB;
 //import net.minecraft.world.phys.EntityHitResult;
 //import net.minecraft.world.phys.Vec3;
-//import net.neoforged.bus.api.SubscribeEvent;
-//import net.neoforged.fml.common.EventBusSubscriber;
+//import net.minecraftforge.eventbus.api.SubscribeEvent;
+//import net.minecraftforge.fml.common.Mod;
 //import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 //
 //import java.awt.*;
@@ -182,7 +182,7 @@
 ////        return NetworkHooks.getEntitySpawningPacket(this);
 ////    }
 //
-//    @EventBusSubscriber
+//    @Mod.EventBusSubscriber
 //    public static class Events {
 //        @SubscribeEvent
 //        public static void onProjectileImpact(ProjectileImpactEvent event) {

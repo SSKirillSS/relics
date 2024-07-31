@@ -20,6 +20,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -36,20 +37,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-
-@EventBusSubscriber(modid = Reference.MODID)
+@Mod.EventBusSubscriber(modid = Reference.MODID)
 public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
+    public static final String TAG_HEAT = "heat";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -74,18 +75,18 @@ public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
-        int heat = stack.getOrDefault(CHARGE, 0);
+        int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
 
         if (!(entity instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
         if (heat > 0) {
-            if (heat > getStatValue(stack, "pace", "time"))
-                player.hurt(level.damageSources().hotFloor(), (float) (1F + ((heat - getStatValue(stack, "pace", "time")) / 10F)));
+            if (heat > getAbilityValue(stack, "pace", "time"))
+                player.hurt(level.damageSources().hotFloor(), (float) (1F + ((heat - getAbilityValue(stack, "pace", "time")) / 10F)));
 
             if (!level.getFluidState(player.blockPosition().below()).is(FluidTags.LAVA)
                     && !level.getFluidState(player.blockPosition()).is(FluidTags.LAVA))
-                stack.set(CHARGE, --heat);
+                NBTUtils.setInt(stack, TAG_HEAT, --heat);
         }
     }
 
@@ -114,11 +115,12 @@ public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
 
         ICurioRenderer.followBodyRotations(entity, sidedModel);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
 
         matrixStack.translate(0, 0, -0.025F);
 
-        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
+        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+
 
         matrixStack.popPose();
     }
@@ -151,11 +153,11 @@ public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
     }
 
     @SubscribeEvent
-    public static void onLivingAttack(LivingIncomingDamageEvent event) {
+    public static void onLivingAttack(LivingHurtEvent event) {
         ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ItemRegistry.MAGMA_WALKER.get());
 
         if (stack.getItem() instanceof IRelicItem relic && event.getSource() == event.getEntity().level().damageSources().hotFloor()
-                && stack.getOrDefault(CHARGE, 0) <= relic.getStatValue(stack, "pace", "time")) {
+                &&  NBTUtils.getInt(stack, TAG_HEAT, 0) <= relic.getAbilityValue(stack, "pace", "time")) {
             event.setCanceled(true);
         }
     }
@@ -169,9 +171,9 @@ public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
             return;
 
         if (player.tickCount % 20 == 0) {
-            int heat = stack.getOrDefault(CHARGE, 0);
+            int heat = NBTUtils.getInt(stack, TAG_HEAT, 0);
 
-            stack.set(CHARGE, ++heat);
+            NBTUtils.setInt(stack, TAG_HEAT, ++heat);
 
             if (heat % 5 == 0)
                 relic.spreadExperience(player, stack, 1);

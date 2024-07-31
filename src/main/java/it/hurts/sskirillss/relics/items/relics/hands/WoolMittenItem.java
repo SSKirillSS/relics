@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.hands;
 
 import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -13,6 +14,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,14 +24,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.Comparator;
 import java.util.Optional;
-
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
 
 public class WoolMittenItem extends RelicItem {
     @Override
@@ -66,7 +66,7 @@ public class WoolMittenItem extends RelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
+    @Mod.EventBusSubscriber
     public static class Events {
         @SubscribeEvent
         public static void onBlockClick(PlayerInteractEvent.RightClickBlock event) {
@@ -89,11 +89,11 @@ public class WoolMittenItem extends RelicItem {
 
             Inventory inventory = player.getInventory();
 
-            int size = (int) Math.round(relic.getStatValue(relicStack, "mold", "size"));
+            int size = (int) Math.round(relic.getAbilityValue(relicStack, "mold", "size"));
 
             Optional<Integer> slot = EntityUtils.getSlotsWithItem(player, ItemRegistry.SOLID_SNOWBALL.get()).stream()
-                    .filter(id -> inventory.getItem(id).getOrDefault(CHARGE, 0) < size)
-                    .max(Comparator.comparingInt(s -> inventory.items.get(s).getOrDefault(CHARGE, 0)));
+                    .filter(id -> NBTUtils.getInt(inventory.getItem(id), SolidSnowballItem.TAG_SNOW, 0) < size)
+                    .max(Comparator.comparingInt(s -> NBTUtils.getInt(inventory.items.get(s), SolidSnowballItem.TAG_SNOW, 0)));
 
             if (slot.isEmpty()) {
                 if (inventory.add(new ItemStack(ItemRegistry.SOLID_SNOWBALL.get()))) {
@@ -109,9 +109,9 @@ public class WoolMittenItem extends RelicItem {
 
             level.destroyBlock(pos, false);
 
-            int snow = stack.getOrDefault(CHARGE, 0);
+            int snow = NBTUtils.getInt(stack, SolidSnowballItem.TAG_SNOW, 0);
 
-            stack.set(CHARGE, Math.min(snow + layers, size));
+            NBTUtils.setInt(stack, SolidSnowballItem.TAG_SNOW, Math.min(snow + layers, size));
         }
     }
 }

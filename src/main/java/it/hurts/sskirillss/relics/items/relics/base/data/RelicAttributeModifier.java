@@ -30,7 +30,7 @@ public class RelicAttributeModifier {
         public Modifier(Holder<Attribute> attribute, float multiplier) {
             this.attribute = attribute;
             this.multiplier = multiplier;
-            this.operation = AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
+            this.operation = AttributeModifier.Operation.MULTIPLY_TOTAL;
         }
     }
 }

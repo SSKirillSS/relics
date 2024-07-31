@@ -32,7 +32,7 @@ public class SolidSnowballModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int seed) {
-        snowball.render(poseStack, buffer, packedLight, packedOverlay, seed);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        snowball.render(poseStack, buffer, packedLight, packedOverlay);
     }
 }

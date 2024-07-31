@@ -91,7 +91,7 @@ public class SporeEntity extends ThrowableProjectile {
             if (isStuck())
                 setLifetime(getLifetime() + 1);
 
-            if (getLifetime() > relic.getStatValue(stack, "spore", "duration") * 20)
+            if (getLifetime() > relic.getAbilityValue(stack, "spore", "duration") * 20)
                 this.discard();
         }
 
@@ -116,7 +116,7 @@ public class SporeEntity extends ThrowableProjectile {
                 if (entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
 
-                setLifetime((int) Math.max(getLifetime(), Math.round(relic.getStatValue(stack, "spore", "duration") * 20) - 20));
+                setLifetime((int) Math.max(getLifetime(), Math.round(relic.getAbilityValue(stack, "spore", "duration") * 20) - 20));
 
                 break;
             }
@@ -131,7 +131,7 @@ public class SporeEntity extends ThrowableProjectile {
     }
 
     @Override
-    public void onRemovedFromLevel() {
+    public void onRemovedFromWorld() {
         ItemStack stack = getStack();
 
         if (!(stack.getItem() instanceof IRelicItem relic))
@@ -152,18 +152,18 @@ public class SporeEntity extends ThrowableProjectile {
                 if (entity.getStringUUID().equals(player.getStringUUID()))
                     continue;
 
-                if (EntityUtils.hurt(entity, level().damageSources().thrown(this, player), (float) (getSize() * relic.getStatValue(stack, "spore", "damage")))) {
+                if (EntityUtils.hurt(entity, level().damageSources().thrown(this, player), (float) (getSize() * relic.getAbilityValue(stack, "spore", "damage")))) {
                     entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
                     entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100));
-                    entity.addEffect(new MobEffectInstance(EffectRegistry.ANTI_HEAL, 100));
+                    entity.addEffect(new MobEffectInstance(EffectRegistry.ANTI_HEAL.get(), 100));
                 }
             }
 
             if (getSize() >= 1) {
-                int count = (int) Math.ceil(Math.pow(getSize(), relic.getStatValue(stack, "multiplying", "amount")));
+                int count = (int) Math.ceil(Math.pow(getSize(), relic.getAbilityValue(stack, "multiplying", "amount")));
 
                 for (int i = 0; i < count; i++) {
-                    if (random.nextFloat() > relic.getStatValue(stack, "multiplying", "chance"))
+                    if (random.nextFloat() > relic.getAbilityValue(stack, "multiplying", "chance"))
                         break;
 
                     float mul = this.getBbHeight() / 1.5F;
@@ -176,7 +176,7 @@ public class SporeEntity extends ThrowableProjectile {
                     spore.setStack(stack);
                     spore.setDeltaMovement(motion);
                     spore.setPos(this.position().add(0, mul, 0).add(motion.normalize().scale(mul)));
-                    spore.setSize((float) (this.getSize() * relic.getStatValue(stack, "multiplying", "size")));
+                    spore.setSize((float) (this.getSize() * relic.getAbilityValue(stack, "multiplying", "size")));
 
                     level().addFreshEntity(spore);
 
@@ -185,15 +185,15 @@ public class SporeEntity extends ThrowableProjectile {
             }
         }
 
-        super.onRemovedFromLevel();
+        super.onRemovedFromWorld();
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(SIZE, 0.5F);
-        builder.define(LIFETIME, 0);
-        builder.define(STUCK, false);
-        builder.define(STACK, ItemStack.EMPTY);
+    protected void defineSynchedData() {
+        entityData.define(SIZE, 0.5F);
+        entityData.define(LIFETIME, 0);
+        entityData.define(STUCK, false);
+        entityData.define(STACK, ItemStack.EMPTY);
     }
 
     @Override
@@ -202,7 +202,7 @@ public class SporeEntity extends ThrowableProjectile {
         setStuck(compound.getBoolean("stuck"));
         setLifetime(compound.getInt("lifetime"));
 
-        setStack(ItemStack.parseOptional(this.registryAccess(), compound.getCompound("stack")));
+        setStack(ItemStack.of(compound.getCompound("stack")));
     }
 
     @Override
@@ -211,7 +211,7 @@ public class SporeEntity extends ThrowableProjectile {
         compound.putBoolean("stuck", isStuck());
         compound.putInt("lifetime", getLifetime());
 
-        getStack().save(this.registryAccess(), compound.getCompound("stack"));
+        getStack().save(compound.getCompound("stack"));
     }
 
     @Override

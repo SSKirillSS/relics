@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,11 +23,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeMod;
 import top.theillusivec4.curios.api.SlotContext;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-
 public class IceSkatesItem extends RelicItem {
+    private static final String TAG_SKATING_DURATION = "duration";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -67,9 +69,9 @@ public class IceSkatesItem extends RelicItem {
         Level level = player.getCommandSenderWorld();
         BlockPos pos = player.blockPosition().atY((int) Math.floor(WorldUtils.getGroundHeight(player, player.position(), 16)));
 
-        int duration = stack.getOrDefault(CHARGE, 0);
+        int duration = NBTUtils.getInt(stack, TAG_SKATING_DURATION, 0);
 
-        int maxDuration = (int) Math.round(getStatValue(stack, "skating", "duration"));
+        int maxDuration = (int) Math.round(getAbilityValue(stack, "skating", "duration"));
 
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()
                 && (level.getBlockState(pos).is(BlockTags.ICE))) {
@@ -77,21 +79,21 @@ public class IceSkatesItem extends RelicItem {
                 spreadExperience(player, stack, 1);
 
             if (duration < maxDuration && player.tickCount % 2 == 0) {
-                stack.set(CHARGE, ++duration);
+                NBTUtils.setInt(stack, TAG_SKATING_DURATION, ++duration);
             }
 
             if (level.getRandom().nextInt(maxDuration) < duration)
                 level.addParticle(ParticleTypes.CLOUD, player.getX(), player.getY() + 0.15F,
                         player.getZ(), 0, 0.25F, 0);
         } else if (duration > 0)
-            stack.set(CHARGE, Math.max(0, duration - 2));
+            NBTUtils.setInt(stack, TAG_SKATING_DURATION, Math.max(0, duration - 2));
 
         if (canUseAbility(stack, "ram") && duration >= 10) {
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox())) {
                 if (entity == player || entity.hurtTime > 0)
                     continue;
 
-                EntityUtils.hurt(entity, level.damageSources().playerAttack(player), (float) (duration * getStatValue(stack, "ram", "damage")));
+                EntityUtils.hurt(entity, level.damageSources().playerAttack(player), (float) (duration * getAbilityValue(stack, "ram", "damage")));
 
                 double factor = Mth.clamp(duration * 0.025D, 1D, 2D);
 
@@ -99,13 +101,13 @@ public class IceSkatesItem extends RelicItem {
             }
         }
 
-        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         if (duration > 0) {
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getStatValue(stack, "skating", "speed")), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-            EntityUtils.applyAttribute(player, stack, Attributes.STEP_HEIGHT, 0.6F, AttributeModifier.Operation.ADD_VALUE);
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
-            EntityUtils.removeAttribute(player, stack, Attributes.STEP_HEIGHT, AttributeModifier.Operation.ADD_VALUE);
+            EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
     }
 
     @Override
@@ -115,7 +117,7 @@ public class IceSkatesItem extends RelicItem {
 
         LivingEntity entity = slotContext.entity();
 
-        EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        EntityUtils.removeAttribute(entity, stack, Attributes.STEP_HEIGHT, AttributeModifier.Operation.ADD_VALUE);
+        EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
     }
 }

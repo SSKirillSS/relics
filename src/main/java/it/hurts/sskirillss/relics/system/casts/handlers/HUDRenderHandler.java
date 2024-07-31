@@ -24,7 +24,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -32,13 +36,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -49,20 +49,20 @@ import static it.hurts.sskirillss.relics.system.casts.handlers.CacheHandler.REFE
 
 @OnlyIn(value = Dist.CLIENT)
 public class HUDRenderHandler {
-    public static final ResourceLocation CARD_FRAME_ACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/card_frame_active.png");
-    public static final ResourceLocation CARD_FRAME_INACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/card_frame_inactive.png");
+    public static final ResourceLocation CARD_FRAME_ACTIVE = new ResourceLocation(Reference.MODID, "textures/hud/abilities/card_frame_active.png");
+    public static final ResourceLocation CARD_FRAME_INACTIVE = new ResourceLocation(Reference.MODID, "textures/hud/abilities/card_frame_inactive.png");
 
-    public static final ResourceLocation CARD_POINTER_ACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/card_pointer_active.png");
-    public static final ResourceLocation CARD_POINTER_INACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/card_pointer_inactive.png");
+    public static final ResourceLocation CARD_POINTER_ACTIVE = new ResourceLocation(Reference.MODID, "textures/hud/abilities/card_pointer_active.png");
+    public static final ResourceLocation CARD_POINTER_INACTIVE = new ResourceLocation(Reference.MODID, "textures/hud/abilities/card_pointer_inactive.png");
 
-    public static final ResourceLocation ARROW_RIGHT = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/arrow_right.png");
-    public static final ResourceLocation ARROW_LEFT = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/arrow_left.png");
+    public static final ResourceLocation ARROW_RIGHT = new ResourceLocation(Reference.MODID, "textures/hud/abilities/arrow_right.png");
+    public static final ResourceLocation ARROW_LEFT = new ResourceLocation(Reference.MODID, "textures/hud/abilities/arrow_left.png");
 
-    public static final ResourceLocation ARROW_RIGHT_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/arrow_right_outline.png");
-    public static final ResourceLocation ARROW_LEFT_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/arrow_left_outline.png");
+    public static final ResourceLocation ARROW_RIGHT_OUTLINE = new ResourceLocation(Reference.MODID, "textures/hud/abilities/arrow_right_outline.png");
+    public static final ResourceLocation ARROW_LEFT_OUTLINE = new ResourceLocation(Reference.MODID, "textures/hud/abilities/arrow_left_outline.png");
 
-    public static final ResourceLocation STATE_TOGGLEABLE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png");
-    public static final ResourceLocation STATE_CYCLICAL = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/cyclical.png");
+    public static final ResourceLocation STATE_TOGGLEABLE = new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/toggleable.png");
+    public static final ResourceLocation STATE_CYCLICAL = new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/cyclical.png");
 
     private static final Minecraft MC = Minecraft.getInstance();
 
@@ -129,7 +129,7 @@ public class HUDRenderHandler {
 
         ItemStack stack = selectedAbility.getSlot().gatherStack(player);
 
-        String registryName = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
+        String registryName = ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath();
 
         MutableComponent name = Component.translatable("tooltip.relics." + registryName + ".ability." + selectedAbility.getId());
 
@@ -150,7 +150,7 @@ public class HUDRenderHandler {
             String predicateName = entry.getKey();
             boolean isCompleted = entry.getValue();
 
-            RenderSystem.setShaderTexture(0, isCompleted ? ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/icons/completed.png") : ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/icons/" + registryName + "/" + predicateName + ".png"));
+            RenderSystem.setShaderTexture(0, isCompleted ? new ResourceLocation(Reference.MODID, "textures/gui/description/icons/completed.png") : new ResourceLocation(Reference.MODID, "textures/gui/description/icons/" + registryName + "/" + predicateName + ".png"));
 
             RenderUtils.renderTextureFromCenter(poseStack, x, y + yOff, 0, 0, 16, 16, 16, 16, 0.5F);
 
@@ -184,7 +184,7 @@ public class HUDRenderHandler {
 
         boolean isLocked = !relic.canPlayerUseActiveAbility(player, stack, ability.getId());
 
-        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/cards/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()) + ".png");
+        ResourceLocation card = new ResourceLocation(Reference.MODID, "textures/gui/description/cards/" + ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()) + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 
@@ -258,7 +258,7 @@ public class HUDRenderHandler {
         }
 
         if (cooldown > 0) {
-            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/icons/cooldown.png"));
+            RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/cooldown.png"));
 
             RenderSystem.enableBlend();
 
@@ -289,7 +289,7 @@ public class HUDRenderHandler {
             int failedPredicates = infoEntries.size() - successPredicates;
 
             if (failedPredicates > 0) {
-                RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/abilities/widgets/icons/locked.png"));
+                RenderSystem.setShaderTexture(0, new ResourceLocation(Reference.MODID, "textures/hud/abilities/widgets/icons/locked.png"));
 
                 RenderSystem.enableBlend();
 
@@ -371,7 +371,7 @@ public class HUDRenderHandler {
         selectedIndex = sum > max ? sum - max - 1 : sum < 0 ? max : sum;
     }
 
-    @EventBusSubscriber(value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(value = Dist.CLIENT)
     public static class GeneralEvents {
         @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
@@ -380,10 +380,10 @@ public class HUDRenderHandler {
 
             int current = selectedIndex;
 
-            applyDelta(event.getScrollDeltaY() > 0 ? -1 : 1);
+            applyDelta(event.getScrollDelta() > 0 ? -1 : 1);
 
             if (current != selectedIndex) {
-                mouseDelta = event.getScrollDeltaY() > 0 ? -10 : 10;
+                mouseDelta = event.getScrollDelta() > 0 ? -10 : 10;
 
                 LocalPlayer player = Minecraft.getInstance().player;
 
@@ -395,8 +395,8 @@ public class HUDRenderHandler {
         }
 
         @SubscribeEvent
-        public static void onPlayerTick(PlayerTickEvent.Post event) {
-            Player player = event.getEntity();
+        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+            Player player = event.player;
 
             if (!(player instanceof LocalPlayer))
                 return;
@@ -438,7 +438,7 @@ public class HUDRenderHandler {
         }
     }
 
-    @EventBusSubscriber(value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(value = Dist.CLIENT)
     public static class CastEvents {
         @SubscribeEvent
         public static void onKeyPressed(InputEvent.MouseButton.Pre event) {
@@ -519,8 +519,8 @@ public class HUDRenderHandler {
         }
 
         @SubscribeEvent
-        public static void onPlayerTick(PlayerTickEvent.Post event) {
-            Player player = event.getEntity();
+        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+            Player player = event.player;
 
             if (!(player instanceof LocalPlayer))
                 return;
@@ -532,7 +532,7 @@ public class HUDRenderHandler {
 
             ItemStack stack = ability.getSlot().gatherStack(player);
 
-            if (!(stack.getItem() instanceof IRelicItem relic) || !relic.getAbilitiesData().getAbilities().containsKey(ability.getId()))
+            if (!(stack.getItem() instanceof IRelicItem relic)) //TODO: || !relic.getAbilitiesData().getAbilities().containsKey(ability.getId()))
                 return;
 
             boolean isTicking = relic.isAbilityTicking(stack, ability.getId());

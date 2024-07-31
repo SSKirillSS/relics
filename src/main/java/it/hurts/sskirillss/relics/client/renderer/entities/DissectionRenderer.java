@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class DissectionRenderer extends EntityRenderer<DissectionEntity> {
@@ -45,14 +45,14 @@ public class DissectionRenderer extends EntityRenderer<DissectionEntity> {
         matrixStackIn.mulPose(Axis.YP.rotationDegrees((float) angleY));
         matrixStackIn.mulPose(Axis.XP.rotationDegrees((float) angleZ + 90F));
 
-        new DissectionModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(Reference.MODID,
-                "textures/entities/dissection.png"))), packedLightIn, OverlayTexture.NO_OVERLAY);
+        new DissectionModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Reference.MODID,
+                "textures/entities/dissection.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 
         matrixStackIn.popPose();
     }
 
     @Override
     public ResourceLocation getTextureLocation(DissectionEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entities/dissection.png");
+        return new ResourceLocation(Reference.MODID, "textures/entities/dissection.png");
     }
 }

@@ -1,34 +1,29 @@
 package it.hurts.sskirillss.relics.network.packets;
 
-import it.hurts.sskirillss.relics.utils.Reference;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
-@Data
-@AllArgsConstructor
-public class PacketItemActivation implements CustomPacketPayload {
+import java.util.function.Supplier;
+
+public class PacketItemActivation {
     private final ItemStack stack;
 
-    public static final CustomPacketPayload.Type<PacketItemActivation> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "item_activation"));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, PacketItemActivation> STREAM_CODEC = StreamCodec.composite(
-            ItemStack.STREAM_CODEC, PacketItemActivation::getStack,
-            PacketItemActivation::new
-    );
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public PacketItemActivation(FriendlyByteBuf buf) {
+        stack = buf.readItem();
     }
 
-    public void handle(IPayloadContext ctx) {
-        ctx.enqueueWork(() -> Minecraft.getInstance().gameRenderer.displayItemActivation(stack));
+    public PacketItemActivation(ItemStack stack) {
+        this.stack = stack;
+    }
+
+    public void toBytes(FriendlyByteBuf buf) {
+        buf.writeItem(stack);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> Minecraft.getInstance().gameRenderer.displayItemActivation(stack));
+        return true;
     }
 }

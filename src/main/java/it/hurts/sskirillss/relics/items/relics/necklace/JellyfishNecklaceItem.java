@@ -36,8 +36,9 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeMod;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -83,9 +84,9 @@ public class JellyfishNecklaceItem extends RelicItem implements IRenderableCurio
             return;
 
         if (player.isEyeInFluid(FluidTags.WATER))
-            EntityUtils.applyAttribute(player, stack, Attributes.GRAVITY, -1F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), -1F, AttributeModifier.Operation.MULTIPLY_TOTAL);
         else
-            EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            EntityUtils.removeAttribute(player, stack, ForgeMod.ENTITY_GRAVITY.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         Level level = player.getCommandSenderWorld();
 
@@ -94,11 +95,11 @@ public class JellyfishNecklaceItem extends RelicItem implements IRenderableCurio
                 if (entity == player)
                     continue;
 
-                if (EntityUtils.hurt(entity, level.damageSources().playerAttack(player), (float) getStatValue(stack, "shock", "damage"))) {
+                if (EntityUtils.hurt(entity, level.damageSources().playerAttack(player), (float) getAbilityValue(stack, "shock", "damage"))) {
                     spreadExperience(player, stack, 1);
 
                     if (canUseAbility(stack, "paralysis"))
-                        entity.addEffect(new MobEffectInstance(EffectRegistry.PARALYSIS, (int) Math.round(getStatValue(stack, "paralysis", "duration") * 20), 0));
+                        entity.addEffect(new MobEffectInstance(EffectRegistry.PARALYSIS.get(), (int) Math.round(getAbilityValue(stack, "paralysis", "duration") * 20), 0));
                 }
             }
         }
@@ -106,7 +107,7 @@ public class JellyfishNecklaceItem extends RelicItem implements IRenderableCurio
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(slotContext.entity(), stack, ForgeMod.ENTITY_GRAVITY.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 
     @Override
@@ -126,11 +127,11 @@ public class JellyfishNecklaceItem extends RelicItem implements IRenderableCurio
 
         ICurioRenderer.followBodyRotations(entity, model);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
 
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
-        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
+        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
         matrixStack.scale(2F, 2F, 2F);
 

@@ -3,7 +3,7 @@ package it.hurts.sskirillss.relics.mixin;
 import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,7 +18,7 @@ public class LivingEntityMixin {
 
         LivingSlippingEvent event = new LivingSlippingEvent(entity, entity.getCommandSenderWorld().getBlockState(entity.getOnPos()), original);
 
-        NeoForge.EVENT_BUS.post(event);
+        MinecraftForge.EVENT_BUS.post(event);
 
         return event.getFriction();
     }
@@ -27,10 +27,10 @@ public class LivingEntityMixin {
     protected void onAiStep(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        if (entity.hasEffect(EffectRegistry.STUN))
+        if (entity.hasEffect(EffectRegistry.STUN.get()))
             cir.setReturnValue(true);
 
-        if (entity.hasEffect(EffectRegistry.PARALYSIS))
+        if (entity.hasEffect(EffectRegistry.PARALYSIS.get()))
             cir.setReturnValue(true);
     }
 
@@ -86,7 +86,7 @@ public class LivingEntityMixin {
     protected void canBeSeenByAnyone(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        if (entity.hasEffect(EffectRegistry.VANISHING))
+        if (entity.hasEffect(EffectRegistry.VANISHING.get()))
             cir.setReturnValue(false);
     }
 }

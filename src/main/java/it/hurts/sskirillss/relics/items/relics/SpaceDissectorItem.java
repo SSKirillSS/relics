@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
@@ -30,9 +31,9 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.awt.*;
 import java.util.UUID;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.PORTAL;
-
 public class SpaceDissectorItem extends RelicItem {
+    public static final String TAG_PORTAL = "portal";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -61,7 +62,7 @@ public class SpaceDissectorItem extends RelicItem {
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand handIn) {
         ItemStack stack = player.getItemInHand(handIn);
 
-        String stringUUID = stack.getOrDefault(PORTAL, "");
+        String stringUUID = NBTUtils.getString(stack, TAG_PORTAL, "");
 
         if (!stringUUID.isEmpty()) {
             UUID uuid = UUID.fromString(stringUUID);
@@ -82,14 +83,14 @@ public class SpaceDissectorItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = Math.round(getStatValue(stack, "dissection", "distance"));
+        float distance = Math.round(getAbilityValue(stack, "dissection", "distance"));
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 
         DissectionEntity portal = new DissectionEntity(world);
 
-        int time = (int) Math.round(getStatValue(stack, "dissection", "time")) * 20;
+        int time = (int) Math.round(getAbilityValue(stack, "dissection", "time")) * 20;
 
         portal.setPos(ray.getLocation());
         portal.setMaxLifeTime(time);
@@ -98,7 +99,7 @@ public class SpaceDissectorItem extends RelicItem {
 
         world.addFreshEntity(portal);
 
-        stack.set(PORTAL, portal.getStringUUID());
+        NBTUtils.setString(stack, TAG_PORTAL, portal.getStringUUID());
 
         player.startUsingItem(handIn);
 
@@ -113,13 +114,13 @@ public class SpaceDissectorItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = Math.round(getStatValue(stack, "dissection", "distance"));
+        float distance = Math.round(getAbilityValue(stack, "dissection", "distance"));
 
         BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
         Vec3 targetVec = ray.getLocation();
 
-        String stringUUID = stack.getOrDefault(PORTAL, "");
+        String stringUUID = NBTUtils.getString(stack, TAG_PORTAL, "");
 
         if (stringUUID.isEmpty())
             return;
@@ -154,7 +155,7 @@ public class SpaceDissectorItem extends RelicItem {
         Vec3 view = entity.getViewVector(0);
         Vec3 eyeVec = entity.getEyePosition(0);
 
-        float distance = Math.round(getStatValue(stack, "dissection", "distance"));
+        float distance = Math.round(getAbilityValue(stack, "dissection", "distance"));
 
         BlockHitResult ray = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity));
@@ -163,7 +164,7 @@ public class SpaceDissectorItem extends RelicItem {
         ParticleUtils.createBall(ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(100), 100, 0),
                 0.2F + random.nextFloat() * 0.1F, 10 + random.nextInt(20), 0.9F), targetVec, level, 1, 0.25F);
 
-        String stringUUID = stack.getOrDefault(PORTAL, "");
+        String stringUUID = NBTUtils.getString(stack, TAG_PORTAL, "");
 
         if (stringUUID.isEmpty())
             return;
@@ -184,7 +185,7 @@ public class SpaceDissectorItem extends RelicItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack pStack, LivingEntity entity) {
+    public int getUseDuration(ItemStack pStack) {
         return 72000;
     }
 

@@ -1,46 +1,43 @@
 package it.hurts.sskirillss.relics.network.packets.abilities;
 
-import io.netty.buffer.ByteBuf;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityReference;
-import it.hurts.sskirillss.relics.utils.Reference;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
-@Data
-@AllArgsConstructor
-public class SpellCastPacket implements CustomPacketPayload {
+import java.util.function.Supplier;
+
+public class SpellCastPacket {
     private final CastType type;
     private final CastStage stage;
     private final CompoundTag ability;
 
-    public static final CustomPacketPayload.Type<SpellCastPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "spell_cast"));
-
-    public static final StreamCodec<ByteBuf, SpellCastPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.idMapper(CastType.BY_ID, CastType::getId), SpellCastPacket::getType,
-            ByteBufCodecs.idMapper(CastStage.BY_ID, CastStage::getId), SpellCastPacket::getStage,
-            ByteBufCodecs.COMPOUND_TAG, SpellCastPacket::getAbility,
-            SpellCastPacket::new
-    );
-
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public SpellCastPacket(FriendlyByteBuf buf) {
+        type = buf.readEnum(CastType.class);
+        stage = buf.readEnum(CastStage.class);
+        ability = buf.readNbt();
     }
 
-    public void handle(IPayloadContext ctx) {
-        ctx.enqueueWork(() -> {
-            Player player = ctx.player();
+    public SpellCastPacket(CastType type, CastStage stage, CompoundTag ability) {
+        this.type = type;
+        this.stage = stage;
+        this.ability = ability;
+    }
+
+    public void toBytes(FriendlyByteBuf buf) {
+        buf.writeEnum(type);
+        buf.writeEnum(stage);
+        buf.writeNbt(ability);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            Player player = ctx.get().getSender();
             AbilityReference reference = new AbilityReference().deserializeNBT(ability);
             ItemStack stack = reference.getSlot().gatherStack(player);
 
@@ -68,5 +65,6 @@ public class SpellCastPacket implements CustomPacketPayload {
 
             relic.castActiveAbility(stack, player, reference.getId(), type, stage);
         });
+        return true;
     }
 }

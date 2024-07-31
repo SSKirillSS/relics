@@ -19,6 +19,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
@@ -33,20 +34,21 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.living.LivingBreatheEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-
 public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
+    private static final String TAG_SWIMMING_DURATION = "swimming_duration";
+    private static final String TAG_SLIPPING_DURATION = "slipping_duration";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -95,38 +97,40 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        int charge = stack.getOrDefault(CHARGE, 0);
+        int swimmingDuration = NBTUtils.getInt(stack, TAG_SWIMMING_DURATION, 0);
 
         if (player.isSwimming()) {
             if (player.tickCount % 20 == 0)
                 spreadExperience(player, stack, 1);
 
-            if (charge < getStatValue(stack, "swimming", "duration"))
-                stack.set(CHARGE, charge + 1);
-        } else if (charge > 0)
-            stack.set(CHARGE, --charge);
+            if (swimmingDuration < getAbilityValue(stack, "swimming", "duration"))
+                NBTUtils.setInt(stack, TAG_SWIMMING_DURATION, swimmingDuration + 1);
+        } else if (swimmingDuration > 0)
+            NBTUtils.setInt(stack, TAG_SWIMMING_DURATION, --swimmingDuration);
 
-        EntityUtils.removeAttribute(player, stack, NeoForgeMod.SWIM_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(player, stack, ForgeMod.SWIM_SPEED.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        if (charge > 0)
-            EntityUtils.applyAttribute(player, stack, NeoForgeMod.SWIM_SPEED, (float) (charge * getStatValue(stack, "swimming", "speed")), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        if (swimmingDuration > 0)
+            EntityUtils.applyAttribute(player, stack, ForgeMod.SWIM_SPEED.get(), (float) (swimmingDuration * getAbilityValue(stack, "swimming", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        int slippingDuration = NBTUtils.getInt(stack, TAG_SLIPPING_DURATION, 0);
 
         if (player.isSprinting() && player.level().isRainingAt(player.blockPosition()) && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
             if (player.tickCount % 20 == 0)
                 spreadExperience(player, stack, 1);
 
-            if (charge < getStatValue(stack, "slipping", "duration") && player.tickCount % 4 == 0)
-                stack.set(CHARGE, charge + 1);
-        } else if (charge > 0)
-            stack.set(CHARGE, --charge);
+            if (slippingDuration < getAbilityValue(stack, "slipping", "duration") && player.tickCount % 4 == 0)
+                NBTUtils.setInt(stack, TAG_SLIPPING_DURATION, slippingDuration + 1);
+        } else if (slippingDuration > 0)
+            NBTUtils.setInt(stack, TAG_SLIPPING_DURATION, --slippingDuration);
 
-        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        if (charge > 0) {
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (charge * getStatValue(stack, "slipping", "speed")), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-            EntityUtils.applyAttribute(player, stack, Attributes.STEP_HEIGHT, 0.6F, AttributeModifier.Operation.ADD_VALUE);
+        if (swimmingDuration > 0) {
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (swimmingDuration * getAbilityValue(stack, "slipping", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
-            EntityUtils.removeAttribute(player, stack, Attributes.STEP_HEIGHT, AttributeModifier.Operation.ADD_VALUE);
+            EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
     }
 
     @Override
@@ -134,9 +138,9 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
         if (stack.getItem() == newStack.getItem())
             return;
 
-        EntityUtils.removeAttribute(slotContext.entity(), stack, NeoForgeMod.SWIM_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.STEP_HEIGHT, AttributeModifier.Operation.ADD_VALUE);
+        EntityUtils.removeAttribute(slotContext.entity(), stack, ForgeMod.SWIM_SPEED.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
+        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        EntityUtils.removeAttribute(slotContext.entity(), stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
     }
 
     @Override
@@ -164,11 +168,11 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
         ICurioRenderer.followBodyRotations(entity, sidedModel);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
 
         matrixStack.translate(0, 0, -0.025F);
 
-        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
+        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 
         matrixStack.popPose();
     }
@@ -200,7 +204,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("right_leg", "left_leg");
     }
 
-    @EventBusSubscriber
+    @Mod.EventBusSubscriber
     public static class Events {
         @SubscribeEvent
         public static void onLivingBreath(LivingBreatheEvent event) {
@@ -211,7 +215,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            double chance = relic.getStatValue(stack, "gills", "chance");
+            double chance = relic.getAbilityValue(stack, "gills", "chance");
 
             if (event.getConsumeAirAmount() > 0 && entity.getRandom().nextDouble() <= chance)
                 event.setConsumeAirAmount(0);

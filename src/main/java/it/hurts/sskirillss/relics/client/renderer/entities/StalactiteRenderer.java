@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class StalactiteRenderer extends EntityRenderer<StalactiteEntity> {
@@ -37,14 +37,14 @@ public class StalactiteRenderer extends EntityRenderer<StalactiteEntity> {
 
         matrixStackIn.scale(0.35F, 0.35F, 0.35F);
 
-        new StalactiteModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(Reference.MODID,
-                "textures/entities/stalactite.png"))), packedLightIn, OverlayTexture.NO_OVERLAY);
+        new StalactiteModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Reference.MODID,
+                "textures/entities/stalactite.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 
         matrixStackIn.popPose();
     }
 
     @Override
     public ResourceLocation getTextureLocation(StalactiteEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entities/stalactite.png");
+        return new ResourceLocation(Reference.MODID, "textures/entities/stalactite.png");
     }
 }

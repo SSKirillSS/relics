@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.WorldUtils;
 import it.hurts.sskirillss.relics.utils.data.WorldPosition;
@@ -30,9 +31,11 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.awt.*;
 import java.util.List;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.*;
-
 public class BlazingFlaskItem extends RelicItem {
+    public static final String TAG_POSITION = "pos";
+    public static final String TAG_COUNT = "count";
+    public static final String TAG_RADIUS = "radius";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -72,31 +75,32 @@ public class BlazingFlaskItem extends RelicItem {
         int fire = getFireAround(stack, world);
 
         if (fire <= 0) {
-            stack.set(WORLD_POSITION, null);
+            NBTUtils.clearTag(stack, TAG_POSITION);
+            NBTUtils.clearTag(stack, TAG_COUNT);
         } else {
-            stack.set(COUNT, fire);
+            NBTUtils.setInt(stack, TAG_COUNT, fire);
         }
 
-        WorldPosition center = stack.get(WORLD_POSITION);
+        Vec3 center = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
 
         if (center != null) {
-            double radius = stack.getOrDefault(RADIUS, 0D);
+            double radius = NBTUtils.getDouble(stack, TAG_RADIUS, 0D);
 
             if (!player.isCreative() && !player.isSpectator() && !player.getAbilities().flying && !player.getAbilities().mayfly) {
-                if (new Vec3(player.getX(), center.getPos().y(), player.getZ()).distanceTo(center.getPos()) <= radius + 0.5F) {
+                if (new Vec3(player.getX(), center.y(), player.getZ()).distanceTo(center) <= radius + 0.5F) {
                     player.fallDistance = 0F;
 
                     if (player.tickCount % 100 == 0)
                         spreadExperience(player, stack, 1);
 
-                    double speed = getStatValue(stack, "bonfire", "speed");
+                    double speed = getAbilityValue(stack, "bonfire", "speed");
 
                     if (world.isClientSide()) {
                         if (!player.onGround() && (player.zza != 0 || player.xxa != 0))
                             player.move(MoverType.SELF, player.getDeltaMovement().multiply(speed, 0, speed));
 
                         if (player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
-                                && (WorldUtils.getGroundHeight(player, player.position(), 64) + getStatValue(stack, "bonfire", "height")) - player.getY() > 0) {
+                                && (WorldUtils.getGroundHeight(player, player.position(), 64) + getAbilityValue(stack, "bonfire", "height")) - player.getY() > 0) {
                             Vec3 motion = player.getDeltaMovement();
 
                             if (motion.y() < 0)
@@ -108,7 +112,7 @@ public class BlazingFlaskItem extends RelicItem {
                 }
             }
 
-            double size = stack.getOrDefault(COUNT, 0) * getStatValue(stack, "bonfire", "step");
+            double size = NBTUtils.getInt(stack, TAG_COUNT, 0) * getAbilityValue(stack, "bonfire", "step");
             double step = 0.1D;
             int time = 0;
 
@@ -120,7 +124,7 @@ public class BlazingFlaskItem extends RelicItem {
 
                 time = 10;
 
-                stack.set(RADIUS, radius);
+                NBTUtils.setDouble(stack, TAG_RADIUS, radius);
             }
 
             if (radius > size) {
@@ -131,15 +135,15 @@ public class BlazingFlaskItem extends RelicItem {
 
                 time = 10;
 
-                stack.set(RADIUS, radius);
+                NBTUtils.setDouble(stack, TAG_RADIUS, radius);
             }
 
             if (radius <= step)
                 ParticleUtils.createBall(ParticleUtils.constructSimpleSpark(new Color(255, 100, 0), 0.3F, 20, 0.9F),
-                        center.getPos(), level, 3, 0.2F);
+                        center, level, 3, 0.2F);
 
             ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(255, 100, 0), 0.2F, time, 0.8F),
-                    center.getPos(), level, radius, 0.15F);
+                    center, level, radius, 0.15F);
         }
     }
 
@@ -150,18 +154,18 @@ public class BlazingFlaskItem extends RelicItem {
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);
 
-        float distance = (float) (8F + getStatValue(stack, "bonfire", "height"));
+        float distance = (float) (8F + getAbilityValue(stack, "bonfire", "height"));
 
         Vec3 end = level.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
                 view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 
         if (getFireAround(stack, end, level) > 0) {
-            WorldPosition center = stack.get(WORLD_POSITION);
+            Vec3 center = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
 
-            double radius = stack.getOrDefault(RADIUS, 0D);
+            double radius = NBTUtils.getDouble(stack, TAG_RADIUS, 0D);
 
-            stack.set(RADIUS, (center != null && end.distanceTo(center.getPos()) <= radius) ? radius - center.getPos().distanceTo(end) : 0D);
-            stack.set(WORLD_POSITION, new WorldPosition(player.level().dimension(), end));
+            NBTUtils.setDouble(stack, TAG_RADIUS, (center != null && end.distanceTo(center) <= radius) ? radius - center.distanceTo(end) : 0D);
+            NBTUtils.setString(stack, TAG_POSITION, NBTUtils.writePosition(end));
 
             player.getCooldowns().addCooldown(this, 20);
         }
@@ -170,16 +174,16 @@ public class BlazingFlaskItem extends RelicItem {
     }
 
     public int getFireAround(ItemStack stack, Level level) {
-        WorldPosition center = stack.get(WORLD_POSITION);
+        Vec3 center = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_POSITION, ""));
 
         if (center == null)
             return 0;
 
-        return getFireAround(stack, center.getPos(), level);
+        return getFireAround(stack, center, level);
     }
 
     public int getFireAround(ItemStack stack, Vec3 center, Level level) {
-        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos((int) center.x, (int) center.y, (int) center.z), getStatValue(stack, "bonfire", "step"))
+        List<BlockPos> positions = WorldUtils.getBlockSphere(new BlockPos((int) center.x, (int) center.y, (int) center.z), getAbilityValue(stack, "bonfire", "step"))
                 .stream().filter(pos -> (level.getBlockState(pos).getBlock() instanceof BaseFireBlock)).toList();
 
         return positions.size();

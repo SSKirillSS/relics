@@ -5,11 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.ICancellableEvent;
+import net.minecraftforge.eventbus.api.Cancelable;
 
 import javax.annotation.Nullable;
 
-public class ExperienceAddEvent extends RelicEvent implements ICancellableEvent {
+@Cancelable
+public class ExperienceAddEvent extends RelicEvent {
     @Getter
     @Setter
     private int amount;

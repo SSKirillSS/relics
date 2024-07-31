@@ -1,47 +1,44 @@
 package it.hurts.sskirillss.relics.network.packets;
 
-import io.netty.buffer.ByteBuf;
-import it.hurts.sskirillss.relics.utils.Reference;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
-@Data
-@AllArgsConstructor
-public class PacketSyncEntityEffects implements CustomPacketPayload {
+public class PacketSyncEntityEffects {
     private final CompoundTag data;
     private final Action action;
     private final int entity;
 
-    public static final CustomPacketPayload.Type<PacketSyncEntityEffects> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "sync_entity_effect"));
-
-    public static final StreamCodec<ByteBuf, PacketSyncEntityEffects> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.COMPOUND_TAG, PacketSyncEntityEffects::getData,
-            ByteBufCodecs.idMapper(Action.BY_ID, Action::getId), PacketSyncEntityEffects::getAction,
-            ByteBufCodecs.INT, PacketSyncEntityEffects::getEntity,
-            PacketSyncEntityEffects::new
-    );
-
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public PacketSyncEntityEffects(FriendlyByteBuf buf) {
+        entity = buf.readInt();
+        data = buf.readNbt();
+        action = buf.readEnum(Action.class);
     }
 
-    public void handle(IPayloadContext ctx) {
-        ctx.enqueueWork(() -> {
+    public PacketSyncEntityEffects(int entity, CompoundTag data, Action action) {
+        this.entity = entity;
+        this.data = data;
+        this.action = action;
+    }
+
+    public void toBytes(FriendlyByteBuf buf) {
+        buf.writeInt(entity);
+        buf.writeNbt(data);
+        buf.writeEnum(action);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
             Minecraft MC = Minecraft.getInstance();
             ClientLevel level = MC.level;
 
@@ -57,6 +54,8 @@ public class PacketSyncEntityEffects implements CustomPacketPayload {
                 }
             }
         });
+
+        return true;
     }
 
     @Getter

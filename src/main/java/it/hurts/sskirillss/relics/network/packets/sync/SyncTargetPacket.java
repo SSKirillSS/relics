@@ -1,44 +1,41 @@
 package it.hurts.sskirillss.relics.network.packets.sync;
 
-import io.netty.buffer.ByteBuf;
 import it.hurts.sskirillss.relics.entities.misc.ITargetableEntity;
-import it.hurts.sskirillss.relics.utils.Reference;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
-@Data
-@AllArgsConstructor
-public class SyncTargetPacket implements CustomPacketPayload {
+import java.util.function.Supplier;
+
+public class SyncTargetPacket {
     private final int targeterId;
     private final int targetId;
 
-    public static final CustomPacketPayload.Type<SyncTargetPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "target_path"));
-
-    public static final StreamCodec<ByteBuf, SyncTargetPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, SyncTargetPacket::getTargetId,
-            ByteBufCodecs.INT, SyncTargetPacket::getTargeterId,
-            SyncTargetPacket::new
-    );
-
-    public void handle(IPayloadContext ctx) {
-        ctx.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().player.level();
-            if (level.getEntity(targetId) instanceof ITargetableEntity targeter && level.getEntity(targeterId) instanceof LivingEntity target) {
-                targeter.setTarget(target);
-            }
-        });
+    public SyncTargetPacket(FriendlyByteBuf buf) {
+        targeterId = buf.readInt();
+        targetId = buf.readInt();
     }
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public SyncTargetPacket(int targeterId, int targetId) {
+        this.targeterId = targeterId;
+        this.targetId = targetId;
+    }
+
+    public void toBytes(FriendlyByteBuf buf) {
+        buf.writeInt(targeterId);
+        buf.writeInt(targetId);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            Level level = Minecraft.getInstance().player.level();
+
+            if (level.getEntity(targeterId) instanceof ITargetableEntity targeter && level.getEntity(targetId) instanceof LivingEntity target)
+                targeter.setTarget(target);
+        });
+
+        return true;
     }
 }

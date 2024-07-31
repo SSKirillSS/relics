@@ -62,7 +62,7 @@ public abstract class AbstractActionWidget extends AbstractDescriptionWidget imp
 
         String actionId = operation.toString().toLowerCase(Locale.ROOT);
 
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/ability/" + actionId + "_button_" + (isLocked() ? "inactive" : "active") + ".png"), getX(), getY(), 0, 0, width, height, width, height);
+        guiGraphics.blit(new ResourceLocation(Reference.MODID, "textures/gui/description/ability/" + actionId + "_button_" + (isLocked() ? "inactive" : "active") + ".png"), getX(), getY(), 0, 0, width, height, width, height);
 
         if (isHovered)
             guiGraphics.blit(DescriptionTextures.ACTION_BUTTON_OUTLINE, getX(), getY(), 0, 0, width, height, width, height);
@@ -112,7 +112,7 @@ public abstract class AbstractActionWidget extends AbstractDescriptionWidget imp
         int renderX = getX() + width + 1;
         int renderY = mouseY - (height / 2) - 9;
 
-        ScreenUtils.drawTexturedTooltipBorder(guiGraphics, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
+        ScreenUtils.drawTexturedTooltipBorder(guiGraphics, new ResourceLocation(Reference.MODID, "textures/gui/tooltip/border/paper.png"),
                 renderWidth, height, renderX, renderY);
 
         int yOff = 0;

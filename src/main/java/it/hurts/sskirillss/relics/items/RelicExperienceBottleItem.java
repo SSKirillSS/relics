@@ -12,11 +12,10 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ProjectileItem;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
-public class RelicExperienceBottleItem extends ItemBase implements ProjectileItem {
+public class RelicExperienceBottleItem extends ItemBase {
     public RelicExperienceBottleItem() {
         super(new Properties().rarity(Rarity.UNCOMMON));
     }

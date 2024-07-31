@@ -18,9 +18,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.data.WorldPosition;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -29,13 +31,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.WORLD_POSITION;
-
 public class IceBreakerItem extends RelicItem {
+    public static final String TAG_FALLING_POINT = "point";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -73,16 +75,16 @@ public class IceBreakerItem extends RelicItem {
     }
 
     @Override
-    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
+    public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, (float) getStatValue(stack, "sustainability", "modifier")))
+                .attribute(new RelicAttributeModifier.Modifier(Holder.direct(Attributes.KNOCKBACK_RESISTANCE), (float) getAbilityValue(stack, "sustainability", "modifier")))
                 .build();
     }
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ability.equals("impact"))
-            stack.set(WORLD_POSITION, new WorldPosition(player));
+            NBTUtils.setString(stack, TAG_FALLING_POINT, NBTUtils.writePosition(player.position()));
     }
 
     @Override
@@ -90,18 +92,16 @@ public class IceBreakerItem extends RelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        WorldPosition position = stack.get(WORLD_POSITION);
+        Vec3 position = NBTUtils.parsePosition(NBTUtils.getString(stack, TAG_FALLING_POINT, ""));
 
         if (position == null)
             return;
-
-        Vec3 pos = position.getPos();
 
         if (!player.onGround()) {
             Vec3 motion = player.getDeltaMovement();
 
             if (player.onGround() || player.isSpectator()) {
-                stack.set(WORLD_POSITION, null);
+                NBTUtils.clearTag(stack, TAG_FALLING_POINT);
 
                 return;
             }
@@ -115,9 +115,9 @@ public class IceBreakerItem extends RelicItem {
         } else {
             Level level = player.getCommandSenderWorld();
 
-            double distance = (pos.y() + Math.abs(level.getMinBuildHeight())) - (player.getY() + Math.abs(level.getMinBuildHeight()));
+            double distance = (position.y() + Math.abs(level.getMinBuildHeight())) - (player.getY() + Math.abs(level.getMinBuildHeight()));
 
-            stack.set(WORLD_POSITION, null);
+            NBTUtils.clearTag(stack, TAG_FALLING_POINT);
 
             if (distance <= 0)
                 return;
@@ -125,8 +125,8 @@ public class IceBreakerItem extends RelicItem {
             spreadExperience(player, stack, (int) Math.min(10, Math.round(distance / 3F)));
 
             ShockwaveEntity shockwave = new ShockwaveEntity(level,
-                    (int) Math.round(Math.min(getStatValue(stack, "impact", "size"), distance * 0.25D)),
-                    (float) getStatValue(stack, "impact", "damage"));
+                    (int) Math.round(Math.min(getAbilityValue(stack, "impact", "size"), distance * 0.25D)),
+                    (float) getAbilityValue(stack, "impact", "damage"));
 
             BlockPos blockPos = player.getOnPos();
 
@@ -145,10 +145,10 @@ public class IceBreakerItem extends RelicItem {
         if (stack.getItem() == newStack.getItem())
             return;
 
-        stack.set(WORLD_POSITION, null);
+        NBTUtils.clearTag(stack, TAG_FALLING_POINT);
     }
 
-    @EventBusSubscriber(modid = Reference.MODID)
+    @Mod.EventBusSubscriber(modid = Reference.MODID)
     public static class Events {
         @SubscribeEvent
         public static void onLivingSlipping(LivingSlippingEvent event) {

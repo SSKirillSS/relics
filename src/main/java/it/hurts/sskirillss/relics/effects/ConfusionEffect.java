@@ -6,23 +6,23 @@ import net.minecraft.client.player.Input;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 public class ConfusionEffect extends MobEffect {
     public ConfusionEffect() {
         super(MobEffectCategory.HARMFUL, 0X6836AA);
     }
 
-    @EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
     public static class ClientEvents {
         @SubscribeEvent
-        public static void onMovementInput(MovementInputUpdateEvent event) {
+        public static void onChatMessage(MovementInputUpdateEvent event) {
             Player player = event.getEntity();
 
-            if (player.hasEffect(EffectRegistry.CONFUSION)) {
+            if (player.hasEffect(EffectRegistry.CONFUSION.get())) {
                 Input input = event.getInput();
 
                 input.leftImpulse *= -1;

@@ -30,8 +30,8 @@
 //import net.minecraft.world.item.ItemStack;
 //import net.minecraft.world.level.Level;
 //import net.minecraft.world.phys.Vec3;
-//import net.neoforged.bus.api.SubscribeEvent;
-//import net.neoforged.fml.common.EventBusSubscriber;
+//import net.minecraftforge.eventbus.api.SubscribeEvent;
+//import net.minecraftforge.fml.common.Mod;
 //import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 //import top.theillusivec4.curios.api.SlotContext;
 //
@@ -184,7 +184,7 @@
 //        return false;
 //    }
 //
-//    @EventBusSubscriber
+//    @Mod.EventBusSubscriber
 //    public static class Events {
 //        @SubscribeEvent
 //        public static void onLivingAttack(LivingAttackEvent event) {

@@ -19,6 +19,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -41,20 +42,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 import java.util.List;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.SPEED;
-
-@EventBusSubscriber
+@Mod.EventBusSubscriber
 public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
+    public static final String TAG_FUEL = "fuel";
+    public static final String TAG_SPEED = "speed";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -63,7 +64,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.CYCLICAL)
-                                        .castPredicate("fuel", (player, stack) -> stack.getOrDefault(CHARGE, 0) > 0)
+                                        .castPredicate("fuel", (player, stack) -> NBTUtils.getInt(stack, TAG_FUEL, 0) > 0)
                                         .castPredicate("elytra", (player, stack) -> player.isFallFlying())
                                         .build())
                                 .stat(StatData.builder("capacity")
@@ -86,29 +87,29 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
     }
 
     public int getBreathCapacity(ItemStack stack) {
-        return (int) Math.round(getStatValue(stack, "boost", "capacity"));
+        return (int) Math.round(getAbilityValue(stack, "boost", "capacity"));
     }
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ability.equals("boost")) {
             if (stage == CastStage.TICK) {
-                int fuel = stack.getOrDefault(CHARGE, 0);
+                int fuel = NBTUtils.getInt(stack, TAG_FUEL, 0);
 
                 if (fuel > 0 && player.tickCount % 20 == 0)
-                    stack.set(CHARGE, --fuel);
+                    NBTUtils.setInt(stack, TAG_FUEL, --fuel);
 
-                double speed = stack.getOrDefault(SPEED, 0D);
+                double speed = NBTUtils.getDouble(stack, TAG_SPEED, 1D);
 
                 if (player.tickCount % 3 == 0) {
-                    double maxSpeed = getStatValue(stack, "boost", "speed");
+                    double maxSpeed = getAbilityValue(stack, "boost", "speed");
 
                     if (speed < maxSpeed) {
                         speed = Math.min(maxSpeed, speed + ((maxSpeed - 1D) / 100D));
 
-                        stack.set(SPEED, speed);
+                        NBTUtils.setDouble(stack, TAG_SPEED, speed);
                     } else {
-                        player.startAutoSpinAttack(5, 0F, ItemStack.EMPTY);
+                        player.startAutoSpinAttack(5);
                     }
                 }
 
@@ -129,7 +130,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
                             0, 0, 0);
 
                 if (player.tickCount % Math.max(1, (int) Math.round((10 - speed * 2) / (player.isInWaterOrRain() ? 2 : 1))) == 0)
-                    stack.set(CHARGE, --fuel);
+                    NBTUtils.setInt(stack, TAG_FUEL, --fuel);
             }
         }
     }
@@ -141,16 +142,16 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
         if (!(entity instanceof Player player))
             return;
 
-        double speed = stack.getOrDefault(SPEED, 0D);
-        int fuel = stack.getOrDefault(CHARGE, 0);
+        double speed = NBTUtils.getDouble(stack, TAG_SPEED, 1D);
+        int fuel = NBTUtils.getInt(stack, TAG_FUEL, 0);
 
         if (speed > 1 && (fuel <= 0 || !player.isFallFlying()))
-            stack.set(SPEED, 1D);
+            NBTUtils.setDouble(stack, TAG_SPEED, 1D);
     }
 
     @Override
     public ResourceLocation getTexture(ItemStack stack) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/models/items/elytra_booster_" + (stack.getOrDefault(CHARGE, 0) > 0 ? 1 : 0) + ".png");
+        return new ResourceLocation(Reference.MODID, "textures/models/items/elytra_booster_" + (NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0) > 0 ? 1 : 0) + ".png");
     }
 
     @Override
@@ -167,9 +168,9 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
 
         ICurioRenderer.followBodyRotations(entity, model);
 
-        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), stack.hasFoil());
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
 
-        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
+        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
         matrixStack.popPose();
     }
@@ -213,14 +214,14 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
             return;
 
         int time = heldStack.getBurnTime(RecipeType.SMELTING) / 20;
-        int amount = slotStack.getOrDefault(CHARGE, 0);
+        int amount = NBTUtils.getInt(slotStack, TAG_FUEL, 0);
         int capacity = booster.getBreathCapacity(slotStack);
         int sum = amount + time;
 
         if (time <= 0)
             return;
 
-        slotStack.set(CHARGE, Math.min(capacity, sum));
+        NBTUtils.setInt(slotStack, TAG_FUEL, Math.min(capacity, sum));
 
         int left = sum > capacity ? time - (sum - capacity) : time;
 

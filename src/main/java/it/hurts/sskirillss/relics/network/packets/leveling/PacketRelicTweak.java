@@ -1,52 +1,60 @@
 package it.hurts.sskirillss.relics.network.packets.leveling;
 
-import io.netty.buffer.ByteBuf;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
-import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
-@Data
 @AllArgsConstructor
-public class PacketRelicTweak implements CustomPacketPayload {
+public class PacketRelicTweak {
     private final int container;
     private final int slot;
     private final String ability;
     private final Operation operation;
 
-    public static final CustomPacketPayload.Type<PacketRelicTweak> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "relic_tweak"));
-
-    public static final StreamCodec<ByteBuf, PacketRelicTweak> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, PacketRelicTweak::getContainer,
-            ByteBufCodecs.INT, PacketRelicTweak::getSlot,
-            ByteBufCodecs.STRING_UTF8, PacketRelicTweak::getAbility,
-            ByteBufCodecs.idMapper(Operation.BY_ID, Operation::getId), PacketRelicTweak::getOperation,
-            PacketRelicTweak::new
-    );
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public PacketRelicTweak(FriendlyByteBuf buf) {
+        container = buf.readInt();
+        slot = buf.readInt();
+        ability = buf.readUtf();
+        operation = buf.readEnum(Operation.class);
     }
 
-    public void handle(IPayloadContext ctx) {
-        ctx.enqueueWork(() -> {
-            Player player = ctx.player();
+    public void toBytes(FriendlyByteBuf buf) {
+        buf.writeInt(container);
+        buf.writeInt(slot);
+        buf.writeUtf(ability);
+        buf.writeEnum(operation);
+    }
+
+    private static void causeError(Player player) {
+        player.displayClientMessage(Component.translatable("info.relics.researching.wrong_container").withStyle(ChatFormatting.RED), false);
+
+        player.closeContainer();
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            Player player = ctx.get().getSender();
+
+            if (player == null) {
+                causeError(player);
+                return;
+            }
 
             if (player.containerMenu.containerId != container) {
                 causeError(player);
@@ -101,13 +109,10 @@ public class PacketRelicTweak implements CustomPacketPayload {
                 causeError(player);
             }
         });
+
+        return true;
     }
 
-    private static void causeError(Player player) {
-        player.displayClientMessage(Component.translatable("info.relics.researching.wrong_container").withStyle(ChatFormatting.RED), false);
-
-        player.closeContainer();
-    }
 
     @Getter
     @AllArgsConstructor

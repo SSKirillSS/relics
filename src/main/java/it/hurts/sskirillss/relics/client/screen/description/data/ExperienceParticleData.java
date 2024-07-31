@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 
 public class ExperienceParticleData extends ParticleData {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/pixel_particle.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/general/pixel_particle.png");
 
     public ExperienceParticleData(Color color, float xStart, float yStart, float scale, int lifeTime) {
         super(TEXTURE, color, xStart, yStart, scale, lifeTime);
@@ -30,7 +30,7 @@ public class ExperienceParticleData extends ParticleData {
 
         RandomSource random = player.getRandom();
 
-        float partialTicks = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+        float partialTicks = Minecraft.getInstance().getFrameTime();
 
         setX((float) (getX() + (Math.sin((getLifeTime() + partialTicks) * 0.15F) * (0.1F + (random.nextFloat() * 0.5F)))));
         setY(getY() - (0.2F + partialTicks));
@@ -48,7 +48,11 @@ public class ExperienceParticleData extends ParticleData {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
+        Minecraft.getInstance().getTextureManager().getTexture(getTexture()).setBlurMipmap(true, false);
+
         RenderUtils.renderTextureFromCenter(guiGraphics.pose(), getX(), getY(), 1, 1, getScale() * lifePercentage);
+
+        Minecraft.getInstance().getTextureManager().getTexture(getTexture()).restoreLastBlurMipmap();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
