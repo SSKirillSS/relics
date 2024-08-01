@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.SolidSnowballItem;
 import it.hurts.sskirillss.relics.items.relics.BlazingFlaskItem;
 import it.hurts.sskirillss.relics.items.relics.InfinityHamItem;
 import it.hurts.sskirillss.relics.items.relics.ShadowGlaiveItem;
+import it.hurts.sskirillss.relics.items.relics.back.ArrowQuiverItem;
 import it.hurts.sskirillss.relics.items.relics.back.ElytraBoosterItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -30,20 +31,21 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -77,13 +79,13 @@ public class RemoteRegistry {
                     (stack, world, entity, id) ->  NBTUtils.getInt(stack, MagmaWalkerItem.TAG_HEAT, 0) >= ((IRelicItem) stack.getItem()).getAbilityValue(stack, "pace", "time") ? 1 : 0);
             ItemProperties.register(ItemRegistry.AQUA_WALKER.get(), new ResourceLocation(Reference.MODID, "drench"),
                     (stack, world, entity, id) -> NBTUtils.getInt(stack, AquaWalkerItem.TAG_DRENCH, 0) >= ((IRelicItem) stack.getItem()).getAbilityValue(stack, "walking", "time") ? 1 : 0);
-//            ItemProperties.register(ItemRegistry.ARROW_QUIVER.get(), new ResourceLocation(Reference.MODID, "fullness"),
-//                    (stack, world, entity, id) -> {
-//                        int maxAmount = ((ArrowQuiverItem) stack.getItem()).getSlotsAmount(stack);
-//                        int amount = getArrows(world.registryAccess(), stack).size();
-//
-//                        return amount > 0 ? (int) Math.floor(amount / (maxAmount / 2F)) + 1 : 0;
-//                    });
+            ItemProperties.register(ItemRegistry.ARROW_QUIVER.get(), new ResourceLocation(Reference.MODID, "fullness"),
+                    (stack, world, entity, id) -> {
+                        int maxAmount = ((ArrowQuiverItem) stack.getItem()).getSlotsAmount(stack);
+                        int amount = ArrowQuiverItem.getArrows(stack).size();
+
+                        return amount > 0 ? (int) Math.floor(amount / (maxAmount / 2F)) + 1 : 0;
+                    });
             ItemProperties.register(ItemRegistry.ELYTRA_BOOSTER.get(), new ResourceLocation(Reference.MODID, "fuel"),
                     (stack, world, entity, id) -> NBTUtils.getInt(stack, ElytraBoosterItem.TAG_FUEL, 0) > 0 ? 1 : 0);
             ItemProperties.register(ItemRegistry.SOLID_SNOWBALL.get(), new ResourceLocation(Reference.MODID, "snow"),
@@ -143,17 +145,17 @@ public class RemoteRegistry {
         event.registerEntityRenderer(EntityRegistry.SPORE.get(), SporeRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SHADOW_SAW.get(), ShadowSawRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SOLID_SNOWBALL.get(), SolidSnowballRenderer::new);
-//        event.registerEntityRenderer(EntityRegistry.ARROW_RAIN.get(), NullRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ARROW_RAIN.get(), NullRenderer::new);
         event.registerEntityRenderer(EntityRegistry.RELIC_EXPERIENCE_ORB.get(), RelicExperienceOrbRenderer::new);
         event.registerEntityRenderer(EntityRegistry.THROWN_RELIC_EXPERIENCE_BOTTLE.get(), ThrownItemRenderer::new);
 
         event.registerBlockEntityRenderer(TileRegistry.RESEARCHING_TABLE.get(), ResearchingTableRenderer::new);
     }
 
-//    @SubscribeEvent
-//    public static void onTooltipRegistry(RegisterClientTooltipComponentFactoriesEvent event) {
-//        event.register(ArrowQuiverTooltip.class, ClientArrowQuiverTooltip::new);
-//    }
+    @SubscribeEvent
+    public static void onTooltipRegistry(RegisterClientTooltipComponentFactoriesEvent event) {
+        event.register(ArrowQuiverItem.ArrowQuiverTooltip.class, ArrowQuiverItem.ClientArrowQuiverTooltip::new);
+    }
 
     @SubscribeEvent
     public static void onOverlayRegistry(RegisterGuiOverlaysEvent event) {
