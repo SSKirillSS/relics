@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.client.particles.BasicColoredParticle;
+import it.hurts.sskirillss.relics.client.particles.BasicColoredParticleFactory;
+import it.hurts.sskirillss.relics.client.particles.BasicColoredParticleOptions;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,7 +17,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class ParticleRegistry {
     public static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, Reference.MODID);
 
-    public static final RegistryObject<ParticleType<BasicColoredParticle.Options>> BASIC_COLORED = PARTICLES.register("basic_colored", BasicColoredParticle.Factory.Type::new);
+    public static final RegistryObject<ParticleType<BasicColoredParticleOptions>> BASIC_COLORED = PARTICLES.register("basic_colored", BasicColoredParticleFactory.Type::new);
 
     public static void register() {
         PARTICLES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -24,6 +25,6 @@ public class ParticleRegistry {
 
     @SubscribeEvent
     public static void onParticleRegistry(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(BASIC_COLORED.get(), BasicColoredParticle.Factory::new);
+        event.registerSpriteSet(BASIC_COLORED.get(), BasicColoredParticleFactory::new);
     }
 }

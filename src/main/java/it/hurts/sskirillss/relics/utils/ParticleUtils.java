@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.utils;
 
-import it.hurts.sskirillss.relics.client.particles.BasicColoredParticle;
+import it.hurts.sskirillss.relics.client.particles.BasicColoredParticleConstructor;
+import it.hurts.sskirillss.relics.client.particles.BasicColoredParticleOptions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
@@ -16,12 +17,11 @@ import java.awt.*;
 
 public class ParticleUtils {
     public static ParticleOptions constructSimpleSpark(Color color, float diameter, int lifetime, float scaleModifier) {
-        return new BasicColoredParticle.Options(BasicColoredParticle.Constructor.builder()
+        return new BasicColoredParticleOptions(BasicColoredParticleConstructor.builder()
                 .color(color.getRGB())
                 .diameter(diameter)
                 .lifetime(lifetime)
                 .scaleModifier(scaleModifier)
-                .physical(true)
                 .roll(0.5F)
                 .build());
     }
