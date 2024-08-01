@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics.items.relics.necklace;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.entities.DeathEssenceEntity;
 import it.hurts.sskirillss.relics.entities.LifeEssenceEntity;
@@ -25,20 +24,19 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.sync.SyncTargetPacket;
-import it.hurts.sskirillss.relics.utils.*;
-import net.minecraft.client.Minecraft;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -50,7 +48,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -64,6 +61,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class HolyLocketItem extends RelicItem implements IRenderableCurio {
+    public static final String TAG_TOGGLED = "toggled";
+    public static final String TAG_CHARGE = "charge";
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -72,10 +72,10 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
                                         .build())
-                                .icon((player, stack, ability) -> ability + (NBTUtils.getBoolean(stack, "toggled", true) ? "_holy" : "_wicked"))
+                                .icon((player, stack, ability) -> ability + (NBTUtils.getBoolean(stack, TAG_TOGGLED, true) ? "_holy" : "_wicked"))
                                 .stat(StatData.builder("radius")
-                                        .initialValue(2D, 6D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
+                                        .initialValue(3D, 6D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("amount")
@@ -84,31 +84,45 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 100))
                                         .build())
                                 .stat(StatData.builder("count")
-                                        .initialValue(3, 3)
-                                        .upgradeModifier(UpgradeOperation.ADD, 1)
-                                        .formatValue(value -> (int) (MathUtils.round(value, 1)))
-                                        .build())
-                                .build())
-                        .ability(AbilityData.builder("buffer")
-                                .stat(StatData.builder("radius")
-                                        .initialValue(2D, 6D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.35D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .initialValue(1D, 3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .stat(StatData.builder("capacity")
-                                        .initialValue(2D, 5D)
-                                        .upgradeModifier(UpgradeOperation.ADD, 1D)
+                                        .initialValue(8D, 12D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .build())
+                        .ability(AbilityData.builder("repentance")
+                                .requiredLevel(5)
+                                .stat(StatData.builder("radius")
+                                        .initialValue(2D, 6D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .stat(StatData.builder("damage")
+                                        .initialValue(0.1D, 0.2D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value, 2))
+                                        .build())
+                                .build())
                         .ability(AbilityData.builder("blessing")
+                                .maxLevel(5)
+                                .requiredPoints(2)
+                                .requiredLevel(10)
                                 .active(CastData.builder()
-                                        .type(CastType.INSTANTANEOUS)
+                                        .type(CastType.TOGGLEABLE)
                                         .castPredicate("blessing", (player, stack) -> getCharges(stack) > 0)
+                                        .build())
+                                .stat(StatData.builder("consumption")
+                                        .initialValue(8D, 6D)
+                                        .upgradeModifier(UpgradeOperation.ADD, -1D)
+                                        .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .build())
                         .build())
-                .leveling(new LevelingData(100, 10, 200))
+                .leveling(new LevelingData(100, 15, 100))
                 .style(StyleData.builder()
                         .build())
                 .loot(LootData.builder()
@@ -120,38 +134,55 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ability.equals("belief"))
-            NBTUtils.setBoolean(stack, "toggled", !NBTUtils.getBoolean(stack, "toggled", true));
+            NBTUtils.setBoolean(stack, TAG_TOGGLED, !NBTUtils.getBoolean(stack, TAG_TOGGLED, true));
+    }
 
-        if (ability.equals("blessing"))
-            setAbilityCooldown(stack, "blessing", getCharges(stack) * 20);
+    public List<Monster> gatherMonsters(Player player, ItemStack stack) {
+        return player.getCommandSenderWorld().getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getAbilityValue(stack, "repentance", "radius"))).stream().filter(LivingEntity::isInvertedHealAndHarm).toList();
+    }
+
+    public int getMaxCharges(ItemStack stack) {
+        return (int) getAbilityValue(stack, "belief", "capacity");
+    }
+
+    public void setCharges(ItemStack stack, int amount) {
+        NBTUtils.setInt(stack, TAG_CHARGE, Mth.clamp(amount, 0, getMaxCharges(stack)));
+    }
+
+    public void addCharge(ItemStack stack, int amount) {
+        setCharges(stack, getCharges(stack) + amount);
+    }
+
+    public int getCharges(ItemStack stack) {
+        return NBTUtils.getInt(stack, TAG_CHARGE, 0);
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide() || player.tickCount % 20 != 0)
             return;
 
         Level level = player.getCommandSenderWorld();
 
-        if (getAbilityCooldown(stack, "blessing") == 1)
-            addCharge(stack, -getCharges(stack));
+        int charges = getCharges(stack);
 
-        if (player.tickCount % 20 != 0)
-            return;
+        if (isAbilityTicking(stack, "blessing")) {
+            setCharges(stack, (int) (charges - getAbilityValue(stack, "blessing", "consumption")));
+
+            if (charges <= 0)
+                setAbilityTicking(stack, "blessing", false);
+        }
 
         List<Monster> monsters = gatherMonsters(player, stack);
 
-        if (monsters.isEmpty())
+        if (monsters.isEmpty() || charges <= 0)
             return;
 
         for (Monster entity : monsters) {
-            if (!entity.hurt(level.damageSources().generic(), 1))
+            if (!EntityUtils.hurt(entity, player.level().damageSources().playerAttack(player), (float) (charges * getAbilityValue(stack, "repentance", "damage"))))
                 continue;
 
-            addCharge(stack, 1);
-
-            entity.setLastHurtByPlayer(player);
-            entity.setSecondsOnFire(3);
+            entity.setRemainingFireTicks(50);
 
             spreadExperience(player, stack, 1);
 
@@ -160,26 +191,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
             ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.4F, 20, 0.95F),
                     entity.getX(), entity.getY() + entity.getBbHeight() / 2F, entity.getZ(), 10, entity.getBbWidth() / 2F, entity.getBbHeight() / 2F, entity.getBbWidth() / 2F, 0.025F);
         }
-    }
-
-    public List<Monster> gatherMonsters(Player player, ItemStack stack) {
-        return player.getCommandSenderWorld().getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getAbilityValue(stack, "buffer", "radius")));
-    }
-
-    public int getMaxCharges(ItemStack stack) {
-        return (int) getAbilityValue(stack, "buffer", "capacity");
-    }
-
-    public void setCharges(ItemStack stack, int amount) {
-        NBTUtils.setInt(stack, "buffer", Mth.clamp(amount, 0, getMaxCharges(stack)));
-    }
-
-    public void addCharge(ItemStack stack, int amount) {
-        setCharges(stack, getCharges(stack) + amount);
-    }
-
-    public int getCharges(ItemStack stack) {
-        return NBTUtils.getInt(stack, "buffer", 0);
     }
 
     @Override
@@ -228,68 +239,38 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
         return Lists.newArrayList("body");
     }
 
-    @Mod.EventBusSubscriber(value = Dist.CLIENT)
-    public static class ClientEvents {
-        @SubscribeEvent
-        public static void onPlayerRender(RenderPlayerEvent event) {
-            AbstractClientPlayer player = (AbstractClientPlayer) event.getEntity();
-
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
-
-            if (stack.isEmpty() || !(stack.getItem() instanceof HolyLocketItem relic) || relic.gatherMonsters(player, stack).isEmpty())
-                return;
-
-            PoseStack poseStack = event.getPoseStack();
-
-            float partialTicks = event.getPartialTick();
-
-            Minecraft mc = Minecraft.getInstance();
-
-            poseStack.pushPose();
-
-            poseStack.translate(0D, (player.getBbHeight() / 2D) - 0.5D, 0D);
-            poseStack.translate(0D, 0.5D, 0D);
-
-            float scale = 4F + ((float) Math.sin((player.tickCount + partialTicks) * 0.05F) * 0.2F);
-
-            poseStack.scale(scale, scale, scale);
-
-            poseStack.mulPose(Axis.YP.rotationDegrees(-mc.getEntityRenderDispatcher().camera.getYRot()));
-            poseStack.mulPose(Axis.XP.rotationDegrees(mc.getEntityRenderDispatcher().camera.getXRot()));
-
-            poseStack.translate(0D, -0.5D, 0D);
-
-            VertexConsumer vertexConsumer = event.getMultiBufferSource().getBuffer(RenderType.entityTranslucentEmissive(new ResourceLocation(Reference.MODID, "textures/parts/gloria.png")));
-
-            float minX = -0.5F, maxX = 0.5F;
-            float minY = 0.0F, maxY = 1.0F;
-            float minU = 0.0F, maxU = 1.0F;
-            float minV = 0.0F, maxV = 1.0F;
-
-            float alpha = 0.1F + ((float) Math.sin((player.tickCount + partialTicks) * 0.15F) * 0.035F);
-
-            PoseStack.Pose entry = poseStack.last();
-
-            vertexConsumer.vertex(entry.pose(), minX, minY, 0F).color(1F, 1F, 1F, alpha).uv(minU, minV).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(entry.normal(), 0, 0, 1).endVertex();
-            vertexConsumer.vertex(entry.pose(), maxX, minY, 0F).color(1F, 1F, 1F, alpha).uv(maxU, minV).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(entry.normal(), 0, 0, 1).endVertex();
-            vertexConsumer.vertex(entry.pose(), maxX, maxY, 0F).color(1F, 1F, 1F, alpha).uv(maxU, maxV).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(entry.normal(), 0, 0, 1).endVertex();
-            vertexConsumer.vertex(entry.pose(), minX, maxY, 0F).color(1F, 1F, 1F, alpha).uv(minU, maxV).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(entry.normal(), 0, 0, 1).endVertex();
-
-            poseStack.popPose();
-        }
-    }
-
     @Mod.EventBusSubscriber
-    public static class CommonEvents {
+    public static class Events {
         @SubscribeEvent
-        public static void onPlayerHurt(LivingHurtEvent event) {
-            if (!(event.getEntity() instanceof Player player))
-                return;
+        public static void onLivingHurt(LivingHurtEvent event) {
+            if (event.getEntity() instanceof Player player) {
+                ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
+                if (stack.getItem() instanceof HolyLocketItem relic) {
+                    if (relic.isAbilityTicking(stack, "blessing")) {
+                        event.setCanceled(true);
 
-            if (stack.getItem() instanceof HolyLocketItem relic && relic.isAbilityOnCooldown(stack, "blessing")) {
-                event.setCanceled(true);
+                        return;
+                    }
+
+                    if (NBTUtils.getBoolean(stack, TAG_TOGGLED, false)) {
+                        int charges = relic.getCharges(stack);
+
+                        if (charges > 0)
+                            event.setAmount(event.getAmount() * (charges / 100F));
+                    }
+                }
+            } else if (event.getSource().getEntity() instanceof Player player) {
+                ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
+
+                if (stack.getItem() instanceof HolyLocketItem relic) {
+                    if (!NBTUtils.getBoolean(stack, TAG_TOGGLED, false)) {
+                        int charges = relic.getCharges(stack);
+
+                        if (charges > 0)
+                            event.setAmount(event.getAmount() + (event.getAmount() * charges * 0.01F));
+                    }
+                }
             }
         }
 
@@ -299,7 +280,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                 ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.HOLY_LOCKET.get());
                 Level level = player.getCommandSenderWorld();
 
-                if (!(stack.getItem() instanceof HolyLocketItem relic) || NBTUtils.getBoolean(stack, "toggled", true))
+                if (!(stack.getItem() instanceof HolyLocketItem relic) || NBTUtils.getBoolean(stack, TAG_TOGGLED, true))
                     return;
 
                 for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(relic.getAbilityValue(stack, "belief", "radius"))).stream()
@@ -315,7 +296,6 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                     essence.setDirectionChoice(MathUtils.randomFloat(player.getRandom()));
                     essence.setTarget(target);
                     essence.setDamage(amount);
-                    essence.setOwner(player);
 
                     level.addFreshEntity(essence);
 
@@ -333,7 +313,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                     ItemStack stack = EntityUtils.findEquippedCurio(playerSearched, ItemRegistry.HOLY_LOCKET.get());
 
                     if (!(stack.getItem() instanceof HolyLocketItem relic) || relic.getAbilityValue(stack, "belief", "radius") < playerSearched.position().distanceTo(event.getEntity().position())
-                            || !(NBTUtils.getBoolean(stack, "toggled", true)))
+                            || !NBTUtils.getBoolean(stack, TAG_TOGGLED, true))
                         continue;
 
                     int amount = (int) Math.max((event.getAmount() * relic.getAbilityValue(stack, "belief", "amount")), 0.5);
