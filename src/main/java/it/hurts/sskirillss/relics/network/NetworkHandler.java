@@ -5,17 +5,19 @@ import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.network.packets.PacketSyncEntityEffects;
 import it.hurts.sskirillss.relics.network.packets.abilities.SpellCastPacket;
 import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacket;
-import it.hurts.sskirillss.relics.network.packets.leveling.PacketExperienceExchange;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.network.packets.sync.SyncTargetPacket;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NetworkHandler {
     private static SimpleChannel INSTANCE;
     private static int ID = 0;
@@ -60,10 +62,10 @@ public class NetworkHandler {
                 .decoder(SpellCastPacket::new)
                 .consumerMainThread(SpellCastPacket::handle)
                 .add();
-        INSTANCE.messageBuilder(PacketExperienceExchange.class, nextID())
-                .encoder(PacketExperienceExchange::toBytes)
-                .decoder(PacketExperienceExchange::new)
-                .consumerMainThread(PacketExperienceExchange::handle)
+        INSTANCE.messageBuilder(SyncTargetPacket.class, nextID())
+                .encoder(SyncTargetPacket::toBytes)
+                .decoder(SyncTargetPacket::new)
+                .consumerMainThread(SyncTargetPacket::handle)
                 .add();
         INSTANCE.messageBuilder(SyncTargetPacket.class, nextID())
                 .encoder(SyncTargetPacket::toBytes)

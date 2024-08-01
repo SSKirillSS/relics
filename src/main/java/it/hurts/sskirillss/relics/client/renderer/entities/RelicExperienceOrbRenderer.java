@@ -52,7 +52,6 @@ public class RelicExperienceOrbRenderer extends EntityRenderer<RelicExperienceOr
         poseStack.translate(0.0F, 0.2F + (entity.getStage() * 0.05F), 0.0F);
 
         poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
 
         int alpha = (int) Math.min(255, 255 * (0.75F + Math.sin(entity.tickCount * 0.25F) * 0.1F));
 

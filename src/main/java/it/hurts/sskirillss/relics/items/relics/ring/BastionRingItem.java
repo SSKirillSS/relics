@@ -12,8 +12,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -40,6 +38,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
@@ -64,9 +63,6 @@ public class BastionRingItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 200))
-                .style(StyleData.builder()
-                        .background(Backgrounds.NETHER)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.BASTION)
                         .build())

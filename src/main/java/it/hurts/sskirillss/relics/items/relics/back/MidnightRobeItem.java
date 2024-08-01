@@ -16,8 +16,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -88,9 +86,6 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.CAVE)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.ANTHROPOGENIC)
                         .build())
@@ -98,8 +93,11 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
     }
 
     @Override
-    public void curioTick(String identifier, int index, LivingEntity entity, ItemStack stack) {
-        Level level = entity.getCommandSenderWorld();
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player))
+            return;
+
+        Level level = player.getCommandSenderWorld();
 
         if (level.isClientSide())
             return;
@@ -166,15 +164,15 @@ public class MidnightRobeItem extends RelicItem implements IRenderableCurio {
             }
         }
 
-        if (!canHide(entity)) {
-            EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        if (!canHide(player)) {
+            EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(entity.position()) >= getAbilityValue(stack, "backstab", "distance")))
+            if (target != null && (target.isDeadOrDying() || target.position().distanceTo(player.position()) >= getAbilityValue(stack, "backstab", "distance")))
                 NBTUtils.clearTag(stack, TAG_TARGET);
         } else {
-            entity.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
+            player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
 
-            EntityUtils.applyAttribute(entity, stack, Attributes.MOVEMENT_SPEED, (float) getAbilityValue(stack, "vanish", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) getAbilityValue(stack, "vanish", "speed"), AttributeModifier.Operation.MULTIPLY_TOTAL);
         }
     }
 

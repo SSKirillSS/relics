@@ -9,12 +9,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.WorldUtils;
+import it.hurts.sskirillss.relics.utils.data.WorldPosition;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -60,9 +59,6 @@ public class BlazingFlaskItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.NETHER)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.NETHER)
                         .build())
@@ -104,7 +100,7 @@ public class BlazingFlaskItem extends RelicItem {
                             player.move(MoverType.SELF, player.getDeltaMovement().multiply(speed, 0, speed));
 
                         if (player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
-                                && (WorldUtils.getGroundHeight(level, player.position(), 64) + getAbilityValue(stack, "bonfire", "height")) - player.getY() > 0) {
+                                && (WorldUtils.getGroundHeight(player, player.position(), 64) + getAbilityValue(stack, "bonfire", "height")) - player.getY() > 0) {
                             Vec3 motion = player.getDeltaMovement();
 
                             if (motion.y() < 0)

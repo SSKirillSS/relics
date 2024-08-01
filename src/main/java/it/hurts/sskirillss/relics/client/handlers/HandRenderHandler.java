@@ -62,7 +62,6 @@ public class HandRenderHandler {
 
                         model.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(event.getMultiBufferSource(), RenderType.armorCutoutNoCull(renderable.getTexture(stack)), false, stack.hasFoil()),
                                 event.getPackedLight(), OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
-
                         poseStack.popPose();
                     }
                 }

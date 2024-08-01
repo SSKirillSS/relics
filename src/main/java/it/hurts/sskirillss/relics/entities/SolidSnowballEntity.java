@@ -9,8 +9,6 @@ import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -28,9 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.network.NetworkHooks;
-
-import javax.annotation.Nonnull;
 
 public class SolidSnowballEntity extends ThrowableProjectile {
     private static final EntityDataAccessor<Integer> SIZE = SynchedEntityData.defineId(SolidSnowballEntity.class, EntityDataSerializers.INT);
@@ -156,9 +151,9 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         return false;
     }
 
-    @Nonnull
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+//    @Nonnull
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+//        return NetworkHooks.getEntitySpawningPacket(this);
+//    }
 }

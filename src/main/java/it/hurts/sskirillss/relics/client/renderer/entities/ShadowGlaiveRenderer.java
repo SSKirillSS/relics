@@ -34,8 +34,8 @@ public class ShadowGlaiveRenderer extends EntityRenderer<ShadowGlaiveEntity> {
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(time * 40F));
         matrixStackIn.scale(0.35F, 0.35F, 0.35F);
 
-        new ShadowGlaiveModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Reference.MODID,
-                "textures/entities/shadow_glaive.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        new ShadowGlaiveModel<>().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(Reference.MODID,
+                "textures/entities/shadow_saw.png"))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 
         matrixStackIn.popPose();
     }

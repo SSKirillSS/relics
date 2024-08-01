@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -22,19 +23,19 @@ public class Relics {
         MinecraftForge.EVENT_BUS.register(this);
 
         ItemRegistry.register();
-        BlockRegistry.register();
         TileRegistry.register();
-        EntityRegistry.register();
-        EffectRegistry.register();
-        CodecRegistry.register();
+        BlockRegistry.register();
         SoundRegistry.register();
+        EntityRegistry.register();
+        NetworkHandler.register();
+        EffectRegistry.register();
         CommandRegistry.register();
         ParticleRegistry.register();
+        LootCodecRegistry.register();
         CreativeTabRegistry.register();
     }
 
     private void setupCommon(final FMLCommonSetupEvent event) {
-        NetworkHandler.register();
         DispenserBehaviorRegistry.register();
 
         ConfigHelper.setupConfigs();

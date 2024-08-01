@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.items.relics.feet;
 
 import it.hurts.sskirillss.relics.api.events.common.EntityBlockSpeedFactorEvent;
 import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -13,7 +12,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -49,9 +47,6 @@ public class RollerSkatesItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 200))
-                .style(StyleData.builder()
-                        .background(Backgrounds.PLAINS)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
                         .entry(LootCollections.ANTHROPOGENIC)
@@ -79,9 +74,9 @@ public class RollerSkatesItem extends RelicItem {
 
         if (duration > 0) {
             EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
-            EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.6F, AttributeModifier.Operation.ADDITION);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
-            EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
+            EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
     }
 
     @Override
@@ -92,7 +87,7 @@ public class RollerSkatesItem extends RelicItem {
         LivingEntity entity = slotContext.entity();
 
         EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
-        EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
+        EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)

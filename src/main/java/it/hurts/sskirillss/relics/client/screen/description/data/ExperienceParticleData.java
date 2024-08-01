@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 
 public class ExperienceParticleData extends ParticleData {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/experience_particle.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/description/general/pixel_particle.png");
 
     public ExperienceParticleData(Color color, float xStart, float yStart, float scale, int lifeTime) {
         super(TEXTURE, color, xStart, yStart, scale, lifeTime);
@@ -30,27 +30,29 @@ public class ExperienceParticleData extends ParticleData {
 
         RandomSource random = player.getRandom();
 
-        setX((float) (getX() + (Math.sin(getLifeTime() * 0.15F) * (0.1F + (random.nextFloat() * 0.25F)))));
-        setY(getY() - 0.2F);
+        float partialTicks = Minecraft.getInstance().getFrameTime();
+
+        setX((float) (getX() + (Math.sin((getLifeTime() + partialTicks) * 0.15F) * (0.1F + (random.nextFloat() * 0.5F)))));
+        setY(getY() - (0.2F + partialTicks));
     }
 
     @Override
     public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        Minecraft MC = screen.getMinecraft();
-
         float lifePercentage = 1F - ((getMaxLifeTime() - getLifeTime()) / 100F);
 
-        RenderSystem.setShaderColor(getColor().getRed() / 255F, getColor().getGreen() / 255F, getColor().getBlue() / 255F, 1F * lifePercentage);
+        float blinkOffset = 0.15F + (float) (Math.sin((getLifeTime() + partialTick) * 0.5F) * 0.3F);
+
+        RenderSystem.setShaderColor(getColor().getRed() / 255F + blinkOffset, getColor().getGreen() / 255F + blinkOffset, getColor().getBlue() / 255F + blinkOffset, lifePercentage);
         RenderSystem.setShaderTexture(0, getTexture());
 
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
-        MC.getTextureManager().getTexture(getTexture()).setBlurMipmap(true, false);
+        Minecraft.getInstance().getTextureManager().getTexture(getTexture()).setBlurMipmap(true, false);
 
-        RenderUtils.renderTextureFromCenter(guiGraphics.pose(), getX(), getY(), 8, 8, getScale() * lifePercentage);
+        RenderUtils.renderTextureFromCenter(guiGraphics.pose(), getX(), getY(), 1, 1, getScale() * lifePercentage);
 
-        MC.getTextureManager().getTexture(getTexture()).restoreLastBlurMipmap();
+        Minecraft.getInstance().getTextureManager().getTexture(getTexture()).restoreLastBlurMipmap();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 

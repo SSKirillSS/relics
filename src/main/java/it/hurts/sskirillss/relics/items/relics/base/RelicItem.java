@@ -5,14 +5,16 @@ import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.items.ItemBase;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
+import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.core.Holder;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.registries.ForgeRegistries;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -42,8 +44,8 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
 
         if (attributes != null)
             attributes.getAttributes().forEach(attribute ->
-                    modifiers.put(attribute.getAttribute(), new AttributeModifier(uuid,
-                            ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "_" + ForgeRegistries.ATTRIBUTES.getKey(attribute.getAttribute()).getPath(),
+                    modifiers.put(attribute.getAttribute().get(), new AttributeModifier(uuid,
+                            ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "_" + ForgeRegistries.ATTRIBUTES.getKey(attribute.getAttribute().get()).getPath(),
                             attribute.getMultiplier(), attribute.getOperation())));
 
         if (slots != null)
@@ -71,15 +73,5 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
-    }
-
-    @Override
-    public boolean canBeHurtBy(DamageSource source) {
-        return false;
-    }
-
-    @Override
-    public boolean isFireResistant() {
-        return true;
     }
 }

@@ -5,11 +5,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -19,7 +18,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -46,7 +44,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
@@ -83,9 +80,6 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.END)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.END)
                         .build())
@@ -219,7 +213,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
         if (!(slotStack.getItem() instanceof ElytraBoosterItem booster))
             return;
 
-        int time = ForgeHooks.getBurnTime(heldStack, RecipeType.SMELTING) / 20;
+        int time = heldStack.getBurnTime(RecipeType.SMELTING) / 20;
         int amount = NBTUtils.getInt(slotStack, TAG_FUEL, 0);
         int capacity = booster.getBreathCapacity(slotStack);
         int sum = amount + time;

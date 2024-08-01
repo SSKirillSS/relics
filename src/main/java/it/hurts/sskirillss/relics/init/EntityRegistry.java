@@ -1,10 +1,10 @@
 package it.hurts.sskirillss.relics.init;
 
-import it.hurts.sskirillss.relics.entities.ThrownRelicExperienceBottle;
 import it.hurts.sskirillss.relics.entities.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -73,11 +73,11 @@ public class EntityRegistry {
                     .build("solid_snowball")
     );
 
-    public static final RegistryObject<EntityType<ArrowRainEntity>> ARROW_RAIN = ENTITIES.register("arrow_rain", () ->
-            EntityType.Builder.<ArrowRainEntity>of(ArrowRainEntity::new, MobCategory.MISC)
-                    .sized(1F, 1F)
-                    .build("arrow_rain")
-    );
+//    public static final RegistryObject<EntityType<ArrowRainEntity>> ARROW_RAIN = ENTITIES.register("arrow_rain", () ->
+//            EntityType.Builder.<ArrowRainEntity>of(ArrowRainEntity::new, MobCategory.MISC)
+//                    .sized(1F, 1F)
+//                    .build("arrow_rain")
+//    );
 
     public static final RegistryObject<EntityType<RelicExperienceOrbEntity>> RELIC_EXPERIENCE_ORB = ENTITIES.register("relic_experience_orb", () ->
             EntityType.Builder.of(RelicExperienceOrbEntity::new, MobCategory.MISC)
@@ -89,6 +89,11 @@ public class EntityRegistry {
             EntityType.Builder.of(ThrownRelicExperienceBottle::new, MobCategory.MISC)
                     .sized(0.25F, 0.25F)
                     .build("thrown_relic_experience_bottle")
+    );
+    public static final RegistryObject<EntityType<DeathEssenceEntity>> DEATH_ESSENCE = ENTITIES.register("death_essence", () ->
+            EntityType.Builder.<DeathEssenceEntity>of(DeathEssenceEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .build("death_essence")
     );
 
     public static void register() {

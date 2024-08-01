@@ -1,13 +1,17 @@
 package it.hurts.sskirillss.relics.network.packets;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 public class PacketSyncEntityEffects {
@@ -54,9 +58,15 @@ public class PacketSyncEntityEffects {
         return true;
     }
 
+    @Getter
+    @AllArgsConstructor
     public enum Action {
-        ADD,
-        REMOVE,
-        UPDATE
+        ADD(0),
+        REMOVE(1),
+        UPDATE(2);
+
+        public static final IntFunction<Action> BY_ID = ByIdMap.continuous(Action::getId, Action.values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+
+        private final int id;
     }
 }

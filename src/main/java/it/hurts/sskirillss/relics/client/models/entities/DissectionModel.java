@@ -13,7 +13,6 @@ import net.minecraft.world.entity.Entity;
 
 public class DissectionModel<T extends Entity> extends EntityModel<T> {
     private final ModelPart center;
-
     private final ModelPart ring1;
     private final ModelPart ring2;
     private final ModelPart ring3;

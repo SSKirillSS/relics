@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.feet;
 
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -10,7 +9,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -57,9 +55,6 @@ public class IceSkatesItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 200))
-                .style(StyleData.builder()
-                        .background(Backgrounds.ICY)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.COLD)
                         .build())
@@ -72,7 +67,7 @@ public class IceSkatesItem extends RelicItem {
             return;
 
         Level level = player.getCommandSenderWorld();
-        BlockPos pos = player.blockPosition().atY((int) Math.floor(WorldUtils.getGroundHeight(level, player.position(), 16)));
+        BlockPos pos = player.blockPosition().atY((int) Math.floor(WorldUtils.getGroundHeight(player, player.position(), 16)));
 
         int duration = NBTUtils.getInt(stack, TAG_SKATING_DURATION, 0);
 
@@ -110,9 +105,9 @@ public class IceSkatesItem extends RelicItem {
 
         if (duration > 0) {
             EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
-            EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.6F, AttributeModifier.Operation.ADDITION);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
-            EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
+            EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
     }
 
     @Override
@@ -123,6 +118,6 @@ public class IceSkatesItem extends RelicItem {
         LivingEntity entity = slotContext.entity();
 
         EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
-        EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
+        EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
     }
 }

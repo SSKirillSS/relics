@@ -2,7 +2,6 @@ package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -12,7 +11,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -35,11 +33,13 @@ import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 public class InfinityHamItem extends RelicItem {
+    private static final String TAG_POTION = "potion";
     public static final String TAG_PIECES = "pieces";
     private static final String TAG_CHARGE = "charge";
-    private static final String TAG_POTION = "potion";
 
     public InfinityHamItem() {
         super(new Item.Properties()
@@ -68,9 +68,6 @@ public class InfinityHamItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.PLAINS)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
                         .build())

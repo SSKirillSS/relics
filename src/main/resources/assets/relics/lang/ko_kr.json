@@ -22,8 +22,6 @@
   "tooltip.relics.relic.relic_experience.title": "유물 경험치",
   "tooltip.relics.relic.relic_experience.current_amount": "현재 경험치: %1$s/%2$s [%3$s%%]",
 
-  "tooltip.relics.relic.max_level": "최대",
-
   "tooltip.relics.relic.ability.level": " [%1$s/%2$s]",
 
   "tooltip.relics.relic.status.positive": "§2§l[§2§l✔§2§l]",

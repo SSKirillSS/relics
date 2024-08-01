@@ -1,56 +1,74 @@
 package it.hurts.sskirillss.relics.network.packets.leveling;
 
+import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.tiles.ResearchingTableTile;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
+@AllArgsConstructor
 public class PacketRelicTweak {
-    private final BlockPos pos;
+    private final int container;
+    private final int slot;
     private final String ability;
     private final Operation operation;
 
     public PacketRelicTweak(FriendlyByteBuf buf) {
-        pos = buf.readBlockPos();
+        container = buf.readInt();
+        slot = buf.readInt();
         ability = buf.readUtf();
         operation = buf.readEnum(Operation.class);
     }
 
-    public PacketRelicTweak(BlockPos pos, String ability, Operation operation) {
-        this.pos = pos;
-        this.ability = ability;
-        this.operation = operation;
-    }
-
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
+        buf.writeInt(container);
+        buf.writeInt(slot);
         buf.writeUtf(ability);
         buf.writeEnum(operation);
     }
 
+    private static void causeError(Player player) {
+        player.displayClientMessage(Component.translatable("info.relics.researching.wrong_container").withStyle(ChatFormatting.RED), false);
+
+        player.closeContainer();
+    }
+
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayer player = ctx.get().getSender();
+            Player player = ctx.get().getSender();
 
-            if (player == null)
+            if (player == null) {
+                causeError(player);
                 return;
+            }
 
-            Level world = player.level();
+            if (player.containerMenu.containerId != container) {
+                causeError(player);
 
-            if (!(world.getBlockEntity(pos) instanceof ResearchingTableTile tile))
                 return;
+            }
 
-            ItemStack stack = tile.getStack();
+            ItemStack stack = DescriptionUtils.gatherRelicStack(player, slot);
 
-            if (!(stack.getItem() instanceof IRelicItem relic))
+            if (!(stack.getItem() instanceof IRelicItem relic)) {
+                causeError(player);
+
                 return;
+            }
 
             AbilityData entry = relic.getAbilityData(ability);
 
@@ -58,7 +76,7 @@ public class PacketRelicTweak {
                 return;
 
             switch (operation) {
-                case INCREASE -> {
+                case UPGRADE -> {
                     if (relic.mayPlayerUpgrade(player, stack, ability)) {
                         player.giveExperiencePoints(-relic.getUpgradeRequiredExperience(stack, ability));
 
@@ -83,18 +101,28 @@ public class PacketRelicTweak {
                 }
             }
 
-            tile.setStack(stack);
-            tile.setChanged();
+            try {
+                player.containerMenu.getSlot(slot).set(stack);
+            } catch (Exception e) {
+                e.printStackTrace();
 
-            world.sendBlockUpdated(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+                causeError(player);
+            }
         });
 
         return true;
     }
 
+
+    @Getter
+    @AllArgsConstructor
     public enum Operation {
-        RESET,
-        INCREASE,
-        REROLL
+        RESET(0),
+        UPGRADE(1),
+        REROLL(2);
+
+        public static final IntFunction<Operation> BY_ID = ByIdMap.continuous(Operation::getId, Operation.values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+
+        private final int id;
     }
 }

@@ -52,11 +52,8 @@ public class RelicsCommand {
 
                                 relic.setAbilityPoints(stack, abilityId, abilityInfo.getMaxLevel());
 
-                                for (Map.Entry<String, StatData> statEntry : abilityInfo.getStats().entrySet()) {
-                                    String statId = statEntry.getKey();
-
-                                    relic.setAbilityValue(stack, abilityId, statId, relic.getStatByQuality(abilityId, statId, relic.getMaxQuality()));
-                                }
+                                for (Map.Entry<String, StatData> statEntry : abilityInfo.getStats().entrySet())
+                                    relic.setAbilityValue(stack, abilityId, statEntry.getKey(), statEntry.getValue().getInitialValue().getValue());
                             }
 
                             return Command.SINGLE_SUCCESS;
@@ -82,11 +79,8 @@ public class RelicsCommand {
 
                                 relic.setAbilityPoints(stack, abilityId, 0);
 
-                                for (Map.Entry<String, StatData> statEntry : abilityEntry.getValue().getStats().entrySet()) {
-                                    String statId = statEntry.getKey();
-
-                                    relic.setAbilityValue(stack, abilityId, statId, relic.getStatByQuality(abilityId, statId, 0));
-                                }
+                                for (Map.Entry<String, StatData> statEntry : abilityEntry.getValue().getStats().entrySet())
+                                    relic.setAbilityValue(stack, abilityId, statEntry.getKey(), statEntry.getValue().getInitialValue().getKey());
                             }
 
                             return Command.SINGLE_SUCCESS;

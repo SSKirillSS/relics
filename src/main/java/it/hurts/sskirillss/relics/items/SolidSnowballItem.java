@@ -46,8 +46,8 @@ public class SolidSnowballItem extends ItemBase {
         SolidSnowballEntity entity = new SolidSnowballEntity(level);
 
         entity.setOwner(player);
-        entity.setPos(player.getX(), player.getEyeY(), player.getZ());
         entity.setSize(NBTUtils.getInt(stack, TAG_SNOW, 0));
+        entity.setPos(player.getX(), player.getEyeY(), player.getZ());
         entity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
 
         level.addFreshEntity(entity);

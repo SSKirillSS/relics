@@ -2,6 +2,9 @@ package it.hurts.sskirillss.relics.utils;
 
 import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import net.minecraft.core.Holder;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -125,6 +127,10 @@ public class EntityUtils {
         return entity == null ? null : new EntityHitResult(entity, vector3d);
     }
 
+    private static ResourceLocation getAttributeId(ItemStack stack, Attribute attribute) {
+        return new ResourceLocation(Reference.MODID,ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "_" + ForgeRegistries.ATTRIBUTES.getKey(attribute).getPath());
+    }
+
     private static String getAttributeName(ItemStack stack, Attribute attribute) {
         return ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath() + "_" + ForgeRegistries.ATTRIBUTES.getKey(attribute).getPath();
     }
@@ -132,7 +138,7 @@ public class EntityUtils {
     public static void applyAttribute(LivingEntity entity, ItemStack stack, Attribute attribute, float value, AttributeModifier.Operation operation) {
         String name = getAttributeName(stack, attribute);
 
-        if (name.equals(""))
+        if (name.isEmpty())
             return;
 
         UUID uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));

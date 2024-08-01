@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.utils;
 
-import it.hurts.sskirillss.octolib.particle.BasicColoredParticle;
+import it.hurts.sskirillss.relics.client.particles.BasicColoredParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
@@ -11,21 +11,17 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
 public class ParticleUtils {
-    public static BasicColoredParticle.Options constructSimpleSpark(Color color, float diameter, int lifetime, float scaleModifier) {
+    public static ParticleOptions constructSimpleSpark(Color color, float diameter, int lifetime, float scaleModifier) {
         return new BasicColoredParticle.Options(BasicColoredParticle.Constructor.builder()
                 .color(color.getRGB())
                 .diameter(diameter)
                 .lifetime(lifetime)
                 .scaleModifier(scaleModifier)
                 .physical(true)
-                .blurred(false)
-                .blended(GL11.GL_SRC_ALPHA, GL11.GL_ONE)
-                .depthTest(true)
                 .roll(0.5F)
                 .build());
     }

@@ -4,27 +4,25 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityCache;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityReference;
+import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
 public class CacheHandler {
     public static final LinkedHashMap<AbilityReference, AbilityCache> REFERENCES = new LinkedHashMap<>();
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || event.side != LogicalSide.CLIENT)
-            return;
-
         Player player = event.player;
 
         if (!(player instanceof LocalPlayer))

@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -16,19 +15,22 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
@@ -48,7 +50,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("slots")
                                 .requiredPoints(2)
-                                .stat(StatData.builder("talisman")
+                                .stat(StatData.builder("charm")
                                         .initialValue(0D, 2D)
                                         .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 0)))
@@ -82,9 +84,6 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.AQUATIC)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.AQUATIC)
                         .build())
@@ -110,14 +109,14 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(getAbilityValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("charm", (int) Math.round(getAbilityValue(stack, "slots", "charm"))))
                 .build();
     }
 
     @Override
     public RelicAttributeModifier getAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(ForgeMod.SWIM_SPEED.get(), (float) -getAbilityValue(stack, "anchor", "slowness")))
+                .attribute(new RelicAttributeModifier.Modifier(Holder.direct(ForgeMod.SWIM_SPEED.get()), (float) -getAbilityValue(stack, "anchor", "slowness")))
                 .build();
     }
 

@@ -4,6 +4,7 @@ import it.hurts.sskirillss.relics.capability.entries.IRelicsCapability;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -14,7 +15,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CapabilityRegistry {
     public static final Capability<IRelicsCapability> DATA = CapabilityManager.get(new CapabilityToken<>() {
     });

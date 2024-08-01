@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.belt;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
@@ -15,7 +14,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -41,7 +39,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("slots")
                                 .requiredPoints(2)
-                                .stat(StatData.builder("talisman")
+                                .stat(StatData.builder("charm")
                                         .initialValue(1D, 2D)
                                         .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 0)))
@@ -56,9 +54,6 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.PLAINS)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
                         .build())
@@ -68,7 +63,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(getAbilityValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("charm", (int) Math.round(getAbilityValue(stack, "slots", "charm"))))
                 .build();
     }
 

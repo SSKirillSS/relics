@@ -6,15 +6,14 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.models.items.SidedCurioModel;
 import it.hurts.sskirillss.relics.client.models.items.SidedFPRCurioModel;
-import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.IRenderableCurio;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -24,7 +23,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.PacketPlayerMotion;
 import it.hurts.sskirillss.relics.utils.*;
@@ -137,9 +135,6 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 20, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.NETHER)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.NETHER)
                         .build())
@@ -227,7 +222,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                     spreadExperience(player, stack, 1);
 
                     entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 100, 0));
-                    entity.setSecondsOnFire(5);
+                    entity.setRemainingFireTicks(5 * 20);
                 }
 
                 EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION);

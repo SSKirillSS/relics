@@ -1,29 +1,28 @@
 package it.hurts.sskirillss.relics.mixin;
 
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -60,42 +59,13 @@ public class ItemMixin {
     private void relics$processTooltip(ItemStack stack, @Nullable Level level, List<Component> tooltip) {
         Item item = stack.getItem();
 
-        if (!(item instanceof IRelicItem relic) || (level == null || !level.isClientSide()))
+        if (!(item instanceof IRelicItem))
             return;
-
-        LocalPlayer player = Minecraft.getInstance().player;
 
         tooltip.add(Component.literal(" "));
 
-        if (relic.isItemResearched(player)) {
-            if (Screen.hasShiftDown()) {
-                RelicData relicData = relic.getRelicData();
-
-                if (relicData == null)
-                    return;
-
-                Map<String, AbilityData> abilities = relicData.getAbilities().getAbilities();
-
-                tooltip.add(Component.literal("▶ ").withStyle(ChatFormatting.DARK_GREEN)
-                        .append(Component.translatable("tooltip.relics.relic.tooltip.abilities").withStyle(ChatFormatting.GREEN)));
-
-                for (Map.Entry<String, AbilityData> entry : abilities.entrySet()) {
-                    String id = ForgeRegistries.ITEMS.getKey(item).getPath();
-                    String name = entry.getKey();
-
-                    if (!relic.canUseAbility(stack, name))
-                        continue;
-
-                    tooltip.add(Component.literal("   ◆ ").withStyle(ChatFormatting.GREEN)
-                            .append(Component.translatable("tooltip.relics." + id + ".ability." + name).withStyle(ChatFormatting.YELLOW))
-                            .append(Component.literal(" - ").withStyle(ChatFormatting.WHITE))
-                            .append(Component.translatable("tooltip.relics." + id + ".ability." + name + ".description").withStyle(ChatFormatting.GRAY)));
-                }
-            } else {
-                tooltip.add(Component.translatable("tooltip.relics.relic.tooltip.shift").withStyle(ChatFormatting.GRAY));
-            }
-        } else
-            tooltip.add(Component.translatable("tooltip.relics.relic.tooltip.table").withStyle(ChatFormatting.GRAY));
+        if (Minecraft.getInstance().screen instanceof AbstractContainerScreen<? extends AbstractContainerMenu>)
+            tooltip.add(Component.translatable("tooltip.relics.researching.info").withStyle(ChatFormatting.GRAY));
 
         tooltip.add(Component.literal(" "));
     }

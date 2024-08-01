@@ -15,8 +15,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.HumanoidModel;
@@ -40,7 +38,7 @@ public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("slots")
                                 .requiredPoints(2)
-                                .stat(StatData.builder("talisman")
+                                .stat(StatData.builder("charm")
                                         .initialValue(1D, 3D)
                                         .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 1)))
@@ -48,9 +46,6 @@ public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.PLAINS)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
                         .build())
@@ -60,7 +55,7 @@ public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("talisman", (int) Math.round(getAbilityValue(stack, "slots", "talisman"))))
+                .entry(Pair.of("charm", (int) Math.round(getAbilityValue(stack, "slots", "charm"))))
                 .build();
     }
 
@@ -72,7 +67,7 @@ public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
         if (entity == null || sourceStack.getItem() == ItemRegistry.LEATHER_BELT.get())
             return;
 
-        if (sourceStack.getTags().map(tag -> tag.location().getPath()).anyMatch(tag -> tag.equals("talisman"))) {
+        if (sourceStack.getTags().map(tag -> tag.location().getPath()).anyMatch(tag -> tag.equals("charm"))) {
             ItemStack stack = EntityUtils.findEquippedCurio(entity, ItemRegistry.LEATHER_BELT.get());
 
             if (!(stack.getItem() instanceof IRelicItem relic))

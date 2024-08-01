@@ -39,6 +39,6 @@ public class CapabilitySyncPacket {
         if (player == null)
             return;
 
-        CapabilityUtils.getRelicsCapability(player).deserializeNBT(data);
+        // TODO: CapabilityUtils.getRelicsCapability(player).deserializeNBT(data);
     }
 }

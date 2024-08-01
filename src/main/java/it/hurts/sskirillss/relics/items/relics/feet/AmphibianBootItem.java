@@ -17,8 +17,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -36,7 +34,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
@@ -89,9 +86,6 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.AQUATIC)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.AQUATIC)
                         .build())
@@ -132,8 +126,8 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
         EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        if (slippingDuration > 0) {
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (slippingDuration * getAbilityValue(stack, "slipping", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
+        if (swimmingDuration > 0) {
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (swimmingDuration * getAbilityValue(stack, "slipping", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
             EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
             EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
@@ -147,11 +141,6 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
         EntityUtils.removeAttribute(slotContext.entity(), stack, ForgeMod.SWIM_SPEED.get(), AttributeModifier.Operation.MULTIPLY_TOTAL);
         EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
         EntityUtils.removeAttribute(slotContext.entity(), stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
-    }
-
-    @Override
-    public Rarity getRarity(ItemStack pStack) {
-        return Rarity.UNCOMMON;
     }
 
     @Override

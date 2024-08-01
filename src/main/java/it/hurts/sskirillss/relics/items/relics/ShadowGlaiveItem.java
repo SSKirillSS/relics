@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.entities.ShadowGlaiveEntity;
 import it.hurts.sskirillss.relics.entities.ShadowSawEntity;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
@@ -14,7 +13,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.style.misc.Backgrounds;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -81,9 +79,6 @@ public class ShadowGlaiveItem extends RelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
-                .style(StyleData.builder()
-                        .background(Backgrounds.END)
-                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.END)
                         .entry(LootCollections.SCULK)

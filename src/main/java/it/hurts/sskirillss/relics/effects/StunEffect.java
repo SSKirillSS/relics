@@ -39,7 +39,7 @@ public class StunEffect extends MobEffect {
         }
 
         @SubscribeEvent
-        public void onBlockHighlight(RenderHighlightEvent.Block event) {
+        public static void onBlockHighlight(RenderHighlightEvent.Block event) {
             Player player = Minecraft.getInstance().player;
 
             if (player != null && player.hasEffect(EffectRegistry.STUN.get()))

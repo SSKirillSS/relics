@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.level;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.hurts.sskirillss.relics.init.CodecRegistry;
+import it.hurts.sskirillss.relics.init.LootCodecRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -56,6 +56,6 @@ public class RelicLootModifier extends LootModifier {
 
     @Override
     public Codec<? extends IGlobalLootModifier> codec() {
-        return CodecRegistry.RELIC_LOOT.get();
+        return LootCodecRegistry.RELIC_LOOT.get();
     }
 }

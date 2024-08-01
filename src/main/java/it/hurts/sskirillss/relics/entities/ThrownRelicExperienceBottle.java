@@ -2,8 +2,6 @@ package it.hurts.sskirillss.relics.entities;
 
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -13,7 +11,6 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 
 public class ThrownRelicExperienceBottle extends ThrowableItemProjectile {
     public ThrownRelicExperienceBottle(EntityType<? extends ThrownRelicExperienceBottle> type, Level level) {
@@ -27,7 +24,7 @@ public class ThrownRelicExperienceBottle extends ThrowableItemProjectile {
 
     @Override
     protected float getGravity() {
-        return 0.07F;
+        return 0.07f;
     }
 
     @Override
@@ -57,8 +54,8 @@ public class ThrownRelicExperienceBottle extends ThrowableItemProjectile {
         }
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+//        return NetworkHooks.getEntitySpawningPacket(this);
+//    }
 }

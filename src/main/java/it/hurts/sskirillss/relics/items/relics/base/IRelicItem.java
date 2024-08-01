@@ -15,6 +15,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
@@ -26,6 +27,8 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -35,8 +38,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -256,15 +257,15 @@ public interface IRelicItem {
         if (level >= getLevelingData().getMaxLevel())
             return;
 
-        int requiredExp = getExperienceBetweenLevels(stack, level, level + 1);
+        int requiredExp = getExperienceBetweenLevels(level, level + 1);
 
         CompoundTag data = getLevelingTag(stack);
 
         if (experience >= requiredExp) {
-            int sumExp = getTotalExperienceForLevel(stack, level) + experience;
+            int sumExp = getTotalExperienceForLevel(level) + experience;
             int resultLevel = getLevelFromExperience(stack, sumExp);
 
-            data.putInt("experience", Math.max(0, sumExp - getTotalExperienceForLevel(stack, resultLevel)));
+            data.putInt("experience", Math.max(0, sumExp - getTotalExperienceForLevel(resultLevel)));
 
             setLevelingTag(stack, data);
             addPoints(stack, resultLevel - level);
@@ -350,14 +351,13 @@ public interface IRelicItem {
     default int getExperienceLeftForLevel(ItemStack stack, int level) {
         int currentLevel = getLevel(stack);
 
-        return getExperienceBetweenLevels(stack, currentLevel, level) - getExperience(stack);
+        return getExperienceBetweenLevels(currentLevel, level) - getExperience(stack);
     }
 
-    default int getExperienceBetweenLevels(ItemStack stack, int from, int to) {
-        return getTotalExperienceForLevel(stack, to) - getTotalExperienceForLevel(stack, from);
+    default int getExperienceBetweenLevels(int from, int to) {
+        return getTotalExperienceForLevel(to) - getTotalExperienceForLevel(from);
     }
-
-    default int getTotalExperienceForLevel(ItemStack stack, int level) {
+    default int getTotalExperienceForLevel(int level) {
         if (level <= 0)
             return 0;
 
@@ -381,7 +381,7 @@ public interface IRelicItem {
         do {
             ++result;
 
-            amount = getTotalExperienceForLevel(stack, result);
+            amount = getTotalExperienceForLevel(result);
         } while (amount <= experience);
 
         return result - 1;
