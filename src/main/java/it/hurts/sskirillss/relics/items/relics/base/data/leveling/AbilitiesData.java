@@ -15,7 +15,7 @@ public class AbilitiesData {
     private Map<String, AbilityData> abilities;
 
     public AbilitiesConfigData toConfigData() {
-        return new AbilitiesConfigData(abilities.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toConfigData())));
+        return new AbilitiesConfigData(abilities.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toConfigData(), (o1, o2) -> o1, LinkedHashMap::new)));
     }
 
     public static class AbilitiesDataBuilder {

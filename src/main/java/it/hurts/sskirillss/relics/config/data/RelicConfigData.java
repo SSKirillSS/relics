@@ -1,18 +1,24 @@
 package it.hurts.sskirillss.relics.config.data;
 
+import it.hurts.sskirillss.octolib.config.annotations.IgnoreProp;
 import it.hurts.sskirillss.octolib.config.impl.OctoConfig;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class RelicConfigData implements OctoConfig {
-    public RelicConfigData(RelicData data) {
-        this(data.getAbilities().toConfigData(), data.getLeveling().toConfigData(), data.getLoot().toConfigData());
+    @IgnoreProp
+    private IRelicItem relic;
+
+    public RelicConfigData(IRelicItem relic) {
+        this.relic = relic;
+
+        this.setAbilitiesData(relic.getAbilitiesData().toConfigData());
+        this.setLevelingData(relic.getLevelingData().toConfigData());
+        this.setLootData(relic.getLootData().toConfigData());
     }
 
     public RelicData toData(IRelicItem relic) {
@@ -30,4 +36,9 @@ public class RelicConfigData implements OctoConfig {
     private LevelingConfigData levelingData;
 
     private LootConfigData lootData;
+
+    @Override
+    public void onLoadObject(Object object) {
+        relic.setRelicData(((RelicConfigData) object).toData(relic));
+    }
 }

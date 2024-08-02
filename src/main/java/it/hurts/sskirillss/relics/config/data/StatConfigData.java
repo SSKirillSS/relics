@@ -6,9 +6,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class StatConfigData {
     @Prop(comment = "Minimum base value of the stat. A random value within this range is assigned when the relic is first created")
@@ -34,7 +36,7 @@ public class StatConfigData {
     private double upgradeModifier;
 
     public StatData toData(IRelicItem relic, String ability, String stat) {
-        StatData data = relic.getStatData(ability, stat);
+        StatData data = relic.constructDefaultRelicData().getAbilities().getAbilities().get(ability).getStats().get(stat);
 
         data.setInitialValue(Pair.of(minInitialValue, maxInitialValue));
         data.setThresholdValue(Pair.of(minThresholdValue, maxThresholdValue));

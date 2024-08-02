@@ -8,7 +8,7 @@ import lombok.Data;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -44,11 +44,11 @@ public class AbilityData {
     private CastData castData;
 
     public AbilityConfigData toConfigData() {
-        return new AbilityConfigData(requiredPoints, requiredLevel, maxLevel, stats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toConfigData())));
+        return new AbilityConfigData(requiredPoints, requiredLevel, maxLevel, stats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toConfigData(), (o1, o2) -> o1, LinkedHashMap::new)));
     }
 
     public static class AbilityDataBuilder {
-        private Map<String, StatData> stats = new HashMap<>();
+        private Map<String, StatData> stats = new LinkedHashMap<>();
         private CastData castData = CastData.builder().build();
 
         private AbilityDataBuilder castData(CastData data) {

@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics.items.relics.base.data;
 
-import it.hurts.sskirillss.relics.config.data.RelicConfigData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
@@ -22,8 +21,4 @@ public class RelicData {
 
     @Builder.Default
     private LootData loot = LootData.builder().build();
-
-    public RelicConfigData toConfigData() {
-        return new RelicConfigData(abilities.toConfigData(), leveling.toConfigData(), loot.toConfigData());
-    }
 }
