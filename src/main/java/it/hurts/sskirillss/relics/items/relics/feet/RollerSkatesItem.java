@@ -74,9 +74,9 @@ public class RollerSkatesItem extends RelicItem {
 
         if (duration > 0) {
             EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (duration * getAbilityValue(stack, "skating", "speed")), AttributeModifier.Operation.MULTIPLY_TOTAL);
-            EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), 0.6F, AttributeModifier.Operation.ADDITION);
+            EntityUtils.applyAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.6F, AttributeModifier.Operation.ADDITION);
         } else
-            EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
+            EntityUtils.removeAttribute(player, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class RollerSkatesItem extends RelicItem {
         LivingEntity entity = slotContext.entity();
 
         EntityUtils.removeAttribute(entity, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.MULTIPLY_TOTAL);
-        EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT.get(), AttributeModifier.Operation.ADDITION);
+        EntityUtils.removeAttribute(entity, stack, ForgeMod.STEP_HEIGHT_ADDITION.get(), AttributeModifier.Operation.ADDITION);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MODID)
