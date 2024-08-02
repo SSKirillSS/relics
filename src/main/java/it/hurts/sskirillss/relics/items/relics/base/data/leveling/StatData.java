@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.leveling;
 
+import it.hurts.sskirillss.relics.config.data.StatConfigData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +30,10 @@ public class StatData {
 
     @Builder.Default
     private Function<Double, ? extends Number> formatValue = Double::doubleValue;
+
+    public StatConfigData toConfigData() {
+        return new StatConfigData(initialValue.getKey(), initialValue.getValue(), thresholdValue.getKey(), thresholdValue.getValue(), upgradeModifier.getKey(), upgradeModifier.getValue());
+    }
 
     public static class StatDataBuilder {
         private Pair<UpgradeOperation, Double> upgradeModifier = Pair.of(UpgradeOperation.ADD, 0D);

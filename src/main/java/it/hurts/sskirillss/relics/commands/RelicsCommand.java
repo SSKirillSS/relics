@@ -6,7 +6,6 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityArgument;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityStatArgument;
-import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -27,7 +26,7 @@ public class RelicsCommand {
                 .then(Commands.literal("config")
                         .then(Commands.literal("reload")
                                 .executes(context -> {
-                                    ConfigHelper.readConfigs();
+                                    // TODO: ConfigHelper.readConfigs();
 
                                     return Command.SINGLE_SUCCESS;
                                 })))

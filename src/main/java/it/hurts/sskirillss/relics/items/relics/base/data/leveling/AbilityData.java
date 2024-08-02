@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.leveling;
 
 import com.mojang.datafixers.util.Function3;
+import it.hurts.sskirillss.relics.config.data.AbilityConfigData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -40,6 +42,10 @@ public class AbilityData {
 
     @Builder.Default
     private CastData castData;
+
+    public AbilityConfigData toConfigData() {
+        return new AbilityConfigData(requiredPoints, requiredLevel, maxLevel, stats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toConfigData())));
+    }
 
     public static class AbilityDataBuilder {
         private Map<String, StatData> stats = new HashMap<>();

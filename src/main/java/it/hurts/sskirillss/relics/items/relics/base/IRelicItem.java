@@ -1,11 +1,8 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
-import it.hurts.sskirillss.octolib.config.data.ConfigContext;
-import it.hurts.sskirillss.octolib.config.data.OctoConfig;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.capability.utils.CapabilityUtils;
 import it.hurts.sskirillss.relics.components.*;
-import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
@@ -56,15 +53,6 @@ public interface IRelicItem {
     }
 
     RelicData constructDefaultRelicData();
-
-    @Nullable
-    default OctoConfig getConfig() {
-        return ConfigHelper.getRelicConfig(this);
-    }
-
-    default void appendConfig(ConfigContext context) {
-
-    }
 
     default void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
 

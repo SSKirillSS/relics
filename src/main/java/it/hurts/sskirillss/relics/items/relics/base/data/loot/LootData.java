@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.loot;
 
+import it.hurts.sskirillss.relics.config.data.LootConfigData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollection;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,10 @@ import lombok.Data;
 public class LootData {
     @Builder.Default
     private LootCollection collection;
+
+    public LootConfigData toConfigData() {
+        return new LootConfigData(collection.getEntries());
+    }
 
     public static class LootDataBuilder {
         private LootCollection collection = LootCollection.builder().build();

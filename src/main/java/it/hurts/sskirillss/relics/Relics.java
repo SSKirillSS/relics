@@ -1,6 +1,5 @@
 package it.hurts.sskirillss.relics;
 
-import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.neoforged.bus.api.IEventBus;
@@ -33,8 +32,6 @@ public class Relics {
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         DispenserBehaviorRegistry.register();
-
-        ConfigHelper.setupConfigs();
 
         InterModComms.sendTo("carryon", "blacklistBlock", () -> "relics:researching_table");
     }
