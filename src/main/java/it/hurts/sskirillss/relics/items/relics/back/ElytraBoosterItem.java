@@ -44,6 +44,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
@@ -213,7 +214,7 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
         if (!(slotStack.getItem() instanceof ElytraBoosterItem booster))
             return;
 
-        int time = heldStack.getBurnTime(RecipeType.SMELTING) / 20;
+        int time = ForgeHooks.getBurnTime(heldStack, RecipeType.SMELTING) / 20;
         int amount = NBTUtils.getInt(slotStack, TAG_FUEL, 0);
         int capacity = booster.getBreathCapacity(slotStack);
         int sum = amount + time;
