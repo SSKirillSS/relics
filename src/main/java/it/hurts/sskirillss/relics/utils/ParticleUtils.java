@@ -59,7 +59,7 @@ public class ParticleUtils {
 
             double extraX = (radius * Math.sin(angle)) + center.x();
             double extraZ = (radius * Math.cos(angle)) + center.z();
-            double extraY = center.y() + 0.5F;
+            double extraY = center.y();
 
             boolean foundPos = false;
 
@@ -67,18 +67,13 @@ public class ParticleUtils {
 
             for (tries = 0; tries < offset * 2; tries++) {
                 Vec3 vec = new Vec3(extraX, extraY, extraZ);
-                BlockPos pos = new BlockPos((int) vec.x, (int) vec.y, (int) vec.z);
+                BlockPos pos = new BlockPos(Mth.floor(extraX), Mth.floor(extraY), Mth.floor(extraZ));
 
                 BlockState state = level.getBlockState(pos);
                 VoxelShape shape = state.getCollisionShape(level, pos);
 
-                if (state.getBlock() instanceof LiquidBlock liquid) {
-                    AABB aabb = new AABB(pos);
-
-                    aabb.inflate(-0.5);
-
+                if (state.getBlock() instanceof LiquidBlock)
                     shape = Shapes.block();
-                }
 
                 if (shape.isEmpty()) {
                     if (!foundPos) {
