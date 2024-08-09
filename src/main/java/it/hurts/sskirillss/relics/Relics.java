@@ -32,6 +32,7 @@ public class Relics {
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         DispenserBehaviorRegistry.register();
+        ConfigRegistry.register();
 
         InterModComms.sendTo("carryon", "blacklistBlock", () -> "relics:researching_table");
     }

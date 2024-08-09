@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.config.data;
 
-import it.hurts.sskirillss.octolib.config.annotations.Prop;
+import it.hurts.octostudios.octolib.modules.config.annotations.Prop;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
@@ -25,9 +25,9 @@ public class StatConfigData {
 
     @Prop(comment = """
             Type of mathematical operation used to calculate the stat's value based on the ability level. Supported operations include:
-            MULTIPLY_BASE: x + ((x ∗ y) ∗ z),
-            MULTIPLY_TOTAL: x ∗ (y − 1)^z,
-            ADD: x + (y ∗ z).
+            MULTIPLY_BASE: x + ((x * y) * z),
+            MULTIPLY_TOTAL: x * (y + 1)^z,
+            ADD: x + (y * z).
             
             ...where x - Base stat value, y - Value of [upgradeModifier], z - Current relic level
             """)

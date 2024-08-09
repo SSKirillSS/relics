@@ -68,6 +68,7 @@ repositories {
         name = "OctoStudios"
         url = uri("https://maven.octo-studios.com/releases")
     }
+    maven { url "https://maven.architectury.dev/" }
     exclusiveContent {
         forRepository {
             maven {
@@ -87,25 +88,9 @@ dependencies {
 
     implementation 'top.theillusivec4.curios:curios-neoforge:9.0.5+1.21'
 
-    if (file("libs").isDirectory()) {
-        file("libs").eachFile { file ->
-            def splitPos = file.name.lastIndexOf("-")
+    implementation "it.hurts.octostudios.octolib:octolib-neoforge:0.4.1+1.21"
 
-            if (file.name != "desktop.ini") {
-                println file.name
-
-                def modartifact = file.name.substring(0, splitPos)
-                def modversion = file.name.substring(splitPos + 1, file.name.length() - 4)
-                def modreference = "lib:$modartifact:$modversion"
-
-                dependencies {
-                    implementation (project.dependencies.create(modreference) {
-                        transitive = false
-                    })
-                }
-            }
-        }
-    } else file("libs").mkdir()
+    implementation "dev.architectury:architectury-neoforge:13.0.6"
 }
 
 tasks.withType(ProcessResources).configureEach {

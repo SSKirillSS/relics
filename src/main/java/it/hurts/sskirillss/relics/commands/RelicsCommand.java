@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import it.hurts.sskirillss.octolib.config.ConfigManager;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityArgument;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityStatArgument;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -13,12 +12,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.server.command.EnumArgument;
 
@@ -27,18 +23,6 @@ import java.util.Map;
 public class RelicsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("relics").requires(sender -> sender.hasPermission(2))
-                .then(Commands.literal("config")
-                        .then(Commands.literal("reload")
-                                .executes(context -> {
-                                    for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
-                                        if (!(entry.getValue() instanceof IRelicItem))
-                                            continue;
-
-                                        ConfigManager.reload(entry.getKey().location().getNamespace() + "/relics/" + entry.getKey().location().getPath());
-                                    }
-
-                                    return Command.SINGLE_SUCCESS;
-                                })))
                 .then(Commands.literal("maximize")
                         .executes(context -> {
                             ServerPlayer player = context.getSource().getPlayerOrException();

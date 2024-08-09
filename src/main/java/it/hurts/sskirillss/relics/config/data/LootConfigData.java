@@ -1,6 +1,6 @@
 package it.hurts.sskirillss.relics.config.data;
 
-import it.hurts.sskirillss.octolib.config.annotations.Prop;
+import it.hurts.octostudios.octolib.modules.config.annotations.Prop;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollection;

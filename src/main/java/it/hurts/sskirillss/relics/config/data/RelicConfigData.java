@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.config.data;
 
-import it.hurts.sskirillss.octolib.config.annotations.IgnoreProp;
-import it.hurts.sskirillss.octolib.config.impl.OctoConfig;
+import it.hurts.octostudios.octolib.modules.config.annotations.IgnoreProp;
+import it.hurts.octostudios.octolib.modules.config.impl.OctoConfig;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import lombok.Data;
