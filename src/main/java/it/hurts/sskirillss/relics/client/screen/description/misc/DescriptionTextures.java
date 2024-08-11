@@ -38,4 +38,7 @@ public class DescriptionTextures {
 
     public static final ResourceLocation EXPERIENCE_FILLER = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/experience_filler.png");
     public static final ResourceLocation EXPERIENCE_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/experience_outline.png");
+
+    public static final ResourceLocation PLAYER_EXPERIENCE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/player_experience_background.png");
+    public static final ResourceLocation PLAYER_EXPERIENCE_FILLER = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/player_experience_filler.png");
 }

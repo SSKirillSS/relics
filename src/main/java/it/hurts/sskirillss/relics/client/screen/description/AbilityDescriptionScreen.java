@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.BigA
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.RerollActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.ResetActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.UpgradeActionWidget;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PlayerExperiencePlateWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PointsPlateWidget;
 import it.hurts.sskirillss.relics.components.StatComponent;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -83,6 +84,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         this.addRenderableWidget(new BigAbilityCardWidget(x + 60, y + 47, this, ability));
 
         this.addRenderableWidget(new PointsPlateWidget(x + 313, y + 57, this));
+        this.addRenderableWidget(new PlayerExperiencePlateWidget(x + 313, y + 82, this));
 
         this.upgradeButton = new UpgradeActionWidget(x + 288, y + 152, this, ability);
         this.rerollButton = new RerollActionWidget(x + 288, y + 170, this, ability);

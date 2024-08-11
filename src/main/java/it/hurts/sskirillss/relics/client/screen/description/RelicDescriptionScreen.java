@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
 import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PlayerExperiencePlateWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PointsPlateWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.AbilityCardWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.BigRelicCardWidget;
@@ -74,6 +75,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
         this.addRenderableWidget(new BigRelicCardWidget(x + 60, y + 47, this));
 
         this.addRenderableWidget(new PointsPlateWidget(x + 313, y + 57, this));
+        this.addRenderableWidget(new PlayerExperiencePlateWidget(x + 313, y + 82, this));
 
         this.addRenderableWidget(new RelicExperienceWidget(x + 127, y + 121, this));
 

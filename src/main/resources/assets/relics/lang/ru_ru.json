@@ -10,6 +10,9 @@
   "tooltip.relics.researching.general.leveling_point.title": "Очки улучшения:",
   "tooltip.relics.researching.general.leveling_point.extra_info": "Получается при повышении уровня реликвии и используется для повышения уровня способностей.",
 
+  "tooltip.relics.researching.general.player_experience.title": "Опыт игрока:",
+  "tooltip.relics.researching.general.player_experience.extra_info": "Стандартный опыт игрока из оригинальной игры. Получается при убийстве мобов, добыче руды, плавке предметов и т.п.",
+
   "tooltip.relics.researching.relic.card.low_level": "Для использования необходимо повысить уровень реликвии до %1$s!",
   "tooltip.relics.researching.relic.card.no_stats": "Способность не имеет улучшаемых характеристик и не влияет на качество реликвии!",
   "tooltip.relics.researching.relic.card.ready_to_upgrade": "Способность готова к улучшению!",

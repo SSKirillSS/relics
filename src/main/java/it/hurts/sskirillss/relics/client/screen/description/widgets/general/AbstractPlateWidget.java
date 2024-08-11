@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.client.screen.description.widgets.general;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
 import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
@@ -31,17 +32,31 @@ public abstract class AbstractPlateWidget extends AbstractDescriptionWidget impl
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public final void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        PoseStack poseStack = guiGraphics.pose();
+
+        poseStack.pushPose();
+
+        poseStack.translate(Math.sin((MC.player.tickCount + pPartialTick + icon.length() * 10) * 0.075F), Math.cos((MC.player.tickCount + pPartialTick + icon.length() * 10) * 0.075F) * 0.5F, 0);
+
         guiGraphics.blit(DescriptionTextures.PLATE_BACKGROUND, getX(), getY(), 0, 0, width, height, width, height);
 
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/icons/" + icon + ".png"), getX() + 3, getY() + 2, 0, 0, 14, 14, 14, 14);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/icons/" + icon + ".png"), getX() + 3, getY() + 3, 0, 0, 14, 14, 14, 14);
 
         MutableComponent value = Component.literal(getValue(provider.getStack())).withStyle(ChatFormatting.BOLD);
 
         guiGraphics.drawString(MC.font, value, getX() + 19, getY() + 6, 0xffe278, true);
 
+        renderContent(guiGraphics, pMouseX, pMouseY, pPartialTick);
+
         if (isHovered())
             guiGraphics.blit(DescriptionTextures.PLATE_OUTLINE, getX(), getY(), 0, 0, width, height, width, height);
+
+        poseStack.popPose();
+    }
+
+    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+
     }
 
     @Override

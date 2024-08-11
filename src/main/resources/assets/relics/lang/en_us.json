@@ -10,6 +10,9 @@
   "tooltip.relics.researching.general.leveling_point.title": "Leveling Points:",
   "tooltip.relics.researching.general.leveling_point.extra_info": "Earned when leveling up the relic and used to upgrade abilities.",
 
+  "tooltip.relics.researching.general.player_experience.title": "Player Experience:",
+  "tooltip.relics.researching.general.player_experience.extra_info": "Standard player experience from the vanilla game. Obtained by killing mobs, mining ore, smelting items, etc.",
+
   "tooltip.relics.researching.relic.card.low_level": "You need to upgrade the relic to level %1$s to use this!",
   "tooltip.relics.researching.relic.card.no_stats": "This ability has no upgradeable stats and does not affect the relic's quality!",
   "tooltip.relics.researching.relic.card.ready_to_upgrade": "This ability is ready to be upgraded!",
