@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.WorldUtils;
@@ -33,11 +34,13 @@ public class IceSkatesItem extends RelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("skating")
                                 .stat(StatData.builder("speed")
+                                        .icon(StatIcons.SPEED)
                                         .initialValue(0.01D, 0.035D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 10 * 100))
                                         .build())
                                 .stat(StatData.builder("duration")
+                                        .icon(StatIcons.DURATION)
                                         .initialValue(25D, 50D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value / 10, 1))
@@ -46,6 +49,7 @@ public class IceSkatesItem extends RelicItem {
                         .ability(AbilityData.builder("ram")
                                 .requiredLevel(5)
                                 .stat(StatData.builder("damage")
+                                        .icon(StatIcons.DEALT_DAMAGE)
                                         .initialValue(0.05D, 0.25D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 10, 1))

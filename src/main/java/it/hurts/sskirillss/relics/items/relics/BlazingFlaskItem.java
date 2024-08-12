@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.WorldUtils;
@@ -39,16 +40,19 @@ public class BlazingFlaskItem extends RelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("bonfire")
                                 .stat(StatData.builder("step")
+                                        .icon(StatIcons.DISTANCE)
                                         .initialValue(1D, 2.5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("speed")
+                                        .icon(StatIcons.SPEED)
                                         .initialValue(0.01D, 0.05D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1.9D)
                                         .formatValue(value -> MathUtils.round(value * 8, 1))
                                         .build())
                                 .stat(StatData.builder("height")
+                                        .icon(StatIcons.HEIGHT)
                                         .initialValue(3D, 5D)
                                         .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> MathUtils.round(value, 1))

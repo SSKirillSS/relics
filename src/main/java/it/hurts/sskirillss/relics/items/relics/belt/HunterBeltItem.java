@@ -14,6 +14,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -40,6 +41,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
                         .ability(AbilityData.builder("slots")
                                 .requiredPoints(2)
                                 .stat(StatData.builder("charm")
+                                        .icon(StatIcons.MODIFIER)
                                         .initialValue(1D, 2D)
                                         .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 0)))
@@ -47,6 +49,7 @@ public class HunterBeltItem extends RelicItem implements IRenderableCurio {
                                 .build())
                         .ability(AbilityData.builder("training")
                                 .stat(StatData.builder("damage")
+                                        .icon(StatIcons.DEALT_DAMAGE)
                                         .initialValue(1.25D, 2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 100))

@@ -244,12 +244,12 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
                 Color color = new Color(icon.getColor());
 
-                float blinkOffset = (float) (Math.sin((player.tickCount + (step * 10)) * 0.2F) * 0.1F);
+                float blinkOffset = (float) (Math.sin((player.tickCount + (step * 10)) * 0.2F) * 0.05F);
 
                 RenderSystem.setShaderColor(color.getRed() / 255F + blinkOffset, color.getGreen() / 255F + blinkOffset, color.getBlue() / 255F + blinkOffset, 1F);
                 RenderSystem.enableBlend();
 
-                guiGraphics.blit(icon.getPath(), x + 82 + (step % 2) * 2, y + yOff + 148, 0, 0, 15, 15, 15, 15);
+                guiGraphics.blit(icon.getPath(), x + 82 + (step % 2) * 2, y + yOff + 148, 0, 0, 15, 16, 15, 16);
 
                 RenderSystem.disableBlend();
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);

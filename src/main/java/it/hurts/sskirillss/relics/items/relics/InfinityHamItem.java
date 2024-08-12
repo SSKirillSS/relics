@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.core.component.DataComponents;
@@ -52,6 +53,7 @@ public class InfinityHamItem extends RelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("autophagy")
                                 .stat(StatData.builder("feed")
+                                        .icon(StatIcons.SATURATION)
                                         .initialValue(1D, 2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value, 1))
@@ -60,6 +62,7 @@ public class InfinityHamItem extends RelicItem {
                         .ability(AbilityData.builder("infusion")
                                 .requiredLevel(5)
                                 .stat(StatData.builder("duration")
+                                        .icon(StatIcons.DURATION)
                                         .initialValue(1D, 3.5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))

@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -41,21 +42,25 @@ public class ShadowGlaiveItem extends RelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("glaive")
                                 .stat(StatData.builder("recharge")
+                                        .icon(StatIcons.DURATION)
                                         .initialValue(30D, 10D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.09D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("bounces")
+                                        .icon(StatIcons.REFLECT)
                                         .initialValue(3D, 5D)
                                         .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .stat(StatData.builder("damage")
+                                        .icon(StatIcons.DEALT_DAMAGE)
                                         .initialValue(2D, 5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("radius")
+                                        .icon(StatIcons.DISTANCE)
                                         .initialValue(2.5D, 5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
                                         .formatValue(value -> MathUtils.round(value, 1))
@@ -64,11 +69,13 @@ public class ShadowGlaiveItem extends RelicItem {
                         .ability(AbilityData.builder("saw")
                                 .requiredLevel(5)
                                 .stat(StatData.builder("speed")
+                                        .icon(StatIcons.SPEED)
                                         .initialValue(20D, 15D)
                                         .upgradeModifier(UpgradeOperation.ADD, -1D)
                                         .formatValue(value -> MathUtils.round(value / 20, 2))
                                         .build())
                                 .stat(StatData.builder("damage")
+                                        .icon(StatIcons.DEALT_DAMAGE)
                                         .initialValue(0.75D, 1.5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
