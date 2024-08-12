@@ -184,7 +184,7 @@ public class HUDRenderHandler {
 
         boolean isLocked = !relic.canPlayerUseActiveAbility(player, stack, ability.getId());
 
-        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/cards/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()) + ".png");
+        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()) + ".png");
 
         RenderSystem.setShaderTexture(0, card);
 
