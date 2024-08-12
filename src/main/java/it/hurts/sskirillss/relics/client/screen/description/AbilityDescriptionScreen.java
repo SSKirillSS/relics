@@ -14,11 +14,11 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.Rese
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.UpgradeActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PlayerExperiencePlateWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PointsPlateWidget;
-import it.hurts.sskirillss.relics.components.StatComponent;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcon;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
@@ -39,7 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import java.util.Map;
+import java.awt.*;
 
 @OnlyIn(Dist.CLIENT)
 public class AbilityDescriptionScreen extends Screen implements IAutoScaledScreen, IRelicScreenProvider {
@@ -217,7 +217,9 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         yOff = 0;
 
-        for (Map.Entry<String, StatComponent> entry : relic.getAbilityComponent(stack, ability).stats().entrySet()) {
+        int step = 0;
+
+        for (var entry : relic.getAbilityComponent(stack, ability).stats().entrySet()) {
             String stat = entry.getKey();
             StatData statData = relic.getStatData(ability, stat);
 
@@ -238,11 +240,29 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
                 poseStack.pushPose();
 
+                StatIcon icon = statData.getIcon();
+
+                Color color = new Color(icon.getColor());
+
+                float blinkOffset = (float) (Math.sin((player.tickCount + (step * 10)) * 0.2F) * 0.1F);
+
+                RenderSystem.setShaderColor(color.getRed() / 255F + blinkOffset, color.getGreen() / 255F + blinkOffset, color.getBlue() / 255F + blinkOffset, 1F);
+                RenderSystem.enableBlend();
+
+                guiGraphics.blit(icon.getPath(), x + 82 + (step % 2) * 2, y + yOff + 148, 0, 0, 15, 15, 15, 15);
+
+                RenderSystem.disableBlend();
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
+                poseStack.popPose();
+
+                poseStack.pushPose();
+
                 poseStack.scale(0.5F, 0.5F, 0.5F);
 
-                guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title").withStyle(ChatFormatting.BOLD), (x + 85) * 2, (y + yOff + 151) * 2, 0x662f13, false);
+                guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title").withStyle(ChatFormatting.BOLD), (x + 103) * 2, (y + yOff + 151) * 2, 0x662f13, false);
 
-                guiGraphics.drawString(minecraft.font, Component.literal("● ").append(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), (x + 90) * 2, (y + yOff + 157) * 2, 0x662f13, false);
+                guiGraphics.drawString(minecraft.font, Component.literal("● ").append(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), (x + 108) * 2, (y + yOff + 157) * 2, 0x662f13, false);
 
                 poseStack.popPose();
 
@@ -269,6 +289,8 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
                     guiGraphics.blit(DescriptionTextures.SMALL_STAR_ACTIVE, x + xOff + 254, y + yOff + 151, 0, 0, 2, 4, 4, 4);
 
                 yOff += 14;
+
+                step++;
             }
         }
     }
