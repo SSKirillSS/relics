@@ -70,7 +70,7 @@ public class PacketRelicTweak implements CustomPacketPayload {
             switch (operation) {
                 case UPGRADE -> {
                     if (relic.mayPlayerUpgrade(player, stack, ability)) {
-                        player.giveExperiencePoints(-relic.getUpgradeRequiredExperience(stack, ability));
+                        player.giveExperienceLevels(-relic.getUpgradeRequiredLevel(stack, ability));
 
                         relic.setAbilityPoints(stack, ability, relic.getAbilityPoints(stack, ability) + 1);
                         relic.addPoints(stack, -entry.getRequiredPoints());
@@ -78,14 +78,19 @@ public class PacketRelicTweak implements CustomPacketPayload {
                 }
                 case REROLL -> {
                     if (relic.mayPlayerReroll(player, stack, ability)) {
-                        player.giveExperiencePoints(-relic.getRerollRequiredExperience(ability));
+                        player.giveExperienceLevels(-relic.getRerollRequiredLevel(stack, ability));
 
-                        relic.randomizeStats(stack, ability);
+                        int prevQuality = relic.getAbilityQuality(stack, ability);
+
+                        relic.randomizeStats(stack, ability, relic.getLuck(stack));
+
+                        if (relic.getAbilityQuality(stack, ability) < prevQuality)
+                            relic.addLuck(stack, 1);
                     }
                 }
                 case RESET -> {
                     if (relic.mayPlayerReset(player, stack, ability)) {
-                        player.giveExperiencePoints(-relic.getResetRequiredExperience(stack, ability));
+                        player.giveExperienceLevels(-relic.getResetRequiredLevel(stack, ability));
 
                         relic.addPoints(stack, relic.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
                         relic.setAbilityPoints(stack, ability, 0);

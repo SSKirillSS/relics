@@ -57,10 +57,10 @@ public class UpgradeActionWidget extends AbstractActionWidget {
         int renderWidth = 0;
 
         int requiredPoints = data.getRequiredPoints();
-        int requiredExperience = relic.getUpgradeRequiredExperience(getProvider().getStack(), getAbility());
+        int requiredLevel = relic.getUpgradeRequiredLevel(getProvider().getStack(), getAbility());
 
         int points = relic.getPoints(getProvider().getStack());
-        int experience = MC.player.totalExperience;
+        int level = MC.player.experienceLevel;
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
@@ -71,8 +71,8 @@ public class UpgradeActionWidget extends AbstractActionWidget {
 
         if (!relic.isAbilityMaxLevel(getProvider().getStack(), getAbility()))
             entries.add(Component.translatable("tooltip.relics.relic.upgrade.cost", requiredPoints,
-                    (requiredPoints > points ? negativeStatus : positiveStatus), requiredExperience,
-                    (requiredExperience > experience ? negativeStatus : positiveStatus)));
+                    (requiredPoints > points ? negativeStatus : positiveStatus), requiredLevel,
+                    (requiredLevel > level ? negativeStatus : positiveStatus)));
         else
             entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.upgrade.locked")));
 

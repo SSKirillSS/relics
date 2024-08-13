@@ -85,7 +85,7 @@ public abstract class AbstractActionWidget extends AbstractDescriptionWidget imp
         int maxWidth = 100;
         int renderWidth = 0;
 
-        int requiredExperience = relic.getRerollRequiredExperience(ability);
+        int requiredExperience = relic.getRerollRequiredLevel(provider.getStack(), ability);
 
         int experience = MC.player.totalExperience;
 

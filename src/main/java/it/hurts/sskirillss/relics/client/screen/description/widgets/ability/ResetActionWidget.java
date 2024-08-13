@@ -52,9 +52,9 @@ public class ResetActionWidget extends AbstractActionWidget {
         int maxWidth = 100;
         int renderWidth = 0;
 
-        int requiredExperience = relic.getResetRequiredExperience(getProvider().getStack(), getAbility());
+        int requiredLevel = relic.getResetRequiredLevel(getProvider().getStack(), getAbility());
 
-        int experience = MC.player.totalExperience;
+        int level = MC.player.experienceLevel;
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative").withStyle(ChatFormatting.RED);
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive").withStyle(ChatFormatting.GREEN);
@@ -64,8 +64,8 @@ public class ResetActionWidget extends AbstractActionWidget {
                 Component.literal(" "));
 
         if (relic.getAbilityPoints(getProvider().getStack(), getAbility()) > 0)
-            entries.add(Component.translatable("tooltip.relics.relic.reset.cost", requiredExperience,
-                    (requiredExperience > experience ? negativeStatus : positiveStatus)));
+            entries.add(Component.translatable("tooltip.relics.relic.reset.cost", requiredLevel,
+                    (requiredLevel > level ? negativeStatus : positiveStatus)));
         else
             entries.add(Component.translatable("tooltip.relics.relic.reset.locked"));
 

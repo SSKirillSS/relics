@@ -52,9 +52,9 @@ public class RerollActionWidget extends AbstractActionWidget {
         int maxWidth = 100;
         int renderWidth = 0;
 
-        int requiredExperience = relic.getRerollRequiredExperience(getAbility());
+        int requiredLevel = relic.getRerollRequiredLevel(getProvider().getStack(), getAbility());
 
-        int experience = MC.player.totalExperience;
+        int level = MC.player.experienceLevel;
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative").withStyle(ChatFormatting.RED);
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive").withStyle(ChatFormatting.GREEN);
@@ -62,8 +62,8 @@ public class RerollActionWidget extends AbstractActionWidget {
         List<MutableComponent> entries = Lists.newArrayList(
                 Component.translatable("tooltip.relics.relic.reroll.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE),
                 Component.literal(" "),
-                Component.translatable("tooltip.relics.relic.reroll.cost", requiredExperience,
-                        (requiredExperience > experience ? negativeStatus : positiveStatus)));
+                Component.translatable("tooltip.relics.relic.reroll.cost", requiredLevel,
+                        (requiredLevel > level ? negativeStatus : positiveStatus)));
 
         for (MutableComponent entry : entries) {
             int entryWidth = (MC.font.width(entry) + 4) / 2;

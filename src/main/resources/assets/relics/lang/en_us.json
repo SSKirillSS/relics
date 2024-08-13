@@ -10,8 +10,11 @@
   "tooltip.relics.researching.general.leveling_point.title": "Leveling Points:",
   "tooltip.relics.researching.general.leveling_point.extra_info": "Earned when leveling up the relic and used to upgrade abilities.",
 
-  "tooltip.relics.researching.general.player_experience.title": "Player Experience:",
+  "tooltip.relics.researching.general.player_experience.title": "Experience Level:",
   "tooltip.relics.researching.general.player_experience.extra_info": "Standard player experience from the vanilla game. Obtained by killing mobs, mining ore, smelting items, etc.",
+
+  "tooltip.relics.researching.general.luck.title": "Luck:",
+  "tooltip.relics.researching.general.luck.extra_info": "Gained with each unsuccessful reroll of random relic stats, increasing the chances of getting better stats in the next reroll. Increases the reroll cost by 1 experience level for every 5% of luck.",
 
   "tooltip.relics.researching.relic.card.low_level": "You need to upgrade the relic to level %1$s to use this!",
   "tooltip.relics.researching.relic.card.no_stats": "This ability has no upgradeable stats and does not affect the relic's quality!",
@@ -34,14 +37,14 @@
   "tooltip.relics.relic.status.negative": "§4§l[§4§l✘§4§l]",
 
   "tooltip.relics.relic.upgrade.description": "Level-up",
-  "tooltip.relics.relic.upgrade.cost": "Cost: %1$s leveling points %2$s, %3$s experience points %4$s.",
+  "tooltip.relics.relic.upgrade.cost": "Cost: %1$s leveling points %2$s, %3$s experience levels %4$s.",
   "tooltip.relics.relic.upgrade.locked": "The ability has reached its max level.",
 
   "tooltip.relics.relic.reroll.description": "Reroll random stats",
-  "tooltip.relics.relic.reroll.cost": "Cost: %1$s experience points %2$s.",
+  "tooltip.relics.relic.reroll.cost": "Cost: %1$s experience levels %2$s.",
 
   "tooltip.relics.relic.reset.description": "Reset leveling points",
-  "tooltip.relics.relic.reset.cost": "Cost: %1$s experience points %2$s.",
+  "tooltip.relics.relic.reset.cost": "Cost: %1$s experience levels %2$s.",
   "tooltip.relics.relic.reset.locked": "To use you need to level-up this ability at least 1 time.",
 
   "item.relics.infinity_ham": "Infinity Ham",

@@ -145,7 +145,13 @@ public interface IRelicItem {
         if (min == max)
             return getMaxQuality();
 
-        return Mth.clamp((int) Math.round((initial - min) / ((max - min) / getMaxQuality())), 0, getMaxQuality());
+        if (initial == min)
+            return 0;
+
+        if (initial == max)
+            return getMaxQuality();
+
+        return Mth.clamp((int) Math.round((initial - min) / ((max - min) / (getMaxQuality() - 1))), 1, getMaxQuality() - 1);
     }
 
     default double getStatByQuality(String ability, String stat, int quality) {
@@ -224,6 +230,18 @@ public interface IRelicItem {
             addPoints(stack, Mth.clamp(amount, 0, getLevelingData().getMaxLevel() - getLevel(stack)));
 
         setLevel(stack, getLevel(stack) + amount);
+    }
+
+    default int getLuck(ItemStack stack) {
+        return getLevelingComponent(stack).luck();
+    }
+
+    default void setLuck(ItemStack stack, int amount) {
+        setLevelingComponent(stack, getLevelingComponent(stack).toBuilder().luck(Mth.clamp(amount, 0, 100)).build());
+    }
+
+    default void addLuck(ItemStack stack, int amount) {
+        setLuck(stack, getLuck(stack) + amount);
     }
 
     default int getExperience(ItemStack stack) {
@@ -532,28 +550,36 @@ public interface IRelicItem {
         setAbilityPoints(stack, ability, getAbilityPoints(stack, ability) + points);
     }
 
-    default AbilityComponent randomizeAbility(ItemStack stack, String ability) {
+    default AbilityComponent randomizeAbility(ItemStack stack, String ability, int luck) {
         for (String stat : getAbilityData(ability).getStats().keySet())
-            randomizeStat(stack, ability, stat);
+            randomizeStat(stack, ability, stat, luck);
 
         return getAbilityComponent(stack, ability);
     }
 
-    default StatComponent randomizeStat(ItemStack stack, String ability, String stat) {
+    default StatComponent randomizeStat(ItemStack stack, String ability, String stat, int luck) {
         StatData entry = getStatData(ability, stat);
 
-        double result = MathUtils.round(MathUtils.randomBetween(new Random(), entry.getInitialValue().getKey(), entry.getInitialValue().getValue()), 5);
+        double minValue = entry.getInitialValue().getKey();
+        double maxValue = entry.getInitialValue().getValue();
+        double diff = maxValue - minValue;
+
+        Random random = new Random();
+
+        int luckModifier = MathUtils.randomBetween(random, random.nextInt(luck + 1), 100);
+
+        double result = minValue + (diff * (luckModifier / 100D));
 
         setStatInitialValue(stack, ability, stat, result);
 
         return getStatComponent(stack, ability, stat);
     }
 
-    default void randomizeStats(ItemStack stack, String ability) {
+    default void randomizeStats(ItemStack stack, String ability, int luck) {
         AbilityData entry = getAbilityData(ability);
 
         for (String stat : entry.getStats().keySet())
-            randomizeStat(stack, ability, stat);
+            randomizeStat(stack, ability, stat, luck);
     }
 
     default double getStatValue(ItemStack stack, String ability, String stat, int points) {
@@ -595,21 +621,14 @@ public interface IRelicItem {
         return true;
     }
 
-    default int getUpgradeRequiredExperience(ItemStack stack, String ability) {
-        AbilityData entry = getAbilityData(ability);
-
-        int count = entry.getStats().size();
-
-        if (count == 0)
-            return 0;
-
-        return (getAbilityPoints(stack, ability) + 1) * entry.getRequiredPoints() * count * 15;
-    }
-
     default boolean isAbilityMaxLevel(ItemStack stack, String ability) {
         AbilityData entry = getAbilityData(ability);
 
         return entry.getStats().isEmpty() || getAbilityPoints(stack, ability) >= (entry.getMaxLevel() == -1 ? (getLevelingData().getMaxLevel() / entry.getRequiredPoints()) : entry.getMaxLevel());
+    }
+
+    default int getUpgradeRequiredLevel(ItemStack stack, String ability) {
+        return (getAbilityPoints(stack, ability) * 3) + 5;
     }
 
     default boolean mayUpgrade(ItemStack stack, String ability) {
@@ -619,38 +638,31 @@ public interface IRelicItem {
     }
 
     default boolean mayPlayerUpgrade(Player player, ItemStack stack, String ability) {
-        return mayUpgrade(stack, ability) && player.totalExperience >= getUpgradeRequiredExperience(stack, ability);
+        return mayUpgrade(stack, ability) && player.experienceLevel >= getUpgradeRequiredLevel(stack, ability);
     }
 
-    default int getRerollRequiredExperience(String ability) {
-        AbilityData entry = getAbilityData(ability);
-
-        int count = entry.getStats().size();
-
-        if (count == 0)
-            return 0;
-
-        return 100 / count;
+    default int getRerollRequiredLevel(ItemStack stack, String ability) {
+        return (int) Math.floor(getLuck(stack) / 5F);
     }
 
     default boolean mayReroll(ItemStack stack, String ability) {
-        return !getAbilityData(ability).getStats().isEmpty() && getRerollRequiredExperience(ability) > 0 && canUseAbility(stack, ability);
+        return !getAbilityData(ability).getStats().isEmpty() && canUseAbility(stack, ability);
     }
 
     default boolean mayPlayerReroll(Player player, ItemStack stack, String ability) {
-        return mayReroll(stack, ability) && player.totalExperience >= getRerollRequiredExperience(ability);
+        return mayReroll(stack, ability) && player.experienceLevel >= getRerollRequiredLevel(stack, ability);
     }
 
-    default int getResetRequiredExperience(ItemStack stack, String ability) {
-        return getAbilityPoints(stack, ability) * 50;
+    default int getResetRequiredLevel(ItemStack stack, String ability) {
+        return getAbilityPoints(stack, ability) * 5;
     }
 
     default boolean mayReset(ItemStack stack, String ability) {
-        return getResetRequiredExperience(stack, ability) > 0 && canUseAbility(stack, ability);
+        return getAbilityPoints(stack, ability) > 0 && canUseAbility(stack, ability);
     }
 
     default boolean mayPlayerReset(Player player, ItemStack stack, String ability) {
-        return !getAbilityData(ability).getStats().isEmpty() && mayReset(stack, ability) && player.totalExperience >= getResetRequiredExperience(stack, ability);
+        return !getAbilityData(ability).getStats().isEmpty() && mayReset(stack, ability) && player.experienceLevel >= getResetRequiredLevel(stack, ability);
     }
 
     default int getAbilityCooldownCap(ItemStack stack, String ability) {
