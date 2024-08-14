@@ -14,7 +14,7 @@
   "tooltip.relics.researching.general.player_experience.extra_info": "Standard player experience from the vanilla game. Obtained by killing mobs, mining ore, smelting items, etc.",
 
   "tooltip.relics.researching.general.luck.title": "Luck:",
-  "tooltip.relics.researching.general.luck.extra_info": "Gained with each unsuccessful reroll of random relic stats, increasing the chances of getting better stats in the next reroll. Increases the reroll cost by 1 experience level for every 5% of luck.",
+  "tooltip.relics.researching.general.luck.extra_info": "Gained with each unsuccessful reroll of random relic stats, increasing the chances of getting better stats in the next reroll. Increases the reroll cost by 1 experience level for every 25% of luck.",
 
   "tooltip.relics.researching.relic.card.low_level": "You need to upgrade the relic to level %1$s to use this!",
   "tooltip.relics.researching.relic.card.no_stats": "This ability has no upgradeable stats and does not affect the relic's quality!",
@@ -61,7 +61,7 @@
   "item.relics.enders_hand": "Ender Hand",
   "tooltip.relics.enders_hand.description": "+1 experience point for using the ability «End Transposition», +1 experience point for every 10 blocks from the distance to the target when using.",
   "tooltip.relics.enders_hand.ability.neutrality": "Neutrality",
-  "tooltip.relics.enders_hand.ability.neutrality.description": "Makes endermen neutral with respect to the wearer.",
+  "tooltip.relics.enders_hand.ability.neutrality.description": "Makes endermen neutral to the wearer.",
   "tooltip.relics.enders_hand.ability.swap": "End Transposition",
   "tooltip.relics.enders_hand.ability.swap.description": "Swaps the wearer with the target along the line of sight.",
   "tooltip.relics.enders_hand.ability.swap.stat.distance.title": "Distance:",
@@ -70,7 +70,7 @@
 
   "item.relics.holy_locket": "Holy Locket",
   "tooltip.relics.holy_locket.description": "Grants the wearer the ability to turn enemy healing against them.",
-  "tooltip.relics.holy_locket.ability.belief": "Belief",
+  "tooltip.relics.holy_locket.ability.belief": "Faith",
   "tooltip.relics.holy_locket.ability.belief.description": "A toggleable ability with two modes: Sanctity and Unholiness. Activating the ability in any mode fills the internal buffer by 1 unit. In Sanctity mode, redirects a portion of the bearer's healing as damage to nearby targets and reduces incoming damage by 1% per charge. In Unholiness mode, absorbs a portion of the healing of nearby targets and increases damage dealt by 1% per charge.",
   "tooltip.relics.holy_locket.ability.belief.stat.radius.title": "Radius:",
   "tooltip.relics.holy_locket.ability.belief.stat.radius.value": "%1$s blocks.",
@@ -95,7 +95,7 @@
   "item.relics.magic_mirror": "Magic Mirror",
   "tooltip.relics.magic_mirror.description": "+1 experience point for each use of the «Wormhole» ability, +1 experience point for every 50 blocks to the teleportation point.",
   "tooltip.relics.magic_mirror.ability.teleport": "Wormhole",
-  "tooltip.relics.magic_mirror.ability.teleport.description": "After use, teleports the wearer to their respawn point.",
+  "tooltip.relics.magic_mirror.ability.teleport.description": "Upon using, teleports the wearer to their respawn point.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.distance.title": "Distance:",
   "tooltip.relics.magic_mirror.ability.teleport.stat.distance.value": "%1$s blocks.",
   "tooltip.relics.magic_mirror.ability.teleport.stat.cooldown.title": "Recharge:",
