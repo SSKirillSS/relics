@@ -337,17 +337,17 @@ public class RelicsCommand {
                                                         for (String abilityEntry : relic.getRelicData().getAbilities().getAbilities().keySet()) {
                                                             if (stat.equals("all")) {
                                                                 for (String statEntry : relic.getAbilityData(abilityEntry).getStats().keySet())
-                                                                    relic.randomizeStat(stack, abilityEntry, statEntry, 0);
+                                                                    relic.randomizeStat(stack, abilityEntry, statEntry);
                                                             } else {
-                                                                relic.randomizeStat(stack, abilityEntry, stat, 0);
+                                                                relic.randomizeStat(stack, abilityEntry, stat);
                                                             }
                                                         }
                                                     } else {
                                                         if (stat.equals("all")) {
                                                             for (String statEntry : relic.getAbilityData(ability).getStats().keySet())
-                                                                relic.randomizeStat(stack, ability, statEntry, 0);
+                                                                relic.randomizeStat(stack, ability, statEntry);
                                                         } else {
-                                                            relic.randomizeStat(stack, ability, stat, 0);
+                                                            relic.randomizeStat(stack, ability, stat);
                                                         }
                                                     }
 

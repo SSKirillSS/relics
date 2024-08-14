@@ -35,7 +35,7 @@ public class LuckPlateWidget extends AbstractPlateWidget {
         int renderWidth = 0;
 
         List<MutableComponent> entries = Lists.newArrayList(
-                Component.literal("").append(Component.translatable("tooltip.relics.researching.general.luck.title").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + relic.getLuck(stack)),
+                Component.literal("").append(Component.translatable("tooltip.relics.researching.general.luck.title").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + relic.getLuck(stack) + "%"),
                 Component.literal(" ")
         );
 

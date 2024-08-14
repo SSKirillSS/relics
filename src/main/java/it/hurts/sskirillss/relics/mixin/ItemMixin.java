@@ -84,7 +84,7 @@ public class ItemMixin {
                     String statId = statData.getId();
 
                     if (relic.getStatComponent(stack, abilityId, statId) == null)
-                        relic.randomizeStat(stack, abilityId, statId, 0);
+                        relic.randomizeStat(stack, abilityId, statId);
                 }
             }
         }

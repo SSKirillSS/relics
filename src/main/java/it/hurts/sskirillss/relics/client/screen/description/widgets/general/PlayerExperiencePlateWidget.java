@@ -49,7 +49,7 @@ public class PlayerExperiencePlateWidget extends AbstractPlateWidget {
         int renderWidth = 0;
 
         List<MutableComponent> entries = Lists.newArrayList(
-                Component.literal("").append(Component.translatable("tooltip.relics.researching.general.player_experience.title").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + MC.player.experienceLevel + " [" + MC.player.totalExperience + "]"),
+                Component.literal("").append(Component.translatable("tooltip.relics.researching.general.player_experience.title").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + MC.player.experienceLevel),
                 Component.literal(" ")
         );
 

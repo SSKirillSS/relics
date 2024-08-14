@@ -39,10 +39,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -151,7 +148,7 @@ public interface IRelicItem {
         if (initial == max)
             return getMaxQuality();
 
-        return Mth.clamp((int) Math.round((initial - min) / ((max - min) / (getMaxQuality() - 1))), 1, getMaxQuality() - 1);
+        return Mth.clamp((int) Math.round((initial - min) / ((max - min) / getMaxQuality())), 1, getMaxQuality() - 1);
     }
 
     default double getStatByQuality(String ability, String stat, int quality) {
@@ -175,12 +172,23 @@ public interface IRelicItem {
         if (stats.isEmpty())
             return 0;
 
-        int sum = 0;
+        double sum = 0;
 
         for (String stat : stats.keySet())
             sum += getStatQuality(stack, ability, stat);
 
-        return Mth.clamp(sum / stats.size(), 0, getMaxQuality());
+        sum = (int) Math.floor(sum / stats.size());
+
+        int min = 0;
+        int max = getMaxQuality();
+
+        if (sum == min)
+            return min;
+
+        if (sum == max)
+            return max;
+
+        return (int) Mth.clamp(sum, min + 1, max - 1);
     }
 
     default int getRelicQuality(ItemStack stack) {
@@ -190,7 +198,7 @@ public interface IRelicItem {
             return 0;
 
         int size = abilities.size();
-        int sum = 0;
+        double sum = 0;
 
         for (Map.Entry<String, AbilityData> entry : abilities.entrySet()) {
             if (entry.getValue().getMaxLevel() == 0) {
@@ -202,7 +210,18 @@ public interface IRelicItem {
             sum += getAbilityQuality(stack, entry.getKey());
         }
 
-        return Mth.clamp(sum / size, 0, getMaxQuality());
+        sum = (int) Math.floor(sum / size);
+
+        int min = 0;
+        int max = getMaxQuality();
+
+        if (sum == min)
+            return min;
+
+        if (sum == max)
+            return max;
+
+        return (int) Mth.clamp(sum, min + 1, max - 1);
     }
 
     default int getPoints(ItemStack stack) {
@@ -232,12 +251,20 @@ public interface IRelicItem {
         setLevel(stack, getLevel(stack) + amount);
     }
 
+    default int getMaxLuck() {
+        return 100;
+    }
+
+    default double getLuckModifier() {
+        return 1.5D;
+    }
+
     default int getLuck(ItemStack stack) {
         return getLevelingComponent(stack).luck();
     }
 
     default void setLuck(ItemStack stack, int amount) {
-        setLevelingComponent(stack, getLevelingComponent(stack).toBuilder().luck(Mth.clamp(amount, 0, 100)).build());
+        setLevelingComponent(stack, getLevelingComponent(stack).toBuilder().luck(Mth.clamp(amount, 0, getMaxLuck())).build());
     }
 
     default void addLuck(ItemStack stack, int amount) {
@@ -551,35 +578,69 @@ public interface IRelicItem {
     }
 
     default AbilityComponent randomizeAbility(ItemStack stack, String ability, int luck) {
-        for (String stat : getAbilityData(ability).getStats().keySet())
-            randomizeStat(stack, ability, stat, luck);
+        Map<String, StatData> stats = getAbilityData(ability).getStats();
+
+        Random random = new Random();
+
+        double targetQuality = Mth.clamp((int) Math.floor(((Math.tanh(((random.nextDouble() * 2) - 1) + ((luck - (getMaxLuck() / 2D)) / getMaxLuck()))) + 1) / 2 * (getMaxQuality() + 1)), 0, getMaxQuality());
+
+        double sumQuality = 0;
+
+        Map<String, Double> generatedQualities = new HashMap<>();
+
+        for (String stat : stats.keySet()) {
+            double randomQuality = MathUtils.randomBetween(random, 0, getMaxQuality());
+
+            generatedQualities.put(stat, randomQuality);
+
+            sumQuality += randomQuality;
+        }
+
+        double currentAverageQuality = sumQuality / stats.size();
+
+        while (Math.abs(currentAverageQuality - targetQuality) > 0.01) {
+            if (currentAverageQuality < targetQuality) {
+                String minStat = generatedQualities.entrySet().stream().min(Map.Entry.comparingByValue()).get().getKey();
+
+                double increment = Math.min((targetQuality - currentAverageQuality) * stats.size(), getMaxQuality() - generatedQualities.get(minStat));
+
+                generatedQualities.put(minStat, generatedQualities.get(minStat) + increment);
+            } else if (currentAverageQuality > targetQuality) {
+                String maxStat = generatedQualities.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
+
+                double decrement = Math.min((currentAverageQuality - targetQuality) * stats.size(), generatedQualities.get(maxStat));
+
+                generatedQualities.put(maxStat, generatedQualities.get(maxStat) - decrement);
+            }
+
+            sumQuality = generatedQualities.values().stream().mapToDouble(Double::doubleValue).sum();
+
+            currentAverageQuality = sumQuality / stats.size();
+        }
+
+        for (Map.Entry<String, Double> entry : generatedQualities.entrySet())
+            randomizeStat(stack, ability, entry.getKey(), (int) Math.round(entry.getValue()));
 
         return getAbilityComponent(stack, ability);
     }
 
-    default StatComponent randomizeStat(ItemStack stack, String ability, String stat, int luck) {
+    default StatComponent randomizeStat(ItemStack stack, String ability, String stat, int quality) {
         StatData entry = getStatData(ability, stat);
 
         double minValue = entry.getInitialValue().getKey();
         double maxValue = entry.getInitialValue().getValue();
+
         double diff = maxValue - minValue;
 
-        Random random = new Random();
-
-        int luckModifier = MathUtils.randomBetween(random, random.nextInt(luck + 1), 100);
-
-        double result = minValue + (diff * (luckModifier / 100D));
+        double result = minValue + (diff * ((double) quality / getMaxQuality()));
 
         setStatInitialValue(stack, ability, stat, result);
 
         return getStatComponent(stack, ability, stat);
     }
 
-    default void randomizeStats(ItemStack stack, String ability, int luck) {
-        AbilityData entry = getAbilityData(ability);
-
-        for (String stat : entry.getStats().keySet())
-            randomizeStat(stack, ability, stat, luck);
+    default StatComponent randomizeStat(ItemStack stack, String ability, String stat) {
+        return randomizeStat(stack, ability, stat, new Random().nextInt(getMaxQuality() + 1));
     }
 
     default double getStatValue(ItemStack stack, String ability, String stat, int points) {

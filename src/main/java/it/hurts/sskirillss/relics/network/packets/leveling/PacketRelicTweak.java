@@ -82,7 +82,7 @@ public class PacketRelicTweak implements CustomPacketPayload {
 
                         int prevQuality = relic.getAbilityQuality(stack, ability);
 
-                        relic.randomizeStats(stack, ability, relic.getLuck(stack));
+                        relic.randomizeAbility(stack, ability, relic.getLuck(stack));
 
                         if (relic.getAbilityQuality(stack, ability) < prevQuality)
                             relic.addLuck(stack, 1);
