@@ -582,7 +582,26 @@ public interface IRelicItem {
 
         Random random = new Random();
 
-        double targetQuality = Mth.clamp((int) Math.floor(((Math.tanh(((random.nextDouble() * 2) - 1) + ((luck - (getMaxLuck() / 2D)) / getMaxLuck()))) + 1) / 2 * (getMaxQuality() + 1)), 0, getMaxQuality());
+        int maxQuality = getMaxQuality();
+        int maxLuck = getMaxLuck();
+
+        // Random value in the [-1, 1] range
+        double randomValue = (random.nextDouble() * 2D) - 1D;
+
+        // Luck effect modifier. Lower value = lower chance to get 5 stars
+        double modifier = 1.25D;
+
+        // Bias based on luck (ranging from -0.5 to 0.5), multiplied by the modifier
+        double bias = ((luck - (maxLuck / 2D)) / maxLuck) * modifier;
+
+        // Apply the bias to randomValue and limit the result within the range [-1, 1]
+        double biasedValue = Math.tanh(randomValue + bias);
+
+        // Convert the biased result to the range [0, maxQuality]
+        double weightedRandom = Math.floor((biasedValue + 1D) / 2D * (maxQuality + 1D));
+
+        // Clamping the value to avoid overflow
+        double targetQuality = Mth.clamp(weightedRandom, 0, maxQuality);
 
         double sumQuality = 0;
 
@@ -689,7 +708,7 @@ public interface IRelicItem {
     }
 
     default int getUpgradeRequiredLevel(ItemStack stack, String ability) {
-        return (getAbilityPoints(stack, ability) * 3) + 5;
+        return (getAbilityPoints(stack, ability) * 2) + 5;
     }
 
     default boolean mayUpgrade(ItemStack stack, String ability) {
@@ -703,7 +722,7 @@ public interface IRelicItem {
     }
 
     default int getRerollRequiredLevel(ItemStack stack, String ability) {
-        return (int) Math.floor(getLuck(stack) / 5F);
+        return (int) Math.floor(getLuck(stack) / 25D) + 1;
     }
 
     default boolean mayReroll(ItemStack stack, String ability) {
