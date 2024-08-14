@@ -56,7 +56,7 @@ public class IceBreakerItem extends RelicItem {
                                         .castPredicate("falling", (player, stack) -> !(player.onGround() || player.isSpectator()))
                                         .build())
                                 .stat(StatData.builder("size")
-                                        .icon(StatIcons.SIZE)
+                                        .icon(StatIcons.DISTANCE)
                                         .initialValue(2.5D, 5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
                                         .formatValue(value -> MathUtils.round(value, 1))
