@@ -1,34 +1,44 @@
 package it.hurts.sskirillss.relics.config.data;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import it.hurts.sskirillss.octolib.config.api.IOctoConfig;
-import it.hurts.sskirillss.relics.config.ConfigHelper;
+import it.hurts.octostudios.octolib.modules.config.annotations.IgnoreProp;
+import it.hurts.octostudios.octolib.modules.config.impl.OctoConfig;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import lombok.Data;
-
-import java.nio.file.Path;
+import lombok.NoArgsConstructor;
 
 @Data
-public class RelicConfigData implements IOctoConfig {
-    @Expose
-    private final transient IRelicItem relic;
+@NoArgsConstructor
+public class RelicConfigData implements OctoConfig {
+    @IgnoreProp
+    private IRelicItem relic;
 
     public RelicConfigData(IRelicItem relic) {
         this.relic = relic;
+
+        this.setAbilitiesData(relic.getAbilitiesData().toConfigData());
+        this.setLevelingData(relic.getLevelingData().toConfigData());
+        this.setLootData(relic.getLootData().toConfigData());
     }
 
-    @Override
-    public Path getPath() {
-        return ConfigHelper.getPath(relic);
+    public RelicData toData(IRelicItem relic) {
+        RelicData data = relic.getRelicData();
+
+        data.setAbilities(abilitiesData.toData(relic));
+        data.setLeveling(levelingData.toData(relic));
+        data.setLoot(lootData.toData(relic));
+
+        return data;
     }
 
-    @SerializedName("ability")
     private AbilitiesConfigData abilitiesData;
 
-    @SerializedName("leveling")
     private LevelingConfigData levelingData;
 
-    @SerializedName("loot")
     private LootConfigData lootData;
+
+    @Override
+    public void onLoadObject(Object object) {
+        relic.setRelicData(((RelicConfigData) object).toData(relic));
+    }
 }

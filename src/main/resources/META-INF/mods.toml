@@ -33,6 +33,6 @@ side = "BOTH"
 [[dependencies.${mod_id}]]
 modId = "octolib"
 mandatory = true
-versionRange = "[0.3,)"
+versionRange = "[0.4.2,)"
 ordering = "NONE"
 side = "BOTH"

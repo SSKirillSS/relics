@@ -1,10 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
-import it.hurts.sskirillss.octolib.config.data.ConfigContext;
-import it.hurts.sskirillss.octolib.config.data.OctoConfig;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.capability.utils.CapabilityUtils;
-import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
@@ -27,8 +24,6 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -38,6 +33,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -52,15 +49,6 @@ public interface IRelicItem {
     }
 
     RelicData constructDefaultRelicData();
-
-    @Nullable
-    default OctoConfig getConfig() {
-        return ConfigHelper.getRelicConfig(this);
-    }
-
-    default void appendConfig(ConfigContext context) {
-
-    }
 
     default void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
 
@@ -92,8 +80,12 @@ public interface IRelicItem {
         RelicStorage.RELICS.put(this, data);
     }
 
+    default AbilitiesData getAbilitiesData() {
+        return getRelicData().getAbilities();
+    }
+
     default AbilityData getAbilityData(String ability) {
-        return getRelicData().getAbilities().getAbilities().get(ability);
+        return getAbilitiesData().getAbilities().get(ability);
     }
 
     default StatData getStatData(String ability, String stat) {

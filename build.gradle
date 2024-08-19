@@ -55,9 +55,6 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             property 'forge.enabledGameTestNamespaces', mod_id
 
-            jvmArg "-XX:+AllowEnhancedClassRedefinition"
-            jvmArg "-XX:+AllowRedefinitionToAddDeleteMethods"
-
             arg "-mixin.config=" + mod_id + ".mixins.json"
             mods {
                 "${mod_id}" {
@@ -73,9 +70,6 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             property 'forge.enabledGameTestNamespaces', mod_id
 
-            jvmArg "-XX:+AllowEnhancedClassRedefinition"
-            jvmArg "-XX:+AllowRedefinitionToAddDeleteMethods"
-
             arg "-mixin.config=" + mod_id + ".mixins.json"
             mods {
                 "${mod_id}" {
@@ -89,8 +83,9 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    flatDir {
-        dirs 'libs'
+    maven {
+        name = "OctoStudios"
+        url = "https://maven.octo-studios.com/releases"
     }
     maven {
         url = "https://maven.theillusivec4.top/"
@@ -103,16 +98,7 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
     }
-    exclusiveContent {
-        forRepository {
-            maven {
-                url "https://cursemaven.com"
-            }
-        }
-        filter {
-            includeGroup "curse.maven"
-        }
-    }
+    maven { url "https://maven.shedaniel.me" }
 }
 
 dependencies {
@@ -124,33 +110,17 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+1.20.1")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+1.20.1:api")
+    implementation fg.deobf("it.hurts.octostudios.octolib:octolib-forge:0.4.2+1.20.1")
+
+    implementation fg.deobf("dev.architectury:architectury-forge:9.2.14")
+
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+${minecraft_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+${minecraft_version}:api")
 
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:15.2.0.27"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:15.2.0.27"))
 
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:15.2.0.27"))
-
-    if (file("libs").isDirectory()) {
-        file("libs").eachFile { file ->
-            def splitPos = file.name.lastIndexOf("-")
-
-            if (file.name != "desktop.ini") {
-                println file.name
-
-                def modartifact = file.name.substring(0, splitPos)
-                def modversion = file.name.substring(splitPos + 1, file.name.length() - 4)
-                def modreference = "lib:$modartifact:$modversion"
-
-                dependencies {
-                    implementation fg.deobf(project.dependencies.create(modreference) {
-                        transitive = false
-                    })
-                }
-            }
-        }
-    } else file("libs").mkdir()
 }
 
 def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']

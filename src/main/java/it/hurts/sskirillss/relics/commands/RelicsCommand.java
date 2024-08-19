@@ -6,7 +6,6 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityArgument;
 import it.hurts.sskirillss.relics.commands.arguments.RelicAbilityStatArgument;
-import it.hurts.sskirillss.relics.config.ConfigHelper;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -24,13 +23,6 @@ import java.util.Map;
 public class RelicsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("relics").requires(sender -> sender.hasPermission(2))
-                .then(Commands.literal("config")
-                        .then(Commands.literal("reload")
-                                .executes(context -> {
-                                    ConfigHelper.readConfigs();
-
-                                    return Command.SINGLE_SUCCESS;
-                                })))
                 .then(Commands.literal("maximize")
                         .executes(context -> {
                             ServerPlayer player = context.getSource().getPlayerOrException();
