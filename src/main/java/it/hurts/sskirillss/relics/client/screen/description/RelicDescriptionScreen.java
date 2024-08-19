@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.client.screen.description;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
@@ -182,7 +183,13 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
 
             float scale = 1.75F;
 
-            poseStack.translate(x + 70, y + 69 + Math.sin((player.tickCount + pPartialTick) * 0.15F), 0);
+            poseStack.translate(x + 70 + 8 * scale, y + 69 + Math.sin((player.tickCount + pPartialTick) * 0.1F) * 2F + 8 * scale, 0);
+
+            poseStack.mulPose(Axis.ZP.rotationDegrees((float) Math.cos((player.tickCount + pPartialTick) * 0.05F) * 5F));
+            poseStack.mulPose(Axis.YP.rotationDegrees((float) Math.cos((player.tickCount + pPartialTick) * 0.075F) * 25F));
+
+            poseStack.translate(-8 * scale, -8 * scale, -150 * scale);
+
             poseStack.scale(scale, scale, scale);
 
             guiGraphics.renderItem(stack, 0, 0);
