@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.BigA
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.RerollActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.ResetActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.UpgradeActionWidget;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.LogoWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.LuckPlateWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PlayerExperiencePlateWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PointsPlateWidget;
@@ -84,9 +85,11 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         this.addRenderableWidget(new BigAbilityCardWidget(x + 60, y + 47, this, ability));
 
-        this.addRenderableWidget(new PointsPlateWidget(x + 313, y + 57, this));
-        this.addRenderableWidget(new PlayerExperiencePlateWidget(x + 313, y + 82, this));
-        this.addRenderableWidget(new LuckPlateWidget(x + 313, y + 107, this));
+        this.addRenderableWidget(new LogoWidget(x + 313, y + 57, this));
+
+        this.addRenderableWidget(new PointsPlateWidget(x + 313, y + 77, this));
+        this.addRenderableWidget(new PlayerExperiencePlateWidget(x + 313, y + 102, this));
+        this.addRenderableWidget(new LuckPlateWidget(x + 313, y + 127, this));
 
         this.upgradeButton = new UpgradeActionWidget(x + 288, y + 152, this, ability);
         this.rerollButton = new RerollActionWidget(x + 288, y + 170, this, ability);
