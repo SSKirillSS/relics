@@ -41,7 +41,7 @@ public abstract class PiglinAiMixin {
                 if (piglin.getRandom().nextBoolean()) {
                     PiglinAi.throwItems(piglin, getBarterResponseItems(piglin));
 
-                    relic.spreadExperience(player, stack, 3);
+                    relic.spreadRelicExperience(player, stack, 3);
                 }
             }
 

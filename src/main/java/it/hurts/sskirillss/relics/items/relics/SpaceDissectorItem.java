@@ -77,10 +77,10 @@ public class SpaceDissectorItem extends RelicItem {
                 if (startPortal != null)
                     startPortal.setLifeTime(20);
                 else
-                    spreadExperience(player, stack, 1);
+                    spreadRelicExperience(player, stack, 1);
             }
         } else
-            spreadExperience(player, stack, 1);
+            spreadRelicExperience(player, stack, 1);
 
         Vec3 view = player.getViewVector(0);
         Vec3 eyeVec = player.getEyePosition(0);

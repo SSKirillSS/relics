@@ -126,7 +126,7 @@ public class SolidSnowballEntity extends ThrowableProjectile {
         }
 
         if (owner instanceof LivingEntity entity)
-            relic.spreadExperience(entity, stack, (int) Math.floor(getSize() / 5F));
+            relic.spreadRelicExperience(entity, stack, (int) Math.floor(getSize() / 5F));
 
         level().playSound(null, this.blockPosition(), SoundEvents.SNOW_BREAK, SoundSource.MASTER, 1F, 0.5F);
     }

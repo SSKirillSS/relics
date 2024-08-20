@@ -48,8 +48,7 @@ public abstract class RelicItem extends ItemBase implements ICurioItem, IRelicIt
                             attribute.getMultiplier(), attribute.getOperation())));
 
         if (slots != null)
-            slots.getModifiers().forEach(slot ->
-                    CuriosApi.addSlotModifier(modifiers, slot.getLeft(), id, slot.getRight(), AttributeModifier.Operation.ADD_VALUE));
+            slots.getModifiers().forEach((slot, count) -> CuriosApi.addSlotModifier(modifiers, slot, id, count, AttributeModifier.Operation.ADD_VALUE));
 
         return modifiers;
     }

@@ -126,7 +126,7 @@ public class IceBreakerItem extends RelicItem {
             if (distance <= 0)
                 return;
 
-            spreadExperience(player, stack, (int) Math.min(10, Math.round(distance / 3F)));
+            spreadRelicExperience(player, stack, (int) Math.min(10, Math.round(distance / 3F)));
 
             ShockwaveEntity shockwave = new ShockwaveEntity(level,
                     (int) Math.round(Math.min(getStatValue(stack, "impact", "size"), distance * 0.25D)),

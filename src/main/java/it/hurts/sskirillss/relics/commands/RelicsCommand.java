@@ -36,13 +36,13 @@ public class RelicsCommand {
 
                             RelicData relicData = relic.getRelicData();
 
-                            relic.setLevel(stack, relicData.getLeveling().getMaxLevel());
+                            relic.setRelicLevel(stack, relicData.getLeveling().getMaxLevel());
 
                             for (Map.Entry<String, AbilityData> abilityEntry : relicData.getAbilities().getAbilities().entrySet()) {
                                 String abilityId = abilityEntry.getKey();
                                 AbilityData abilityInfo = abilityEntry.getValue();
 
-                                relic.setAbilityPoints(stack, abilityId, abilityInfo.getMaxLevel());
+                                relic.setAbilityLevel(stack, abilityId, abilityInfo.getMaxLevel());
 
                                 for (Map.Entry<String, StatData> statEntry : abilityInfo.getStats().entrySet())
                                     relic.setStatInitialValue(stack, abilityId, statEntry.getKey(), statEntry.getValue().getInitialValue().getValue());
@@ -64,12 +64,12 @@ public class RelicsCommand {
 
                             RelicData relicData = relic.getRelicData();
 
-                            relic.setLevel(stack, relicData.getLeveling().getMaxLevel());
+                            relic.setRelicLevel(stack, relicData.getLeveling().getMaxLevel());
 
                             for (Map.Entry<String, AbilityData> abilityEntry : relicData.getAbilities().getAbilities().entrySet()) {
                                 String abilityId = abilityEntry.getKey();
 
-                                relic.setAbilityPoints(stack, abilityId, 0);
+                                relic.setAbilityLevel(stack, abilityId, 0);
 
                                 for (Map.Entry<String, StatData> statEntry : abilityEntry.getValue().getStats().entrySet())
                                     relic.setStatInitialValue(stack, abilityId, statEntry.getKey(), statEntry.getValue().getInitialValue().getKey());
@@ -96,9 +96,9 @@ public class RelicsCommand {
                                             int level = IntegerArgumentType.getInteger(context, "level");
 
                                             switch (action) {
-                                                case SET -> relic.setLevel(stack, level);
-                                                case ADD -> relic.addLevel(stack, level);
-                                                case TAKE -> relic.addLevel(stack, -level);
+                                                case SET -> relic.setRelicLevel(stack, level);
+                                                case ADD -> relic.addRelicLevel(stack, level);
+                                                case TAKE -> relic.addRelicLevel(stack, -level);
                                             }
 
                                             return Command.SINGLE_SUCCESS;
@@ -121,9 +121,9 @@ public class RelicsCommand {
                                             int experience = IntegerArgumentType.getInteger(context, "experience");
 
                                             switch (action) {
-                                                case SET -> relic.setExperience(stack, experience);
-                                                case ADD -> relic.addExperience(stack, experience);
-                                                case TAKE -> relic.addExperience(stack, -experience);
+                                                case SET -> relic.setRelicExperience(stack, experience);
+                                                case ADD -> relic.addRelicExperience(stack, experience);
+                                                case TAKE -> relic.addRelicExperience(stack, -experience);
                                             }
 
                                             return Command.SINGLE_SUCCESS;
@@ -146,9 +146,9 @@ public class RelicsCommand {
                                             int points = IntegerArgumentType.getInteger(context, "points");
 
                                             switch (action) {
-                                                case SET -> relic.setPoints(stack, points);
-                                                case ADD -> relic.addPoints(stack, points);
-                                                case TAKE -> relic.addPoints(stack, -points);
+                                                case SET -> relic.setRelicLevelingPoints(stack, points);
+                                                case ADD -> relic.addRelicLevelingPoints(stack, points);
+                                                case TAKE -> relic.addRelicLevelingPoints(stack, -points);
                                             }
 
                                             return Command.SINGLE_SUCCESS;
@@ -176,16 +176,16 @@ public class RelicsCommand {
                                                             if (ability.equals("all")) {
                                                                 for (String entry : relic.getRelicData().getAbilities().getAbilities().keySet()) {
                                                                     switch (action) {
-                                                                        case SET -> relic.setAbilityPoints(stack, entry, points);
-                                                                        case ADD -> relic.addAbilityPoints(stack, entry, points);
-                                                                        case TAKE -> relic.addAbilityPoints(stack, entry, -points);
+                                                                        case SET -> relic.setAbilityLevel(stack, entry, points);
+                                                                        case ADD -> relic.addAbilityLevel(stack, entry, points);
+                                                                        case TAKE -> relic.addAbilityLevel(stack, entry, -points);
                                                                     }
                                                                 }
                                                             } else {
                                                                 switch (action) {
-                                                                    case SET -> relic.setAbilityPoints(stack, ability, points);
-                                                                    case ADD -> relic.addAbilityPoints(stack, ability, points);
-                                                                    case TAKE -> relic.addAbilityPoints(stack, ability, -points);
+                                                                    case SET -> relic.setAbilityLevel(stack, ability, points);
+                                                                    case ADD -> relic.addAbilityLevel(stack, ability, points);
+                                                                    case TAKE -> relic.addAbilityLevel(stack, ability, -points);
                                                                 }
                                                             }
 
@@ -275,7 +275,7 @@ public class RelicsCommand {
                                                                         for (String abilityEntry : relic.getRelicData().getAbilities().getAbilities().keySet()) {
                                                                             if (stat.equals("all")) {
                                                                                 for (String statEntry : relic.getAbilityData(abilityEntry).getStats().keySet()) {
-                                                                                    double value = relic.getStatByQuality(abilityEntry, statEntry, quality);
+                                                                                    double value = relic.getStatValueByQuality(abilityEntry, statEntry, quality);
 
                                                                                     switch (action) {
                                                                                         case SET -> relic.setStatInitialValue(stack, abilityEntry, statEntry, value);
@@ -284,7 +284,7 @@ public class RelicsCommand {
                                                                                     }
                                                                                 }
                                                                             } else {
-                                                                                double value = relic.getStatByQuality(abilityEntry, stat, quality);
+                                                                                double value = relic.getStatValueByQuality(abilityEntry, stat, quality);
 
                                                                                 switch (action) {
                                                                                     case SET -> relic.setStatInitialValue(stack, abilityEntry, stat, value);
@@ -296,7 +296,7 @@ public class RelicsCommand {
                                                                     } else {
                                                                         if (stat.equals("all")) {
                                                                             for (String statEntry : relic.getAbilityData(ability).getStats().keySet()) {
-                                                                                double value = relic.getStatByQuality(ability, statEntry, quality);
+                                                                                double value = relic.getStatValueByQuality(ability, statEntry, quality);
 
                                                                                 switch (action) {
                                                                                     case SET -> relic.setStatInitialValue(stack, ability, statEntry, value);
@@ -305,7 +305,7 @@ public class RelicsCommand {
                                                                                 }
                                                                             }
                                                                         } else {
-                                                                            double value = relic.getStatByQuality(ability, stat, quality);
+                                                                            double value = relic.getStatValueByQuality(ability, stat, quality);
 
                                                                             switch (action) {
                                                                                 case SET -> relic.setStatInitialValue(stack, ability, stat, value);

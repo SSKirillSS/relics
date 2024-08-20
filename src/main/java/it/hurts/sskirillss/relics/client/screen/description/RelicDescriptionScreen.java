@@ -141,7 +141,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
         if (relicData == null)
             return;
 
-        int level = relic.getLevel(stack);
+        int level = relic.getRelicLevel(stack);
 
         PoseStack poseStack = guiGraphics.pose();
 

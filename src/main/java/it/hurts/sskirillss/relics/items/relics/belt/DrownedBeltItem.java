@@ -37,7 +37,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import org.apache.commons.lang3.tuple.Pair;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.List;
@@ -113,7 +112,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("charm", (int) Math.round(getStatValue(stack, "slots", "charm"))))
+                .modifier("charm", (int) Math.round(getStatValue(stack, "slots", "charm")))
                 .build();
     }
 
@@ -186,7 +185,7 @@ public class DrownedBeltItem extends RelicItem implements IRenderableCurio {
             if (duration < 10 || enchantment <= 0)
                 return;
 
-            relic.spreadExperience(player, stack, enchantment);
+            relic.spreadRelicExperience(player, stack, enchantment);
 
             player.getCooldowns().addCooldown(trident.getItem(), (int) Math.round(relic.getStatValue(stack, "riptide", "cooldown") * enchantment * 20));
         }

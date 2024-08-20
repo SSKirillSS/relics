@@ -91,7 +91,7 @@ public class BlazingFlaskItem extends RelicItem {
                     player.fallDistance = 0F;
 
                     if (player.tickCount % 100 == 0)
-                        spreadExperience(player, stack, 1);
+                        spreadRelicExperience(player, stack, 1);
 
                     double speed = getStatValue(stack, "bonfire", "speed");
 

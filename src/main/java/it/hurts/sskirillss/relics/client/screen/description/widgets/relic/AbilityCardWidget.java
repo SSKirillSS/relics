@@ -174,7 +174,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         if (isHovered())
             guiGraphics.blit(DescriptionTextures.SMALL_CARD_FRAME_OUTLINE, -(width / 2) - 1, -(height / 2) - 2, 0, 0, width + 2, height + 3, width + 2, height + 3);
 
-        MutableComponent title = Component.literal(canUse ? String.valueOf(relic.getAbilityPoints(screen.stack, ability)) : "?").withStyle(ChatFormatting.BOLD);
+        MutableComponent title = Component.literal(canUse ? String.valueOf(relic.getAbilityLevel(screen.stack, ability)) : "?").withStyle(ChatFormatting.BOLD);
 
         float textScale = 0.5F;
 
@@ -241,7 +241,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
                 Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)
         );
 
-        int level = relic.getLevel(screen.stack);
+        int level = relic.getRelicLevel(screen.stack);
         int requiredLevel = data.getRequiredLevel();
 
         if (level < requiredLevel) {

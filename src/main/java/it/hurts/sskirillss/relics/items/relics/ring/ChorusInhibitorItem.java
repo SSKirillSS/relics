@@ -128,7 +128,7 @@ public class ChorusInhibitorItem extends RelicItem {
             if (pos == null)
                 return;
 
-            relic.spreadExperience(player, stack, (int) Math.floor(player.position().distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ())) / 10F));
+            relic.spreadRelicExperience(player, stack, (int) Math.floor(player.position().distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ())) / 10F));
 
             player.teleportTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
             player.level().playSound(null, pos, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1F, 1F);

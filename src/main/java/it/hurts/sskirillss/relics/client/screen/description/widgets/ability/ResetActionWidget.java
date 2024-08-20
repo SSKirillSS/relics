@@ -63,7 +63,7 @@ public class ResetActionWidget extends AbstractActionWidget {
                 Component.translatable("tooltip.relics.relic.reset.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE),
                 Component.literal(" "));
 
-        if (relic.getAbilityPoints(getProvider().getStack(), getAbility()) > 0)
+        if (relic.getAbilityLevel(getProvider().getStack(), getAbility()) > 0)
             entries.add(Component.translatable("tooltip.relics.relic.reset.cost", requiredLevel,
                     (requiredLevel > level ? negativeStatus : positiveStatus)));
         else

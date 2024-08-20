@@ -121,7 +121,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         if (relicData == null)
             return;
 
-        int level = relic.getAbilityPoints(stack, ability);
+        int level = relic.getAbilityLevel(stack, ability);
 
         PoseStack poseStack = guiGraphics.pose();
 

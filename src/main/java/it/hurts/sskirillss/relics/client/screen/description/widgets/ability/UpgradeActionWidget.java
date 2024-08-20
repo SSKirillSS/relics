@@ -37,7 +37,7 @@ public class UpgradeActionWidget extends AbstractActionWidget {
     @Override
     public void playDownSound(SoundManager handler) {
         if (getProvider().getStack().getItem() instanceof IRelicItem relic && !isLocked()) {
-            int level = relic.getAbilityPoints(getProvider().getStack(), getAbility());
+            int level = relic.getAbilityLevel(getProvider().getStack(), getAbility());
             int maxLevel = relic.getAbilityData(getAbility()).getMaxLevel();
 
             handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_UPGRADE.get(), Screen.hasShiftDown() && relic.mayPlayerUpgrade(MC.player, getProvider().getStack(), getAbility()) ? 2F : 1F + ((float) level / maxLevel)));
@@ -83,7 +83,7 @@ public class UpgradeActionWidget extends AbstractActionWidget {
         int requiredPoints = data.getRequiredPoints();
         int requiredLevel = relic.getUpgradeRequiredLevel(getProvider().getStack(), getAbility());
 
-        int points = relic.getPoints(getProvider().getStack());
+        int points = relic.getRelicLevelingPoints(getProvider().getStack());
         int level = MC.player.experienceLevel;
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");

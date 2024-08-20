@@ -105,7 +105,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
         if (player.isSwimming()) {
             if (player.tickCount % 20 == 0)
-                spreadExperience(player, stack, 1);
+                spreadRelicExperience(player, stack, 1);
 
             if (charge < getStatValue(stack, "swimming", "duration"))
                 stack.set(CHARGE, charge + 1);
@@ -119,7 +119,7 @@ public class AmphibianBootItem extends RelicItem implements IRenderableCurio {
 
         if (player.isSprinting() && player.level().isRainingAt(player.blockPosition()) && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
             if (player.tickCount % 20 == 0)
-                spreadExperience(player, stack, 1);
+                spreadRelicExperience(player, stack, 1);
 
             if (charge < getStatValue(stack, "slipping", "duration") && player.tickCount % 4 == 0)
                 stack.set(CHARGE, charge + 1);

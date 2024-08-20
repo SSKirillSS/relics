@@ -176,7 +176,7 @@ public class MagmaWalkerItem extends RelicItem implements IRenderableCurio {
             stack.set(CHARGE, ++heat);
 
             if (heat % 5 == 0)
-                relic.spreadExperience(player, stack, 1);
+                relic.spreadRelicExperience(player, stack, 1);
         }
 
         event.setCanceled(true);

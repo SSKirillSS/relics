@@ -180,7 +180,7 @@ public class SporeEntity extends ThrowableProjectile {
 
                     level().addFreshEntity(spore);
 
-                    relic.spreadExperience(player, stack, 1);
+                    relic.spreadRelicExperience(player, stack, 1);
                 }
             }
         }

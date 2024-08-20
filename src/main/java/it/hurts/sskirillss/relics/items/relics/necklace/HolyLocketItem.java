@@ -190,7 +190,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
 
             entity.setRemainingFireTicks(50);
 
-            spreadExperience(player, stack, 1);
+            spreadRelicExperience(player, stack, 1);
 
             RandomSource random = level.getRandom();
 
@@ -308,7 +308,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                     if (!level.isClientSide())
                         ((ServerLevel) level).getChunkSource().broadcastAndSend(player, new ClientboundCustomPayloadPacket(new SyncTargetPacket(essence.getId(), target.getId())));
 
-                    relic.spreadExperience(player, stack, amount);
+                    relic.spreadRelicExperience(player, stack, amount);
                     relic.addCharge(stack, 1);
                 }
             } else {
@@ -336,7 +336,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                     if (!level.isClientSide())
                         ((ServerLevel) level).getChunkSource().broadcastAndSend(playerSearched, new ClientboundCustomPayloadPacket(new SyncTargetPacket(essence.getId(), playerSearched.getId())));
 
-                    relic.spreadExperience(playerSearched, stack, amount);
+                    relic.spreadRelicExperience(playerSearched, stack, amount);
                     relic.addCharge(stack, 1);
                 }
             }

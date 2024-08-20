@@ -18,6 +18,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class DataComponentRegistry {
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, Reference.MODID);
 
+    // TODO: Rename to RELIC_DATA or just RELIC instead of DATA
+    @Deprecated(since = "1.21", forRemoval = true)
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DataComponent>> DATA = DATA_COMPONENTS.register("data",
             () -> DataComponentType.<DataComponent>builder()
                     .persistent(DataComponent.CODEC)

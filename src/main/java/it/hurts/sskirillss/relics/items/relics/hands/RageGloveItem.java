@@ -232,7 +232,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
 
                     player.attack(entity);
 
-                    spreadExperience(player, stack, 1);
+                    spreadRelicExperience(player, stack, 1);
 
                     entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING, 100, 0));
                     entity.setRemainingFireTicks(5 * 20);
@@ -364,7 +364,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                     stack.set(CHARGE, ++stacks);
                     stack.set(TIME, (int) Math.round(relic.getStatValue(stack, "rage", "duration") * 20));
 
-                    relic.spreadExperience(player, stack, 1);
+                    relic.spreadRelicExperience(player, stack, 1);
 
                     event.setAmount((float) (event.getAmount() + (event.getAmount() * (stacks * relic.getStatValue(stack, "rage", "dealt_damage")))));
                 }

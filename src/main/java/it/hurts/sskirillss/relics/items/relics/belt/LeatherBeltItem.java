@@ -27,7 +27,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
     @Override
     public RelicSlotModifier getSlotModifiers(ItemStack stack) {
         return RelicSlotModifier.builder()
-                .entry(Pair.of("charm", (int) Math.round(getStatValue(stack, "slots", "charm"))))
+                .modifier("charm", (int) Math.round(getStatValue(stack, "slots", "charm")))
                 .build();
     }
 
@@ -75,7 +74,7 @@ public class LeatherBeltItem extends RelicItem implements IRenderableCurio {
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            relic.addExperience(entity, stack, 1);
+            relic.addRelicExperience(entity, stack, 1);
         }
     }
 

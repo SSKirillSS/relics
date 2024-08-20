@@ -1,7 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
-import it.hurts.sskirillss.relics.capability.utils.CapabilityUtils;
 import it.hurts.sskirillss.relics.components.*;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
@@ -20,13 +19,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
-import it.hurts.sskirillss.relics.network.NetworkHandler;
-import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacket;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -104,24 +97,6 @@ public interface IRelicItem {
         return getRelicData().getStyle();
     }
 
-    default boolean isItemResearched(Player player) {
-        Item item = getItem();
-
-        return item != null && CapabilityUtils.getRelicsCapability(player).getResearchData().getBoolean(BuiltInRegistries.ITEM.getKey(item).getPath() + "_researched");
-    }
-
-    default void setItemResearched(Player player, boolean researched) {
-        Item item = getItem();
-
-        if (item == null)
-            return;
-
-        CapabilityUtils.getRelicsCapability(player).getResearchData().putBoolean(BuiltInRegistries.ITEM.getKey(item).getPath() + "_researched", researched);
-
-        if (!player.level().isClientSide())
-            NetworkHandler.sendToClient(new CapabilitySyncPacket(CapabilityUtils.getRelicsCapability(player).serializeNBT(player.registryAccess())), (ServerPlayer) player);
-    }
-
     default int getMaxQuality() {
         return 10;
     }
@@ -151,7 +126,7 @@ public interface IRelicItem {
         return Mth.clamp((int) Math.round((initial - min) / ((max - min) / getMaxQuality())), 1, getMaxQuality() - 1);
     }
 
-    default double getStatByQuality(String ability, String stat, int quality) {
+    default double getStatValueByQuality(String ability, String stat, int quality) {
         StatData statData = getStatData(ability, stat);
 
         if (statData == null)
@@ -161,7 +136,7 @@ public interface IRelicItem {
         double max = statData.getInitialValue().getValue();
 
         if (min == max)
-            return getMaxQuality();
+            return max;
 
         return MathUtils.round(min + (((max - min) / getMaxQuality()) * quality), 5);
     }
@@ -224,31 +199,31 @@ public interface IRelicItem {
         return (int) Mth.clamp(sum, min + 1, max - 1);
     }
 
-    default int getPoints(ItemStack stack) {
+    default int getRelicLevelingPoints(ItemStack stack) {
         return getLevelingComponent(stack).points();
     }
 
-    default void setPoints(ItemStack stack, int amount) {
+    default void setRelicLevelingPoints(ItemStack stack, int amount) {
         setLevelingComponent(stack, getLevelingComponent(stack).toBuilder().points(Math.max(0, amount)).build());
     }
 
-    default void addPoints(ItemStack stack, int amount) {
-        setPoints(stack, getPoints(stack) + amount);
+    default void addRelicLevelingPoints(ItemStack stack, int amount) {
+        setRelicLevelingPoints(stack, getRelicLevelingPoints(stack) + amount);
     }
 
-    default int getLevel(ItemStack stack) {
+    default int getRelicLevel(ItemStack stack) {
         return getLevelingComponent(stack).level();
     }
 
-    default void setLevel(ItemStack stack, int level) {
+    default void setRelicLevel(ItemStack stack, int level) {
         setLevelingComponent(stack, getLevelingComponent(stack).toBuilder().level(Math.max(0, level)).build());
     }
 
-    default void addLevel(ItemStack stack, int amount) {
+    default void addRelicLevel(ItemStack stack, int amount) {
         if (amount > 0)
-            addPoints(stack, Mth.clamp(amount, 0, getLevelingData().getMaxLevel() - getLevel(stack)));
+            addRelicLevelingPoints(stack, Mth.clamp(amount, 0, getLevelingData().getMaxLevel() - getRelicLevel(stack)));
 
-        setLevel(stack, getLevel(stack) + amount);
+        setRelicLevel(stack, getRelicLevel(stack) + amount);
     }
 
     default int getMaxLuck() {
@@ -256,43 +231,43 @@ public interface IRelicItem {
     }
 
     default double getLuckModifier() {
-        return 1.5D;
+        return 1.25D;
     }
 
-    default int getLuck(ItemStack stack) {
+    default int getRelicLuck(ItemStack stack) {
         return getLevelingComponent(stack).luck();
     }
 
-    default void setLuck(ItemStack stack, int amount) {
+    default void setRelicLuck(ItemStack stack, int amount) {
         setLevelingComponent(stack, getLevelingComponent(stack).toBuilder().luck(Mth.clamp(amount, 0, getMaxLuck())).build());
     }
 
-    default void addLuck(ItemStack stack, int amount) {
-        setLuck(stack, getLuck(stack) + amount);
+    default void addRelicLuck(ItemStack stack, int amount) {
+        setRelicLuck(stack, getRelicLuck(stack) + amount);
     }
 
-    default int getExperience(ItemStack stack) {
+    default int getRelicExperience(ItemStack stack) {
         return getLevelingComponent(stack).experience();
     }
 
-    default void setExperience(ItemStack stack, int experience) {
+    default void setRelicExperience(ItemStack stack, int experience) {
         setLevelingComponent(stack, getLevelingComponent(stack).toBuilder()
-                .experience(Math.clamp(experience, 0, getTotalExperienceForLevel(getLevel(stack) + 1)))
+                .experience(Math.clamp(experience, 0, getTotalRelicExperienceForLevel(getRelicLevel(stack) + 1)))
                 .build());
     }
 
-    default boolean addExperience(ItemStack stack, int amount) {
-        return addExperience(null, stack, amount);
+    default boolean addRelicExperience(ItemStack stack, int amount) {
+        return addRelicExperience(null, stack, amount);
     }
 
-    default boolean addExperience(@Nullable LivingEntity entity, ItemStack stack, int amount) {
+    default boolean addRelicExperience(@Nullable LivingEntity entity, ItemStack stack, int amount) {
         ExperienceAddEvent event = new ExperienceAddEvent(entity instanceof LivingEntity ? entity : null, stack, amount);
 
         NeoForge.EVENT_BUS.post(event);
 
         if (!event.isCanceled()) {
-            int currentExperience = getExperience(stack);
-            int currentLevel = getLevel(stack);
+            int currentExperience = getRelicExperience(stack);
+            int currentLevel = getRelicLevel(stack);
 
             int toAdd = event.getAmount();
 
@@ -303,7 +278,7 @@ public interface IRelicItem {
                 if (resultLevel >= getLevelingData().getMaxLevel())
                     break;
 
-                int requiredExperience = getExperienceBetweenLevels(resultLevel, resultLevel + 1);
+                int requiredExperience = getTotalRelicExperienceBetweenLevels(resultLevel, resultLevel + 1);
 
                 int diff = requiredExperience - currentExperience;
 
@@ -320,12 +295,12 @@ public interface IRelicItem {
                 }
             }
 
-            setExperience(stack, resultExperience);
+            setRelicExperience(stack, resultExperience);
 
             if (currentLevel != resultLevel) {
-                setLevel(stack, resultLevel);
+                setRelicLevel(stack, resultLevel);
 
-                addPoints(stack, resultLevel - currentLevel);
+                addRelicLevelingPoints(stack, resultLevel - currentLevel);
             }
 
             return true;
@@ -334,17 +309,17 @@ public interface IRelicItem {
         return false;
     }
 
-    default void spreadExperience(@Nullable LivingEntity entity, ItemStack stack, int experience) {
-        spreadExperience(entity, stack, experience, 0.25D);
+    default void spreadRelicExperience(@Nullable LivingEntity entity, ItemStack stack, int experience) {
+        spreadRelicExperience(entity, stack, experience, 0.25D);
     }
 
-    default void spreadExperience(@Nullable LivingEntity entity, ItemStack stack, int experience, double percentage) {
-        boolean isMaxLevel = isMaxLevel(stack);
+    default void spreadRelicExperience(@Nullable LivingEntity entity, ItemStack stack, int experience, double percentage) {
+        boolean isMaxLevel = isRelicMaxLevel(stack);
 
         int toSpread = isMaxLevel ? experience : (int) Math.ceil(experience * percentage);
 
         if (!isMaxLevel)
-            addExperience(entity, stack, experience);
+            addRelicExperience(entity, stack, experience);
 
         if (toSpread <= 0 || entity == null)
             return;
@@ -352,7 +327,7 @@ public interface IRelicItem {
         List<ItemStack> relics = new ArrayList<>();
 
         for (RelicContainer source : RelicContainer.values())
-            relics.addAll(source.gatherRelics().apply(entity).stream().filter(entry -> !isMaxLevel(entry) && !stack.equals(entry)).toList());
+            relics.addAll(source.gatherRelics().apply(entity).stream().filter(entry -> !isRelicMaxLevel(entry) && !stack.equals(entry)).toList());
 
         if (relics.isEmpty())
             return;
@@ -360,10 +335,10 @@ public interface IRelicItem {
         ItemStack relicStack = relics.get(entity.level().getRandom().nextInt(relics.size()));
 
         if (relicStack.getItem() instanceof IRelicItem relic)
-            relic.addExperience(entity, relicStack, toSpread);
+            relic.addRelicExperience(entity, relicStack, toSpread);
     }
 
-    default void dropExperience(Level level, Vec3 pos, int amount) {
+    default void dropRelicExperience(Level level, Vec3 pos, int amount) {
         if (amount <= 0)
             return;
 
@@ -387,17 +362,17 @@ public interface IRelicItem {
         }
     }
 
-    default int getExperienceLeftForLevel(ItemStack stack, int level) {
-        int currentLevel = getLevel(stack);
+    default int getRelicExperienceLeftForLevelUp(ItemStack stack, int level) {
+        int currentLevel = getRelicLevel(stack);
 
-        return getExperienceBetweenLevels(currentLevel, level) - getExperience(stack);
+        return getTotalRelicExperienceBetweenLevels(currentLevel, level) - getRelicExperience(stack);
     }
 
-    default int getExperienceBetweenLevels(int from, int to) {
-        return getTotalExperienceForLevel(to) - getTotalExperienceForLevel(from);
+    default int getTotalRelicExperienceBetweenLevels(int from, int to) {
+        return getTotalRelicExperienceForLevel(to) - getTotalRelicExperienceForLevel(from);
     }
 
-    default int getTotalExperienceForLevel(int level) {
+    default int getTotalRelicExperienceForLevel(int level) {
         if (level <= 0)
             return 0;
 
@@ -414,41 +389,25 @@ public interface IRelicItem {
         return result;
     }
 
-    default int getLevelFromExperience(ItemStack stack, int experience) {
+    default int getRelicLevelFromExperience(int experience) {
         int result = 0;
         int amount;
 
         do {
             ++result;
 
-            amount = getTotalExperienceForLevel(result);
+            amount = getTotalRelicExperienceForLevel(result);
         } while (amount <= experience);
 
         return result - 1;
     }
 
-    default boolean isMaxLevel(ItemStack stack) {
-        return getLevel(stack) >= getLevelingData().getMaxLevel();
+    default boolean isRelicMaxLevel(ItemStack stack) {
+        return getRelicLevel(stack) >= getLevelingData().getMaxLevel();
     }
 
-    default int getExchanges(ItemStack stack) {
-        return NBTUtils.getInt(stack, "exchanges", 0);
-    }
-
-    default void setExchanges(ItemStack stack, int amount) {
-        NBTUtils.setInt(stack, "exchanges", Math.max(0, amount));
-    }
-
-    default void addExchanges(ItemStack stack, int amount) {
-        setExchanges(stack, getExchanges(stack) + amount);
-    }
-
-    default int getExchangeCost(ItemStack stack) {
-        return (int) (5 + (5 * ((getExchanges(stack)) * 0.01F)));
-    }
-
-    default boolean isExchangeAvailable(Player player, ItemStack stack) {
-        return getExchangeCost(stack) <= EntityUtils.getPlayerTotalExperience(player);
+    default boolean isAbilityMaxLevel(ItemStack stack, String ability) {
+        return getAbilityLevel(stack, ability) >= getAbilityData(ability).getMaxLevel();
     }
 
     default CastData getAbilityCastData(String ability) {
@@ -563,21 +522,21 @@ public interface IRelicItem {
         setStatInitialValue(stack, ability, stat, getStatInitialValue(stack, ability, stat) + value);
     }
 
-    default int getAbilityPoints(ItemStack stack, String ability) {
+    default int getAbilityLevel(ItemStack stack, String ability) {
         return getAbilityComponent(stack, ability).points();
     }
 
-    default void setAbilityPoints(ItemStack stack, String ability, int points) {
+    default void setAbilityLevel(ItemStack stack, String ability, int points) {
         setAbilityComponent(stack, ability, getAbilityComponent(stack, ability).toBuilder()
                 .points(points)
                 .build());
     }
 
-    default void addAbilityPoints(ItemStack stack, String ability, int points) {
-        setAbilityPoints(stack, ability, getAbilityPoints(stack, ability) + points);
+    default void addAbilityLevel(ItemStack stack, String ability, int points) {
+        setAbilityLevel(stack, ability, getAbilityLevel(stack, ability) + points);
     }
 
-    default AbilityComponent randomizeAbility(ItemStack stack, String ability, int luck) {
+    default AbilityComponent randomizeAbilityStats(ItemStack stack, String ability, int luck) {
         Map<String, StatData> stats = getAbilityData(ability).getStats();
 
         Random random = new Random();
@@ -589,7 +548,7 @@ public interface IRelicItem {
         double randomValue = (random.nextDouble() * 2D) - 1D;
 
         // Luck effect modifier. Lower value = lower chance to get 5 stars
-        double modifier = 1.25D;
+        double modifier = getLuckModifier();
 
         // Bias based on luck (ranging from -0.5 to 0.5), multiplied by the modifier
         double bias = ((luck - (maxLuck / 2D)) / maxLuck) * modifier;
@@ -685,11 +644,11 @@ public interface IRelicItem {
     }
 
     default double getStatValue(ItemStack stack, String ability, String stat) {
-        return getStatValue(stack, ability, stat, getAbilityPoints(stack, ability));
+        return getStatValue(stack, ability, stat, getAbilityLevel(stack, ability));
     }
 
     default boolean canUseAbility(ItemStack stack, String ability) {
-        return getLevel(stack) >= getAbilityData(ability).getRequiredLevel();
+        return getRelicLevel(stack) >= getAbilityData(ability).getRequiredLevel();
     }
 
     default boolean canSeeAbility(Player player, ItemStack stack, String ability) {
@@ -701,20 +660,14 @@ public interface IRelicItem {
         return true;
     }
 
-    default boolean isAbilityMaxLevel(ItemStack stack, String ability) {
-        AbilityData entry = getAbilityData(ability);
-
-        return entry.getStats().isEmpty() || getAbilityPoints(stack, ability) >= (entry.getMaxLevel() == -1 ? (getLevelingData().getMaxLevel() / entry.getRequiredPoints()) : entry.getMaxLevel());
-    }
-
     default int getUpgradeRequiredLevel(ItemStack stack, String ability) {
-        return (getAbilityPoints(stack, ability) * 2) + 5;
+        return (getAbilityLevel(stack, ability) * 2) + 5;
     }
 
     default boolean mayUpgrade(ItemStack stack, String ability) {
         AbilityData entry = getAbilityData(ability);
 
-        return !entry.getStats().isEmpty() && !isAbilityMaxLevel(stack, ability) && getPoints(stack) >= entry.getRequiredPoints() && canUseAbility(stack, ability);
+        return !entry.getStats().isEmpty() && !isAbilityMaxLevel(stack, ability) && getRelicLevelingPoints(stack) >= entry.getRequiredPoints() && canUseAbility(stack, ability);
     }
 
     default boolean mayPlayerUpgrade(Player player, ItemStack stack, String ability) {
@@ -727,14 +680,14 @@ public interface IRelicItem {
 
         player.giveExperienceLevels(-getUpgradeRequiredLevel(stack, ability));
 
-        setAbilityPoints(stack, ability, getAbilityPoints(stack, ability) + 1);
-        addPoints(stack, -getAbilityData(ability).getRequiredPoints());
+        setAbilityLevel(stack, ability, getAbilityLevel(stack, ability) + 1);
+        addRelicLevelingPoints(stack, -getAbilityData(ability).getRequiredPoints());
 
         return true;
     }
 
     default int getRerollRequiredLevel(ItemStack stack, String ability) {
-        return (int) Math.floor(getLuck(stack) / 25D) + 1;
+        return (int) Math.floor(getRelicLuck(stack) / 25D) + 1;
     }
 
     default boolean mayReroll(ItemStack stack, String ability) {
@@ -753,20 +706,20 @@ public interface IRelicItem {
 
         int prevQuality = getAbilityQuality(stack, ability);
 
-        randomizeAbility(stack, ability, getLuck(stack));
+        randomizeAbilityStats(stack, ability, getRelicLuck(stack));
 
         if (getAbilityQuality(stack, ability) < prevQuality)
-            addLuck(stack, 1);
+            addRelicLuck(stack, 1);
 
         return true;
     }
 
     default int getResetRequiredLevel(ItemStack stack, String ability) {
-        return getAbilityPoints(stack, ability) * 5;
+        return getAbilityLevel(stack, ability) * 5;
     }
 
     default boolean mayReset(ItemStack stack, String ability) {
-        return getAbilityPoints(stack, ability) > 0 && canUseAbility(stack, ability);
+        return getAbilityLevel(stack, ability) > 0 && canUseAbility(stack, ability);
     }
 
     default boolean mayPlayerReset(Player player, ItemStack stack, String ability) {
@@ -779,8 +732,8 @@ public interface IRelicItem {
 
         player.giveExperienceLevels(-getResetRequiredLevel(stack, ability));
 
-        addPoints(stack, getAbilityPoints(stack, ability) * getAbilityData(ability).getRequiredPoints());
-        setAbilityPoints(stack, ability, 0);
+        addRelicLevelingPoints(stack, getAbilityLevel(stack, ability) * getAbilityData(ability).getRequiredPoints());
+        setAbilityLevel(stack, ability, 0);
 
         return true;
     }

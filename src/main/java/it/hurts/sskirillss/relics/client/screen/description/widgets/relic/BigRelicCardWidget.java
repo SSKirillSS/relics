@@ -37,7 +37,7 @@ public class BigRelicCardWidget extends AbstractBigCardWidget {
         int renderWidth = 0;
 
         List<MutableComponent> entries = Lists.newArrayList(
-                Component.literal("").append(Component.translatable("tooltip.relics.researching.relic.info.level").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + relic.getLevel(stack) + "/" + relic.getLevelingData().getMaxLevel()),
+                Component.literal("").append(Component.translatable("tooltip.relics.researching.relic.info.level").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + relic.getRelicLevel(stack) + "/" + relic.getLevelingData().getMaxLevel()),
                 Component.literal("").append(Component.translatable("tooltip.relics.researching.relic.info.quality").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + MathUtils.round(relic.getRelicQuality(stack) / 2F, 1) + "/" + relic.getMaxQuality() / 2),
                 Component.literal(" ")
         );

@@ -64,7 +64,7 @@ public class RollerSkatesItem extends RelicItem {
 
         if (player.isSprinting() && !player.isShiftKeyDown() && !player.isInWater() && !player.isInLava()) {
             if (player.tickCount % 20 == 0)
-                spreadExperience(player, stack, 1);
+                spreadRelicExperience(player, stack, 1);
 
             if (duration < getStatValue(stack, "skating", "duration") && player.tickCount % 4 == 0)
                 stack.set(CHARGE, duration + 1);
