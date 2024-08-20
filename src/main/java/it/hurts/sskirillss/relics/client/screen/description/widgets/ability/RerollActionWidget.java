@@ -100,21 +100,22 @@ public class RerollActionWidget extends AbstractActionWidget {
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
+        MutableComponent unknownStatus = Component.translatable("tooltip.relics.relic.status.unknown");
 
         boolean isQuick = relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility());
 
         List<MutableComponent> entries = Lists.newArrayList(
                 Component.translatable("tooltip.relics.relic.reroll.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE),
                 Component.literal(" "),
-                Component.translatable("tooltip.relics.relic.reroll.cost", isQuick && Screen.hasShiftDown() ? Component.literal("XXX").withStyle(ChatFormatting.OBFUSCATED) : requiredLevel, (requiredLevel > level ? negativeStatus : positiveStatus)),
-                Component.literal(" ")
+                Component.translatable("tooltip.relics.relic.reroll.cost", isQuick && Screen.hasShiftDown() ? Component.literal("XXX").withStyle(ChatFormatting.OBFUSCATED) : requiredLevel, (requiredLevel > level ? negativeStatus : isQuick && Screen.hasShiftDown() ? unknownStatus : positiveStatus))
         );
 
-        if (relic.getAbilityQuality(getProvider().getStack(), getAbility()) == relic.getMaxQuality())
-            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.reroll.warning")));
-        else if (relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility())) {
-            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.reroll.quick")));
+        if (relic.getAbilityQuality(getProvider().getStack(), getAbility()) == relic.getMaxQuality()) {
             entries.add(Component.literal(" "));
+            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.reroll.warning")));
+        } else if (relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility())) {
+            entries.add(Component.literal(" "));
+            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.reroll.quick")));
         }
 
         for (MutableComponent entry : entries) {

@@ -89,27 +89,27 @@ public class UpgradeActionWidget extends AbstractActionWidget {
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
 
-        List<MutableComponent> entries = Lists.newArrayList(
-                Component.translatable("tooltip.relics.relic.upgrade.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE),
-                Component.literal(" "));
+        List<MutableComponent> entries = Lists.newArrayList(Component.translatable("tooltip.relics.relic.upgrade.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE));
 
         boolean isMaxLevel = relic.isAbilityMaxLevel(getProvider().getStack(), getAbility());
         boolean isQuick = Screen.hasShiftDown() && relic.mayPlayerUpgrade(MC.player, getProvider().getStack(), getAbility());
 
         if (!isMaxLevel) {
+            entries.add(Component.literal(" "));
             entries.add(Component.translatable("tooltip.relics.relic.upgrade.cost", isQuick ? Component.literal("XXX").withStyle(ChatFormatting.OBFUSCATED) : requiredPoints,
                     (requiredPoints > points ? negativeStatus : positiveStatus), isQuick ? Component.literal("XXX").withStyle(ChatFormatting.OBFUSCATED) : requiredLevel,
                     (requiredLevel > level ? negativeStatus : positiveStatus)));
-            entries.add(Component.literal(" "));
         }
 
         if (!isLocked()) {
-            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.upgrade.quick")));
             entries.add(Component.literal(" "));
+            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.upgrade.quick")));
         }
 
-        if (isMaxLevel)
+        if (isMaxLevel) {
+            entries.add(Component.literal(" "));
             entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.upgrade.locked")));
+        }
 
         for (MutableComponent entry : entries) {
             int entryWidth = (MC.font.width(entry) + 4) / 2;

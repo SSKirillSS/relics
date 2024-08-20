@@ -245,8 +245,11 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
 
         for (GuiEventListener listener : this.children()) {
             if (listener instanceof AbstractButton button && button.isHovered()
-                    && button instanceof IHoverableWidget widget)
+                    && button instanceof IHoverableWidget widget) {
+                guiGraphics.pose().translate(0, 0, 100);
+
                 widget.onHovered(guiGraphics, pMouseX, pMouseY);
+            }
         }
     }
 

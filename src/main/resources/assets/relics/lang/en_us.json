@@ -35,7 +35,7 @@
 
   "tooltip.relics.relic.status.positive": "§2§l[§2§l✔§2§l]",
   "tooltip.relics.relic.status.negative": "§4§l[§4§l✘§4§l]",
-  "tooltip.relics.relic.status.unknown": "§6§l[§e§l?§6§l]",
+  "tooltip.relics.relic.status.unknown": "§6§l[§6§l?§6§l]",
 
   "tooltip.relics.relic.upgrade.description": "Level-up",
   "tooltip.relics.relic.upgrade.cost": "Cost: %1$s leveling points %2$s, %3$s experience levels %4$s.",
