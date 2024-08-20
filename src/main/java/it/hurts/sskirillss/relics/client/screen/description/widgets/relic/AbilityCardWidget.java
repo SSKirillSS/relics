@@ -205,9 +205,8 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         if (isHovered()) {
             if (MC.player.tickCount % 3 == 0)
-                ParticleStorage.addParticle(screen, new ExperienceParticleData(relic.canUseAbility(screen.stack, ability)
-                        ? new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0)
-                        : new Color(100 + random.nextInt(100), 100 + random.nextInt(100), 100 + random.nextInt(100)),
+                ParticleStorage.addParticle(screen, new ExperienceParticleData(
+                        new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
                         getX() + random.nextInt(width), getY() - 1, 1F + (random.nextFloat() * 0.5F), 100 + random.nextInt(50)));
 
             if (scale < maxScale)

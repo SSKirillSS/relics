@@ -721,6 +721,18 @@ public interface IRelicItem {
         return mayUpgrade(stack, ability) && player.experienceLevel >= getUpgradeRequiredLevel(stack, ability);
     }
 
+    default boolean upgrade(Player player, ItemStack stack, String ability) {
+        if (!mayPlayerUpgrade(player, stack, ability))
+            return false;
+
+        player.giveExperienceLevels(-getUpgradeRequiredLevel(stack, ability));
+
+        setAbilityPoints(stack, ability, getAbilityPoints(stack, ability) + 1);
+        addPoints(stack, -getAbilityData(ability).getRequiredPoints());
+
+        return true;
+    }
+
     default int getRerollRequiredLevel(ItemStack stack, String ability) {
         return (int) Math.floor(getLuck(stack) / 25D) + 1;
     }
@@ -733,6 +745,22 @@ public interface IRelicItem {
         return mayReroll(stack, ability) && player.experienceLevel >= getRerollRequiredLevel(stack, ability);
     }
 
+    default boolean reroll(Player player, ItemStack stack, String ability) {
+        if (!mayPlayerReroll(player, stack, ability))
+            return false;
+
+        player.giveExperienceLevels(-getRerollRequiredLevel(stack, ability));
+
+        int prevQuality = getAbilityQuality(stack, ability);
+
+        randomizeAbility(stack, ability, getLuck(stack));
+
+        if (getAbilityQuality(stack, ability) < prevQuality)
+            addLuck(stack, 1);
+
+        return true;
+    }
+
     default int getResetRequiredLevel(ItemStack stack, String ability) {
         return getAbilityPoints(stack, ability) * 5;
     }
@@ -743,6 +771,18 @@ public interface IRelicItem {
 
     default boolean mayPlayerReset(Player player, ItemStack stack, String ability) {
         return !getAbilityData(ability).getStats().isEmpty() && mayReset(stack, ability) && player.experienceLevel >= getResetRequiredLevel(stack, ability);
+    }
+
+    default boolean reset(Player player, ItemStack stack, String ability) {
+        if (!mayPlayerReset(player, stack, ability))
+            return false;
+
+        player.giveExperienceLevels(-getResetRequiredLevel(stack, ability));
+
+        addPoints(stack, getAbilityPoints(stack, ability) * getAbilityData(ability).getRequiredPoints());
+        setAbilityPoints(stack, ability, 0);
+
+        return true;
     }
 
     default int getAbilityCooldownCap(ItemStack stack, String ability) {

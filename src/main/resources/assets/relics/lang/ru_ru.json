@@ -35,13 +35,17 @@
 
   "tooltip.relics.relic.status.positive": "§2§l[§2§l✔§2§l]",
   "tooltip.relics.relic.status.negative": "§4§l[§4§l✘§4§l]",
+  "tooltip.relics.relic.status.unknown": "§6§l[§e§l?§6§l]",
 
   "tooltip.relics.relic.upgrade.description": "Повышение уровня",
   "tooltip.relics.relic.upgrade.cost": "Стоимость: %1$s очков улучшения %2$s, %3$s уровней опыта %4$s.",
   "tooltip.relics.relic.upgrade.locked": "Способность достигла максимального уровня.",
+  "tooltip.relics.relic.upgrade.quick": "Удерживай [Шифт] для автоматического повышения до максимально возможного уровня.",
 
   "tooltip.relics.relic.reroll.description": "Сброс случайных характеристик",
   "tooltip.relics.relic.reroll.cost": "Стоимость: %1$s уровней опыта %2$s.",
+  "tooltip.relics.relic.reroll.quick": "Удерживай [Шифт] для автоматического сброса случайных характеристик до идеальных значений.",
+  "tooltip.relics.relic.reroll.warning": "Удерживай [Шифт] для подтверждения сброса характеристик с идеальных значений на другие случайные.",
 
   "tooltip.relics.relic.reset.description": "Сброс очков улучшения",
   "tooltip.relics.relic.reset.cost": "Стоимость: %1$s уровней опыта %2$s.",

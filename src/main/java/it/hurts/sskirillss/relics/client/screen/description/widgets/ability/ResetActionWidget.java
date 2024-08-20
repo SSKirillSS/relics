@@ -56,8 +56,8 @@ public class ResetActionWidget extends AbstractActionWidget {
 
         int level = MC.player.experienceLevel;
 
-        MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative").withStyle(ChatFormatting.RED);
-        MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive").withStyle(ChatFormatting.GREEN);
+        MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
+        MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
 
         List<MutableComponent> entries = Lists.newArrayList(
                 Component.translatable("tooltip.relics.relic.reset.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE),

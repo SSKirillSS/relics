@@ -1,20 +1,26 @@
 package it.hurts.sskirillss.relics.client.screen.description.widgets.ability;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
+import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.base.AbstractActionWidget;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
+import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
@@ -31,8 +37,44 @@ public class RerollActionWidget extends AbstractActionWidget {
 
     @Override
     public void playDownSound(SoundManager handler) {
-        if (!isLocked())
-            handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_REROLL.get(), 1F));
+        if (isLocked() || !(getProvider().getStack().getItem() instanceof IRelicItem relic)
+                || (relic.getRelicQuality(getProvider().getStack()) == relic.getMaxQuality() && !Screen.hasShiftDown()))
+            return;
+
+        handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_REROLL.get(), 1F));
+    }
+
+    @Override
+    public void onPress() {
+        if (isLocked() || !(getProvider().getStack().getItem() instanceof IRelicItem relic))
+            return;
+
+        boolean hasWarning = relic.getRelicQuality(getProvider().getStack()) == relic.getMaxQuality();
+
+        if (hasWarning && !Screen.hasShiftDown())
+            return;
+
+        NetworkHandler.sendToServer(new PacketRelicTweak(getProvider().getContainer(), getProvider().getSlot(), getAbility(), PacketRelicTweak.Operation.REROLL, !hasWarning && Screen.hasShiftDown()));
+    }
+
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        if (!(getProvider().getStack().getItem() instanceof IRelicItem relic))
+            return;
+
+        boolean isWarning = relic.getAbilityQuality(getProvider().getStack(), getAbility()) == relic.getMaxQuality();
+        boolean isQuick = Screen.hasShiftDown() && relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility());
+
+        float color = (isWarning && Screen.hasShiftDown()) || isQuick ? (float) (1.05F + (Math.sin((MC.player.tickCount + (getAbility().length() * 10)) * 0.5F) * 0.1F)) : 1F;
+
+        RenderSystem.setShaderColor(color, color, color, 1F);
+
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/ability/reroll_button" + (isLocked() ? "_inactive" : "_active") + (isWarning ? "_warning" : isQuick ? "_quick" : "") + ".png"), getX(), getY(), 0, 0, width, height, width, height);
+
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
+        if (isHovered)
+            guiGraphics.blit(DescriptionTextures.ACTION_BUTTON_OUTLINE, getX(), getY(), 0, 0, width, height, width, height);
     }
 
     @Override
@@ -56,14 +98,24 @@ public class RerollActionWidget extends AbstractActionWidget {
 
         int level = MC.player.experienceLevel;
 
-        MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative").withStyle(ChatFormatting.RED);
-        MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive").withStyle(ChatFormatting.GREEN);
+        MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
+        MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
+
+        boolean isQuick = relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility());
 
         List<MutableComponent> entries = Lists.newArrayList(
                 Component.translatable("tooltip.relics.relic.reroll.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE),
                 Component.literal(" "),
-                Component.translatable("tooltip.relics.relic.reroll.cost", requiredLevel,
-                        (requiredLevel > level ? negativeStatus : positiveStatus)));
+                Component.translatable("tooltip.relics.relic.reroll.cost", isQuick && Screen.hasShiftDown() ? Component.literal("XXX").withStyle(ChatFormatting.OBFUSCATED) : requiredLevel, (requiredLevel > level ? negativeStatus : positiveStatus)),
+                Component.literal(" ")
+        );
+
+        if (relic.getAbilityQuality(getProvider().getStack(), getAbility()) == relic.getMaxQuality())
+            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.reroll.warning")));
+        else if (relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility())) {
+            entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.reroll.quick")));
+            entries.add(Component.literal(" "));
+        }
 
         for (MutableComponent entry : entries) {
             int entryWidth = (MC.font.width(entry) + 4) / 2;

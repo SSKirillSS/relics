@@ -28,6 +28,11 @@ public class PacketRelicTweak implements CustomPacketPayload {
     private final int slot;
     private final String ability;
     private final Operation operation;
+    private final boolean withShift;
+
+    public PacketRelicTweak(int container, int slot, String ability, Operation operation) {
+        this(container, slot, ability, operation, false);
+    }
 
     public static final CustomPacketPayload.Type<PacketRelicTweak> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "relic_tweak"));
 
@@ -36,6 +41,7 @@ public class PacketRelicTweak implements CustomPacketPayload {
             ByteBufCodecs.INT, PacketRelicTweak::getSlot,
             ByteBufCodecs.STRING_UTF8, PacketRelicTweak::getAbility,
             ByteBufCodecs.idMapper(Operation.BY_ID, Operation::getId), PacketRelicTweak::getOperation,
+            ByteBufCodecs.BOOL, PacketRelicTweak::isWithShift,
             PacketRelicTweak::new
     );
 
@@ -67,36 +73,34 @@ public class PacketRelicTweak implements CustomPacketPayload {
             if (entry == null)
                 return;
 
-            switch (operation) {
+            // OMG why it works like this D:
+            if (!switch (operation) {
                 case UPGRADE -> {
-                    if (relic.mayPlayerUpgrade(player, stack, ability)) {
-                        player.giveExperienceLevels(-relic.getUpgradeRequiredLevel(stack, ability));
+                    boolean result = false;
 
-                        relic.setAbilityPoints(stack, ability, relic.getAbilityPoints(stack, ability) + 1);
-                        relic.addPoints(stack, -entry.getRequiredPoints());
-                    }
+                    if (withShift)
+                        for (; ; )
+                            if (relic.upgrade(player, stack, ability))
+                                result = true;
+                            else break;
+                    else
+                        result = relic.upgrade(player, stack, ability);
+
+                    yield result;
                 }
                 case REROLL -> {
-                    if (relic.mayPlayerReroll(player, stack, ability)) {
-                        player.giveExperienceLevels(-relic.getRerollRequiredLevel(stack, ability));
+                    boolean result = false;
 
-                        int prevQuality = relic.getAbilityQuality(stack, ability);
+                    if (withShift)
+                        while (relic.getAbilityQuality(stack, ability) != relic.getMaxQuality() && relic.reroll(player, stack, ability))
+                            result = true;
+                    else
+                        result = relic.reroll(player, stack, ability);
 
-                        relic.randomizeAbility(stack, ability, relic.getLuck(stack));
-
-                        if (relic.getAbilityQuality(stack, ability) < prevQuality)
-                            relic.addLuck(stack, 1);
-                    }
+                    yield result;
                 }
-                case RESET -> {
-                    if (relic.mayPlayerReset(player, stack, ability)) {
-                        player.giveExperienceLevels(-relic.getResetRequiredLevel(stack, ability));
-
-                        relic.addPoints(stack, relic.getAbilityPoints(stack, ability) * entry.getRequiredPoints());
-                        relic.setAbilityPoints(stack, ability, 0);
-                    }
-                }
-            }
+                case RESET -> relic.reset(player, stack, ability);
+            }) return;
 
             try {
                 player.containerMenu.getSlot(slot).set(stack);
