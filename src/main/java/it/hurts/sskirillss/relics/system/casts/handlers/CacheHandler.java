@@ -1,6 +1,7 @@
 package it.hurts.sskirillss.relics.system.casts.handlers;
 
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityCache;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityReference;
@@ -41,8 +42,8 @@ public class CacheHandler {
 
                 Map<String, Boolean> predicates = cache.getPredicates();
 
-                for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> predicate : relic.getAbilityCastData(reference.getId()).getCastPredicates().entrySet())
-                    predicates.put(predicate.getKey(), predicate.getValue().apply(player, stack));
+                for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> predicate : relic.getAbilityPredicates(reference.getId(), PredicateType.CAST).entrySet())
+                    predicates.put(predicate.getKey(), relic.testAbilityPredicate(player, stack, reference.getId(), predicate.getKey()));
 
                 cache.setPredicates(predicates);
 

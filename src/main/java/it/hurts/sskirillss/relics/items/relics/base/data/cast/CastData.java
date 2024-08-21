@@ -2,13 +2,18 @@ package it.hurts.sskirillss.relics.items.relics.base.data.cast;
 
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.IRelicContainer;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import lombok.Builder;
 import lombok.Data;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 @Data
@@ -21,25 +26,15 @@ public class CastData {
     private CastType type = CastType.NONE;
 
     @Builder.Default
-    private Map<String, BiFunction<Player, ItemStack, Boolean>> castPredicates;
-
-    @Builder.Default
-    private List<BiFunction<Player, ItemStack, Boolean>> visibilityPredicates;
+    private Map<String, Pair<PredicateType, BiFunction<Player, ItemStack, Boolean>>> predicates;
 
     public static class CastDataBuilder {
-        private Map<String, BiFunction<Player, ItemStack, Boolean>> castPredicates = new HashMap<>();
-        List<BiFunction<Player, ItemStack, Boolean>> visibilityPredicates = new ArrayList<>();
+        private Map<String, Pair<PredicateType, BiFunction<Player, ItemStack, Boolean>>> predicates = new HashMap<>();
 
         private List<IRelicContainer> container = List.of(RelicContainer.CURIOS);
 
-        public CastDataBuilder castPredicate(String id, BiFunction<Player, ItemStack, Boolean> predicate) {
-            castPredicates.put(id, predicate);
-
-            return this;
-        }
-
-        public CastDataBuilder visibilityPredicate(BiFunction<Player, ItemStack, Boolean> predicate) {
-            visibilityPredicates.add(predicate);
+        public CastDataBuilder predicate(String id, PredicateType type, BiFunction<Player, ItemStack, Boolean> predicate) {
+            predicates.put(id, Pair.of(type, predicate));
 
             return this;
         }

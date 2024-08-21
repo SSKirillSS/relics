@@ -47,7 +47,7 @@ public class SpellCastPacket implements CustomPacketPayload {
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            if (!relic.canPlayerUseActiveAbility(player, stack, reference.getId())) {
+            if (!relic.canUseAbility(player, stack, reference.getId())) {
                 if (relic.isAbilityTicking(stack, reference.getId())) {
                     relic.setAbilityTicking(stack, reference.getId(), false);
 

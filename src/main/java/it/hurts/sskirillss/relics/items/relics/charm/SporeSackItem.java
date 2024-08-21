@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
@@ -17,7 +18,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
-import it.hurts.sskirillss.relics.utils.*;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -111,7 +115,7 @@ public class SporeSackItem extends RelicItem {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
-                                        .castPredicate("spore", (player, stack) -> stack.getOrDefault(CHARGE, 0) > 0)
+                                        .predicate("spore", PredicateType.CAST, (player, stack) -> stack.getOrDefault(CHARGE, 0) > 0)
                                         .build())
                                 .stat(StatData.builder("size")
                                         .icon(StatIcons.SIZE)

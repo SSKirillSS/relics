@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
@@ -53,7 +54,7 @@ public class IceBreakerItem extends RelicItem {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
-                                        .castPredicate("falling", (player, stack) -> !(player.onGround() || player.isSpectator()))
+                                        .predicate("falling", PredicateType.CAST, (player, stack) -> !(player.onGround() || player.isSpectator()))
                                         .build())
                                 .stat(StatData.builder("size")
                                         .icon(StatIcons.DISTANCE)

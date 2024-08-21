@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -35,6 +36,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public interface IRelicItem {
     @Nullable
@@ -414,13 +416,22 @@ public interface IRelicItem {
         return getAbilityData(ability).getCastData();
     }
 
-    default boolean testAbilityCastPredicates(Player player, ItemStack stack, String ability) {
-        CastData data = getAbilityCastData(ability);
+    default Map<String, Pair<PredicateType, BiFunction<Player, ItemStack, Boolean>>> getAbilityPredicates(String ability) {
+        return getAbilityCastData(ability).getPredicates();
+    }
 
-        for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> entry : data.getCastPredicates().entrySet()) {
-            if (!entry.getValue().apply(player, stack))
+    default Map<String, BiFunction<Player, ItemStack, Boolean>> getAbilityPredicates(String ability, PredicateType type) {
+        return getAbilityPredicates(ability).entrySet().stream().filter(entry -> entry.getValue().getKey() == type).collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
+    }
+
+    default boolean testAbilityPredicate(Player player, ItemStack stack, String ability, String predicate) {
+        return getAbilityPredicates(ability).get(predicate).getValue().apply(player, stack);
+    }
+
+    default boolean testAbilityPredicates(Player player, ItemStack stack, String ability, PredicateType type) {
+        for (Map.Entry<String, BiFunction<Player, ItemStack, Boolean>> entry : getAbilityPredicates(ability, type).entrySet())
+            if (!testAbilityPredicate(player, stack, ability, entry.getKey()))
                 return false;
-        }
 
         return true;
     }
@@ -651,13 +662,12 @@ public interface IRelicItem {
         return getRelicLevel(stack) >= getAbilityData(ability).getRequiredLevel();
     }
 
-    default boolean canSeeAbility(Player player, ItemStack stack, String ability) {
-        for (BiFunction<Player, ItemStack, Boolean> predicate : getAbilityCastData(ability).getVisibilityPredicates()) {
-            if (!predicate.apply(player, stack))
-                return false;
-        }
+    default boolean canUseAbility(Player player, ItemStack stack, String ability) {
+        return canUseAbility(stack, ability) && testAbilityPredicates(player, stack, ability, PredicateType.CAST);
+    }
 
-        return true;
+    default boolean canSeeAbility(Player player, ItemStack stack, String ability) {
+        return testAbilityPredicates(player, stack, ability, PredicateType.VISIBILITY);
     }
 
     default int getUpgradeRequiredLevel(ItemStack stack, String ability) {
@@ -777,9 +787,5 @@ public interface IRelicItem {
 
     default boolean isAbilityOnCooldown(ItemStack stack, String ability) {
         return getAbilityCooldown(stack, ability) > 0;
-    }
-
-    default boolean canPlayerUseActiveAbility(Player player, ItemStack stack, String ability) {
-        return canUseAbility(stack, ability) && !isAbilityOnCooldown(stack, ability) && testAbilityCastPredicates(player, stack, ability);
     }
 }

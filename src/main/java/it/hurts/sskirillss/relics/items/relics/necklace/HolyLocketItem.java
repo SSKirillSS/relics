@@ -14,6 +14,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
@@ -118,7 +119,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                 .requiredLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.TOGGLEABLE)
-                                        .castPredicate("blessing", (player, stack) -> getCharges(stack) > 0)
+                                        .predicate("blessing", PredicateType.CAST, (player, stack) -> getCharges(stack) > 0)
                                         .build())
                                 .stat(StatData.builder("consumption")
                                         .icon(StatIcons.CAPACITY)

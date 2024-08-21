@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
@@ -64,8 +65,8 @@ public class ElytraBoosterItem extends RelicItem implements IRenderableCurio {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.CYCLICAL)
-                                        .castPredicate("fuel", (player, stack) -> stack.getOrDefault(CHARGE, 0) > 0)
-                                        .castPredicate("elytra", (player, stack) -> player.isFallFlying())
+                                        .predicate("fuel", PredicateType.CAST, (player, stack) -> stack.getOrDefault(CHARGE, 0) > 0)
+                                        .predicate("elytra", PredicateType.CAST, (player, stack) -> player.isFallFlying())
                                         .build())
                                 .stat(StatData.builder("capacity")
                                         .icon(StatIcons.CAPACITY)

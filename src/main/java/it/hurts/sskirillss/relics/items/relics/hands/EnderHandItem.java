@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
@@ -61,7 +62,7 @@ public class EnderHandItem extends RelicItem implements IRenderableCurio {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
-                                        .castPredicate("target", (player, stack) -> {
+                                        .predicate("target", PredicateType.CAST, (player, stack) -> {
                                             EntityHitResult result = EntityUtils.rayTraceEntity(player, (entity) -> !entity.isSpectator() && entity.isPickable(), getStatValue(stack, "swap", "distance"));
 
                                             return result != null && result.getEntity() instanceof LivingEntity;
