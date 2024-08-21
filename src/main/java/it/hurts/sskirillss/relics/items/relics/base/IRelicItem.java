@@ -5,15 +5,16 @@ import it.hurts.sskirillss.relics.components.*;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.init.EntityRegistry;
+import it.hurts.sskirillss.relics.init.RegistryRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicSlotModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.containers.base.RelicContainer;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
@@ -328,7 +329,7 @@ public interface IRelicItem {
 
         List<ItemStack> relics = new ArrayList<>();
 
-        for (RelicContainer source : RelicContainer.values())
+        for (RelicContainer source : RegistryRegistry.RELIC_CONTAINER_REGISTRY.entrySet().stream().map(Map.Entry::getValue).toList())
             relics.addAll(source.gatherRelics().apply(entity).stream().filter(entry -> !isRelicMaxLevel(entry) && !stack.equals(entry)).toList());
 
         if (relics.isEmpty())

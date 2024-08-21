@@ -8,6 +8,7 @@
     "AbstractContainerMenuMixin",
     "EnderManMixin",
     "EntityMixin",
+    "GameDataMixin",
     "ItemMixin",
     "LivingEntityMixin",
     "PiglinAiMixin",

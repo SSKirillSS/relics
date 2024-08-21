@@ -15,6 +15,7 @@ public class Relics {
     public static final Logger LOGGER = LogManager.getLogger(Reference.MODID);
 
     public Relics(IEventBus bus, ModContainer container) {
+        RelicContainerRegistry.register(bus);
         bus.addListener(this::setupCommon);
 
         ItemRegistry.register(bus);

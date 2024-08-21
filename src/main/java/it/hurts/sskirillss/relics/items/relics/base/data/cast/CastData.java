@@ -1,9 +1,9 @@
 package it.hurts.sskirillss.relics.items.relics.base.data.cast;
 
+import it.hurts.sskirillss.relics.init.RelicContainerRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.containers.base.RelicContainer;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.IRelicContainer;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import lombok.Builder;
 import lombok.Data;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
 @Builder
 public class CastData {
     @Builder.Default
-    private List<IRelicContainer> container;
+    private List<RelicContainer> containers;
 
     @Builder.Default
     private CastType type = CastType.NONE;
@@ -31,7 +31,7 @@ public class CastData {
     public static class CastDataBuilder {
         private Map<String, Pair<PredicateType, BiFunction<Player, ItemStack, Boolean>>> predicates = new HashMap<>();
 
-        private List<IRelicContainer> container = List.of(RelicContainer.CURIOS);
+        private List<RelicContainer> containers = List.of(RelicContainerRegistry.CURIOS.get());
 
         public CastDataBuilder predicate(String id, PredicateType type, BiFunction<Player, ItemStack, Boolean> predicate) {
             predicates.put(id, Pair.of(type, predicate));
@@ -39,8 +39,8 @@ public class CastData {
             return this;
         }
 
-        public CastDataBuilder container(RelicContainer... container) {
-            this.container = Arrays.asList(container);
+        public CastDataBuilder container(RelicContainer... containers) {
+            this.containers = Arrays.asList(containers);
 
             return this;
         }

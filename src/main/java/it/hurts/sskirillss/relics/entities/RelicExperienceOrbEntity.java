@@ -1,7 +1,8 @@
 package it.hurts.sskirillss.relics.entities;
 
+import it.hurts.sskirillss.relics.init.RegistryRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.containers.base.RelicContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -18,6 +19,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RelicExperienceOrbEntity extends Entity {
     private static final EntityDataAccessor<Integer> EXPERIENCE = SynchedEntityData.defineId(RelicExperienceOrbEntity.class, EntityDataSerializers.INT);
@@ -47,7 +49,7 @@ public class RelicExperienceOrbEntity extends Entity {
     private List<ItemStack> getUpgradeableRelics(Player player) {
         List<ItemStack> relics = new ArrayList<>();
 
-        for (RelicContainer source : RelicContainer.values())
+        for (RelicContainer source : RegistryRegistry.RELIC_CONTAINER_REGISTRY.entrySet().stream().map(Map.Entry::getValue).toList())
             relics.addAll(source.gatherRelics().apply(player).stream().filter(entry -> !((IRelicItem) entry.getItem()).isRelicMaxLevel(entry)).toList());
 
         return relics;

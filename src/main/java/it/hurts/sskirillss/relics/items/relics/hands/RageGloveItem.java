@@ -126,6 +126,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                                 .maxLevel(10)
                                 .active(CastData.builder()
                                         .type(CastType.INSTANTANEOUS)
+                                        //.container(RelicContainerRegistry.CURIOS.get())
                                         .build())
                                 .stat(StatData.builder("damage")
                                         .icon(StatIcons.DEALT_DAMAGE)

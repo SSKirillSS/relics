@@ -1,8 +1,9 @@
 package it.hurts.sskirillss.relics.system.casts.handlers;
 
+import it.hurts.sskirillss.relics.init.RegistryRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.containers.base.RelicContainer;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.RelicContainer;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityCache;
 import it.hurts.sskirillss.relics.system.casts.abilities.AbilityReference;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -31,7 +32,7 @@ public class CacheHandler {
 
         LinkedHashMap<AbilityReference, AbilityCache> references = new LinkedHashMap<>();
 
-        for (RelicContainer source : RelicContainer.values()) {
+        for (RelicContainer source : RegistryRegistry.RELIC_CONTAINER_REGISTRY.entrySet().stream().map(Map.Entry::getValue).toList()) {
             for (AbilityReference reference : source.gatherAbilities().apply(player)) {
                 ItemStack stack = reference.getSlot().gatherStack(player);
 
