@@ -659,12 +659,14 @@ public interface IRelicItem {
         return getStatValue(stack, ability, stat, getAbilityLevel(stack, ability));
     }
 
+    // TODO: Rename to isUnlocked or something like this
+    @Deprecated(since = "1.21", forRemoval = true)
     default boolean canUseAbility(ItemStack stack, String ability) {
         return getRelicLevel(stack) >= getAbilityData(ability).getRequiredLevel();
     }
 
     default boolean canUseAbility(Player player, ItemStack stack, String ability) {
-        return canUseAbility(stack, ability) && testAbilityPredicates(player, stack, ability, PredicateType.CAST);
+        return canUseAbility(stack, ability) && testAbilityPredicates(player, stack, ability, PredicateType.CAST) && getAbilityCooldown(stack, ability) <= 0;
     }
 
     default boolean canSeeAbility(Player player, ItemStack stack, String ability) {
