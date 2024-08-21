@@ -38,7 +38,7 @@ public class RerollActionWidget extends AbstractActionWidget {
     @Override
     public void playDownSound(SoundManager handler) {
         if (isLocked() || !(getProvider().getStack().getItem() instanceof IRelicItem relic)
-                || (relic.getRelicQuality(getProvider().getStack()) == relic.getMaxQuality() && !Screen.hasShiftDown()))
+                || (relic.getAbilityQuality(getProvider().getStack(), getAbility()) == relic.getMaxQuality() && !Screen.hasShiftDown()))
             return;
 
         handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_REROLL.get(), 1F));
@@ -49,7 +49,7 @@ public class RerollActionWidget extends AbstractActionWidget {
         if (isLocked() || !(getProvider().getStack().getItem() instanceof IRelicItem relic))
             return;
 
-        boolean hasWarning = relic.getRelicQuality(getProvider().getStack()) == relic.getMaxQuality();
+        boolean hasWarning = relic.getAbilityQuality(getProvider().getStack(), getAbility()) == relic.getMaxQuality();
 
         if (hasWarning && !Screen.hasShiftDown())
             return;
