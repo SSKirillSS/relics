@@ -25,6 +25,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.joml.Vector2f;
+
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, IRelicScreenProvider {
@@ -41,6 +44,8 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
     public int backgroundHeight = 256;
     public int backgroundWidth = 418;
+
+    public int ticksExisted = 0;
 
     public AbilityResearchScreen(Player player, int container, int slot, Screen screen, String ability) {
         super(Component.empty());
@@ -67,7 +72,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
     @Override
     public void tick() {
         super.tick();
-
+        ticksExisted++;
         stack = DescriptionUtils.gatherRelicStack(minecraft.player, slot);
     }
 
@@ -106,7 +111,24 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         );
 
         {
-            guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_fog.png"), x + 67, y + 54, 0, 0, 110, 155, 110, 155);
+            RenderSystem.setShaderTexture(0,ResourceLocation.tryBuild(Reference.MODID, "textures/gui/description/test_fog.png"));
+            RenderUtils.renderRevealingPanel(poseStack, x + 67, y + 54,110, 155,
+                    List.of(
+                            new Vector2f(pMouseX,pMouseY),
+                            new Vector2f(200,100)
+                    ),
+                    List.of(
+                            0.1f,
+                            0.05f
+                    ),
+                    List.of(
+                            5f,
+                            3f
+                    ),
+                    ticksExisted / 100.1f
+            );
+
+            //guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_fog.png"), x + 67, y + 54, 0, 0, 110, 155, 110, 155);
 
             guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_background.png"), x + 60, y + 45, 0, 0, 242, 176, 242, 176);
         }
