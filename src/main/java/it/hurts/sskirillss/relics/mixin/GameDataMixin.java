@@ -18,6 +18,7 @@ public class GameDataMixin {
         Set<ResourceLocation> order = new LinkedHashSet<>();
 
         order.add(RegistryRegistry.RELIC_CONTAINER_REGISTRY_KEY.location());
+        order.add(RegistryRegistry.BADGE_REGISTRY_KEY.location());
 
         order.addAll(cir.getReturnValue());
 

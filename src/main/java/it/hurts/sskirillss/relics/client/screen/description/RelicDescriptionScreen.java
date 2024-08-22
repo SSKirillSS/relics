@@ -4,20 +4,19 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import it.hurts.sskirillss.relics.badges.base.RelicBadge;
 import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
 import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.general.LogoWidget;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.general.LuckPlateWidget;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PlayerExperiencePlateWidget;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PointsPlateWidget;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.*;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.AbilityCardWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.BigRelicCardWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.relic.RelicExperienceWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
+import it.hurts.sskirillss.relics.init.BadgeRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
@@ -39,6 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.awt.*;
 import java.util.Set;
@@ -83,6 +83,17 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
         this.addRenderableWidget(new PlayerExperiencePlateWidget(x + 313, y + 102, this));
         this.addRenderableWidget(new LuckPlateWidget(x + 313, y + 127, this));
 
+        int xOff = 0;
+
+        for (RelicBadge badge : BadgeRegistry.BADGES.getEntries().stream().map(DeferredHolder::get).filter(entry -> entry instanceof RelicBadge).map(entry -> (RelicBadge) entry).toList()) {
+            if (!badge.isVisible(stack))
+                continue;
+
+            this.addRenderableWidget(new RelicBadgeWidget(x + 270 - xOff, y + 63, this, badge));
+
+            xOff += 15;
+        }
+
         this.addRenderableWidget(new RelicExperienceWidget(x + 127, y + 121, this));
 
         Set<String> abilities = relic.getRelicData().getAbilities().getAbilities().keySet();
@@ -94,12 +105,12 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
 
         int spacing = cardWidth + 8 + (3 * (5 - count));
 
-        int xOffset = (containerWidth / 2) - (((cardWidth * count) + ((spacing - cardWidth) * Math.max(count - 1, 0))) / 2);
+        xOff = (containerWidth / 2) - (((cardWidth * count) + ((spacing - cardWidth) * Math.max(count - 1, 0))) / 2);
 
         for (String ability : abilities) {
-            this.addRenderableWidget(new AbilityCardWidget(x + 77 + xOffset, y + 153, this, ability));
+            this.addRenderableWidget(new AbilityCardWidget(x + 77 + xOff, y + 153, this, ability));
 
-            xOffset += spacing;
+            xOff += spacing;
         }
     }
 
@@ -215,7 +226,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
 
             guiGraphics.drawString(minecraft.font, Component.literal(stack.getDisplayName().getString()
                             .replace("[", "").replace("]", ""))
-                    .withStyle(ChatFormatting.BOLD), (int) ((x + 113) * 1.33F), (int) ((y + 66) * 1.33F), 0x662f13, false);
+                    .withStyle(ChatFormatting.BOLD), (int) ((x + 113) * 1.33F), (int) ((y + 67) * 1.33F), 0x662f13, false);
 
             poseStack.popPose();
 
@@ -226,7 +237,7 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
             yOff = 9;
 
             for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".description"), 340)) {
-                guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 73) * 2 + yOff, 0x662f13, false);
+                guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 74) * 2 + yOff, 0x662f13, false);
 
                 yOff += 9;
             }

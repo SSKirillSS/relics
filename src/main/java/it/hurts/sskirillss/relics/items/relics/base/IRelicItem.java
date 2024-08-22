@@ -409,8 +409,24 @@ public interface IRelicItem {
         return getRelicLevel(stack) >= getLevelingData().getMaxLevel();
     }
 
+    default boolean isRelicMaxQuality(ItemStack stack) {
+        return getRelicQuality(stack) >= getMaxQuality();
+    }
+
+    default boolean isRelicFlawless(ItemStack stack) {
+        return isRelicMaxLevel(stack) && isRelicMaxQuality(stack);
+    }
+
     default boolean isAbilityMaxLevel(ItemStack stack, String ability) {
         return getAbilityLevel(stack, ability) >= getAbilityData(ability).getMaxLevel();
+    }
+
+    default boolean isAbilityMaxQuality(ItemStack stack, String ability) {
+        return getAbilityQuality(stack, ability) >= getMaxQuality();
+    }
+
+    default boolean isAbilityFlawless(ItemStack stack, String ability) {
+        return isAbilityMaxLevel(stack, ability) && isAbilityMaxQuality(stack, ability);
     }
 
     default CastData getAbilityCastData(String ability) {

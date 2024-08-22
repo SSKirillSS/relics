@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.client.screen.description;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.badges.base.AbilityBadge;
 import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
@@ -12,10 +13,8 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.BigA
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.RerollActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.ResetActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.UpgradeActionWidget;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.general.LogoWidget;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.general.LuckPlateWidget;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PlayerExperiencePlateWidget;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PointsPlateWidget;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.*;
+import it.hurts.sskirillss.relics.init.BadgeRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -40,6 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.awt.*;
 
@@ -77,7 +77,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
     @Override
     protected void init() {
-        if (stack == null || !(stack.getItem() instanceof IRelicItem))
+        if (stack == null || !(stack.getItem() instanceof IRelicItem relic))
             return;
 
         int x = (this.width - backgroundWidth) / 2;
@@ -90,6 +90,17 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         this.addRenderableWidget(new PointsPlateWidget(x + 313, y + 77, this));
         this.addRenderableWidget(new PlayerExperiencePlateWidget(x + 313, y + 102, this));
         this.addRenderableWidget(new LuckPlateWidget(x + 313, y + 127, this));
+
+        int xOff = 0;
+
+        for (AbilityBadge badge : BadgeRegistry.BADGES.getEntries().stream().map(DeferredHolder::get).filter(entry -> entry instanceof AbilityBadge).map(entry -> (AbilityBadge) entry).toList()) {
+            if (!badge.isVisible(stack, ability))
+                continue;
+
+            this.addRenderableWidget(new AbilityBadgeWidget(x + 270 - xOff, y + 63, this, badge, ability));
+
+            xOff += 15;
+        }
 
         this.upgradeButton = new UpgradeActionWidget(x + 288, y + 152, this, ability);
         this.rerollButton = new RerollActionWidget(x + 288, y + 170, this, ability);
@@ -187,7 +198,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             poseStack.scale(0.75F, 0.75F, 0.75F);
 
             guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability)
-                    .withStyle(ChatFormatting.BOLD), (int) ((x + 113) * 1.33F), (int) ((y + 66) * 1.33F), 0x662f13, false);
+                    .withStyle(ChatFormatting.BOLD), (int) ((x + 113) * 1.33F), (int) ((y + 67) * 1.33F), 0x662f13, false);
 
             yOff = 9;
 
@@ -198,7 +209,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
             for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 340)) {
-                guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 73) * 2 + yOff, 0x662f13, false);
+                guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 74) * 2 + yOff, 0x662f13, false);
 
                 yOff += 9;
             }

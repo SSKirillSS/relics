@@ -2,9 +2,10 @@ package it.hurts.sskirillss.relics.client.screen.description.widgets.general;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.badges.base.AbilityBadge;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
-import it.hurts.sskirillss.relics.client.screen.description.widgets.general.base.AbstractPlateWidget;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.base.AbstractBadgeWidget;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,9 +17,20 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class LuckPlateWidget extends AbstractPlateWidget {
-    public LuckPlateWidget(int x, int y, IRelicScreenProvider provider) {
-        super(x, y, provider, "luck");
+public class AbilityBadgeWidget extends AbstractBadgeWidget {
+    private final AbilityBadge badge;
+    private final String ability;
+
+    public AbilityBadgeWidget(int x, int y, IRelicScreenProvider provider, AbilityBadge badge, String ability) {
+        super(x, y, provider, badge);
+
+        this.badge = badge;
+        this.ability = ability;
+    }
+
+    @Override
+    public AbilityBadge getBadge() {
+        return badge;
     }
 
     @Override
@@ -32,18 +44,26 @@ public class LuckPlateWidget extends AbstractPlateWidget {
 
         List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
-        int maxWidth = 150;
+        int maxWidth = 100;
         int renderWidth = 0;
 
         List<MutableComponent> entries = Lists.newArrayList(
-                Component.literal("").append(Component.translatable("tooltip.relics.researching.general.luck.title").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + relic.getRelicLuck(stack) + "%"),
+                getBadge().getTitle(stack, ability).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE),
                 Component.literal(" ")
         );
 
-        if (Screen.hasShiftDown())
-            entries.add(Component.translatable("tooltip.relics.researching.general.luck.extra_info").withStyle(ChatFormatting.ITALIC));
-        else
-            entries.add(Component.translatable("tooltip.relics.researching.general.extra_info"));
+        entries.addAll(getBadge().getDescription(stack, ability));
+
+        List<MutableComponent> hint = getBadge().getHint(stack, ability);
+
+        if (!hint.isEmpty()) {
+            entries.add(Component.literal(" "));
+
+            if (Screen.hasShiftDown())
+                entries.addAll(hint.stream().map(entry -> entry.withStyle(ChatFormatting.ITALIC)).toList());
+            else
+                entries.add(Component.translatable("tooltip.relics.researching.general.extra_info"));
+        }
 
         for (MutableComponent entry : entries) {
             int entryWidth = (MC.font.width(entry) / 2);
@@ -56,7 +76,7 @@ public class LuckPlateWidget extends AbstractPlateWidget {
 
         poseStack.pushPose();
 
-        poseStack.translate(0F, 0F, 100);
+        poseStack.translate(0F, 0F, 400);
 
         DescriptionUtils.drawTooltipBackground(guiGraphics, renderWidth, tooltip.size() * 5, mouseX - 9 - (renderWidth / 2), mouseY);
 
@@ -71,15 +91,5 @@ public class LuckPlateWidget extends AbstractPlateWidget {
         }
 
         poseStack.popPose();
-    }
-
-    @Override
-    public void onTick() {
-
-    }
-
-    @Override
-    public String getValue(ItemStack stack) {
-        return (stack.getItem() instanceof IRelicItem relic ? relic.getRelicLuck(stack) : 0) + "%";
     }
 }

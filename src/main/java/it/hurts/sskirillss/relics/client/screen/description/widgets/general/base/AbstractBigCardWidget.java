@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.client.screen.description.widgets.general;
+package it.hurts.sskirillss.relics.client.screen.description.widgets.general.base;
 
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;

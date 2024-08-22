@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics;
 import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -15,13 +14,13 @@ public class Relics {
     public static final Logger LOGGER = LogManager.getLogger(Reference.MODID);
 
     public Relics(IEventBus bus, ModContainer container) {
-        RelicContainerRegistry.register(bus);
         bus.addListener(this::setupCommon);
 
         ItemRegistry.register(bus);
         TileRegistry.register(bus);
         BlockRegistry.register(bus);
         SoundRegistry.register(bus);
+        BadgeRegistry.register(bus);
         EntityRegistry.register(bus);
         EffectRegistry.register(bus);
         CommandRegistry.register(bus);
@@ -29,12 +28,11 @@ public class Relics {
         LootCodecRegistry.register(bus);
         CreativeTabRegistry.register(bus);
         DataComponentRegistry.register(bus);
+        RelicContainerRegistry.register(bus);
     }
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         DispenserBehaviorRegistry.register();
         ConfigRegistry.register();
-
-        InterModComms.sendTo("carryon", "blacklistBlock", () -> "relics:researching_table");
     }
 }

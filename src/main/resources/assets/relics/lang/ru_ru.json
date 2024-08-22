@@ -7,6 +7,32 @@
 
   "tooltip.relics.relic.tooltip.abilities": "Способности:",
 
+  "tooltip.relics.researching.badge.ability.oblivion.title": "Подверженность забвению",
+  "tooltip.relics.researching.badge.ability.oblivion.description": "Способность не будет работать под эффектом забвения.",
+  "tooltip.relics.researching.badge.ability.silence.title": "Подверженность безмолвию",
+  "tooltip.relics.researching.badge.ability.silence.description": "Способность не будет работать под эффектом безмолвия.",
+  "tooltip.relics.researching.badge.ability.flawless_ability.title": "Совершенная способность",
+  "tooltip.relics.researching.badge.ability.flawless_ability.description": "Способность достигла максимальных идеальных параметров. Гордись собой!",
+  "tooltip.relics.researching.badge.ability.instantaneous.title": "Мгновенное применение",
+  "tooltip.relics.researching.badge.ability.instantaneous.description": "Способность срабатывает сразу же после использования.",
+  "tooltip.relics.researching.badge.ability.interruptible.title": "Прерываемое применение",
+  "tooltip.relics.researching.badge.ability.interruptible.description": "Способность действует какое-то время после использования и прерывается повторным использованием.",
+  "tooltip.relics.researching.badge.ability.cyclical.title": "Цикличное применение",
+  "tooltip.relics.researching.badge.ability.cyclical.description": "Способность действует только при непрерывном использовании.",
+  "tooltip.relics.researching.badge.ability.toggleable.title": "Переключаемое применения",
+  "tooltip.relics.researching.badge.ability.toggleable.description": "Способность может быть включена/выключена при использовании.",
+  "tooltip.relics.researching.badge.ability.chargeable.title": "Заряжаемое применение",
+  "tooltip.relics.researching.badge.ability.chargeable.description": "Способность срабатывает мгновенно спустя некоторое время цикличного использования. Результат срабатывания может зависеть от продолжительности использования.",
+  "tooltip.relics.researching.badge.ability.chargeable.title": "Заряжаемое применение",
+  "tooltip.relics.researching.badge.ability.chargeable.description": "Способность срабатывает мгновенно спустя некоторое время цикличного использования. Результат срабатывания может зависеть от продолжительности использования.",
+  "tooltip.relics.researching.badge.ability.stated.title": "Режимное применение",
+  "tooltip.relics.researching.badge.ability.stated.description": "Способность имеет несколько циклично переключаемых режимов, сменяемых её использованием.",
+
+  "tooltip.relics.researching.badge.relic.flawless_relic.title": "Совершенная реликвия",
+  "tooltip.relics.researching.badge.relic.flawless_relic.description": "Реликвия достигла максимальных идеальных параметров. Гордись собой!",
+
+  "tooltip.relics.researching.badge.ability.cast_type.hint": "Используй клавишу [%1$s] вне любого интерфейса для вызова меню активных способностей!",
+
   "tooltip.relics.researching.general.leveling_point.title": "Очки улучшения:",
   "tooltip.relics.researching.general.leveling_point.extra_info": "Получается при повышении уровня реликвии и используется для повышения уровня способностей.",
 

@@ -62,7 +62,7 @@ public class AbilityData {
         }
 
         public AbilityDataBuilder stat(StatData stat) {
-            stats.put(stat.getId(), stat);
+            this.stats.put(stat.getId(), stat);
 
             return this;
         }

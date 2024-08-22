@@ -7,6 +7,30 @@
 
   "tooltip.relics.relic.tooltip.abilities": "Abilities:",
 
+  "tooltip.relics.researching.badge.ability.oblivion.title": "Vulnerability to Oblivion",
+  "tooltip.relics.researching.badge.ability.oblivion.description": "The ability will not work under the effect of Oblivion.",
+  "tooltip.relics.researching.badge.ability.silence.title": "Vulnerability to Silence",
+  "tooltip.relics.researching.badge.ability.silence.description": "The ability will not work under the effect of Silence.",
+  "tooltip.relics.researching.badge.ability.flawless_ability.title": "Flawless Ability",
+  "tooltip.relics.researching.badge.ability.flawless_ability.description": "The ability has reached perfect parameters. Be proud of yourself!",
+  "tooltip.relics.researching.badge.ability.instantaneous.title": "Instantaneous Use",
+  "tooltip.relics.researching.badge.ability.instantaneous.description": "The ability activates immediately upon use.",
+  "tooltip.relics.researching.badge.ability.interruptible.title": "Interruptible Use",
+  "tooltip.relics.researching.badge.ability.interruptible.description": "The ability lasts for a certain time after use and can be interrupted by repeated use.",
+  "tooltip.relics.researching.badge.ability.cyclical.title": "Cyclical Use",
+  "tooltip.relics.researching.badge.ability.cyclical.description": "The ability works only with continuous use.",
+  "tooltip.relics.researching.badge.ability.toggleable.title": "Toggleable Use",
+  "tooltip.relics.researching.badge.ability.toggleable.description": "The ability can be toggled on/off when used.",
+  "tooltip.relics.researching.badge.ability.chargeable.title": "Chargeable Use",
+  "tooltip.relics.researching.badge.ability.chargeable.description": "The ability activates instantly after some time of cyclical use. The outcome may depend on the duration of use.",
+  "tooltip.relics.researching.badge.ability.stated.title": "Stated Use",
+  "tooltip.relics.researching.badge.ability.stated.description": "The ability has several modes that cycle with each use.",
+
+  "tooltip.relics.researching.badge.relic.flawless_relic.title": "Flawless Relic",
+  "tooltip.relics.researching.badge.relic.flawless_relic.description": "The relic has reached perfect parameters. Be proud of yourself!",
+
+  "tooltip.relics.researching.badge.ability.cast_type.hint": "Use the [%1$s] key outside any interface to call up the active abilities menu!",
+
   "tooltip.relics.researching.general.leveling_point.title": "Leveling Points:",
   "tooltip.relics.researching.general.leveling_point.extra_info": "Earned when leveling up the relic and used to upgrade abilities.",
 

@@ -1,4 +1,4 @@
-package it.hurts.sskirillss.relics.client.screen.description.widgets.general;
+package it.hurts.sskirillss.relics.client.screen.description.widgets.general.base;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
