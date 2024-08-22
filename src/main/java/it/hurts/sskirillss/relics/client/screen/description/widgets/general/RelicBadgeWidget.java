@@ -42,7 +42,7 @@ public class RelicBadgeWidget extends AbstractBadgeWidget {
 
         List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
-        int maxWidth = 150;
+        int maxWidth = 100;
         int renderWidth = 0;
 
         List<MutableComponent> entries = Lists.newArrayList(
