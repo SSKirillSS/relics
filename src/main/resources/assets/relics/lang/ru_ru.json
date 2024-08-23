@@ -23,8 +23,6 @@
   "tooltip.relics.researching.badge.ability.toggleable.description": "Способность может быть включена/выключена при использовании.",
   "tooltip.relics.researching.badge.ability.chargeable.title": "Заряжаемое применение",
   "tooltip.relics.researching.badge.ability.chargeable.description": "Способность срабатывает мгновенно спустя некоторое время цикличного использования. Результат срабатывания может зависеть от продолжительности использования.",
-  "tooltip.relics.researching.badge.ability.chargeable.title": "Заряжаемое применение",
-  "tooltip.relics.researching.badge.ability.chargeable.description": "Способность срабатывает мгновенно спустя некоторое время цикличного использования. Результат срабатывания может зависеть от продолжительности использования.",
   "tooltip.relics.researching.badge.ability.stated.title": "Режимное применение",
   "tooltip.relics.researching.badge.ability.stated.description": "Способность имеет несколько циклично переключаемых режимов, сменяемых её использованием.",
 

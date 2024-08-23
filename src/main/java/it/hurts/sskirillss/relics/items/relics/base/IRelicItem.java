@@ -569,26 +569,30 @@ public interface IRelicItem {
 
         Random random = new Random();
 
-        int maxQuality = getMaxQuality();
-        int maxLuck = getMaxLuck();
+        double targetQuality;
 
-        // Random value in the [-1, 1] range
-        double randomValue = (random.nextDouble() * 2D) - 1D;
+        do {
+            int maxQuality = getMaxQuality();
+            int maxLuck = getMaxLuck();
 
-        // Luck effect modifier. Lower value = lower chance to get 5 stars
-        double modifier = getLuckModifier();
+            // Random value in the [-1, 1] range
+            double randomValue = (random.nextDouble() * 2D) - 1D;
 
-        // Bias based on luck (ranging from -0.5 to 0.5), multiplied by the modifier
-        double bias = ((luck - (maxLuck / 2D)) / maxLuck) * modifier;
+            // Luck effect modifier. Lower value = lower chance to get 5 stars
+            double modifier = getLuckModifier();
 
-        // Apply the bias to randomValue and limit the result within the range [-1, 1]
-        double biasedValue = Math.tanh(randomValue + bias);
+            // Bias based on luck (ranging from -0.5 to 0.5), multiplied by the modifier
+            double bias = ((luck - (maxLuck / 2D)) / maxLuck) * modifier;
 
-        // Convert the biased result to the range [0, maxQuality]
-        double weightedRandom = Math.floor((biasedValue + 1D) / 2D * (maxQuality + 1D));
+            // Apply the bias to randomValue and limit the result within the range [-1, 1]
+            double biasedValue = Math.tanh(randomValue + bias);
 
-        // Clamping the value to avoid overflow
-        double targetQuality = Mth.clamp(weightedRandom, 0, maxQuality);
+            // Convert the biased result to the range [0, maxQuality]
+            double weightedRandom = Math.floor((biasedValue + 1D) / 2D * (maxQuality + 1D));
+
+            // Clamping the value to avoid overflow
+            targetQuality = Mth.clamp(weightedRandom, 0, maxQuality);
+        } while (targetQuality == getAbilityQuality(stack, ability));
 
         double sumQuality = 0;
 
@@ -737,8 +741,10 @@ public interface IRelicItem {
 
         randomizeAbilityStats(stack, ability, getRelicLuck(stack));
 
-        if (getAbilityQuality(stack, ability) < prevQuality)
-            addRelicLuck(stack, 1);
+        int newQuality = getAbilityQuality(stack, ability);
+
+        if (newQuality < prevQuality)
+            addRelicLuck(stack, (int) (Math.ceil((prevQuality - newQuality) / 2D)));
 
         return true;
     }
