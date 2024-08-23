@@ -29,17 +29,20 @@ float hash1(float p){
     return fract(p);
 }
 
+const uint k = 1103515245U;
 
-vec3 hashwithoutsine33(vec3 p3)
+vec3 hashwithoutsine33( uvec3 x )
 {
-    p3 = fract(p3 * vec3(.1031, .1030, .0973));
-    p3 += dot(p3, p3.yxz+33.33);
-    return fract((p3.xxy + p3.yxx)*p3.zyx);
+    x = ((x>>8U)^x.yzx)*k;
+    x = ((x>>8U)^x.yzx)*k;
+    x = ((x>>8U)^x.yzx)*k;
+
+    return vec3(x)*(1.0/float(0xffffffffU));
 }
 
 vec3 generateGradientVector(float x,float y,float z){
 
-    return normalize((hashwithoutsine33(vec3(x*2329.,y*1209.,z*2239.)) -0.5) * 2.);
+    return normalize((hashwithoutsine33(uvec3(x*2329.,y*1209.,z*2239.)) -0.5) * 2.);
 
 }
 
@@ -145,7 +148,7 @@ void main(){
         if (length(b) > 0){
             vec2 bn = normalize(b);
             vec2 b1 = bn * rad;
-            additionalLength = perlinNoise3d(b1.x + float(i * 324.324) + 0.143223,b1.y + float(i * 534.324) + 0.143223,time + 0.22343,10) * nSpread;
+            additionalLength = perlinNoise3d(b1.x + 0.143223,b1.y + 0.143223,time + 0.22343 * i,10) * nSpread;
             additionalLength = round(additionalLength);
         }
 

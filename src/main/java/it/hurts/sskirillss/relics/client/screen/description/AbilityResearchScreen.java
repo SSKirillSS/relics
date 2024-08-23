@@ -1,13 +1,20 @@
 package it.hurts.sskirillss.relics.client.screen.description;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
+import it.hurts.sskirillss.relics.client.screen.description.data.BurnPoint;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.LogoWidget;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.LuckPlateWidget;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PlayerExperiencePlateWidget;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PointsPlateWidget;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -19,6 +26,7 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +35,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Vector2f;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
@@ -46,6 +55,8 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
     public int backgroundWidth = 418;
 
     public int ticksExisted = 0;
+
+    private List<BurnPoint> points = new ArrayList<>();
 
     public AbilityResearchScreen(Player player, int container, int slot, Screen screen, String ability) {
         super(Component.empty());
@@ -67,13 +78,47 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         int x = (this.width - backgroundWidth) / 2;
         int y = (this.height - backgroundHeight) / 2;
 
+        this.addRenderableWidget(new LogoWidget(x + 313, y + 57, this));
+
+        this.addRenderableWidget(new PointsPlateWidget(x + 313, y + 77, this));
+        this.addRenderableWidget(new PlayerExperiencePlateWidget(x + 313, y + 102, this));
+        this.addRenderableWidget(new LuckPlateWidget(x + 313, y + 127, this));
     }
 
     @Override
     public void tick() {
         super.tick();
+
         ticksExisted++;
+
         stack = DescriptionUtils.gatherRelicStack(minecraft.player, slot);
+
+        Window window = minecraft.getWindow();
+
+        float mouseX = (float) (minecraft.mouseHandler.xpos() * window.getGuiScaledWidth() / window.getScreenWidth());
+        float mouseY = (float) (minecraft.mouseHandler.ypos() * window.getGuiScaledHeight() / window.getScreenHeight());
+
+        float partialTick = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
+
+        List<BurnPoint> toRemove = new ArrayList<>();
+
+        for (BurnPoint point : points) {
+            if (point.getLifeTime() > 0) {
+                point.setLifeTime(point.getLifeTime() - 1);
+
+                float scale = point.getScale();
+
+                //point.setScale(Mth.lerp(partialTick, scale, scale * point.getScaleMultiplier()));
+                point.setScale(scale * point.getScaleMultiplier());
+
+                point.setX(point.getX() + point.getDeltaX() + partialTick);
+                point.setY(point.getY() + point.getDeltaY());
+            } else
+                toRemove.add(point);
+        }
+
+        if (!toRemove.isEmpty())
+            points.removeAll(toRemove);
     }
 
     @Override
@@ -111,24 +156,29 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         );
 
         {
-            RenderSystem.setShaderTexture(0,ResourceLocation.tryBuild(Reference.MODID, "textures/gui/description/test_fog.png"));
-            RenderUtils.renderRevealingPanel(poseStack, x + 67, y + 54,110, 155,
-                    List.of(
-                            new Vector2f(pMouseX,pMouseY),
-                            new Vector2f(200,100)
-                    ),
-                    List.of(
-                            0.1f,
-                            0.05f
-                    ),
-                    List.of(
-                            5f,
-                            3f
-                    ),
-                    ticksExisted / 100.1f
-            );
+            ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, stack, ability) + ".png");
 
-            //guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_fog.png"), x + 67, y + 54, 0, 0, 110, 155, 110, 155);
+            guiGraphics.blit(card, x + 67, y + 54, 0, 0, 110, 155, 110, 155);
+
+            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_fog.png"));
+
+            points.add(new BurnPoint(pMouseX, pMouseY, 0F, 0F, 20, 0.2F, 0.95F));
+
+            try {
+                List<Vector2f> positions = Lists.newArrayList(new Vector2f(pMouseX, pMouseY));
+                List<Float> scales = Lists.newArrayList(0.15F);
+                List<Float> noises = Lists.newArrayList(10F);
+
+                for (BurnPoint point : points) {
+                    positions.add(new Vector2f(point.getX(), point.getY()));
+                    scales.add(point.getScale());
+                    noises.add(10F);
+                }
+
+                RenderUtils.renderRevealingPanel(poseStack, x + 67, y + 54, 110, 155, positions, scales, noises, (ticksExisted + pPartialTick) / 50F);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_background.png"), x + 60, y + 45, 0, 0, 242, 176, 242, 176);
         }

@@ -57,14 +57,14 @@ public class RenderUtils {
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("revealRadiuses").set(radiuses);
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("noiseSpreads").set(noiseSpreadsArr);
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("positions").set(arr);
-        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("pixelCount").set(120f); // пикселизация (скока пикселей)
+        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("pixelCount").set(110F);
 
 
-        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("greenRadius").set(0.025f);
+        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("greenRadius").set(0.035f);
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("size").set(sizeX,sizeY);
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("time").set(time);
-        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("col1").set(0f,0.5f,0f);
-        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("col2").set(0f,1f,0f);
+        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("col1").set(0.25F,1F,0f);
+        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("col2").set(0.25F,1F,0f);
 
 
         BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_TEX);
