@@ -102,7 +102,7 @@ public class RerollActionWidget extends AbstractActionWidget {
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
         MutableComponent unknownStatus = Component.translatable("tooltip.relics.relic.status.unknown");
 
-        boolean isQuick = relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility());
+        boolean isQuick = relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility()) && relic.getAbilityQuality(getProvider().getStack(), getAbility()) != relic.getMaxQuality();
 
         List<MutableComponent> entries = Lists.newArrayList(
                 Component.translatable("tooltip.relics.relic.reroll.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE),
