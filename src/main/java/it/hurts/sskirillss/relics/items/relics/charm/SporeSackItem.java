@@ -39,6 +39,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.util.Random;
 
 import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.COUNT;
 
 public class SporeSackItem extends RelicItem {
     @Override
@@ -104,7 +105,7 @@ public class SporeSackItem extends RelicItem {
                                         .formatValue(value -> (int) Math.round(MathUtils.round(value, 3) * 100))
                                         .build())
                                 .stat(StatData.builder("amount")
-                                        // TODO: icon
+                                        .icon(StatIcons.COUNT)
                                         .initialValue(0.05D, 0.15D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.4)
                                         .formatValue(value -> MathUtils.round(value, 2))

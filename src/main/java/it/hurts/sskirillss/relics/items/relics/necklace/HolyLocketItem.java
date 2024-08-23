@@ -86,7 +86,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                         .formatValue(value -> (int) (MathUtils.round(value, 3) * 100))
                                         .build())
                                 .stat(StatData.builder("count")
-                                        // TODO: icon
+                                        .icon(StatIcons.COUNT)
                                         .initialValue(1D, 3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))

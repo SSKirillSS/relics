@@ -28,4 +28,10 @@ public class StatIcons {
     public static final StatIcon SATURATION = new StatIcon("saturation", 0xc48326);
     public static final StatIcon FREEZING = new StatIcon("freezing", 0x1f5cd8);
     public static final StatIcon PERIODICAL_DAMAGE = new StatIcon("periodical_damage", 0xc63119);
+    public static final StatIcon JUMP_HEIGHT = new StatIcon("jump_height", 0x7bff58);
+    public static final StatIcon WITHER = new StatIcon("wither", 0x1a1a1a);
+    public static final StatIcon COUNT = new StatIcon("count", 0x38cfe1);
+    public static final StatIcon SILENCE = new StatIcon("silence", 0x9421ff);
+    public static final StatIcon POISON = new StatIcon("poison", 0x6cff00);
+    public static final StatIcon TARGET = new StatIcon("target", 0xdb5019);
 }

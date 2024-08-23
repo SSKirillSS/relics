@@ -18,7 +18,6 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.general.*;
 import it.hurts.sskirillss.relics.init.BadgeRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
@@ -105,7 +104,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         int yOff = 0;
 
         for (Map.Entry<String, StatData> entry : relic.getAbilityData(ability).getStats().entrySet()) {
-            this.addRenderableWidget(new StatWidget(x + 84, y + yOff + 148, this, entry.getKey()));
+            this.addRenderableWidget(new StatWidget(x + 77, y + yOff + 148, this, entry.getKey()));
 
             yOff += 14;
         }
@@ -223,77 +222,6 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         {
             guiGraphics.blit(DescriptionTextures.STATS_BACKGROUND, x + 60, y + 133, 0, 0, 243, 88, 243, 88);
-        }
-
-        AbilityData abilityData = relicData.getAbilities().getAbilities().get(ability);
-
-        int maxLevel = abilityData.getMaxLevel();
-
-        boolean isLocked = !relic.canUseAbility(stack, ability);
-
-        boolean isHoveredUpgrade = !isLocked && upgradeButton.isHovered();
-        boolean isHoveredReroll = !isLocked && rerollButton.isHovered();
-        boolean isHoveredReset = !isLocked && resetButton.isHovered();
-
-        yOff = 0;
-
-        int step = 0;
-
-        for (var entry : relic.getAbilityComponent(stack, ability).stats().entrySet()) {
-            String stat = entry.getKey();
-            StatData statData = relic.getStatData(ability, stat);
-
-            if (statData != null) {
-                MutableComponent cost = Component.literal(String.valueOf(statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat))));
-
-                if (isHoveredUpgrade && level < maxLevel) {
-                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat, level + 1)));
-                }
-
-                if (isHoveredReroll) {
-                    cost.append(" ➠ ").append(Component.literal("X.XXX").withStyle(ChatFormatting.OBFUSCATED));
-                }
-
-                if (isHoveredReset && level > 0) {
-                    cost.append(" ➠ " + statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat, 0)));
-                }
-
-                poseStack.pushPose();
-
-                poseStack.scale(0.5F, 0.5F, 0.5F);
-
-                guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title").withStyle(ChatFormatting.BOLD), (x + 103) * 2, (y + yOff + 151) * 2, 0x662f13, false);
-
-                guiGraphics.drawString(minecraft.font, Component.literal("● ").append(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), (x + 108) * 2, (y + yOff + 157) * 2, 0x662f13, false);
-
-                poseStack.popPose();
-
-                xOff = 0;
-
-                for (int i = 0; i < 5; i++) {
-                    guiGraphics.blit(DescriptionTextures.SMALL_STAR_HOLE, x + xOff + 254, y + yOff + 151, 0, 0, 4, 4, 4, 4);
-
-                    xOff += 5;
-                }
-
-                xOff = 0;
-
-                int quality = relic.getStatQuality(stack, ability, stat);
-                boolean isAliquot = quality % 2 == 1;
-
-                for (int i = 0; i < Math.floor(quality / 2D); i++) {
-                    guiGraphics.blit(DescriptionTextures.SMALL_STAR_ACTIVE, x + xOff + 254, y + yOff + 151, 0, 0, 4, 4, 4, 4);
-
-                    xOff += 5;
-                }
-
-                if (isAliquot)
-                    guiGraphics.blit(DescriptionTextures.SMALL_STAR_ACTIVE, x + xOff + 254, y + yOff + 151, 0, 0, 2, 4, 4, 4);
-
-                yOff += 14;
-
-                step++;
-            }
         }
     }
 
