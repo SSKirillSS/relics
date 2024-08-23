@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
+import it.hurts.sskirillss.relics.client.screen.description.widgets.StatWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.BigAbilityCardWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.RerollActionWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.ability.ResetActionWidget;
@@ -19,7 +20,6 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcon;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
@@ -41,7 +41,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-import java.awt.*;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class AbilityDescriptionScreen extends Screen implements IAutoScaledScreen, IRelicScreenProvider {
@@ -102,13 +102,17 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
             xOff += 15;
         }
 
-        this.upgradeButton = new UpgradeActionWidget(x + 288, y + 152, this, ability);
-        this.rerollButton = new RerollActionWidget(x + 288, y + 170, this, ability);
-        this.resetButton = new ResetActionWidget(x + 288, y + 188, this, ability);
+        int yOff = 0;
 
-        this.addRenderableWidget(upgradeButton);
-        this.addRenderableWidget(rerollButton);
-        this.addRenderableWidget(resetButton);
+        for (Map.Entry<String, StatData> entry : relic.getAbilityData(ability).getStats().entrySet()) {
+            this.addRenderableWidget(new StatWidget(x + 84, y + yOff + 148, this, entry.getKey()));
+
+            yOff += 14;
+        }
+
+        this.upgradeButton = this.addRenderableWidget(new UpgradeActionWidget(x + 288, y + 152, this, ability));
+        this.rerollButton = this.addRenderableWidget(new RerollActionWidget(x + 288, y + 170, this, ability));
+        this.resetButton = this.addRenderableWidget(new ResetActionWidget(x + 288, y + 188, this, ability));
     }
 
     @Override
@@ -253,24 +257,6 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
                 if (isHoveredReset && level > 0) {
                     cost.append(" ➠ " + statData.getFormatValue().apply(relic.getStatValue(stack, ability, stat, 0)));
                 }
-
-                poseStack.pushPose();
-
-                StatIcon icon = statData.getIcon();
-
-                Color color = new Color(icon.getColor());
-
-                float blinkOffset = (float) (Math.sin((player.tickCount + (step * 10)) * 0.2F) * 0.1F);
-
-                RenderSystem.setShaderColor(color.getRed() / 255F + blinkOffset, color.getGreen() / 255F + blinkOffset, color.getBlue() / 255F + blinkOffset, 1F);
-                RenderSystem.enableBlend();
-
-                guiGraphics.blit(icon.getPath(), x + 82 + (step % 2) * 2, y + yOff + 148, 0, 0, 15, 16, 15, 16);
-
-                RenderSystem.disableBlend();
-                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-
-                poseStack.popPose();
 
                 poseStack.pushPose();
 
