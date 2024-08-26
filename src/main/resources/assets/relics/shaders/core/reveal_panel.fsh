@@ -1,6 +1,6 @@
 #version 330
 #define PI 3.14
-#define POINT_COUNT 32
+#define POINT_COUNT 256
 uniform float revealRadiuses[POINT_COUNT/2]; // 0 -> 1
 uniform float noiseSpreads[POINT_COUNT/2];
 uniform float positions[POINT_COUNT];

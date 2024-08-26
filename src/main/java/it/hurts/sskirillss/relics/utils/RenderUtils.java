@@ -16,19 +16,19 @@ import java.util.List;
 public class RenderUtils {
 
 
-    public static void renderRevealingPanel(PoseStack matrices, float x, float y, float sizeX, float sizeY, List<Vector2f> points, List<Float> revealRadiuses, List<Float> noiseSpreads, float time){
+    public static void renderRevealingPanel(PoseStack matrices, float x, float y, float sizeX, float sizeY, List<Vector2f> points, List<Float> revealRadiuses, List<Float> noiseSpreads, float time) {
         RenderSystem.enableBlend();
 
-        float[] arr = new float[32]; // 16 points max
-        float[] radiuses = new float[16];
-        float[] noiseSpreadsArr = new float[16];
+        float[] arr = new float[256];
+        float[] radiuses = new float[128];
+        float[] noiseSpreadsArr = new float[128];
 
-        for (int i = 0; i < arr.length;i+= 2){
+        for (int i = 0; i < arr.length; i += 2) {
 
             float lmx;
             float lmy;
 
-            if (i / 2 < points.size()){
+            if (i / 2 < points.size()) {
                 Vector2f v = points.get(i / 2);
                 lmx = (v.x - x) / sizeX;
                 lmy = (v.y - y) / sizeY;
@@ -37,7 +37,7 @@ public class RenderUtils {
                 noiseSpreadsArr[i / 2] = noiseSpreads.get(i / 2);
 
 
-            }else{
+            } else {
                 radiuses[i / 2] = 0.0001f;
                 noiseSpreadsArr[i / 2] = 0.000001f;
                 lmx = -100;
@@ -48,12 +48,10 @@ public class RenderUtils {
         }
 
 
-
         Matrix4f mat = matrices.last().pose();
 
 
-
-        RenderSystem.setShader(()-> RelicsCoreShaders.REVEAL_SHADER);
+        RenderSystem.setShader(() -> RelicsCoreShaders.REVEAL_SHADER);
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("revealRadiuses").set(radiuses);
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("noiseSpreads").set(noiseSpreadsArr);
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("positions").set(arr);
@@ -61,29 +59,28 @@ public class RenderUtils {
 
 
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("greenRadius").set(0.035f);
-        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("size").set(sizeX,sizeY);
+        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("size").set(sizeX, sizeY);
         RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("time").set(time);
-        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("col1").set(0.25F,1F,0f);
-        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("col2").set(0.25F,1F,0f);
+        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("col1").set(0F, 0F, 1F);
+        RelicsCoreShaders.REVEAL_SHADER.safeGetUniform("col2").set(1F, 0F, 0F);
 
 
-        BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_TEX);
+        BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-        builder.addVertex(mat,x,y,0).setUv(0,0);
-        builder.addVertex(mat,x + sizeX,y,0).setUv(1,0);
-        builder.addVertex(mat,x + sizeX,y + sizeY,0).setUv(1,1);
-        builder.addVertex(mat,x,y + sizeY,0).setUv(0,1);
-        builder.addVertex(mat,x,y + sizeY,0).setUv(0,1);
-        builder.addVertex(mat,x + sizeX,y + sizeY,0).setUv(1,1);
-        builder.addVertex(mat,x + sizeX,y,0).setUv(1,0);
-        builder.addVertex(mat,x,y,0).setUv(0,0);
+        builder.addVertex(mat, x, y, 0).setUv(0, 0);
+        builder.addVertex(mat, x + sizeX, y, 0).setUv(1, 0);
+        builder.addVertex(mat, x + sizeX, y + sizeY, 0).setUv(1, 1);
+        builder.addVertex(mat, x, y + sizeY, 0).setUv(0, 1);
+        builder.addVertex(mat, x, y + sizeY, 0).setUv(0, 1);
+        builder.addVertex(mat, x + sizeX, y + sizeY, 0).setUv(1, 1);
+        builder.addVertex(mat, x + sizeX, y, 0).setUv(1, 0);
+        builder.addVertex(mat, x, y, 0).setUv(0, 0);
 
 
         BufferUploader.drawWithShader(builder.buildOrThrow());
 
         RenderSystem.disableBlend();
     }
-
 
 
     public static void renderAnimatedTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texWidth, float texHeight, float patternWidth, float patternHeight, float scale, AnimationData animation) {
