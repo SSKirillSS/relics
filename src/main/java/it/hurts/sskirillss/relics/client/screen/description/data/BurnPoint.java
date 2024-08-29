@@ -1,23 +1,28 @@
 package it.hurts.sskirillss.relics.client.screen.description.data;
 
+import lombok.Builder;
 import lombok.Data;
 
+import java.util.function.Consumer;
+
 @Data
+@Builder(toBuilder = true)
 public class BurnPoint {
-    public BurnPoint(int x, int y, float deltaX, float deltaY, int lifeTime, float scale) {
-        setXO(x);
-        setYO(y);
+    public static BurnPointBuilder builder(int x, int y, int lifeTime, float scale) {
+        BurnPointBuilder builder = new BurnPointBuilder();
 
-        setX(x);
-        setY(y);
+        builder.xO(x);
+        builder.yO(y);
 
-        setDeltaX(deltaX);
-        setDeltaY(deltaY);
+        builder.x(x);
+        builder.y(y);
 
-        setMaxLifeTime(lifeTime);
-        setLifeTime(lifeTime);
+        builder.maxLifeTime(lifeTime);
+        builder.lifeTime(lifeTime);
 
-        setScale(scale);
+        builder.scale(scale);
+
+        return builder;
     }
 
     private float xO;
@@ -26,13 +31,15 @@ public class BurnPoint {
     private float x;
     private float y;
 
-    private float deltaX;
-    private float deltaY;
-
     private int maxLifeTime;
     private int lifeTime;
 
     private float scale;
+
+    @Builder.Default
+    private Consumer<BurnPoint> ticker = (point) -> {
+
+    };
 
     public BurnPoint set(BurnPoint other) {
         setXO(other.getX());
@@ -40,9 +47,6 @@ public class BurnPoint {
 
         setX(other.getX());
         setY(other.getY());
-
-        setDeltaX(other.getDeltaX());
-        setDeltaY(other.getDeltaY());
 
         setMaxLifeTime(other.getMaxLifeTime());
         setLifeTime(other.getLifeTime());

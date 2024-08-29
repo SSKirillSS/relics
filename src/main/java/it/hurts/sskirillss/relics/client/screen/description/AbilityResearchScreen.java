@@ -1,6 +1,8 @@
 package it.hurts.sskirillss.relics.client.screen.description;
 
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -40,10 +42,12 @@ import net.minecraft.world.phys.Vec2;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Vector2f;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, IRelicScreenProvider {
@@ -61,14 +65,23 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
     public int backgroundHeight = 256;
     public int backgroundWidth = 418;
 
+    public int x;
+    public int y;
+
     @Nullable
     public StarData selectedStar;
 
-    // TODO: private Map<StarData, StarData> links = new HashMap<>();
+    public Multimap<Integer, Integer> links = LinkedHashMultimap.create();
+
+    public void link(int first, int second) {
+        links.put(first > second ? first + second - (second = first) : first, second);
+    }
 
     private List<BurnPoint> points = new ArrayList<>();
 
     private List<StarWidget> stars = new ArrayList<>();
+
+    private boolean isLMBDown = false;
 
     public AbilityResearchScreen(Player player, int container, int slot, Screen screen, String ability) {
         super(Component.empty());
@@ -82,13 +95,35 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         stack = DescriptionUtils.gatherRelicStack(player, slot);
     }
 
+    public int getTotalConnectionsCount(StarData star) {
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return 0;
+
+        return relic.getAbilityData(ability).getResearchData().getConnectedStars(star).size();
+    }
+
+    public int getOccupiedConnectionsCount(StarData star) {
+        if (!(stack.getItem() instanceof IRelicItem relic))
+            return 0;
+
+        int index = star.getIndex();
+
+        return (int) links.entries().stream()
+                .filter(entry -> entry.getKey() == index || entry.getValue() == index)
+                .map(entry -> entry.getKey() < entry.getValue()
+                        ? entry.getKey() + "-" + entry.getValue()
+                        : entry.getValue() + "-" + entry.getKey())
+                .distinct()
+                .count();
+    }
+
     @Override
     protected void init() {
+        this.x = (this.width - backgroundWidth) / 2;
+        this.y = (this.height - backgroundHeight) / 2;
+
         if (stack == null || !(stack.getItem() instanceof IRelicItem relic))
             return;
-
-        int x = (this.width - backgroundWidth) / 2;
-        int y = (this.height - backgroundHeight) / 2;
 
         this.addRenderableWidget(new LogoWidget(x + 313, y + 57, this));
 
@@ -108,15 +143,35 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
         stack = DescriptionUtils.gatherRelicStack(minecraft.player, slot);
 
+        if (selectedStar != null && !isLMBDown) {
+            for (StarWidget widget : stars) {
+                if (!widget.isHovered())
+                    continue;
+
+                int start = selectedStar.getIndex();
+                int end = widget.getStar().getIndex();
+
+                StarData star = widget.getStar();
+
+                if (start == end || getOccupiedConnectionsCount(star) >= getTotalConnectionsCount(star))
+                    continue;
+
+                links.put(start, end);
+
+                break;
+            }
+
+            selectedStar = null;
+        }
+
         for (BurnPoint point : points) {
+            point.getTicker().accept(point);
+
             if (point.getLifeTime() > 0) {
                 point.setLifeTime(point.getLifeTime() - 1);
 
                 point.setXO(point.getX());
                 point.setYO(point.getY());
-
-                point.setX(point.getX() + point.getDeltaX());
-                point.setY(point.getY() + point.getDeltaY());
             }
         }
     }
@@ -150,9 +205,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, DescriptionTextures.SPACE_BACKGROUND);
 
-        int x = (this.width - backgroundWidth) / 2;
-        int y = (this.height - backgroundHeight) / 2;
-
         int yOff = 0;
         int xOff = 0;
 
@@ -178,77 +230,13 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         }
 
         {
-            ResearchData researchData = relic.getAbilityData(ability).getResearchData();
-
-            int count = 0;
-
-            for (var link : researchData.getLinks().entries()) {
-                var star = researchData.getStars().get(link.getKey());
-                var target = researchData.getStars().get(link.getValue());
-
-                poseStack.pushPose();
-
-                float offset = (float) (Math.sin(((minecraft.player.tickCount + pPartialTick + count) * 0.25F)) * 0.25F);
-                float color = (1.25F + offset);
-
-                RenderSystem.setShaderColor(color, color, color, 1F + offset);
-                RenderSystem.enableBlend();
-
-                int scaledSize = 5;
-
-                int starSize = 17;
-
-                Vec2 from = star.getPos().scale(scaledSize);
-                Vec2 to = target.getPos().scale(scaledSize);
-
-                int width = 6;
-                int height = 4;
-
-                int distance = (int) Math.sqrt(from.distanceToSqr(to));
-
-                float infoX = x + 67 + (star.getX() * scaledSize) - (width / 2F);
-                float infoY = y + 54 + (star.getY() * scaledSize);
-
-                poseStack.translate(infoX, infoY, 0);
-
-                poseStack.mulPose(Axis.ZP.rotationDegrees(getAngle(from, to)));
-
-                RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/line.png"));
-
-                GUIRenderer.begin(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/line.png"), poseStack)
-                        .pos(0, 0)
-                        .texSize(width, height * 6)
-                        .patternSize(distance, height)
-                        .animation(AnimationData.builder()
-                                .frame(0, 2).frame(1, 2).frame(2, 2)
-                                .frame(3, 2).frame(4, 2).frame(5, 2)
-                        )
-                        .end();
-
-                poseStack.mulPose(Axis.ZP.rotationDegrees(-getAngle(from, to)));
-
-                RenderSystem.disableBlend();
-
-                poseStack.popPose();
-
-                count += 1;
-            }
-        }
-
-        {
-            for (StarWidget widget : stars) {
-                widget.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
-            }
-        }
-
-        {
             poseStack.pushPose();
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
             RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_fog.png"));
 
-            addPoint(new BurnPoint(pMouseX, pMouseY, 0F, 0F, 5, 0.15F));
+            addPoint(BurnPoint.builder(pMouseX, pMouseY, 5, 0.15F).build());
 
             List<Vector2f> positions = Lists.newArrayList(new Vector2f(pMouseX, pMouseY));
             List<Float> scales = Lists.newArrayList(0.2F);
@@ -264,7 +252,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                 noises.add(10F * diff);
             }
 
-            poseStack.translate(0,0,5000);
+            poseStack.translate(0, 0, 5000);
 
             RenderUtils.renderRevealingPanel(poseStack, x + 67, y + 54, 110, 155, positions, scales, noises, (player.tickCount + pPartialTick) / 50F);
 
@@ -272,6 +260,118 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
             poseStack.popPose();
         }
+
+        {
+            ResearchData researchData = relic.getAbilityData(ability).getResearchData();
+
+            for (var link : links.entries()) {
+                var start = researchData.getStars().get(link.getKey()).getPos();
+                var end = researchData.getStars().get(link.getValue()).getPos();
+
+                drawLink(poseStack, getScaledPos(start), getScaledPos(end), pMouseX, pMouseY, pPartialTick);
+            }
+
+            if (selectedStar != null) {
+                var pos = selectedStar.getPos();
+
+                drawLink(poseStack, getScaledPos(pos), new Vec2(pMouseX, pMouseY), pMouseX, pMouseY, pPartialTick);
+            }
+        }
+
+        {
+            for (StarWidget widget : stars) {
+                widget.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            }
+        }
+    }
+
+    private Vec2 getScaledPos(Vec2 pos) {
+        int scale = 5;
+
+        return new Vec2(x + 67 + (pos.x * scale), y + 54 + (pos.y * scale));
+    }
+
+    private void drawLink(PoseStack poseStack, Vec2 start, Vec2 end, int mouseX, int mouseY, float partialTick) {
+        poseStack.pushPose();
+
+        float offset = (float) (Math.sin(((minecraft.player.tickCount + partialTick + start.length()) * 0.25F)) * 0.25F);
+        float color = 1.25F + offset;
+
+        if (isHoveringConnection(start, end, mouseX, mouseY))
+            RenderSystem.setShaderColor(color, 0.25F, 0.25F, 0.75F + offset);
+        else
+            RenderSystem.setShaderColor(color, color, color, 0.75F + offset);
+
+        RenderSystem.enableBlend();
+
+        int starSize = 17;
+//        float stepDistance = 5F;
+//        float d = (float) Math.sqrt(start.distanceToSqr(end));
+//        int steps = (int) (d / stepDistance);
+//        Vec2 direction = new Vec2(end.x - start.x, end.y - start.y).normalized();
+//
+//        for (int i = 0; i <= steps; i++) {
+//            Vec2 point = new Vec2(direction.x * stepDistance * i, direction.y * stepDistance * i).add(start);
+//
+//            addPoint(BurnPoint.builder((int) (x + 67 + point.x), (int) (y + 54 + point.y), 1, 0.05F).build());
+//        }
+
+        int width = 6;
+        int height = 4;
+
+        int distance = (int) Math.sqrt(start.distanceToSqr(end));
+
+        poseStack.translate(start.x, start.y, 0);
+
+        poseStack.mulPose(Axis.ZP.rotationDegrees(getAngle(start, end)));
+
+        poseStack.translate(-(width / 2F), -(height / 2F), 0);
+
+        RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/line.png"));
+
+        GUIRenderer.begin(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/line.png"), poseStack)
+                .pos(0, 0)
+                .texSize(width, height * 6)
+                .patternSize(distance, height)
+                .animation(AnimationData.builder()
+                        .frame(0, 2).frame(1, 2).frame(2, 2)
+                        .frame(3, 2).frame(4, 2).frame(5, 2)
+                )
+                .end();
+
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-getAngle(start, end)));
+
+        RenderSystem.disableBlend();
+
+        poseStack.popPose();
+    }
+
+    private boolean isHoveringConnection(Vec2 start, Vec2 end, int mouseX, int mouseY) {
+        float minDistance = 7F;
+        float thickness = 4F;
+
+        float x1 = start.x;
+        float y1 = start.y;
+
+        float x2 = end.x;
+        float y2 = end.y;
+
+        double distanceToStart = Math.hypot(mouseX - x1, mouseY - y1);
+        double distanceToEnd = Math.hypot(mouseX - x2, mouseY - y2);
+
+        if (distanceToStart < minDistance || distanceToEnd < minDistance)
+            return false;
+
+        double collinearity = (x2 - x1) * (mouseY - y1) - (y2 - y1) * (mouseX - x1);
+
+        double lineLength = Math.hypot(x2 - x1, y2 - y1);
+        double distanceFromLine = Math.abs(collinearity / lineLength);
+
+        if (distanceFromLine > thickness / 2)
+            return false;
+
+        return Math.min(x1, x2) - thickness / 2 <= mouseX && mouseX <= Math.max(x1, x2) + thickness / 2
+                && Math.min(y1, y2) - thickness / 2 <= mouseY && mouseY <= Math.max(y1, y2) + thickness / 2;
     }
 
     @Override
@@ -297,6 +397,43 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         }
 
         return super.keyPressed(pKeyCode, pScanCode, pModifiers);
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if (stack.getItem() instanceof IRelicItem relic) {
+            ResearchData researchData = relic.getResearchData(ability);
+
+            if (pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                isLMBDown = true;
+
+                List<Map.Entry<Integer, Integer>> toRemove = new ArrayList<>();
+
+                for (var link : links.entries())
+                    if (isHoveringConnection(getScaledPos(researchData.getStars().get(link.getKey()).getPos()), getScaledPos(researchData.getStars().get(link.getValue()).getPos()), (int) pMouseX, (int) pMouseY))
+                        toRemove.add(link);
+
+                for (var entry : toRemove)
+                    links.remove(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
+        if (pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+            isLMBDown = false;
+
+        return super.mouseReleased(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    protected void rebuildWidgets() {
+        stars.clear();
+
+        super.rebuildWidgets();
     }
 
     @Override
