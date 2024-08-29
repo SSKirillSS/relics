@@ -20,6 +20,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.util.Mth;
@@ -82,6 +83,10 @@ public interface IRelicItem {
 
     default AbilityData getAbilityData(String ability) {
         return getAbilitiesData().getAbilities().get(ability);
+    }
+
+    default ResearchData getResearchData(String ability) {
+        return getAbilityData(ability).getResearchData();
     }
 
     default StatData getStatData(String ability, String stat) {
@@ -505,6 +510,16 @@ public interface IRelicItem {
 
     default void setAbilityComponent(ItemStack stack, String ability, AbilityComponent component) {
         setAbilitiesComponent(stack, getAbilitiesComponent(stack).toBuilder().ability(ability, component).build());
+    }
+
+    default ResearchComponent getResearchComponent(ItemStack stack, String ability) {
+        return getAbilityComponent(stack, ability).research();
+    }
+
+    default void setResearchComponent(ItemStack stack, String ability, ResearchComponent component) {
+        setAbilityComponent(stack, ability, getAbilityComponent(stack, ability).toBuilder()
+                .research(component)
+                .build());
     }
 
     default StatComponent getStatComponent(ItemStack stack, String ability, String stat) {

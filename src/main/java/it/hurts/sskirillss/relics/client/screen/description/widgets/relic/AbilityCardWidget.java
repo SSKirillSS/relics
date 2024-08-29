@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
-import it.hurts.sskirillss.relics.client.screen.description.AbilityDescriptionScreen;
+import it.hurts.sskirillss.relics.client.screen.description.AbilityResearchScreen;
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
@@ -56,7 +56,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
     @Override
     public void onPress() {
         if (screen.getStack().getItem() instanceof IRelicItem relic && relic.canUseAbility(screen.stack, ability))
-            MC.setScreen(new AbilityDescriptionScreen(MC.player, screen.container, screen.slot, screen.screen, ability));
+            MC.setScreen(new AbilityResearchScreen(MC.player, screen.container, screen.slot, screen.screen, ability));
         else {
             shakeDelta = Math.min(20, shakeDelta + (shakeDelta > 0 ? 5 : 15));
 

@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.items.relics.base.data.leveling;
 import com.mojang.datafixers.util.Function3;
 import it.hurts.sskirillss.relics.config.data.AbilityConfigData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import lombok.Builder;
 import lombok.Data;
 import net.minecraft.world.entity.player.Player;
@@ -43,6 +44,9 @@ public class AbilityData {
     @Builder.Default
     private CastData castData;
 
+    @Builder.Default
+    private ResearchData researchData;
+
     public AbilityConfigData toConfigData() {
         return new AbilityConfigData(requiredPoints, requiredLevel, maxLevel, stats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toConfigData(), (o1, o2) -> o1, LinkedHashMap::new)));
     }
@@ -50,8 +54,19 @@ public class AbilityData {
     public static class AbilityDataBuilder {
         private Map<String, StatData> stats = new LinkedHashMap<>();
         private CastData castData = CastData.builder().build();
+        private ResearchData researchData = ResearchData.builder().build();
 
         private AbilityDataBuilder castData(CastData data) {
+            return this;
+        }
+
+        private AbilityDataBuilder researchData(ResearchData data) {
+            return this;
+        }
+
+        public AbilityDataBuilder research(ResearchData data) {
+            this.researchData = data;
+
             return this;
         }
 

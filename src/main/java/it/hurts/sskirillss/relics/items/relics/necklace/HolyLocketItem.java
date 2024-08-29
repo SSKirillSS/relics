@@ -23,6 +23,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.network.packets.sync.SyncTargetPacket;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -103,7 +104,7 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                 .stat(StatData.builder("radius")
                                         .icon(StatIcons.DISTANCE)
                                         .initialValue(2D, 6D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE,    0.15D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("damage")
@@ -126,6 +127,20 @@ public class HolyLocketItem extends RelicItem implements IRenderableCurio {
                                         .initialValue(8D, 6D)
                                         .upgradeModifier(UpgradeOperation.ADD, -1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 11, 27).star(1, 3, 19).star(2, 3, 4)
+                                        .star(3, 11, 17).star(4, 6, 13).star(5, 11, 13)
+                                        .star(6, 16, 13).star(7, 19, 19).star(8, 19, 4)
+                                        .link(0, 1)
+                                        .link(0, 3)
+                                        .link(0, 7)
+                                        .link(1, 2)
+                                        .link(2, 8)
+                                        .link(7, 8)
+                                        .link(3, 4)
+                                        .link(3, 5)
+                                        .link(3, 6)
                                         .build())
                                 .build())
                         .build())
