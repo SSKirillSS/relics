@@ -46,5 +46,17 @@
     "ability_cast": {
         "category": "master",
         "sounds": [ { "name": "relics:ability_cast" } ]
+    },
+    "disconnect_stars": {
+        "category": "master",
+        "sounds": [ { "name": "relics:disconnect_stars" } ]
+    },
+    "connect_stars": {
+        "category": "master",
+        "sounds": [ { "name": "relics:connect_stars" } ]
+    },
+    "finish_research": {
+        "category": "master",
+        "sounds": [ { "name": "relics:finish_research" } ]
     }
 }

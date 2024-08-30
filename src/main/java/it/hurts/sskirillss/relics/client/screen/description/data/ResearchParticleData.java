@@ -17,11 +17,15 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class ExperienceParticleData extends ParticleData {
+public class ResearchParticleData extends ParticleData {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/pixel_particle.png");
 
-    public ExperienceParticleData(Color color, float xStart, float yStart, float scale, int lifeTime) {
+    private final float verticalAcceleration;
+
+    public ResearchParticleData(Color color, float xStart, float yStart, float scale, int lifeTime, float verticalAcceleration) {
         super(TEXTURE, color, xStart, yStart, scale, lifeTime);
+
+        this.verticalAcceleration = verticalAcceleration;
     }
 
     @Override
@@ -36,7 +40,7 @@ public class ExperienceParticleData extends ParticleData {
         RandomSource random = player.getRandom();
 
         setX((float) (getX() + (Math.sin(getLifeTime() * 0.15F) * (0.1F + (random.nextFloat() * 0.5F)))));
-        setY(getY() - 0.35F);
+        setY(getY() - (getLifeTime() * verticalAcceleration));
     }
 
     @Override
@@ -45,7 +49,7 @@ public class ExperienceParticleData extends ParticleData {
 
         var lifePercentage = (float) getLifeTime() / getMaxLifeTime();
 
-        float blinkOffset = 0.15F + (float) (Math.sin((getLifeTime() + partialTick) * 0.5F) * 0.3F);
+        float blinkOffset = 0.25F + (float) (Math.sin(getLifeTime() + partialTick) * 0.5F);
 
         poseStack.pushPose();
 
@@ -56,7 +60,7 @@ public class ExperienceParticleData extends ParticleData {
 
         poseStack.translate(Mth.lerp(partialTick, getXO(), getX()), Mth.lerp(partialTick, getYO(), getY()), 0);
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees((getLifeTime() + partialTick) * 10));
+        poseStack.mulPose(Axis.ZP.rotationDegrees((getLifeTime() + partialTick) * 25));
 
         GUIRenderer.begin(TEXTURE, guiGraphics.pose())
                 .pos(0, 0)

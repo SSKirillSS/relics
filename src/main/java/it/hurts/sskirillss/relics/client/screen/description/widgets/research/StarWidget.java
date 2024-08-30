@@ -5,7 +5,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityResearchScreen;
+import it.hurts.sskirillss.relics.client.screen.description.data.ResearchParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
+import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.StarData;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -16,7 +18,11 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+
+import java.awt.*;
 
 public class StarWidget extends AbstractDescriptionWidget implements ITickingWidget {
     private AbilityResearchScreen screen;
@@ -132,14 +138,19 @@ public class StarWidget extends AbstractDescriptionWidget implements ITickingWid
 
     @Override
     public void onTick() {
-//        if (!(provider.getStack().getItem() instanceof IRelicItem relic) || MC.player == null)
-//            return;
-//
-//        RandomSource random = MC.player.getRandom();
-//
-//        if (MC.player.tickCount % 5 == 0) {
-//            ParticleStorage.addParticle((Screen) provider, new ExperienceParticleData(new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
-//                    getX() + random.nextInt(width), getY() + random.nextInt(3), 1F + (random.nextFloat() * 0.25F), 50 + random.nextInt(50)));
-//        }
+        if (!(screen.getStack().getItem() instanceof IRelicItem relic))
+            return;
+
+        RandomSource random = minecraft.player.getRandom();
+
+        if (minecraft.player.tickCount % 5 == 0) {
+            ParticleStorage.addParticle(screen, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
+                    getX() + random.nextFloat() * width, getY() + random.nextFloat() * height, 1F + (random.nextFloat() * 0.25F), 10 + random.nextInt(50), 0.01F));
+        }
+    }
+
+    @Override
+    public void playDownSound(SoundManager handler) {
+
     }
 }

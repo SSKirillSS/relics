@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
 import it.hurts.sskirillss.relics.client.screen.description.data.BurnPoint;
+import it.hurts.sskirillss.relics.client.screen.description.data.ResearchParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.LogoWidget;
@@ -18,10 +19,13 @@ import it.hurts.sskirillss.relics.client.screen.description.widgets.general.Luck
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PlayerExperiencePlateWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.PointsPlateWidget;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.research.StarWidget;
+import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.StarData;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
@@ -29,13 +33,16 @@ import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
@@ -45,9 +52,11 @@ import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @OnlyIn(Dist.CLIENT)
 public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, IRelicScreenProvider {
@@ -142,27 +151,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         super.tick();
 
         stack = DescriptionUtils.gatherRelicStack(minecraft.player, slot);
-
-        if (selectedStar != null && !isLMBDown) {
-            for (StarWidget widget : stars) {
-                if (!widget.isHovered())
-                    continue;
-
-                int start = selectedStar.getIndex();
-                int end = widget.getStar().getIndex();
-
-                StarData star = widget.getStar();
-
-                if (start == end || getOccupiedConnectionsCount(star) >= getTotalConnectionsCount(star))
-                    continue;
-
-                links.put(start, end);
-
-                break;
-            }
-
-            selectedStar = null;
-        }
 
         for (BurnPoint point : points) {
             point.getTicker().accept(point);
@@ -297,7 +285,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         float offset = (float) (Math.sin(((minecraft.player.tickCount + partialTick + start.length()) * 0.25F)) * 0.25F);
         float color = 1.25F + offset;
 
-        if (isHoveringConnection(start, end, mouseX, mouseY))
+        if (isHoveringConnection(start, end, mouseX, mouseY) && stars.stream().noneMatch(AbstractWidget::isHovered))
             RenderSystem.setShaderColor(color, 0.25F, 0.25F, 0.75F + offset);
         else
             RenderSystem.setShaderColor(color, color, color, 0.75F + offset);
@@ -344,6 +332,18 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         RenderSystem.disableBlend();
 
         poseStack.popPose();
+    }
+
+    private void executeForConnection(Vec2 start, Vec2 end, float step, Consumer<Vec2> task) {
+        int steps = (int) (Math.sqrt(start.distanceToSqr(end)) / step);
+
+        Vec2 direction = new Vec2(end.x - start.x, end.y - start.y).normalized();
+
+        for (int i = 0; i <= steps; i++) {
+            Vec2 point = new Vec2(direction.x * step * i, direction.y * step * i).add(start);
+
+            task.accept(getScaledPos(point));
+        }
     }
 
     private boolean isHoveringConnection(Vec2 start, Vec2 end, int mouseX, int mouseY) {
@@ -405,16 +405,26 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             ResearchData researchData = relic.getResearchData(ability);
 
             if (pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                isLMBDown = true;
-
                 List<Map.Entry<Integer, Integer>> toRemove = new ArrayList<>();
 
-                for (var link : links.entries())
-                    if (isHoveringConnection(getScaledPos(researchData.getStars().get(link.getKey()).getPos()), getScaledPos(researchData.getStars().get(link.getValue()).getPos()), (int) pMouseX, (int) pMouseY))
-                        toRemove.add(link);
+                if (stars.stream().noneMatch(AbstractWidget::isHovered)) {
+                    for (var link : links.entries())
+                        if (isHoveringConnection(getScaledPos(researchData.getStars().get(link.getKey()).getPos()), getScaledPos(researchData.getStars().get(link.getValue()).getPos()), (int) pMouseX, (int) pMouseY))
+                            toRemove.add(link);
 
-                for (var entry : toRemove)
-                    links.remove(entry.getKey(), entry.getValue());
+                    RandomSource random = minecraft.player.getRandom();
+
+                    for (var entry : toRemove) {
+                        links.remove(entry.getKey(), entry.getValue());
+
+                        executeForConnection(researchData.getStars().get(entry.getKey()).getPos(), researchData.getStars().get(entry.getValue()).getPos(), 0.1F, point -> {
+                            ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
+                                    point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 10 + random.nextInt(50), random.nextFloat() * 0.01F));
+                        });
+
+                        minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.DISCONNECT_STARS.get(), 0.75F + minecraft.player.getRandom().nextFloat() * 0.5F, 0.75F));
+                    }
+                }
             }
         }
 
@@ -423,8 +433,37 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
     @Override
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
-        if (pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT)
-            isLMBDown = false;
+        if (pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            if (selectedStar != null) {
+                for (StarWidget widget : stars) {
+                    if (!widget.isHovered())
+                        continue;
+
+                    int start = selectedStar.getIndex();
+                    int end = widget.getStar().getIndex();
+
+                    StarData star = widget.getStar();
+
+                    if (start == end || getOccupiedConnectionsCount(star) >= getTotalConnectionsCount(star))
+                        continue;
+
+                    links.put(start, end);
+
+                    minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.CONNECT_STARS.get(), (float) (0.25F + (1F - (Math.sqrt(selectedStar.getPos().distanceToSqr(widget.getStar().getPos())) / 35F))), 0.75F));
+
+                    RandomSource random = minecraft.player.getRandom();
+
+                    executeForConnection(selectedStar.getPos(), widget.getStar().getPos(), 0.25F, point -> {
+                        ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
+                                point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(60), random.nextFloat() * 0.025F));
+                    });
+
+                    break;
+                }
+
+                selectedStar = null;
+            }
+        }
 
         return super.mouseReleased(pMouseX, pMouseY, pButton);
     }

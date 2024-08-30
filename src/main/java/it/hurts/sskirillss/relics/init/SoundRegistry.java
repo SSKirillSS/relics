@@ -26,6 +26,10 @@ public class SoundRegistry {
     public static final DeferredHolder<SoundEvent, SoundEvent> ABILITY_COOLDOWN = SOUNDS.register("ability_cooldown", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "ability_cooldown")));
     public static final DeferredHolder<SoundEvent, SoundEvent> ABILITY_CAST = SOUNDS.register("ability_cast", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "ability_cast")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> CONNECT_STARS = SOUNDS.register("connect_stars", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "connect_stars")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> DISCONNECT_STARS = SOUNDS.register("disconnect_stars", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "disconnect_stars")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> FINISH_RESEARCH = SOUNDS.register("finish_research", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "finish_research")));
+
     public static void register(IEventBus bus) {
         SOUNDS.register(bus);
     }
