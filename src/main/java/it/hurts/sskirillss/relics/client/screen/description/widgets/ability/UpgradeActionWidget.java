@@ -31,7 +31,7 @@ public class UpgradeActionWidget extends AbstractActionWidget {
 
     @Override
     public boolean isLocked() {
-        return !(getProvider().getStack().getItem() instanceof IRelicItem relic) || !relic.mayPlayerUpgrade(MC.player, getProvider().getStack(), getAbility());
+        return !(getProvider().getStack().getItem() instanceof IRelicItem relic) || !relic.mayPlayerUpgrade(minecraft.player, getProvider().getStack(), getAbility());
     }
 
     @Override
@@ -40,7 +40,7 @@ public class UpgradeActionWidget extends AbstractActionWidget {
             int level = relic.getAbilityLevel(getProvider().getStack(), getAbility());
             int maxLevel = relic.getAbilityData(getAbility()).getMaxLevel();
 
-            handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_UPGRADE.get(), Screen.hasShiftDown() && relic.mayPlayerUpgrade(MC.player, getProvider().getStack(), getAbility()) ? 2F : 1F + ((float) level / maxLevel)));
+            handler.play(SimpleSoundInstance.forUI(SoundRegistry.TABLE_UPGRADE.get(), Screen.hasShiftDown() && relic.mayPlayerUpgrade(minecraft.player, getProvider().getStack(), getAbility()) ? 2F : 1F + ((float) level / maxLevel)));
         }
     }
 
@@ -49,9 +49,9 @@ public class UpgradeActionWidget extends AbstractActionWidget {
         if (!(getProvider().getStack().getItem() instanceof IRelicItem relic))
             return;
 
-        boolean isQuick = Screen.hasShiftDown() && relic.mayPlayerUpgrade(MC.player, getProvider().getStack(), getAbility());
+        boolean isQuick = Screen.hasShiftDown() && relic.mayPlayerUpgrade(minecraft.player, getProvider().getStack(), getAbility());
 
-        float color = isQuick ? (float) (1.05F + (Math.sin((MC.player.tickCount + (getAbility().length() * 10)) * 0.5F) * 0.1F)) : 1F;
+        float color = isQuick ? (float) (1.05F + (Math.sin((minecraft.player.tickCount + (getAbility().length() * 10)) * 0.5F) * 0.1F)) : 1F;
 
         RenderSystem.setShaderColor(color, color, color, 1F);
 
@@ -84,7 +84,7 @@ public class UpgradeActionWidget extends AbstractActionWidget {
         int requiredLevel = relic.getUpgradeRequiredLevel(getProvider().getStack(), getAbility());
 
         int points = relic.getRelicLevelingPoints(getProvider().getStack());
-        int level = MC.player.experienceLevel;
+        int level = minecraft.player.experienceLevel;
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
@@ -92,7 +92,7 @@ public class UpgradeActionWidget extends AbstractActionWidget {
         List<MutableComponent> entries = Lists.newArrayList(Component.translatable("tooltip.relics.relic.upgrade.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE));
 
         boolean isMaxLevel = relic.isAbilityMaxLevel(getProvider().getStack(), getAbility());
-        boolean isQuick = Screen.hasShiftDown() && relic.mayPlayerUpgrade(MC.player, getProvider().getStack(), getAbility());
+        boolean isQuick = Screen.hasShiftDown() && relic.mayPlayerUpgrade(minecraft.player, getProvider().getStack(), getAbility());
 
         if (!isMaxLevel) {
             entries.add(Component.literal(" "));
@@ -112,12 +112,12 @@ public class UpgradeActionWidget extends AbstractActionWidget {
         }
 
         for (MutableComponent entry : entries) {
-            int entryWidth = (MC.font.width(entry) + 4) / 2;
+            int entryWidth = (minecraft.font.width(entry) + 4) / 2;
 
             if (entryWidth > renderWidth)
                 renderWidth = Math.min(entryWidth, maxWidth);
 
-            tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            tooltip.addAll(minecraft.font.split(entry, maxWidth * 2));
         }
 
         int height = Math.round(tooltip.size() * 5F);
@@ -132,7 +132,7 @@ public class UpgradeActionWidget extends AbstractActionWidget {
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
         for (FormattedCharSequence entry : tooltip) {
-            guiGraphics.drawString(MC.font, entry, (renderX + 10) * 2, (renderY + 9 + yOff) * 2, 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, entry, (renderX + 10) * 2, (renderY + 9 + yOff) * 2, 0x662f13, false);
 
             yOff += 5;
         }

@@ -35,7 +35,7 @@ public class StatWidget extends AbstractDescriptionWidget {
         ItemStack stack = screen.stack;
         String ability = screen.ability;
 
-        LocalPlayer player = MC.player;
+        LocalPlayer player = minecraft.player;
 
         if (!(stack.getItem() instanceof IRelicItem relic) || player == null)
             return;
@@ -95,9 +95,9 @@ public class StatWidget extends AbstractDescriptionWidget {
 
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            guiGraphics.drawString(MC.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title").withStyle(ChatFormatting.BOLD), (getX() + 27) * 2, (getY() + 3) * 2, 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".title").withStyle(ChatFormatting.BOLD), (getX() + 27) * 2, (getY() + 3) * 2, 0x662f13, false);
 
-            guiGraphics.drawString(MC.font, Component.literal("● ").append(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), (getX() + 33) * 2, (getY() + 9) * 2, 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, Component.literal("● ").append(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".stat." + stat + ".value", cost)), (getX() + 33) * 2, (getY() + 9) * 2, 0x662f13, false);
 
             poseStack.popPose();
         }

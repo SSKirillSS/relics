@@ -64,12 +64,12 @@ public class RelicBadgeWidget extends AbstractBadgeWidget {
         }
 
         for (MutableComponent entry : entries) {
-            int entryWidth = (MC.font.width(entry) / 2);
+            int entryWidth = (minecraft.font.width(entry) / 2);
 
             if (entryWidth > renderWidth)
                 renderWidth = Math.min(entryWidth + 2, maxWidth);
 
-            tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            tooltip.addAll(minecraft.font.split(entry, maxWidth * 2));
         }
 
         poseStack.pushPose();
@@ -83,7 +83,7 @@ public class RelicBadgeWidget extends AbstractBadgeWidget {
         int yOff = 0;
 
         for (FormattedCharSequence entry : tooltip) {
-            guiGraphics.drawString(MC.font, entry, ((mouseX - renderWidth / 2) + 1) * 2, ((mouseY + yOff + 9) * 2), 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, entry, ((mouseX - renderWidth / 2) + 1) * 2, ((mouseY + yOff + 9) * 2), 0x662f13, false);
 
             yOff += 5;
         }

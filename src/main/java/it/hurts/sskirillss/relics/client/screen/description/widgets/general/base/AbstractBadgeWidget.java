@@ -25,14 +25,14 @@ public abstract class AbstractBadgeWidget extends AbstractDescriptionWidget impl
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        if (MC.player == null)
+        if (minecraft.player == null)
             return;
 
         PoseStack poseStack = guiGraphics.pose();
 
         poseStack.pushPose();
 
-        float color = (float) (1.05F + (Math.sin((MC.player.tickCount + (getBadge().getId().length() * 10)) * 0.2F) * 0.1F));
+        float color = (float) (1.05F + (Math.sin((minecraft.player.tickCount + (getBadge().getId().length() * 10)) * 0.2F) * 0.1F));
 
         RenderSystem.setShaderColor(color, color, color, 1F);
 
@@ -41,7 +41,7 @@ public abstract class AbstractBadgeWidget extends AbstractDescriptionWidget impl
         if (isHovered) {
             poseStack.translate(width / 2F, height / 2F, 0);
 
-            poseStack.mulPose(Axis.ZP.rotationDegrees((float) Math.cos((MC.player.tickCount + pPartialTick) * 0.35F) * 7.5F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees((float) Math.cos((minecraft.player.tickCount + pPartialTick) * 0.35F) * 7.5F));
 
             poseStack.translate(-(width / 2F), -(height / 2F), 0);
         }

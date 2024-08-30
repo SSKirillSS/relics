@@ -10,8 +10,8 @@ import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionText
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
+import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -49,16 +49,19 @@ public class LogoWidget extends AbstractDescriptionWidget implements IHoverableW
 
         RenderSystem.setShaderTexture(0, DescriptionTextures.LOGO);
 
-        poseStack.translate(Math.sin((MC.player.tickCount + pPartialTick) * 0.075F), Math.cos((MC.player.tickCount + pPartialTick) * 0.075F) * 0.5F, 0);
+        poseStack.translate(getX() + Math.sin((minecraft.player.tickCount + pPartialTick) * 0.075F), getY() + Math.cos((minecraft.player.tickCount + pPartialTick) * 0.075F) * 0.5F, 0);
 
-        RenderUtils.renderAnimatedTextureFromCenter(poseStack, getX() + (width / 2F), getY() + (height / 2F), width, height * 16, width, height, 1F, AnimationData.builder()
-                .frame(0, 2).frame(1, 2).frame(2, 2)
-                .frame(3, 2).frame(4, 2).frame(5, 2)
-                .frame(6, 2).frame(7, 2).frame(8, 2)
-                .frame(9, 2).frame(10, 2).frame(11, 2)
-                .frame(12, 2).frame(13, 2).frame(14, 2)
-                .frame(15, 20)
-        );
+        GUIRenderer.begin(DescriptionTextures.LOGO, poseStack)
+                .animation(AnimationData.builder()
+                        .frame(0, 2).frame(1, 2).frame(2, 2)
+                        .frame(3, 2).frame(4, 2).frame(5, 2)
+                        .frame(6, 2).frame(7, 2).frame(8, 2)
+                        .frame(9, 2).frame(10, 2).frame(11, 2)
+                        .frame(12, 2).frame(13, 2).frame(14, 2)
+                        .frame(15, 20))
+                .texSize(width, height * 16)
+                .patternSize(width, height)
+                .end();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
@@ -67,12 +70,12 @@ public class LogoWidget extends AbstractDescriptionWidget implements IHoverableW
 
     @Override
     public void onTick() {
-        if (!(provider.getStack().getItem() instanceof IRelicItem relic) || MC.player == null)
+        if (!(provider.getStack().getItem() instanceof IRelicItem relic) || minecraft.player == null)
             return;
 
-        RandomSource random = MC.player.getRandom();
+        RandomSource random = minecraft.player.getRandom();
 
-        if (MC.player.tickCount % 5 == 0) {
+        if (minecraft.player.tickCount % 5 == 0) {
             ParticleStorage.addParticle((Screen) provider, new ExperienceParticleData(new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
                     getX() + random.nextInt(width), getY() + random.nextInt(3), 1F + (random.nextFloat() * 0.25F), 50 + random.nextInt(50)));
         }

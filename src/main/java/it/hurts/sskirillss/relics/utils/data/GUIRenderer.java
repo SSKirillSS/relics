@@ -138,13 +138,13 @@ public final class GUIRenderer {
 
         switch (orientation) {
             case CENTER -> {
-            xOff = patternWidth / 2F * scale;
-            yOff = patternHeight / 2F * scale;
+                xOff = patternWidth / 2F * scale;
+                yOff = patternHeight / 2F * scale;
             }
         }
 
         pose.translate(posX - xOff, posY - yOff, 0);
-        pose.scale(scale, scale, scale);
+        pose.scale(scale, scale, 0);
 
         Matrix4f m = pose.last().pose();
 
@@ -152,9 +152,6 @@ public final class GUIRenderer {
         float u2 = (float) (texOffX + patternWidth) / texWidth;
         float v1 = (float) (texOffY + patternHeight) / texHeight;
         float v2 = (float) texOffY / texHeight;
-
-        float w2 = patternWidth / 2F;
-        float h2 = patternHeight / 2F;
 
         builder.addVertex(m, 0, patternHeight, 0).setUv(u1, v1);
         builder.addVertex(m, patternWidth, patternHeight, 0).setUv(u2, v1);

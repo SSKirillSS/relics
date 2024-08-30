@@ -60,12 +60,12 @@ public abstract class AbstractActionWidget extends AbstractDescriptionWidget imp
 
     @Override
     public void onTick() {
-        if (MC.player == null)
+        if (minecraft.player == null)
             return;
 
-        RandomSource random = MC.player.getRandom();
+        RandomSource random = minecraft.player.getRandom();
 
-        if (!isHovered() || MC.player.tickCount % 5 != 0)
+        if (!isHovered() || minecraft.player.tickCount % 5 != 0)
             return;
 
         ParticleStorage.addParticle((Screen) provider, new ExperienceParticleData(

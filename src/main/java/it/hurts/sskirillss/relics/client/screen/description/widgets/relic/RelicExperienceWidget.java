@@ -66,21 +66,21 @@ public class RelicExperienceWidget extends AbstractDescriptionWidget implements 
 
         MutableComponent percentage = Component.literal(relic.isRelicMaxLevel(screen.stack) ? "MAX" : MathUtils.round(calculateFillerPercentage(relic), 1) + "%").withStyle(ChatFormatting.BOLD);
 
-        guiGraphics.drawString(MC.font, percentage, (getX() + 67) * 2 - (MC.font.width(percentage) / 2), (getY() + 6) * 2, 0x662f13, false);
+        guiGraphics.drawString(minecraft.font, percentage, (getX() + 67) * 2 - (minecraft.font.width(percentage) / 2), (getY() + 6) * 2, 0x662f13, false);
 
         poseStack.popPose();
     }
 
     @Override
     public void onTick() {
-        if (!(screen.stack.getItem() instanceof IRelicItem relic) || MC.player == null)
+        if (!(screen.stack.getItem() instanceof IRelicItem relic) || minecraft.player == null)
             return;
 
-        RandomSource random = MC.player.getRandom();
+        RandomSource random = minecraft.player.getRandom();
 
         int fillerWidth = calculateFillerWidth(relic);
 
-        if (MC.player.tickCount % 5 == 0) {
+        if (minecraft.player.tickCount % 5 == 0) {
             for (float i = 0; i < fillerWidth / 40F; i++) {
                 ParticleStorage.addParticle(screen, new ExperienceParticleData(new Color(200, 255, 0),
                         getX() + 5 + random.nextInt(fillerWidth), getY() + random.nextInt(2), 1F + (random.nextFloat() * 0.25F), 50 + random.nextInt(50)));
@@ -114,12 +114,12 @@ public class RelicExperienceWidget extends AbstractDescriptionWidget implements 
             entries.add(Component.translatable("tooltip.relics.researching.general.extra_info"));
 
         for (MutableComponent entry : entries) {
-            int entryWidth = (MC.font.width(entry) / 2);
+            int entryWidth = (minecraft.font.width(entry) / 2);
 
             if (entryWidth > renderWidth)
                 renderWidth = Math.min(entryWidth + 2, maxWidth);
 
-            tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            tooltip.addAll(minecraft.font.split(entry, maxWidth * 2));
         }
 
         poseStack.pushPose();
@@ -133,7 +133,7 @@ public class RelicExperienceWidget extends AbstractDescriptionWidget implements 
         int yOff = 0;
 
         for (FormattedCharSequence entry : tooltip) {
-            guiGraphics.drawString(MC.font, entry, ((mouseX - renderWidth / 2) + 1) * 2, ((mouseY + yOff + 9) * 2), 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, entry, ((mouseX - renderWidth / 2) + 1) * 2, ((mouseY + yOff + 9) * 2), 0x662f13, false);
 
             yOff += 5;
         }

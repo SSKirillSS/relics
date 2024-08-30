@@ -5,12 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.screen.description.data.base.ParticleData;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RenderUtils;
-import net.minecraft.client.Minecraft;
+import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import org.lwjgl.opengl.GL11;
 
@@ -25,6 +26,8 @@ public class ExperienceParticleData extends ParticleData {
 
     @Override
     public void tick(Screen screen) {
+        super.tick(screen);
+
         LocalPlayer player = screen.getMinecraft().player;
 
         if (player == null)
@@ -32,10 +35,8 @@ public class ExperienceParticleData extends ParticleData {
 
         RandomSource random = player.getRandom();
 
-        float partialTicks = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
-
-        setX((float) (getX() + (Math.sin((getLifeTime() + partialTicks) * 0.15F) * (0.1F + (random.nextFloat() * 0.5F)))));
-        setY(getY() - (0.2F + partialTicks));
+        setX((float) (getX() + (Math.sin(getLifeTime() * 0.15F) * (0.1F + (random.nextFloat() * 0.5F)))));
+        setY(getY() - 0.35F);
     }
 
     @Override
@@ -49,16 +50,20 @@ public class ExperienceParticleData extends ParticleData {
         poseStack.pushPose();
 
         RenderSystem.setShaderColor(getColor().getRed() / 255F + blinkOffset, getColor().getGreen() / 255F + blinkOffset, getColor().getBlue() / 255F + blinkOffset, lifePercentage);
-        RenderSystem.setShaderTexture(0, getTexture());
 
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
-        poseStack.translate(getX(), getY(), 0);
+        poseStack.translate(Mth.lerp(partialTick, getXO(), getX()), Mth.lerp(partialTick, getYO(), getY()), 0);
 
         poseStack.mulPose(Axis.ZP.rotationDegrees((getLifeTime() + partialTick) * 10));
 
-        RenderUtils.renderTextureFromCenter(guiGraphics.pose(), 0, 0, 1, 1, getScale() * lifePercentage);
+        GUIRenderer.begin(TEXTURE, guiGraphics.pose())
+                .pos(0, 0)
+                .texSize(1, 1)
+                .scale(getScale() * lifePercentage)
+                .orientation(SpriteOrientation.CENTER)
+                .end();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 

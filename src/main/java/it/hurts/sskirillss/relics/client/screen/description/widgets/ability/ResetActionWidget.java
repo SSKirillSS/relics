@@ -26,7 +26,7 @@ public class ResetActionWidget extends AbstractActionWidget {
 
     @Override
     public boolean isLocked() {
-        return !(getProvider().getStack().getItem() instanceof IRelicItem relic) || !relic.mayPlayerReset(MC.player, getProvider().getStack(), getAbility());
+        return !(getProvider().getStack().getItem() instanceof IRelicItem relic) || !relic.mayPlayerReset(minecraft.player, getProvider().getStack(), getAbility());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ResetActionWidget extends AbstractActionWidget {
 
         int requiredLevel = relic.getResetRequiredLevel(getProvider().getStack(), getAbility());
 
-        int level = MC.player.experienceLevel;
+        int level = minecraft.player.experienceLevel;
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
@@ -70,12 +70,12 @@ public class ResetActionWidget extends AbstractActionWidget {
             entries.add(Component.translatable("tooltip.relics.relic.reset.locked"));
 
         for (MutableComponent entry : entries) {
-            int entryWidth = (MC.font.width(entry) + 4) / 2;
+            int entryWidth = (minecraft.font.width(entry) + 4) / 2;
 
             if (entryWidth > renderWidth)
                 renderWidth = Math.min(entryWidth, maxWidth);
 
-            tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            tooltip.addAll(minecraft.font.split(entry, maxWidth * 2));
         }
 
         int height = Math.round(tooltip.size() * 5F);
@@ -90,7 +90,7 @@ public class ResetActionWidget extends AbstractActionWidget {
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
         for (FormattedCharSequence entry : tooltip) {
-            guiGraphics.drawString(MC.font, entry, (renderX + 10) * 2, (renderY + 9 + yOff) * 2, 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, entry, (renderX + 10) * 2, (renderY + 9 + yOff) * 2, 0x662f13, false);
 
             yOff += 5;
         }

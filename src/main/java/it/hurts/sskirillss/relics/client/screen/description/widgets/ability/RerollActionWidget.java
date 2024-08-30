@@ -32,7 +32,7 @@ public class RerollActionWidget extends AbstractActionWidget {
 
     @Override
     public boolean isLocked() {
-        return !(getProvider().getStack().getItem() instanceof IRelicItem relic) || !relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility());
+        return !(getProvider().getStack().getItem() instanceof IRelicItem relic) || !relic.mayPlayerReroll(minecraft.player, getProvider().getStack(), getAbility());
     }
 
     @Override
@@ -63,9 +63,9 @@ public class RerollActionWidget extends AbstractActionWidget {
             return;
 
         boolean isWarning = relic.getAbilityQuality(getProvider().getStack(), getAbility()) == relic.getMaxQuality();
-        boolean isQuick = Screen.hasShiftDown() && relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility());
+        boolean isQuick = Screen.hasShiftDown() && relic.mayPlayerReroll(minecraft.player, getProvider().getStack(), getAbility());
 
-        float color = (isWarning && Screen.hasShiftDown()) || isQuick ? (float) (1.05F + (Math.sin((MC.player.tickCount + (getAbility().length() * 10)) * 0.5F) * 0.1F)) : 1F;
+        float color = (isWarning && Screen.hasShiftDown()) || isQuick ? (float) (1.05F + (Math.sin((minecraft.player.tickCount + (getAbility().length() * 10)) * 0.5F) * 0.1F)) : 1F;
 
         RenderSystem.setShaderColor(color, color, color, 1F);
 
@@ -96,13 +96,13 @@ public class RerollActionWidget extends AbstractActionWidget {
 
         int requiredLevel = relic.getRerollRequiredLevel(getProvider().getStack(), getAbility());
 
-        int level = MC.player.experienceLevel;
+        int level = minecraft.player.experienceLevel;
 
         MutableComponent negativeStatus = Component.translatable("tooltip.relics.relic.status.negative");
         MutableComponent positiveStatus = Component.translatable("tooltip.relics.relic.status.positive");
         MutableComponent unknownStatus = Component.translatable("tooltip.relics.relic.status.unknown");
 
-        boolean isQuick = relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility()) && relic.getAbilityQuality(getProvider().getStack(), getAbility()) != relic.getMaxQuality();
+        boolean isQuick = relic.mayPlayerReroll(minecraft.player, getProvider().getStack(), getAbility()) && relic.getAbilityQuality(getProvider().getStack(), getAbility()) != relic.getMaxQuality();
 
         List<MutableComponent> entries = Lists.newArrayList(
                 Component.translatable("tooltip.relics.relic.reroll.description").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE),
@@ -113,18 +113,18 @@ public class RerollActionWidget extends AbstractActionWidget {
         if (relic.getAbilityQuality(getProvider().getStack(), getAbility()) == relic.getMaxQuality()) {
             entries.add(Component.literal(" "));
             entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.reroll.warning")));
-        } else if (relic.mayPlayerReroll(MC.player, getProvider().getStack(), getAbility())) {
+        } else if (relic.mayPlayerReroll(minecraft.player, getProvider().getStack(), getAbility())) {
             entries.add(Component.literal(" "));
             entries.add(Component.literal("▶ ").append(Component.translatable("tooltip.relics.relic.reroll.quick")));
         }
 
         for (MutableComponent entry : entries) {
-            int entryWidth = (MC.font.width(entry) + 4) / 2;
+            int entryWidth = (minecraft.font.width(entry) + 4) / 2;
 
             if (entryWidth > renderWidth)
                 renderWidth = Math.min(entryWidth, maxWidth);
 
-            tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            tooltip.addAll(minecraft.font.split(entry, maxWidth * 2));
         }
 
         int height = Math.round(tooltip.size() * 5F);
@@ -139,7 +139,7 @@ public class RerollActionWidget extends AbstractActionWidget {
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
         for (FormattedCharSequence entry : tooltip) {
-            guiGraphics.drawString(MC.font, entry, (renderX + 10) * 2, (renderY + 9 + yOff) * 2, 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, entry, (renderX + 10) * 2, (renderY + 9 + yOff) * 2, 0x662f13, false);
 
             yOff += 5;
         }

@@ -25,7 +25,7 @@ public class PlayerExperiencePlateWidget extends AbstractPlateWidget {
 
     @Override
     public void renderContent(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        LocalPlayer player = MC.player;
+        LocalPlayer player = minecraft.player;
 
         int barWidth = 52;
         int barHeight = 2;
@@ -50,7 +50,7 @@ public class PlayerExperiencePlateWidget extends AbstractPlateWidget {
         int renderWidth = 0;
 
         List<MutableComponent> entries = Lists.newArrayList(
-                Component.literal("").append(Component.translatable("tooltip.relics.researching.general.player_experience.title").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + MC.player.experienceLevel),
+                Component.literal("").append(Component.translatable("tooltip.relics.researching.general.player_experience.title").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE)).append(" " + minecraft.player.experienceLevel),
                 Component.literal(" ")
         );
 
@@ -60,12 +60,12 @@ public class PlayerExperiencePlateWidget extends AbstractPlateWidget {
             entries.add(Component.translatable("tooltip.relics.researching.general.extra_info"));
 
         for (MutableComponent entry : entries) {
-            int entryWidth = (MC.font.width(entry) / 2);
+            int entryWidth = (minecraft.font.width(entry) / 2);
 
             if (entryWidth > renderWidth)
                 renderWidth = Math.min(entryWidth + 2, maxWidth);
 
-            tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            tooltip.addAll(minecraft.font.split(entry, maxWidth * 2));
         }
 
         poseStack.pushPose();
@@ -79,7 +79,7 @@ public class PlayerExperiencePlateWidget extends AbstractPlateWidget {
         int yOff = 0;
 
         for (FormattedCharSequence entry : tooltip) {
-            guiGraphics.drawString(MC.font, entry, ((mouseX - renderWidth / 2) + 1) * 2, ((mouseY + yOff + 9) * 2), 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, entry, ((mouseX - renderWidth / 2) + 1) * 2, ((mouseY + yOff + 9) * 2), 0x662f13, false);
 
             yOff += 5;
         }
@@ -94,6 +94,6 @@ public class PlayerExperiencePlateWidget extends AbstractPlateWidget {
 
     @Override
     public String getValue(ItemStack stack) {
-        return String.valueOf(MC.player.experienceLevel);
+        return String.valueOf(minecraft.player.experienceLevel);
     }
 }

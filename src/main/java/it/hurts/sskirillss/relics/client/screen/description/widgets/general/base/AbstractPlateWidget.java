@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.utils.Reference;
+import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -37,20 +38,27 @@ public abstract class AbstractPlateWidget extends AbstractDescriptionWidget impl
 
         poseStack.pushPose();
 
-        poseStack.translate(Math.sin((MC.player.tickCount + pPartialTick + icon.length() * 10) * 0.075F), Math.cos((MC.player.tickCount + pPartialTick + icon.length() * 10) * 0.075F) * 0.5F, 0);
+        poseStack.translate(getX() + Math.sin((minecraft.player.tickCount + pPartialTick + icon.length() * 10) * 0.075F), getY() + Math.cos((minecraft.player.tickCount + pPartialTick + icon.length() * 10) * 0.075F) * 0.5F, 0);
 
-        guiGraphics.blit(DescriptionTextures.PLATE_BACKGROUND, getX(), getY(), 0, 0, width, height, width, height);
+        GUIRenderer.begin(DescriptionTextures.PLATE_BACKGROUND, poseStack)
+                .texSize(width, height)
+                .end();
 
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/icons/" + icon + ".png"), getX() + 3, getY() + 3, 0, 0, 14, 14, 14, 14);
+        GUIRenderer.begin(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/icons/" + icon + ".png"), poseStack)
+                .texSize(14, 14)
+                .pos(3, 3)
+                .end();
 
         MutableComponent value = Component.literal(getValue(provider.getStack())).withStyle(ChatFormatting.BOLD);
 
-        guiGraphics.drawString(MC.font, value, getX() + 19, getY() + 6, 0xffe278, true);
+        guiGraphics.drawString(minecraft.font, value, 19, 6, 0xffe278, true);
 
         renderContent(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
         if (isHovered())
-            guiGraphics.blit(DescriptionTextures.PLATE_OUTLINE, getX(), getY(), 0, 0, width, height, width, height);
+            GUIRenderer.begin(DescriptionTextures.PLATE_OUTLINE, poseStack)
+                    .texSize(width, height)
+                    .end();
 
         poseStack.popPose();
     }

@@ -56,11 +56,11 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
     @Override
     public void onPress() {
         if (screen.getStack().getItem() instanceof IRelicItem relic && relic.canUseAbility(screen.stack, ability))
-            MC.setScreen(new AbilityResearchScreen(MC.player, screen.container, screen.slot, screen.screen, ability));
+            minecraft.setScreen(new AbilityResearchScreen(minecraft.player, screen.container, screen.slot, screen.screen, ability));
         else {
             shakeDelta = Math.min(20, shakeDelta + (shakeDelta > 0 ? 5 : 15));
 
-            MC.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.CHAIN_BREAK, 1F));
+            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.CHAIN_BREAK, 1F));
         }
     }
 
@@ -71,19 +71,19 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         if (player == null || !(screen.stack.getItem() instanceof IRelicItem relic))
             return;
 
-        TextureManager manager = MC.getTextureManager();
+        TextureManager manager = minecraft.getTextureManager();
         PoseStack poseStack = guiGraphics.pose();
 
         boolean canUse = relic.canUseAbility(screen.stack, ability);
-        boolean canUpgrade = relic.mayPlayerUpgrade(MC.player, screen.stack, ability);
+        boolean canUpgrade = relic.mayPlayerUpgrade(minecraft.player, screen.stack, ability);
 
-        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(MC.player, screen.stack, ability) + ".png");
+        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, screen.stack, ability) + ".png");
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         poseStack.pushPose();
 
-        float partialTicks = MC.getTimer().getGameTimeDeltaPartialTick(false);
+        float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
 
         float lerpedScale = Mth.lerp(partialTicks, scaleOld, scale);
 
@@ -119,7 +119,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            guiGraphics.drawString(MC.font, level, (-(width / 2) + 16) * 2 - MC.font.width(level) / 2, (-(height / 2) + 24) * 2, 0xB7AED9, true);
+            guiGraphics.drawString(minecraft.font, level, (-(width / 2) + 16) * 2 - minecraft.font.width(level) / 2, (-(height / 2) + 24) * 2, 0xB7AED9, true);
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
@@ -180,7 +180,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         poseStack.scale(textScale, textScale, textScale);
 
-        guiGraphics.drawString(MC.font, title, -((width + 1) / 2) - (MC.font.width(title) / 2) + 16, (-(height / 2) - 19), canUse ? 0xFFE278 : 0xB7AED9, true);
+        guiGraphics.drawString(minecraft.font, title, -((width + 1) / 2) - (minecraft.font.width(title) / 2) + 16, (-(height / 2) - 19), canUse ? 0xFFE278 : 0xB7AED9, true);
 
         poseStack.popPose();
     }
@@ -193,10 +193,10 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         float maxScale = 1.1F;
         float minScale = 1F;
 
-        RandomSource random = MC.player.getRandom();
+        RandomSource random = minecraft.player.getRandom();
 
-        if (relic.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
-            if (MC.player.tickCount % 7 == 0)
+        if (relic.mayPlayerUpgrade(minecraft.player, screen.stack, ability)) {
+            if (minecraft.player.tickCount % 7 == 0)
                 ParticleStorage.addParticle(screen, new ExperienceParticleData(new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
                         getX() + 5 + random.nextInt(18), getY() + 18, 1F + (random.nextFloat() * 0.5F), 100 + random.nextInt(50)));
         }
@@ -204,7 +204,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         scaleOld = scale;
 
         if (isHovered()) {
-            if (MC.player.tickCount % 3 == 0)
+            if (minecraft.player.tickCount % 3 == 0)
                 ParticleStorage.addParticle(screen, new ExperienceParticleData(
                         new Color(200 + random.nextInt(50), 150 + random.nextInt(100), 0),
                         getX() + random.nextInt(width), getY() - 1, 1F + (random.nextFloat() * 0.5F), 100 + random.nextInt(50)));
@@ -252,26 +252,26 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
             entries.add(Component.literal(" "));
 
             entries.add(Component.literal("").append(Component.translatable("tooltip.relics.researching.relic.card.no_stats")));
-        } else if (relic.mayPlayerUpgrade(MC.player, screen.stack, ability)) {
+        } else if (relic.mayPlayerUpgrade(minecraft.player, screen.stack, ability)) {
             entries.add(Component.literal(" "));
 
             entries.add(Component.literal("").append(Component.translatable("tooltip.relics.researching.relic.card.ready_to_upgrade")));
         }
 
         for (MutableComponent entry : entries) {
-            int entryWidth = (MC.font.width(entry)) / 2;
+            int entryWidth = (minecraft.font.width(entry)) / 2;
 
             if (entryWidth > renderWidth)
                 renderWidth = Math.min(entryWidth + 2, maxWidth);
 
-            tooltip.addAll(MC.font.split(entry, maxWidth * 2));
+            tooltip.addAll(minecraft.font.split(entry, maxWidth * 2));
         }
 
         int height = tooltip.size() * 5;
 
         int y = getHeight() / 2;
 
-        float partialTicks = MC.getTimer().getGameTimeDeltaPartialTick(false);
+        float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
 
         float lerpedScale = Mth.lerp(partialTicks, scaleOld, scale);
 
@@ -288,7 +288,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            guiGraphics.drawString(MC.font, entry, -(MC.font.width(entry) / 2), ((y + yOff + 9) * 2), 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, entry, -(minecraft.font.width(entry) / 2), ((y + yOff + 9) * 2), 0x662f13, false);
 
             yOff += 5;
 
