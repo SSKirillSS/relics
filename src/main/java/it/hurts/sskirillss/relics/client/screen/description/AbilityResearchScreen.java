@@ -90,8 +90,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
     private List<StarWidget> stars = new ArrayList<>();
 
-    private boolean isLMBDown = false;
-
     public AbilityResearchScreen(Player player, int container, int slot, Screen screen, String ability) {
         super(Component.empty());
 
@@ -193,9 +191,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, DescriptionTextures.SPACE_BACKGROUND);
 
-        int yOff = 0;
-        int xOff = 0;
-
         RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + (backgroundWidth / 2F), y + (backgroundHeight / 2F), 418, 4096, backgroundWidth, backgroundHeight, 1F, AnimationData.builder()
                 .frame(0, 2).frame(1, 2).frame(2, 2)
                 .frame(3, 2).frame(4, 2).frame(5, 2)
@@ -273,7 +268,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         }
     }
 
-    private Vec2 getScaledPos(Vec2 pos) {
+    public Vec2 getScaledPos(Vec2 pos) {
         int scale = 5;
 
         return new Vec2(x + 67 + (pos.x * scale), y + 54 + (pos.y * scale));
@@ -291,18 +286,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             RenderSystem.setShaderColor(color, color, color, 0.75F + offset);
 
         RenderSystem.enableBlend();
-
-        int starSize = 17;
-//        float stepDistance = 5F;
-//        float d = (float) Math.sqrt(start.distanceToSqr(end));
-//        int steps = (int) (d / stepDistance);
-//        Vec2 direction = new Vec2(end.x - start.x, end.y - start.y).normalized();
-//
-//        for (int i = 0; i <= steps; i++) {
-//            Vec2 point = new Vec2(direction.x * stepDistance * i, direction.y * stepDistance * i).add(start);
-//
-//            addPoint(BurnPoint.builder((int) (x + 67 + point.x), (int) (y + 54 + point.y), 1, 0.05F).build());
-//        }
 
         int width = 6;
         int height = 4;

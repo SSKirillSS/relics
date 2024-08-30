@@ -218,7 +218,7 @@ public class HUDRenderHandler {
 
         RenderSystem.setShaderTexture(0, isLocked ? CARD_FRAME_INACTIVE : CARD_FRAME_ACTIVE);
 
-        RenderUtils.renderTextureFromCenter(poseStack, x, y + 1, 0,0, 30, 41, 30, 41, scale);
+        RenderUtils.renderTextureFromCenter(poseStack, x, y + 1, 0, 0, 30, 41, 30, 41, scale);
 
         if (relic.isAbilityTicking(stack, ability.getId())) {
             CastType type = relic.getAbilityData(ability.getId()).getCastData().getType();
@@ -293,7 +293,10 @@ public class HUDRenderHandler {
 
                 RenderSystem.enableBlend();
 
-                drawAbilityStatusIcon(cache, guiGraphics, x - scale, y - scale, 20, 20, scale - 0.1F, null, player.tickCount, partialTicks);
+                drawAbilityStatusIcon(cache, guiGraphics, x - scale, y - scale, 20, 80, scale - 0.1F, AnimationData.builder()
+                                .frame(0, 20).frame(1, 2).frame(2, 2)
+                                .frame(3, 2).frame(2, 2).frame(1, 2),
+                        player.tickCount, partialTicks);
 
                 RenderSystem.disableBlend();
 

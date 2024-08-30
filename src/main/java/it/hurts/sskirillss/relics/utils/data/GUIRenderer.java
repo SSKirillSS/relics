@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.utils.data;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import lombok.AccessLevel;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
 import java.util.function.Supplier;
 
@@ -45,7 +47,7 @@ public final class GUIRenderer {
     private Supplier<Long> time;
     private AnimationData animation;
 
-    private SpriteOrientation orientation = SpriteOrientation.TOP_LEFT;
+    private SpriteOrientation orientation;
 
     public static GUIRenderer begin(ResourceLocation texture, PoseStack pose) {
         var renderer = INSTANCE;
@@ -119,9 +121,17 @@ public final class GUIRenderer {
     public void end() {
         BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
+        Minecraft.getInstance().getTextureManager().getTexture(texture).bind();
+
         RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.disableCull();
+
+        if (texHeight == -1)
+            texHeight = GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
+
+        if (texWidth == -1)
+            texWidth = GlStateManager._getTexLevelParameter(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
 
         if (patternHeight == -1)
             patternHeight = texHeight;

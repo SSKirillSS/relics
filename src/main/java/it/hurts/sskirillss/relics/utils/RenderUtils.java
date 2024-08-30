@@ -2,11 +2,15 @@ package it.hurts.sskirillss.relics.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.init.RelicsCoreShaders;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -14,7 +18,16 @@ import org.joml.Vector2f;
 import java.util.List;
 
 public class RenderUtils {
+    public static void drawOutlinedText(GuiGraphics guiGraphics, MutableComponent text, float x, float y, int textColor, int outlineColor) {
+        Font font = Minecraft.getInstance().font;
 
+        ScreenUtils.drawCenteredString(guiGraphics, font, text, x + 1, y, outlineColor, false);
+        ScreenUtils.drawCenteredString(guiGraphics, font, text, x - 1, y, outlineColor, false);
+        ScreenUtils.drawCenteredString(guiGraphics, font, text, x, y + 1, outlineColor, false);
+        ScreenUtils.drawCenteredString(guiGraphics, font, text, x, y - 1, outlineColor, false);
+
+        ScreenUtils.drawCenteredString(guiGraphics, font, text, x, y, textColor, false);
+    }
 
     public static void renderRevealingPanel(PoseStack matrices, float x, float y, float sizeX, float sizeY, List<Vector2f> points, List<Float> revealRadiuses, List<Float> noiseSpreads, float time) {
         RenderSystem.enableBlend();

@@ -8,7 +8,6 @@ import it.hurts.sskirillss.relics.client.screen.description.AbilityResearchScree
 import it.hurts.sskirillss.relics.client.screen.description.data.ResearchParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
-import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.StarData;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
@@ -54,10 +53,12 @@ public class StarWidget extends AbstractDescriptionWidget implements ITickingWid
 
         LocalPlayer player = Minecraft.getInstance().player;
 
-        if (player == null || !(screen.getStack().getItem() instanceof IRelicItem relic))
+        if (player == null)
             return;
 
         PoseStack poseStack = guiGraphics.pose();
+
+        poseStack.pushPose();
 
         float time = (player.tickCount + pPartialTick + (index * 100F));
 
@@ -73,15 +74,15 @@ public class StarWidget extends AbstractDescriptionWidget implements ITickingWid
 
             float angle = time * 0.05F;
 
-            float radius = (float) (9 + Math.sin(time * 0.1F) * 0.75F);
+            float radius = (float) (8 + Math.sin(time * 0.1F));
 
             float angleStep = (float) (2 * Math.PI / totalCount);
 
             for (int i = 0; i < totalCount; i++) {
-                float color = (float) (0.25F + (Math.sin(time + (i * 10)) * 0.5F));
+                float color = (float) (0.25F + (Math.sin((time + (i * 10)) * 0.25F) * 0.5F));
 
                 if (i < connectedCount)
-                    RenderSystem.setShaderColor(1F + color, 0.25F, 0.25F, 1F);
+                    RenderSystem.setShaderColor(0.25F, 1F + color, 1F, 1F);
                 else
                     RenderSystem.setShaderColor(1F + color, 1F + color, 1F + color, 1F);
 
@@ -92,7 +93,6 @@ public class StarWidget extends AbstractDescriptionWidget implements ITickingWid
 
                 GUIRenderer.begin(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/dot.png"), poseStack)
                         .pos(x, y)
-                        .texSize(3, 3)
                         .orientation(SpriteOrientation.CENTER)
                         .end();
             }
@@ -104,8 +104,6 @@ public class StarWidget extends AbstractDescriptionWidget implements ITickingWid
 
         {
             poseStack.pushPose();
-
-            //guiGraphics.drawString(MC.font, star.getIndex() + "", getX(),getY(), 0xFFFFFF);
 
             float color = (float) (1.1F + (Math.sin(time) * 0.2F));
 
@@ -134,18 +132,17 @@ public class StarWidget extends AbstractDescriptionWidget implements ITickingWid
 
             poseStack.popPose();
         }
+
+        poseStack.popPose();
     }
 
     @Override
     public void onTick() {
-        if (!(screen.getStack().getItem() instanceof IRelicItem relic))
-            return;
-
         RandomSource random = minecraft.player.getRandom();
 
         if (minecraft.player.tickCount % 5 == 0) {
             ParticleStorage.addParticle(screen, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
-                    getX() + random.nextFloat() * width, getY() + random.nextFloat() * height, 1F + (random.nextFloat() * 0.25F), 10 + random.nextInt(50), 0.01F));
+                    getX() + random.nextFloat() * width, getY() + random.nextFloat() * height, 1F + (random.nextFloat() * 0.25F), 10 + random.nextInt(30), 0.01F));
         }
     }
 
