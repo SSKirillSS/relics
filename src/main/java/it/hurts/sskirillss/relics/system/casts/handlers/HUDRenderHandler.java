@@ -182,7 +182,7 @@ public class HUDRenderHandler {
 
         PoseStack poseStack = guiGraphics.pose();
 
-        boolean isLocked = !relic.canUseAbility(player, stack, ability.getId());
+        boolean isLocked = !relic.canPlayerUseAbility(player, stack, ability.getId());
 
         ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability.getId()).getIcon().apply(player, stack, ability.getId()) + ".png");
 
@@ -418,7 +418,7 @@ public class HUDRenderHandler {
                 if (ability != null) {
                     ItemStack stack = ability.getSlot().gatherStack(player);
 
-                    if (stack.getItem() instanceof IRelicItem relic && relic.getAbilityData(ability.getId()) != null && relic.canUseAbility(player, stack, ability.getId()))
+                    if (stack.getItem() instanceof IRelicItem relic && relic.getAbilityData(ability.getId()) != null && relic.canPlayerUseAbility(player, stack, ability.getId()))
                         relic.tickActiveAbilitySelection(stack, player, ability.getId());
                 }
 
@@ -470,7 +470,7 @@ public class HUDRenderHandler {
             if (!(stack.getItem() instanceof IRelicItem relic))
                 return;
 
-            if (!relic.canUseAbility(player, stack, ability.getId())) {
+            if (!relic.canPlayerUseAbility(player, stack, ability.getId())) {
                 int delta = cache.getIconShakeDelta();
 
                 cache.setIconShakeDelta(Math.min(20, delta + (delta > 0 ? 5 : 15)));

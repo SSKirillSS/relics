@@ -136,7 +136,7 @@ public class ShadowGlaiveItem extends RelicItem {
             if (!entity.isReturning)
                 entity.isReturning = true;
         } else {
-            if (playerIn.isShiftKeyDown() && canUseAbility(stack, "saw")) {
+            if (playerIn.isShiftKeyDown() && isAbilityUnlocked(stack, "saw")) {
                 if (charges == 8 && getSaw(stack, worldIn) == null) {
                     ShadowSawEntity saw = new ShadowSawEntity(stack, playerIn);
 

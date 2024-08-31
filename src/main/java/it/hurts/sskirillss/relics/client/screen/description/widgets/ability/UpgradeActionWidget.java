@@ -65,7 +65,7 @@ public class UpgradeActionWidget extends AbstractActionWidget {
 
     @Override
     public void onHovered(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (!(getProvider().getStack().getItem() instanceof IRelicItem relic) || !relic.canUseAbility(getProvider().getStack(), getAbility()))
+        if (!(getProvider().getStack().getItem() instanceof IRelicItem relic) || !relic.isAbilityUnlocked(getProvider().getStack(), getAbility()))
             return;
 
         AbilityData data = relic.getAbilityData(getAbility());

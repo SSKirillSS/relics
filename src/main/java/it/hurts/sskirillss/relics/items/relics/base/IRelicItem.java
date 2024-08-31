@@ -495,7 +495,9 @@ public interface IRelicItem {
             AbilityComponent.AbilityComponentBuilder builder = AbilityComponent.EMPTY.toBuilder();
 
             if (abilityData.getCastData().getType() == CastType.TOGGLEABLE)
-                builder.ticking(true);
+                builder.extender(AbilityExtenderComponent.builder()
+                        .ticking(true)
+                        .build());
 
             abilityComponent = builder.build();
 
@@ -510,6 +512,48 @@ public interface IRelicItem {
 
     default void setAbilityComponent(ItemStack stack, String ability, AbilityComponent component) {
         setAbilitiesComponent(stack, getAbilitiesComponent(stack).toBuilder().ability(ability, component).build());
+    }
+
+    default AbilityExtenderComponent getAbilityExtenderComponent(ItemStack stack, String ability) {
+        return getAbilityComponent(stack, ability).extender();
+    }
+
+    default void setAbilityExtenderComponent(ItemStack stack, String ability, AbilityExtenderComponent component) {
+        setAbilityComponent(stack, ability, getAbilityComponent(stack, ability).toBuilder()
+                .extender(component)
+                .build());
+    }
+
+    default LockComponent getLockComponent(ItemStack stack, String ability) {
+        return getAbilityComponent(stack, ability).lock();
+    }
+
+    default void setLockComponent(ItemStack stack, String ability, LockComponent component) {
+        setAbilityComponent(stack, ability, getAbilityComponent(stack, ability).toBuilder()
+                .lock(component)
+                .build());
+    }
+
+    default int getMaxLockUnlocks() {
+        return 5;
+    }
+
+    default int getLockUnlocks(ItemStack stack, String ability) {
+        return getLockComponent(stack, ability).unlocks();
+    }
+
+    default void setLockUnlocks(ItemStack stack, String ability, int unlocks) {
+        setLockComponent(stack, ability, getLockComponent(stack, ability).toBuilder()
+                .unlocks(Mth.clamp(unlocks, 0, getMaxLockUnlocks()))
+                .build());
+    }
+
+    default void addLockUnlocks(ItemStack stack, String ability, int unlocks) {
+        setLockUnlocks(stack, ability, getLockUnlocks(stack, ability) + unlocks);
+    }
+
+    default boolean isLockUnlocked(ItemStack stack, String ability) {
+        return getLockUnlocks(stack, ability) >= getMaxLockUnlocks();
     }
 
     default ResearchComponent getResearchComponent(ItemStack stack, String ability) {
@@ -694,17 +738,19 @@ public interface IRelicItem {
         return getStatValue(stack, ability, stat, getAbilityLevel(stack, ability));
     }
 
-    // TODO: Rename to isUnlocked or something like this
-    @Deprecated(since = "1.21", forRemoval = true)
-    default boolean canUseAbility(ItemStack stack, String ability) {
+    default boolean isEnoughLevel(ItemStack stack, String ability) {
         return getRelicLevel(stack) >= getAbilityData(ability).getRequiredLevel();
     }
 
-    default boolean canUseAbility(Player player, ItemStack stack, String ability) {
-        return canUseAbility(stack, ability) && testAbilityPredicates(player, stack, ability, PredicateType.CAST) && getAbilityCooldown(stack, ability) <= 0;
+    default boolean isAbilityUnlocked(ItemStack stack, String ability) {
+        return isEnoughLevel(stack, ability) && isLockUnlocked(stack, ability);
     }
 
-    default boolean canSeeAbility(Player player, ItemStack stack, String ability) {
+    default boolean canPlayerUseAbility(Player player, ItemStack stack, String ability) {
+        return isAbilityUnlocked(stack, ability) && testAbilityPredicates(player, stack, ability, PredicateType.CAST) && getAbilityCooldown(stack, ability) <= 0;
+    }
+
+    default boolean canPlayerSeeAbility(Player player, ItemStack stack, String ability) {
         return testAbilityPredicates(player, stack, ability, PredicateType.VISIBILITY);
     }
 
@@ -715,7 +761,7 @@ public interface IRelicItem {
     default boolean mayUpgrade(ItemStack stack, String ability) {
         AbilityData entry = getAbilityData(ability);
 
-        return !entry.getStats().isEmpty() && !isAbilityMaxLevel(stack, ability) && getRelicLevelingPoints(stack) >= entry.getRequiredPoints() && canUseAbility(stack, ability);
+        return !entry.getStats().isEmpty() && !isAbilityMaxLevel(stack, ability) && getRelicLevelingPoints(stack) >= entry.getRequiredPoints() && isAbilityUnlocked(stack, ability);
     }
 
     default boolean mayPlayerUpgrade(Player player, ItemStack stack, String ability) {
@@ -739,7 +785,7 @@ public interface IRelicItem {
     }
 
     default boolean mayReroll(ItemStack stack, String ability) {
-        return !getAbilityData(ability).getStats().isEmpty() && canUseAbility(stack, ability);
+        return !getAbilityData(ability).getStats().isEmpty() && isAbilityUnlocked(stack, ability);
     }
 
     default boolean mayPlayerReroll(Player player, ItemStack stack, String ability) {
@@ -769,7 +815,7 @@ public interface IRelicItem {
     }
 
     default boolean mayReset(ItemStack stack, String ability) {
-        return getAbilityLevel(stack, ability) > 0 && canUseAbility(stack, ability);
+        return getAbilityLevel(stack, ability) > 0 && isAbilityUnlocked(stack, ability);
     }
 
     default boolean mayPlayerReset(Player player, ItemStack stack, String ability) {
@@ -789,40 +835,40 @@ public interface IRelicItem {
     }
 
     default int getAbilityCooldownCap(ItemStack stack, String ability) {
-        return getAbilityComponent(stack, ability).cooldownCap();
+        return getAbilityExtenderComponent(stack, ability).cooldownCap();
     }
 
     default void setAbilityCooldownCap(ItemStack stack, String ability, int amount) {
-        setAbilityComponent(stack, ability, getAbilityComponent(stack, ability).toBuilder()
+        setAbilityExtenderComponent(stack, ability, getAbilityExtenderComponent(stack, ability).toBuilder()
                 .cooldownCap(amount)
                 .build());
     }
 
     default int getAbilityCooldown(ItemStack stack, String ability) {
-        return getAbilityComponent(stack, ability).cooldown();
+        return getAbilityExtenderComponent(stack, ability).cooldown();
     }
 
     default void setAbilityCooldown(ItemStack stack, String ability, int amount) {
-        setAbilityComponent(stack, ability, getAbilityComponent(stack, ability).toBuilder()
+        setAbilityExtenderComponent(stack, ability, getAbilityExtenderComponent(stack, ability).toBuilder()
                 .cooldownCap(amount)
                 .cooldown(amount)
                 .build());
     }
 
     default void addAbilityCooldown(ItemStack stack, String ability, int amount) {
-        setAbilityComponent(stack, ability, getAbilityComponent(stack, ability).toBuilder()
+        setAbilityExtenderComponent(stack, ability, getAbilityExtenderComponent(stack, ability).toBuilder()
                 .cooldown(getAbilityCooldown(stack, ability) + amount)
                 .build());
     }
 
     default void setAbilityTicking(ItemStack stack, String ability, boolean ticking) {
-        setAbilityComponent(stack, ability, getAbilityComponent(stack, ability).toBuilder()
+        setAbilityExtenderComponent(stack, ability, getAbilityExtenderComponent(stack, ability).toBuilder()
                 .ticking(ticking)
                 .build());
     }
 
     default boolean isAbilityTicking(ItemStack stack, String ability) {
-        return getAbilityComponent(stack, ability).ticking();
+        return getAbilityExtenderComponent(stack, ability).ticking();
     }
 
     default boolean isAbilityOnCooldown(ItemStack stack, String ability) {

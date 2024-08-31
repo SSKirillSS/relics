@@ -252,7 +252,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        if (canUseAbility(stack, "phlebotomy")) {
+        if (isAbilityUnlocked(stack, "phlebotomy")) {
             float percentage = 100F - (player.getHealth() / player.getMaxHealth() * 100F);
 
             player.heal((float) getStatValue(stack, "phlebotomy", "heal") * percentage);
@@ -261,7 +261,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
             EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) (getStatValue(stack, "phlebotomy", "movement_speed") * percentage), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         }
 
-        if (canUseAbility(stack, "rage")) {
+        if (isAbilityUnlocked(stack, "rage")) {
             int stacks = stack.getOrDefault(CHARGE, 0);
 
             if (stacks > 0) {
@@ -359,7 +359,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                 if (!(stack.getItem() instanceof IRelicItem relic))
                     return;
 
-                if (relic.canUseAbility(stack, "rage")) {
+                if (relic.isAbilityUnlocked(stack, "rage")) {
                     int stacks = stack.getOrDefault(CHARGE, 0);
 
                     stack.set(CHARGE, ++stacks);
@@ -375,7 +375,7 @@ public class RageGloveItem extends RelicItem implements IRenderableCurio {
                 if (!(stack.getItem() instanceof IRelicItem relic))
                     return;
 
-                if (relic.canUseAbility(stack, "rage")) {
+                if (relic.isAbilityUnlocked(stack, "rage")) {
                     int stacks = stack.getOrDefault(CHARGE, 0);
 
                     if (stacks <= 0)

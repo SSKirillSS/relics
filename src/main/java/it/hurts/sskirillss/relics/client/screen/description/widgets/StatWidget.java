@@ -68,7 +68,7 @@ public class StatWidget extends AbstractDescriptionWidget {
         }
 
         {
-            boolean isLocked = !relic.canUseAbility(stack, ability);
+            boolean isLocked = !relic.isAbilityUnlocked(stack, ability);
 
             boolean isHoveredUpgrade = !isLocked && screen.upgradeButton.isHovered();
             boolean isHoveredReroll = !isLocked && screen.rerollButton.isHovered();

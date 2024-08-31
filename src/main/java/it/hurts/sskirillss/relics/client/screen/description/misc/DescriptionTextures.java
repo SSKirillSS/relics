@@ -25,7 +25,7 @@ public class DescriptionTextures {
 
     public static final ResourceLocation BIG_CARD_FRAME_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/big_card_frame_outline.png");
 
-    public static final ResourceLocation CHAINS = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/chains.png");
+    public static final ResourceLocation CHAINS_INACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/chains_inactive.png");
 
     public static final ResourceLocation SMALL_STAR_HOLE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/small_star_hole.png");
     public static final ResourceLocation SMALL_STAR_ACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/small_star_active.png");

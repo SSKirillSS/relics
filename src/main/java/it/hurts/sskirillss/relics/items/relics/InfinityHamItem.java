@@ -145,7 +145,7 @@ public class InfinityHamItem extends RelicItem {
 
             PotionContents contents = stack.get(DataComponents.POTION_CONTENTS);
 
-            if (!canUseAbility(stack, "infusion") || contents == null)
+            if (!isAbilityUnlocked(stack, "infusion") || contents == null)
                 return;
 
             int duration = (int) Math.round(getStatValue(stack, "infusion", "duration") * 20);
@@ -197,7 +197,7 @@ public class InfinityHamItem extends RelicItem {
             ItemStack slotStack = event.getSlotStack();
 
             if (!(heldStack.getItem() instanceof PotionItem) || !(slotStack.getItem() instanceof InfinityHamItem relic)
-                    || !relic.canUseAbility(slotStack, "infusion"))
+                    || !relic.isAbilityUnlocked(slotStack, "infusion"))
                 return;
 
             PotionContents contents = heldStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);

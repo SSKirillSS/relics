@@ -39,7 +39,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.util.Random;
 
 import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.COUNT;
 
 public class SporeSackItem extends RelicItem {
     @Override
@@ -136,7 +135,7 @@ public class SporeSackItem extends RelicItem {
     }
 
     public int getMaxSpores(ItemStack stack) {
-        return (int) Math.round(canUseAbility(stack, "buffer") ? getStatValue(stack, "buffer", "capacity") : 1);
+        return (int) Math.round(isAbilityUnlocked(stack, "buffer") ? getStatValue(stack, "buffer", "capacity") : 1);
     }
 
     public int getSpores(ItemStack stack) {
@@ -148,7 +147,7 @@ public class SporeSackItem extends RelicItem {
     }
 
     public void addSpores(ItemStack stack, int amount) {
-        if (canUseAbility(stack, "buffer") && amount < 0
+        if (isAbilityUnlocked(stack, "buffer") && amount < 0
                 && new Random().nextFloat() <= getStatValue(stack, "buffer", "chance"))
             return;
 

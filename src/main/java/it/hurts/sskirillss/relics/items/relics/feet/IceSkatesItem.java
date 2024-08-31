@@ -90,7 +90,7 @@ public class IceSkatesItem extends RelicItem {
         } else if (duration > 0)
             stack.set(CHARGE, Math.max(0, duration - 2));
 
-        if (canUseAbility(stack, "ram") && duration >= 10) {
+        if (isAbilityUnlocked(stack, "ram") && duration >= 10) {
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox())) {
                 if (entity == player || entity.hurtTime > 0)
                     continue;

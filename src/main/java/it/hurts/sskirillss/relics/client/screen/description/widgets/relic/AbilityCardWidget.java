@@ -9,15 +9,20 @@ import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityResearchScreen;
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParticleData;
+import it.hurts.sskirillss.relics.client.screen.description.data.SparkParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.network.packets.lock.PacketAbilityUnlock;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
+import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,6 +38,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec2;
 
 import java.awt.*;
 import java.util.List;
@@ -45,6 +52,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
     private float scaleOld = 1F;
 
     private int shakeDelta = 0;
+    private int colorDelta = 0;
 
     public AbilityCardWidget(int x, int y, RelicDescriptionScreen screen, String ability) {
         super(x, y, 32, 47);
@@ -55,12 +63,57 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
     @Override
     public void onPress() {
-        if (screen.getStack().getItem() instanceof IRelicItem relic && relic.canUseAbility(screen.stack, ability))
+        if (!(screen.getStack().getItem() instanceof IRelicItem relic))
+            return;
+
+        ItemStack stack = screen.getStack();
+
+        boolean isEnoughLevel = relic.isEnoughLevel(stack, ability);
+        boolean isLockUnlocked = relic.isLockUnlocked(stack, ability);
+
+        boolean canUse = isEnoughLevel && isLockUnlocked;
+
+        SoundManager soundManager = minecraft.getSoundManager();
+
+        if (canUse)
             minecraft.setScreen(new AbilityResearchScreen(minecraft.player, screen.container, screen.slot, screen.screen, ability));
         else {
-            shakeDelta = Math.min(20, shakeDelta + (shakeDelta > 0 ? 5 : 15));
+            if (isEnoughLevel) {
+                int unlocks = relic.getLockUnlocks(stack, ability) + 1;
 
-            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.CHAIN_BREAK, 1F));
+                RandomSource random = minecraft.player.getRandom();
+
+                for (int i = 0; i < unlocks * 50; i++) {
+                    var center = new Vec2(width / 2F, height / 2F);
+                    var margin = new Vec2(random.nextInt(width), random.nextInt(height));
+
+                    var motion = new Vec2(margin.x - center.x, margin.y - center.y).normalized().scale(5F + unlocks);
+
+                    ParticleStorage.addParticle(screen, new SparkParticleData(new Color(150 + random.nextInt(100), 100 + random.nextInt(50), 0),
+                            getX() + margin.x, getY() + margin.y, 1F + (random.nextFloat() * 0.5F), 20 + random.nextInt(100))
+                            .setDeltaX(random.nextFloat() * motion.x)
+                            .setDeltaY(random.nextFloat() * motion.y)
+                    );
+                }
+
+                NetworkHandler.sendToServer(new PacketAbilityUnlock(screen.container, screen.slot, ability, unlocks));
+
+                scale += 0.05F;
+
+                shakeDelta = Math.min(30, shakeDelta + 20);
+
+                soundManager.play(SimpleSoundInstance.forUI(SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, 1F));
+
+                if (unlocks >= relic.getMaxLockUnlocks()) {
+                    soundManager.play(SimpleSoundInstance.forUI(SoundEvents.WITHER_BREAK_BLOCK, 1F));
+                    soundManager.play(SimpleSoundInstance.forUI(SoundEvents.GENERIC_EXPLODE, 1F));
+                }
+            } else {
+                shakeDelta = Math.min(20, shakeDelta + 10);
+                colorDelta = Math.min(20, colorDelta + 10);
+
+                soundManager.play(SimpleSoundInstance.forUI(SoundEvents.CHAIN_BREAK, 1F));
+            }
         }
     }
 
@@ -71,10 +124,17 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         if (player == null || !(screen.stack.getItem() instanceof IRelicItem relic))
             return;
 
+        ItemStack stack = screen.getStack();
+
         TextureManager manager = minecraft.getTextureManager();
         PoseStack poseStack = guiGraphics.pose();
 
-        boolean canUse = relic.canUseAbility(screen.stack, ability);
+        int unlocks = relic.getLockUnlocks(stack, ability);
+
+        boolean isEnoughLevel = relic.isEnoughLevel(stack, ability);
+        boolean isLockUnlocked = relic.isLockUnlocked(stack, ability);
+
+        boolean canUse = isEnoughLevel && isLockUnlocked;
         boolean canUpgrade = relic.mayPlayerUpgrade(minecraft.player, screen.stack, ability);
 
         ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, screen.stack, ability) + ".png");
@@ -95,31 +155,47 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         RenderSystem.setShaderColor(color, color, color, 1F);
 
-        guiGraphics.blit(card, -(20 / 2) - 1, -(29 / 2) - 2, 0, 0, 22, 31, 22, 31);
+        GUIRenderer.begin(card, poseStack)
+                .orientation(SpriteOrientation.CENTER)
+                .texSize(22, 31)
+                .scale(1.01F) // Blame Mojang, not me
+                .end();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
-        guiGraphics.blit(canUse ? DescriptionTextures.SMALL_CARD_FRAME_ACTIVE : DescriptionTextures.SMALL_CARD_FRAME_INACTIVE, -(width / 2), -(height / 2) - 1, 0, 0, width, height, width, height);
+        GUIRenderer.begin(canUse ? DescriptionTextures.SMALL_CARD_FRAME_ACTIVE : DescriptionTextures.SMALL_CARD_FRAME_INACTIVE, poseStack)
+                .orientation(SpriteOrientation.CENTER)
+                .end();
+
+        if (isHovered())
+            GUIRenderer.begin(DescriptionTextures.SMALL_CARD_FRAME_OUTLINE, poseStack)
+                    .orientation(SpriteOrientation.CENTER)
+                    .end();
 
         if (!canUse) {
-            guiGraphics.blit(DescriptionTextures.CHAINS, -(width / 2), -(height / 2) + 1, 0, 0, 32, 41, 32, 41);
+            GUIRenderer.begin(isEnoughLevel ? ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/chains_active_" + unlocks + ".png") : DescriptionTextures.CHAINS_INACTIVE, poseStack)
+                    .orientation(SpriteOrientation.CENTER)
+                    .pos(0, -1)
+                    .end();
 
             MutableComponent level = Component.literal(String.valueOf(relic.getAbilityData(ability).getRequiredLevel())).withStyle(ChatFormatting.BOLD);
 
-            color = shakeDelta * 0.04F;
+            color = Math.min(0.75F, colorDelta * 0.04F);
 
             RenderSystem.setShaderColor(1, 1 - color, 1 - color, 1);
 
             poseStack.pushPose();
 
             if (shakeDelta > 0)
-                poseStack.mulPose(Axis.ZP.rotation((float) Math.sin((player.tickCount + partialTick) * 0.75F) * 0.1F));
+                poseStack.mulPose(Axis.ZP.rotation((float) Math.sin((player.tickCount + partialTick) * 0.75F) * ((shakeDelta / 30F) * 0.75F)));
 
-            guiGraphics.blit(DescriptionTextures.LOCK_INACTIVE, -(width / 2) + 9, -(height / 2) + 14, 0, 0, 14, 17, 14, 17);
+            GUIRenderer.begin(isEnoughLevel ? ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/icons/lock_active_" + unlocks + ".png") : DescriptionTextures.LOCK_INACTIVE, poseStack)
+                    .orientation(SpriteOrientation.CENTER)
+                    .end();
 
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
-            guiGraphics.drawString(minecraft.font, level, (-(width / 2) + 16) * 2 - minecraft.font.width(level) / 2, (-(height / 2) + 24) * 2, 0xB7AED9, true);
+            guiGraphics.drawString(minecraft.font, level, (-(width / 2) + 16) * 2 - minecraft.font.width(level) / 2, (-(height / 2) + 24) * 2, isEnoughLevel ? 0xFFE278 : 0xB7AED9, true);
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
@@ -149,38 +225,41 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
             RenderSystem.disableBlend();
         }
 
-        int xOff = 0;
+        {
+            if (canUse) {
+                int xOff = 0;
 
-        for (int i = 0; i < 5; i++) {
-            guiGraphics.blit(DescriptionTextures.SMALL_STAR_HOLE, -(width / 2) + xOff + 4, -(height / 2) + 40, 0, 0, 4, 4, 4, 4);
+                for (int i = 0; i < 5; i++) {
+                    guiGraphics.blit(DescriptionTextures.SMALL_STAR_HOLE, -(width / 2) + xOff + 4, -(height / 2) + 40, 0, 0, 4, 4, 4, 4);
 
-            xOff += 5;
+                    xOff += 5;
+                }
+
+                xOff = 0;
+
+                int quality = relic.getAbilityQuality(screen.stack, ability);
+                boolean isAliquot = quality % 2 == 1;
+
+                for (int i = 0; i < Math.floor(quality / 2D); i++) {
+                    guiGraphics.blit(DescriptionTextures.SMALL_STAR_ACTIVE, -(width / 2) + xOff + 4, -(height / 2) + 40, 0, 0, 4, 4, 4, 4);
+
+                    xOff += 5;
+                }
+
+                if (isAliquot)
+                    guiGraphics.blit(DescriptionTextures.SMALL_STAR_ACTIVE, -(width / 2) + xOff + 4, -(height / 2) + 40, 0, 0, 2, 4, 4, 4);
+            }
         }
 
-        xOff = 0;
+        {
+            MutableComponent title = Component.literal(canUse ? String.valueOf(relic.getAbilityLevel(screen.stack, ability)) : "?").withStyle(ChatFormatting.BOLD);
 
-        int quality = relic.getAbilityQuality(screen.stack, ability);
-        boolean isAliquot = quality % 2 == 1;
+            float textScale = 0.5F;
 
-        for (int i = 0; i < Math.floor(quality / 2D); i++) {
-            guiGraphics.blit(canUse ? DescriptionTextures.SMALL_STAR_ACTIVE : DescriptionTextures.SMALL_STAR_INACTIVE, -(width / 2) + xOff + 4, -(height / 2) + 40, 0, 0, 4, 4, 4, 4);
+            poseStack.scale(textScale, textScale, textScale);
 
-            xOff += 5;
+            guiGraphics.drawString(minecraft.font, title, -((width + 1) / 2) - (minecraft.font.width(title) / 2) + 16, (-(height / 2) - 19), canUse ? 0xFFE278 : 0xB7AED9, true);
         }
-
-        if (isAliquot)
-            guiGraphics.blit(canUse ? DescriptionTextures.SMALL_STAR_ACTIVE : DescriptionTextures.SMALL_STAR_INACTIVE, -(width / 2) + xOff + 4, -(height / 2) + 40, 0, 0, 2, 4, 4, 4);
-
-        if (isHovered())
-            guiGraphics.blit(DescriptionTextures.SMALL_CARD_FRAME_OUTLINE, -(width / 2) - 1, -(height / 2) - 2, 0, 0, width + 2, height + 3, width + 2, height + 3);
-
-        MutableComponent title = Component.literal(canUse ? String.valueOf(relic.getAbilityLevel(screen.stack, ability)) : "?").withStyle(ChatFormatting.BOLD);
-
-        float textScale = 0.5F;
-
-        poseStack.scale(textScale, textScale, textScale);
-
-        guiGraphics.drawString(minecraft.font, title, -((width + 1) / 2) - (minecraft.font.width(title) / 2) + 16, (-(height / 2) - 19), canUse ? 0xFFE278 : 0xB7AED9, true);
 
         poseStack.popPose();
     }
@@ -203,6 +282,9 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         scaleOld = scale;
 
+        if (scale > maxScale)
+            scale = Math.max(minScale, scale - 0.01F);
+
         if (isHovered()) {
             if (minecraft.player.tickCount % 3 == 0)
                 ParticleStorage.addParticle(screen, new ExperienceParticleData(
@@ -218,6 +300,9 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         if (shakeDelta > 0)
             shakeDelta--;
+
+        if (colorDelta > 0)
+            colorDelta--;
     }
 
     @Override
@@ -298,7 +383,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
     @Override
     public void playDownSound(SoundManager handler) {
-        if (screen.getStack().getItem() instanceof IRelicItem relic && relic.canUseAbility(screen.stack, ability))
+        if (screen.getStack().getItem() instanceof IRelicItem relic && relic.isAbilityUnlocked(screen.stack, ability))
             super.playDownSound(handler);
     }
 }
