@@ -58,7 +58,7 @@ public class MagicMirrorItem extends RelicItem {
                                         .build())
                                 .stat(StatData.builder("cooldown")
                                         .icon(StatIcons.COOLDOWN)
-                                        .initialValue(60D, 120D)
+                                        .initialValue(120D, 60D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.05D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
