@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 
 public class ExperienceParticleData extends ParticleData {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/pixel_particle.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/particles/pixel.png");
 
     public ExperienceParticleData(Color color, float xStart, float yStart, float scale, int lifeTime) {
         super(TEXTURE, color, xStart, yStart, scale, lifeTime);
@@ -59,8 +59,6 @@ public class ExperienceParticleData extends ParticleData {
         poseStack.mulPose(Axis.ZP.rotationDegrees((getLifeTime() + partialTick) * 10));
 
         GUIRenderer.begin(TEXTURE, guiGraphics.pose())
-                .pos(0, 0)
-                .texSize(1, 1)
                 .scale(getScale() * lifePercentage)
                 .orientation(SpriteOrientation.CENTER)
                 .end();

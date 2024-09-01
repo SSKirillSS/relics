@@ -12,20 +12,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class ResearchParticleData extends ParticleData {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/particles/pixel.png");
+public class ChainParticleData extends ParticleData {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/particles/chain.png");
 
-    private final float verticalAcceleration;
-
-    public ResearchParticleData(Color color, float xStart, float yStart, float scale, int lifeTime, float verticalAcceleration) {
+    public ChainParticleData(Color color, float xStart, float yStart, float scale, int lifeTime) {
         super(TEXTURE, color, xStart, yStart, scale, lifeTime);
-
-        this.verticalAcceleration = verticalAcceleration;
     }
 
     @Override
@@ -37,10 +31,10 @@ public class ResearchParticleData extends ParticleData {
         if (player == null)
             return;
 
-        RandomSource random = player.getRandom();
+        var lifePercentage = (float) getLifeTime() / getMaxLifeTime();
 
-        setX((float) (getX() + (Math.sin(getLifeTime() * 0.15F) * (0.1F + (random.nextFloat() * 0.5F)))));
-        setY(getY() - (getLifeTime() * verticalAcceleration));
+        setX(getX() + getDeltaX() * lifePercentage);
+        setY(getY() + getDeltaY() * lifePercentage + (getMaxLifeTime() - getLifeTime()));
     }
 
     @Override
@@ -49,18 +43,15 @@ public class ResearchParticleData extends ParticleData {
 
         var lifePercentage = (float) getLifeTime() / getMaxLifeTime();
 
-        float blinkOffset = 0.25F + (float) (Math.sin(getLifeTime() + partialTick) * 0.5F);
-
         poseStack.pushPose();
 
-        RenderSystem.setShaderColor(getColor().getRed() / 255F + blinkOffset, getColor().getGreen() / 255F + blinkOffset, getColor().getBlue() / 255F + blinkOffset, lifePercentage);
+        RenderSystem.setShaderColor(getColor().getRed() / 255F, getColor().getGreen() / 255F, getColor().getBlue() / 255F, 1F);
 
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
         poseStack.translate(Mth.lerp(partialTick, getXO(), getX()), Mth.lerp(partialTick, getYO(), getY()), 0);
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees((getLifeTime() + partialTick) * 25));
+        poseStack.mulPose(Axis.ZP.rotationDegrees((getLifeTime() + partialTick) * getDeltaX()));
 
         GUIRenderer.begin(TEXTURE, guiGraphics.pose())
                 .scale(getScale() * lifePercentage)

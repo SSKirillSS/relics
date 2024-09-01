@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
 import it.hurts.sskirillss.relics.client.screen.description.AbilityResearchScreen;
 import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
+import it.hurts.sskirillss.relics.client.screen.description.data.ChainParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.data.ExperienceParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.data.SparkParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
@@ -18,6 +19,7 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.lock.PacketAbilityUnlock;
+import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
@@ -78,6 +80,8 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         if (canUse)
             minecraft.setScreen(new AbilityResearchScreen(minecraft.player, screen.container, screen.slot, screen.screen, ability));
         else {
+            shakeDelta = Math.min(20, shakeDelta + 10);
+
             if (isEnoughLevel) {
                 int unlocks = relic.getLockUnlocks(stack, ability) + 1;
 
@@ -85,7 +89,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
                 for (int i = 0; i < unlocks * 50; i++) {
                     var center = new Vec2(width / 2F, height / 2F);
-                    var margin = new Vec2(random.nextInt(width), random.nextInt(height));
+                    var margin = new Vec2(center.x + MathUtils.randomFloat(random) * 7F, center.y + MathUtils.randomFloat(random) * 8.5F);
 
                     var motion = new Vec2(margin.x - center.x, margin.y - center.y).normalized().scale(5F + unlocks);
 
@@ -100,16 +104,26 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
                 scale += 0.05F;
 
-                shakeDelta = Math.min(30, shakeDelta + 20);
-
                 soundManager.play(SimpleSoundInstance.forUI(SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, 1F));
 
                 if (unlocks >= relic.getMaxLockUnlocks()) {
+                    for (int i = 0; i < 25; i++) {
+                        var center = new Vec2(width / 2F, height / 2F);
+                        var margin = new Vec2(center.x + MathUtils.randomFloat(random) * 7F, center.y + MathUtils.randomFloat(random) * 8.5F);
+
+                        var motion = new Vec2(margin.x - center.x, margin.y - center.y).normalized().scale(7.5F);
+
+                        ParticleStorage.addParticle(screen, new ChainParticleData(new Color(255, 255, 255),
+                                getX() + margin.x, getY() + margin.y, 1F + (random.nextFloat() * 0.5F), 50 + random.nextInt(20))
+                                .setDeltaX(random.nextFloat() * motion.x)
+                                .setDeltaY(random.nextFloat() * motion.y)
+                        );
+                    }
+
                     soundManager.play(SimpleSoundInstance.forUI(SoundEvents.WITHER_BREAK_BLOCK, 1F));
                     soundManager.play(SimpleSoundInstance.forUI(SoundEvents.GENERIC_EXPLODE, 1F));
                 }
             } else {
-                shakeDelta = Math.min(20, shakeDelta + 10);
                 colorDelta = Math.min(20, colorDelta + 10);
 
                 soundManager.play(SimpleSoundInstance.forUI(SoundEvents.CHAIN_BREAK, 1F));
@@ -170,6 +184,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         if (isHovered())
             GUIRenderer.begin(DescriptionTextures.SMALL_CARD_FRAME_OUTLINE, poseStack)
                     .orientation(SpriteOrientation.CENTER)
+                    .pos(0,0.5F)
                     .end();
 
         if (!canUse) {

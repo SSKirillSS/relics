@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 
 public class SparkParticleData extends ParticleData {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/pixel_particle.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/particles/pixel.png");
 
     public SparkParticleData(Color color, float xStart, float yStart, float scale, int lifeTime) {
         super(TEXTURE, color, xStart, yStart, scale, lifeTime);
@@ -58,8 +58,6 @@ public class SparkParticleData extends ParticleData {
         poseStack.mulPose(Axis.ZP.rotationDegrees((getLifeTime() + partialTick) * 5));
 
         GUIRenderer.begin(TEXTURE, guiGraphics.pose())
-                .pos(0, 0)
-                .texSize(1, 1)
                 .scale(getScale() * lifePercentage)
                 .orientation(SpriteOrientation.CENTER)
                 .end();
