@@ -1,5 +1,7 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
 import it.hurts.sskirillss.relics.components.*;
 import it.hurts.sskirillss.relics.entities.RelicExperienceOrbEntity;
@@ -563,6 +565,43 @@ public interface IRelicItem {
     default void setResearchComponent(ItemStack stack, String ability, ResearchComponent component) {
         setAbilityComponent(stack, ability, getAbilityComponent(stack, ability).toBuilder()
                 .research(component)
+                .build());
+    }
+
+    default Multimap<Integer, Integer> getResearchLinks(ItemStack stack, String ability) {
+        return getResearchComponent(stack, ability).links().entrySet().stream()
+                .collect(MultimapBuilder.hashKeys().arrayListValues()::build, (multimap, entry) -> multimap.putAll(Integer.parseInt(entry.getKey()), entry.getValue()), Multimap::putAll);
+    }
+
+    default void addResearchLink(ItemStack stack, String ability, int from, int to) {
+        var component = getResearchComponent(stack, ability);
+
+        var links = getResearchLinks(stack, ability);
+
+        links.put(from, to);
+
+        setResearchComponent(stack, ability, component.toBuilder()
+                .links(links.asMap().entrySet().stream()
+                        .collect(Collectors.toMap(
+                                entry -> String.valueOf(entry.getKey()),
+                                entry -> new ArrayList<>(entry.getValue())
+                        )))
+                .build());
+    }
+
+    default void removeResearchLink(ItemStack stack, String ability, int from, int to) {
+        var component = getResearchComponent(stack, ability);
+
+        var links = getResearchLinks(stack, ability);
+
+        links.remove(from, to);
+
+        setResearchComponent(stack, ability, component.toBuilder()
+                .links(links.asMap().entrySet().stream()
+                        .collect(Collectors.toMap(
+                                entry -> String.valueOf(entry.getKey()),
+                                entry -> new ArrayList<>(entry.getValue())
+                        )))
                 .build());
     }
 

@@ -1,8 +1,6 @@
 package it.hurts.sskirillss.relics.client.screen.description;
 
-import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,6 +23,8 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.StarData;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.network.packets.research.PacketManageLink;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
@@ -48,6 +48,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.apache.commons.lang3.tuple.Pair;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
@@ -55,7 +56,6 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 @OnlyIn(Dist.CLIENT)
@@ -79,12 +79,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
     @Nullable
     public StarData selectedStar;
-
-    public Multimap<Integer, Integer> links = LinkedHashMultimap.create();
-
-    public void link(int first, int second) {
-        links.put(first > second ? first + second - (second = first) : first, second);
-    }
 
     private List<BurnPoint> points = new ArrayList<>();
 
@@ -115,7 +109,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
         int index = star.getIndex();
 
-        return (int) links.entries().stream()
+        return (int) relic.getResearchLinks(stack, ability).entries().stream()
                 .filter(entry -> entry.getKey() == index || entry.getValue() == index)
                 .map(entry -> entry.getKey() < entry.getValue()
                         ? entry.getKey() + "-" + entry.getValue()
@@ -247,7 +241,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         {
             ResearchData researchData = relic.getAbilityData(ability).getResearchData();
 
-            for (var link : links.entries()) {
+            for (var link : relic.getResearchLinks(stack, ability).entries()) {
                 var start = researchData.getStars().get(link.getKey()).getPos();
                 var end = researchData.getStars().get(link.getValue()).getPos();
 
@@ -388,19 +382,22 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             ResearchData researchData = relic.getResearchData(ability);
 
             if (pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                List<Map.Entry<Integer, Integer>> toRemove = new ArrayList<>();
+                Pair<Integer, Integer> toRemove = null;
 
                 if (stars.stream().noneMatch(AbstractWidget::isHovered)) {
-                    for (var link : links.entries())
+                    for (var link : relic.getResearchLinks(stack, ability).entries())
                         if (isHoveringConnection(getScaledPos(researchData.getStars().get(link.getKey()).getPos()), getScaledPos(researchData.getStars().get(link.getValue()).getPos()), (int) pMouseX, (int) pMouseY))
-                            toRemove.add(link);
+                            toRemove = Pair.of(link.getKey(), link.getValue());
 
                     RandomSource random = minecraft.player.getRandom();
 
-                    for (var entry : toRemove) {
-                        links.remove(entry.getKey(), entry.getValue());
+                    if (toRemove != null) {
+                        int start = toRemove.getKey();
+                        int end = toRemove.getValue();
 
-                        executeForConnection(researchData.getStars().get(entry.getKey()).getPos(), researchData.getStars().get(entry.getValue()).getPos(), 0.1F, point -> {
+                        NetworkHandler.sendToServer(new PacketManageLink(container, slot, ability, PacketManageLink.Operation.REMOVE, start, end));
+
+                        executeForConnection(researchData.getStars().get(start).getPos(), researchData.getStars().get(end).getPos(), 0.1F, point -> {
                             ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
                                     point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 10 + random.nextInt(50), random.nextFloat() * 0.01F));
                         });
@@ -430,7 +427,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                     if (start == end || getOccupiedConnectionsCount(star) >= getTotalConnectionsCount(star))
                         continue;
 
-                    links.put(start, end);
+                    NetworkHandler.sendToServer(new PacketManageLink(container, slot, ability, PacketManageLink.Operation.ADD, start, end));
 
                     minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.CONNECT_STARS.get(), (float) (0.25F + (1F - (Math.sqrt(selectedStar.getPos().distanceToSqr(widget.getStar().getPos())) / 35F))), 0.75F));
 
