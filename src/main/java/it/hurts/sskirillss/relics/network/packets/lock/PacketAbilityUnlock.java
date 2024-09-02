@@ -24,7 +24,7 @@ public class PacketAbilityUnlock implements CustomPacketPayload {
     private final String ability;
     private final int unlocks;
 
-    public static final CustomPacketPayload.Type<PacketAbilityUnlock> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "ability_lock"));
+    public static final CustomPacketPayload.Type<PacketAbilityUnlock> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "ability_unlock"));
 
     public static final StreamCodec<ByteBuf, PacketAbilityUnlock> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, PacketAbilityUnlock::getContainer,

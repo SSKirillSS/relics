@@ -574,13 +574,11 @@ public interface IRelicItem {
     }
 
     default void addResearchLink(ItemStack stack, String ability, int from, int to) {
-        var component = getResearchComponent(stack, ability);
-
         var links = getResearchLinks(stack, ability);
 
         links.put(from, to);
 
-        setResearchComponent(stack, ability, component.toBuilder()
+        setResearchComponent(stack, ability, getResearchComponent(stack, ability).toBuilder()
                 .links(links.asMap().entrySet().stream()
                         .collect(Collectors.toMap(
                                 entry -> String.valueOf(entry.getKey()),
@@ -590,18 +588,26 @@ public interface IRelicItem {
     }
 
     default void removeResearchLink(ItemStack stack, String ability, int from, int to) {
-        var component = getResearchComponent(stack, ability);
-
         var links = getResearchLinks(stack, ability);
 
         links.remove(from, to);
 
-        setResearchComponent(stack, ability, component.toBuilder()
+        setResearchComponent(stack, ability, getResearchComponent(stack, ability).toBuilder()
                 .links(links.asMap().entrySet().stream()
                         .collect(Collectors.toMap(
                                 entry -> String.valueOf(entry.getKey()),
                                 entry -> new ArrayList<>(entry.getValue())
                         )))
+                .build());
+    }
+
+    default boolean isAbilityResearched(ItemStack stack, String ability) {
+        return getResearchComponent(stack, ability).researched();
+    }
+
+    default void setAbilityResearched(ItemStack stack, String ability, boolean researched) {
+        setResearchComponent(stack, ability, getResearchComponent(stack, ability).toBuilder()
+                .researched(researched)
                 .build());
     }
 
@@ -782,7 +788,7 @@ public interface IRelicItem {
     }
 
     default boolean isAbilityUnlocked(ItemStack stack, String ability) {
-        return isEnoughLevel(stack, ability) && isLockUnlocked(stack, ability);
+        return isEnoughLevel(stack, ability) && isLockUnlocked(stack, ability) && isAbilityResearched(stack, ability);
     }
 
     default boolean canPlayerUseAbility(Player player, ItemStack stack, String ability) {
@@ -791,6 +797,10 @@ public interface IRelicItem {
 
     default boolean canPlayerSeeAbility(Player player, ItemStack stack, String ability) {
         return testAbilityPredicates(player, stack, ability, PredicateType.VISIBILITY);
+    }
+
+    default boolean mayResearch(ItemStack stack, String ability) {
+        return isEnoughLevel(stack, ability) && isLockUnlocked(stack, ability) && !isAbilityResearched(stack, ability);
     }
 
     default int getUpgradeRequiredLevel(ItemStack stack, String ability) {

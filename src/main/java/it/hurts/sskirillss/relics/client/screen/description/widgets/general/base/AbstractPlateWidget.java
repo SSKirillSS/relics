@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionText
 import it.hurts.sskirillss.relics.client.screen.description.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -41,11 +42,11 @@ public abstract class AbstractPlateWidget extends AbstractDescriptionWidget impl
         poseStack.translate(getX() + Math.sin((minecraft.player.tickCount + pPartialTick + icon.length() * 10) * 0.075F), getY() + Math.cos((minecraft.player.tickCount + pPartialTick + icon.length() * 10) * 0.075F) * 0.5F, 0);
 
         GUIRenderer.begin(DescriptionTextures.PLATE_BACKGROUND, poseStack)
-                .texSize(width, height)
+                .orientation(SpriteOrientation.TOP_LEFT)
                 .end();
 
         GUIRenderer.begin(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/icons/" + icon + ".png"), poseStack)
-                .texSize(14, 14)
+                .orientation(SpriteOrientation.TOP_LEFT)
                 .pos(3, 3)
                 .end();
 
@@ -57,7 +58,7 @@ public abstract class AbstractPlateWidget extends AbstractDescriptionWidget impl
 
         if (isHovered())
             GUIRenderer.begin(DescriptionTextures.PLATE_OUTLINE, poseStack)
-                    .texSize(width, height)
+                    .orientation(SpriteOrientation.TOP_LEFT)
                     .end();
 
         poseStack.popPose();

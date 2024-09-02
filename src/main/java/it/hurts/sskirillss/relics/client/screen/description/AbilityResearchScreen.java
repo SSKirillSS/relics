@@ -30,6 +30,7 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -298,6 +299,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                 .pos(0, 0)
                 .texSize(width, height * 6)
                 .patternSize(distance, height)
+                .orientation(SpriteOrientation.TOP_LEFT)
                 .animation(AnimationData.builder()
                         .frame(0, 2).frame(1, 2).frame(2, 2)
                         .frame(3, 2).frame(4, 2).frame(5, 2)
@@ -415,6 +417,8 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
         if (pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             if (selectedStar != null) {
+                RandomSource random = minecraft.player.getRandom();
+
                 for (StarWidget widget : stars) {
                     if (!widget.isHovered())
                         continue;
@@ -430,8 +434,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                     NetworkHandler.sendToServer(new PacketManageLink(container, slot, ability, PacketManageLink.Operation.ADD, start, end));
 
                     minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.CONNECT_STARS.get(), (float) (0.25F + (1F - (Math.sqrt(selectedStar.getPos().distanceToSqr(widget.getStar().getPos())) / 35F))), 0.75F));
-
-                    RandomSource random = minecraft.player.getRandom();
 
                     executeForConnection(selectedStar.getPos(), widget.getStar().getPos(), 0.25F, point -> {
                         ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),

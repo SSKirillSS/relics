@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -59,6 +60,7 @@ public class LogoWidget extends AbstractDescriptionWidget implements IHoverableW
                         .frame(9, 2).frame(10, 2).frame(11, 2)
                         .frame(12, 2).frame(13, 2).frame(14, 2)
                         .frame(15, 20))
+                .orientation(SpriteOrientation.TOP_LEFT)
                 .texSize(width, height * 16)
                 .patternSize(width, height)
                 .end();

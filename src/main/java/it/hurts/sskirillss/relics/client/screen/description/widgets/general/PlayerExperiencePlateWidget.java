@@ -7,6 +7,8 @@ import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionText
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.client.screen.description.widgets.general.base.AbstractPlateWidget;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
+import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,9 +32,23 @@ public class PlayerExperiencePlateWidget extends AbstractPlateWidget {
         int barWidth = 52;
         int barHeight = 2;
 
-        guiGraphics.blit(DescriptionTextures.PLAYER_EXPERIENCE_BACKGROUND, getX() + 1, getY() + height - 3, 0, 0, barWidth, barHeight, barWidth, barHeight);
+        PoseStack poseStack = guiGraphics.pose();
 
-        guiGraphics.blit(DescriptionTextures.PLAYER_EXPERIENCE_FILLER, getX() + 1, getY() + height - 3, 0, 0, (int) (barWidth * ((player.totalExperience / ((player.totalExperience / player.experienceProgress) / 100F)) / 100F)), barHeight, barWidth, barHeight);
+        poseStack.pushPose();
+
+        GUIRenderer.begin(DescriptionTextures.PLAYER_EXPERIENCE_BACKGROUND, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(1, height - 3)
+                .end();
+
+        GUIRenderer.begin(DescriptionTextures.PLAYER_EXPERIENCE_FILLER, poseStack)
+                .pos(1, height - 3)
+                .texSize(barWidth, barHeight)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .patternSize((int) (barWidth * ((player.totalExperience / ((player.totalExperience / player.experienceProgress) / 100F)) / 100F)), barHeight)
+                .end();
+
+        poseStack.popPose();
     }
 
     @Override

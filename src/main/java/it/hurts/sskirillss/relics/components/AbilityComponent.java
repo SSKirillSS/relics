@@ -2,12 +2,8 @@ package it.hurts.sskirillss.relics.components;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Builder;
 import lombok.Singular;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Map;
 
@@ -22,14 +18,5 @@ public record AbilityComponent(@Singular Map<String, StatComponent> stats, Resea
                             AbilityExtenderComponent.CODEC.fieldOf("extender").forGetter(AbilityComponent::extender),
                             Codec.INT.fieldOf("points").forGetter(AbilityComponent::points))
                     .apply(instance, AbilityComponent::new)
-    );
-
-    public static final StreamCodec<ByteBuf, AbilityComponent> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.map(Object2ObjectOpenHashMap::new, ByteBufCodecs.STRING_UTF8, StatComponent.STREAM_CODEC), AbilityComponent::stats,
-            ResearchComponent.STREAM_CODEC, AbilityComponent::research,
-            LockComponent.STREAM_CODEC, AbilityComponent::lock,
-            AbilityExtenderComponent.STREAM_CODEC, AbilityComponent::extender,
-            ByteBufCodecs.INT, AbilityComponent::points,
-            AbilityComponent::new
     );
 }

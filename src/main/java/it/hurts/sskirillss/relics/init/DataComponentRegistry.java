@@ -23,7 +23,6 @@ public class DataComponentRegistry {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DataComponent>> DATA = DATA_COMPONENTS.register("data",
             () -> DataComponentType.<DataComponent>builder()
                     .persistent(DataComponent.CODEC)
-                    .networkSynchronized(DataComponent.STREAM_CODEC)
                     .build()
     );
 

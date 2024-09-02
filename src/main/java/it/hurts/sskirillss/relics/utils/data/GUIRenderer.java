@@ -16,6 +16,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.function.Supplier;
 
 @Setter
@@ -44,6 +45,11 @@ public final class GUIRenderer {
 
     private float scale;
 
+    private float red;
+    private float green;
+    private float blue;
+    private float alpha;
+
     private Supplier<Long> time;
     private AnimationData animation;
 
@@ -69,6 +75,11 @@ public final class GUIRenderer {
 
         renderer.scale = 1F;
 
+        renderer.red = -1F;
+        renderer.green = -1F;
+        renderer.blue = -1F;
+        renderer.alpha = -1F;
+
         renderer.time = () -> {
             ClientLevel level = Minecraft.getInstance().level;
 
@@ -77,7 +88,7 @@ public final class GUIRenderer {
         renderer.animation = AnimationData.builder()
                 .frame(0, Integer.MAX_VALUE);
 
-        renderer.orientation = SpriteOrientation.TOP_LEFT;
+        renderer.orientation = SpriteOrientation.CENTER;
 
         return renderer;
     }
@@ -118,13 +129,38 @@ public final class GUIRenderer {
         return renderer;
     }
 
+    public GUIRenderer color(float red, float green, float blue, float alpha) {
+        var renderer = INSTANCE;
+
+        renderer.red = red;
+        renderer.green = green;
+        renderer.blue = blue;
+
+        return renderer;
+    }
+
+    public GUIRenderer color(int red, int green, int blue, int alpha) {
+        return this.color(red / 255F, green / 255F, blue / 255F, alpha / 255F);
+    }
+
+    public GUIRenderer color(Color color) {
+        return this.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+    }
+
+    public GUIRenderer color(int color) {
+        return this.color(new Color(color));
+    }
+
     public void end() {
         BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
         Minecraft.getInstance().getTextureManager().getTexture(texture).bind();
 
-        RenderSystem.setShaderTexture(0, texture);
+        var color = RenderSystem.getShaderColor();
+
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, texture);
+        RenderSystem.setShaderColor(red == -1F ? color[0] : red, green == -1F ? color[1] : green, blue == -1 ? color[2] : blue, alpha == -1F ? color[3] : alpha);
         RenderSystem.disableCull();
 
         if (texHeight == -1)
@@ -173,5 +209,6 @@ public final class GUIRenderer {
         BufferUploader.drawWithShader(builder.buildOrThrow());
 
         RenderSystem.enableCull();
+        RenderSystem.setShaderColor(color[0], color[1], color[2], color[3]);
     }
 }
