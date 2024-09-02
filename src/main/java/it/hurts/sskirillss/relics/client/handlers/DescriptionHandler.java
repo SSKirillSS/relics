@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.handlers;
 
 import com.mojang.blaze3d.platform.Window;
-import it.hurts.sskirillss.relics.client.screen.description.RelicDescriptionScreen;
+import it.hurts.sskirillss.relics.client.screen.description.relic.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import net.minecraft.ChatFormatting;

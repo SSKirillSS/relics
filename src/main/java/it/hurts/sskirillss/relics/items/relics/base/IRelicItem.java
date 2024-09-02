@@ -41,6 +41,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public interface IRelicItem {
     @Nullable
@@ -609,6 +610,21 @@ public interface IRelicItem {
         setResearchComponent(stack, ability, getResearchComponent(stack, ability).toBuilder()
                 .researched(researched)
                 .build());
+    }
+
+    default boolean testAbilityResearch(ItemStack stack, String ability) {
+        Multimap<Integer, Integer> schema = getResearchData(ability).getLinks();
+        Multimap<Integer, Integer> links = getResearchLinks(stack, ability);
+
+        if (schema.size() != links.size())
+            return false;
+
+        Set<Pair<Integer, Integer>> bidirectionalSchema = schema.entries().stream()
+                .flatMap(entry -> Stream.of(Pair.of(entry.getKey(), entry.getValue()), Pair.of(entry.getValue(), entry.getKey())))
+                .collect(Collectors.toSet());
+
+        return links.entries().stream().allMatch(entry -> bidirectionalSchema.contains(Pair.of(entry.getKey(), entry.getValue()))
+                || bidirectionalSchema.contains(Pair.of(entry.getValue(), entry.getKey())));
     }
 
     default StatComponent getStatComponent(ItemStack stack, String ability, String stat) {

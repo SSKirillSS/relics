@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.mixin;
 
 import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
-import it.hurts.sskirillss.relics.client.screen.description.data.base.ParticleData;
+import it.hurts.sskirillss.relics.client.screen.description.general.particles.base.ParticleData;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;

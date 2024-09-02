@@ -2,18 +2,24 @@ package it.hurts.sskirillss.relics.network.packets.research;
 
 import io.netty.buffer.ByteBuf;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
+import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -49,7 +55,10 @@ public class PacketManageLink implements CustomPacketPayload {
 
     public void handle(IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
-            Player player = ctx.player();
+            if (ctx.player().level().isClientSide())
+                return;
+
+            ServerPlayer player = (ServerPlayer) ctx.player();
 
             if (player.containerMenu.containerId != container) {
                 causeError(player);
@@ -65,8 +74,19 @@ public class PacketManageLink implements CustomPacketPayload {
                 return;
             }
 
+            RandomSource random = player.getRandom();
+
             switch (operation) {
-                case ADD -> relic.addResearchLink(stack, ability, from, to);
+                case ADD -> {
+                    relic.addResearchLink(stack, ability, from, to);
+
+                    if (relic.testAbilityResearch(stack, ability)) {
+                        relic.setAbilityResearched(stack, ability, true);
+
+                        player.connection.send(new ClientboundSoundPacket(Holder.direct(SoundRegistry.FINISH_RESEARCH.get()), SoundSource.PLAYERS, player.getX(), player.getY(), player.getZ(), 1F, 1F, random.nextLong()));
+                    } else
+                        player.connection.send(new ClientboundSoundPacket(Holder.direct(SoundRegistry.CONNECT_STARS.get()), SoundSource.PLAYERS, player.getX(), player.getY(), player.getZ(), 0.75F, 0.75F + random.nextFloat() * 0.5F, random.nextLong()));
+                }
                 case REMOVE -> relic.removeResearchLink(stack, ability, from, to);
             }
 

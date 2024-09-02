@@ -1,7 +1,7 @@
 package it.hurts.sskirillss.relics.client.screen.utils;
 
 import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.client.screen.description.data.base.ParticleData;
+import it.hurts.sskirillss.relics.client.screen.description.general.particles.base.ParticleData;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.util.ArrayList;
