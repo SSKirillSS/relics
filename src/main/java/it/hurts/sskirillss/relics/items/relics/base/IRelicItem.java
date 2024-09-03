@@ -498,8 +498,13 @@ public interface IRelicItem {
             AbilityComponent.AbilityComponentBuilder builder = AbilityComponent.EMPTY.toBuilder();
 
             if (abilityData.getCastData().getType() == CastType.TOGGLEABLE)
-                builder.extender(AbilityExtenderComponent.builder()
+                builder.extender(AbilityExtenderComponent.EMPTY.toBuilder()
                         .ticking(true)
+                        .build());
+
+            if (isEnoughLevel(stack, ability))
+                builder.lock(LockComponent.EMPTY.toBuilder()
+                        .unlocks(getMaxLockUnlocks())
                         .build());
 
             abilityComponent = builder.build();

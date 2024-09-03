@@ -12,15 +12,18 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
 public class SmokeParticleData extends ParticleData {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/particles/smoke.png");
 
-    public SmokeParticleData(Color color, float xStart, float yStart, float scale, int lifeTime) {
-        super(TEXTURE, color, xStart, yStart, scale, lifeTime);
+    private final float fadeInPercentage;
+
+    public SmokeParticleData(float xStart, float yStart, float scale, int lifeTime, float fadeInPercentage) {
+        super(TEXTURE, new Color(1F, 1F, 1F), xStart, yStart, scale, lifeTime);
+
+        this.fadeInPercentage = fadeInPercentage;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class SmokeParticleData extends ParticleData {
         var lifePercentage = (float) getLifeTime() / getMaxLifeTime();
 
         setX(getX() + getDeltaX() * lifePercentage);
-        setY(getY() + getDeltaY() * lifePercentage - (getMaxLifeTime() - getLifeTime()));
+        setY(getY() + getDeltaY() * lifePercentage);
     }
 
     @Override
@@ -44,27 +47,27 @@ public class SmokeParticleData extends ParticleData {
 
         var lifePercentage = (float) getLifeTime() / getMaxLifeTime();
 
-        float blinkOffset = 0.25F + (float) (Math.sin(getLifeTime() + partialTick) * 0.5F);
+        float maxScale = getScale();
+        float ratio = 1F - lifePercentage;
+        float scale = ratio <= fadeInPercentage ? maxScale * (ratio / fadeInPercentage) : maxScale;
 
         poseStack.pushPose();
 
-        RenderSystem.setShaderColor(getColor().getRed() / 255F + blinkOffset, getColor().getGreen() / 255F + blinkOffset, getColor().getBlue() / 255F + blinkOffset, lifePercentage);
+        RenderSystem.setShaderColor(getColor().getRed() / 255F, getColor().getGreen() / 255F, getColor().getBlue() / 255F, lifePercentage * 0.75F);
 
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
         poseStack.translate(Mth.lerp(partialTick, getXO(), getX()), Mth.lerp(partialTick, getYO(), getY()), 0);
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees((getLifeTime() + partialTick) * getDeltaX()));
+        poseStack.mulPose(Axis.ZP.rotationDegrees((getLifeTime() + partialTick) * lifePercentage));
 
         GUIRenderer.begin(TEXTURE, guiGraphics.pose())
-                .scale(getScale() * lifePercentage)
+                .scale(scale)
                 .orientation(SpriteOrientation.CENTER)
                 .end();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
-        RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
 
         poseStack.popPose();

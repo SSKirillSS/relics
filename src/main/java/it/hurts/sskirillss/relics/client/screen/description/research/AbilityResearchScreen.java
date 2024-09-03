@@ -19,6 +19,7 @@ import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtil
 import it.hurts.sskirillss.relics.client.screen.description.relic.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.research.misc.BurnPoint;
 import it.hurts.sskirillss.relics.client.screen.description.research.particles.ResearchParticleData;
+import it.hurts.sskirillss.relics.client.screen.description.research.particles.SmokeParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.research.widgets.StarWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
@@ -35,6 +36,7 @@ import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
 import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import lombok.Getter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -45,6 +47,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -161,6 +164,14 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                 addStaticPoint((int) point.x, (int) point.y, 0.05F, Pair.of(start, end));
             });
         }
+
+        if (!relic.isAbilityResearched(stack, ability)) {
+            RandomSource random = minecraft.player.getRandom();
+
+            for (int i = 0; i < 50; i++)
+                ParticleStorage.addParticle(this, new SmokeParticleData(x + 190 + random.nextInt(90), y + 67 + random.nextInt((int) (minecraft.font.lineHeight * 0.77F)), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(40), 0F)
+                        .setDeltaX(MathUtils.randomFloat(random) * 0.25F).setDeltaY(MathUtils.randomFloat(random) * 0.25F));
+        }
     }
 
     @Override
@@ -174,6 +185,14 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
         if (relic.isAbilityResearched(stack, ability) && researchProgress >= 0 && researchProgress < maxResearchProgress)
             researchProgress++;
+
+        if (!relic.isAbilityResearched(stack, ability)) {
+            RandomSource random = minecraft.player.getRandom();
+
+            for (int i = 0; i < 3; i++)
+                ParticleStorage.addParticle(this, new SmokeParticleData(x + 190 + random.nextInt(90), y + 67 + random.nextInt((int) (minecraft.font.lineHeight * 0.77F)), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(40), 0.1F)
+                        .setDeltaX(MathUtils.randomFloat(random) * 0.25F).setDeltaY(MathUtils.randomFloat(random) * 0.25F));
+        }
 
         MouseHandler mouseHandler = minecraft.mouseHandler;
         Window window = minecraft.getWindow();
@@ -328,6 +347,23 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             RenderUtils.renderRevealingPanel(poseStack, x + 67, y + 54, 110, 155, positions, scales, noises, (player.tickCount + pPartialTick) / 50F);
 
             guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_background.png"), x + 60, y + 45, 0, 0, 242, 176, 242, 176);
+
+            poseStack.popPose();
+        }
+
+        {
+            poseStack.pushPose();
+
+            poseStack.translate(x + 190, y + 67, 0F);
+
+            poseStack.scale(0.75F, 0.75F, 0.75F);
+
+            MutableComponent title = Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD);
+
+            if (!relic.isAbilityResearched(stack, ability))
+                title.withStyle(ChatFormatting.OBFUSCATED);
+
+            guiGraphics.drawString(minecraft.font, title, 0, 0, 0x662f13, false);
 
             poseStack.popPose();
         }
@@ -538,6 +574,8 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
     @Override
     public void onClose() {
         minecraft.setScreen(new RelicDescriptionScreen(minecraft.player, container, slot, screen));
+
+        ParticleStorage.getParticlesData().clear();
     }
 
     @Override
