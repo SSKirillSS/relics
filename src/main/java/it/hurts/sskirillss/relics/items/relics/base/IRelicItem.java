@@ -608,7 +608,7 @@ public interface IRelicItem {
     }
 
     default boolean isAbilityResearched(ItemStack stack, String ability) {
-        return getResearchComponent(stack, ability).researched();
+        return getResearchData(ability).getStars().isEmpty() || getResearchComponent(stack, ability).researched();
     }
 
     default void setAbilityResearched(ItemStack stack, String ability, boolean researched) {
