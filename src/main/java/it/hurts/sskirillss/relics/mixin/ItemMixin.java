@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics.mixin;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicStorage;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -51,6 +50,9 @@ public class ItemMixin {
 
     @Inject(method = "appendHoverText", at = @At("HEAD"))
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced, CallbackInfo ci) {
+        if (level == null || !level.isClientSide())
+            return;
+
         relics$processTooltip(stack, level, tooltip);
     }
 
