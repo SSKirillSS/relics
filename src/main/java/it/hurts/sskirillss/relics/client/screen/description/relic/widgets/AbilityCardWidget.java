@@ -7,14 +7,14 @@ import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
 import it.hurts.sskirillss.relics.client.screen.description.ability.AbilityDescriptionScreen;
-import it.hurts.sskirillss.relics.client.screen.description.research.AbilityResearchScreen;
+import it.hurts.sskirillss.relics.client.screen.description.general.widgets.base.AbstractDescriptionWidget;
+import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
+import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.client.screen.description.relic.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.relic.particles.ChainParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.relic.particles.ExperienceParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.relic.particles.SparkParticleData;
-import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
-import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
-import it.hurts.sskirillss.relics.client.screen.description.general.widgets.base.AbstractDescriptionWidget;
+import it.hurts.sskirillss.relics.client.screen.description.research.AbilityResearchScreen;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -163,6 +163,8 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
+        RenderSystem.enableBlend();
+
         poseStack.pushPose();
 
         float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
@@ -192,6 +194,14 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
             if (!isAbilityResearched)
                 GUIRenderer.begin(DescriptionTextures.RESEARCH, poseStack)
                         .pos((float) Math.sin((minecraft.player.tickCount + partialTick) * 0.25F), (float) Math.cos((minecraft.player.tickCount + partialTick) * 0.25F))
+                        .patternSize(16, 16)
+                        .animation(AnimationData.builder()
+                                .frame(0, 2).frame(1, 2)
+                                .frame(2, 2).frame(3, 2)
+                                .frame(4, 2).frame(5, 2)
+                                .frame(6, 2).frame(7, 2)
+                                .frame(8, 2).frame(9, 2)
+                                .frame(10, 2).frame(11, 40))
                         .end();
         } else {
             GUIRenderer.begin(isEnoughLevel ? ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/chains_active_" + unlocks + ".png") : DescriptionTextures.CHAINS_INACTIVE, poseStack)
@@ -282,6 +292,8 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
             guiGraphics.drawString(minecraft.font, title, -((width + 1) / 2) - (minecraft.font.width(title) / 2) + 16, (-(height / 2) - 19), canUse ? 0xFFE278 : 0xB7AED9, true);
         }
+
+        RenderSystem.disableBlend();
 
         poseStack.popPose();
     }
