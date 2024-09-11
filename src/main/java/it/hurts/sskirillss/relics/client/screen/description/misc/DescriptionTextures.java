@@ -19,7 +19,8 @@ public class DescriptionTextures {
 
     public static final ResourceLocation BIG_STAR_ACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/big_star_active.png");
 
-    public static final ResourceLocation SMALL_CARD_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/small_card_background.png");
+    public static final ResourceLocation SMALL_CARD_LOCK_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/small_card_lock_background.png");
+    public static final ResourceLocation SMALL_CARD_RESEARCH_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/small_card_research_background.png");
     public static final ResourceLocation SMALL_CARD_FRAME_ACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/small_card_frame_active.png");
     public static final ResourceLocation SMALL_CARD_FRAME_INACTIVE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/small_card_frame_inactive.png");
     public static final ResourceLocation SMALL_CARD_FRAME_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/small_card_frame_outline.png");

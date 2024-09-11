@@ -159,7 +159,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         boolean hasAction = canUpgrade || canResearch;
 
-        ResourceLocation card = canUse ? ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, screen.stack, ability) + ".png") : DescriptionTextures.SMALL_CARD_BACKGROUND;
+        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, screen.stack, ability) + ".png");
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
@@ -177,11 +177,17 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         float color = (float) ((canUpgrade ? 0.75F : 1.05F) + (Math.sin((player.tickCount + (ability.length() * 10)) * 0.2F) * 0.1F));
 
-        GUIRenderer.begin(card, poseStack)
-                .color(color, color, color, 1F)
-                .texSize(22, 31)
-                .scale(1.01F) // Blame Mojang, not me
-                .end();
+        if (isLockUnlocked)
+            GUIRenderer.begin(card, poseStack)
+                    .color(color, color, color, 1F)
+                    .texSize(22, 31)
+                    .scale(1.01F)
+                    .end();
+
+        if (!canUse)
+            GUIRenderer.begin(isLockUnlocked ? DescriptionTextures.SMALL_CARD_RESEARCH_BACKGROUND : DescriptionTextures.SMALL_CARD_LOCK_BACKGROUND, poseStack)
+                    .scale(1.01F)
+                    .end();
 
         GUIRenderer.begin(canUse ? DescriptionTextures.SMALL_CARD_FRAME_ACTIVE : DescriptionTextures.SMALL_CARD_FRAME_INACTIVE, poseStack).end();
 
@@ -193,7 +199,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         if (isLockUnlocked) {
             if (!isAbilityResearched)
                 GUIRenderer.begin(DescriptionTextures.RESEARCH, poseStack)
-                        .pos((float) Math.sin((minecraft.player.tickCount + partialTick) * 0.25F), (float) Math.cos((minecraft.player.tickCount + partialTick) * 0.25F))
+                        .pos((float) Math.sin((minecraft.player.tickCount + partialTick) * 0.25F), (float) Math.cos((minecraft.player.tickCount + partialTick) * 0.25F) + 0.5F)
                         .patternSize(16, 16)
                         .animation(AnimationData.builder()
                                 .frame(0, 2).frame(1, 2)

@@ -91,7 +91,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
     private List<BurnPoint> points = new ArrayList<>();
     private List<StarWidget> stars = new ArrayList<>();
 
-    private final int maxResearchProgress = 80;
+    private final int maxResearchProgress = 40;
     private int researchProgress = 0;
 
     public AbilityResearchScreen(Player player, int container, int slot, Screen screen, String ability) {
@@ -183,16 +183,30 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
         stack = DescriptionUtils.gatherRelicStack(minecraft.player, slot);
 
-        if (relic.isAbilityResearched(stack, ability) && researchProgress >= 0 && researchProgress < maxResearchProgress)
+        RandomSource random = minecraft.player.getRandom();
+
+        if (relic.isAbilityResearched(stack, ability) && researchProgress >= 0 && researchProgress < maxResearchProgress) {
             researchProgress++;
 
-        if (!relic.isAbilityResearched(stack, ability)) {
-            RandomSource random = minecraft.player.getRandom();
+            if (researchProgress % 3 == 0) {
+                ResearchData researchData = relic.getResearchData(ability);
 
+                for (var link : relic.getResearchLinks(stack, ability).entries()) {
+                    var start = researchData.getStars().get(link.getKey()).getPos();
+                    var end = researchData.getStars().get(link.getValue()).getPos();
+
+                    executeForConnection(start, end, 0.75F, point -> {
+                        ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
+                                point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(40 + researchProgress), random.nextFloat() * 0.025F));
+                    });
+                }
+            }
+        }
+
+        if (!relic.isAbilityResearched(stack, ability))
             for (int i = 0; i < 3; i++)
                 ParticleStorage.addParticle(this, new SmokeParticleData(x + 190 + random.nextInt(90), y + 67 + random.nextInt((int) (minecraft.font.lineHeight * 0.77F)), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(40), 0.1F)
                         .setDeltaX(MathUtils.randomFloat(random) * 0.25F).setDeltaY(MathUtils.randomFloat(random) * 0.25F));
-        }
 
         MouseHandler mouseHandler = minecraft.mouseHandler;
         Window window = minecraft.getWindow();
