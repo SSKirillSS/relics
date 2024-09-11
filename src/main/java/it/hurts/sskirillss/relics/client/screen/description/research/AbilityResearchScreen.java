@@ -342,7 +342,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
-            RenderSystem.setShaderTexture(0, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_fog.png"));
+            RenderSystem.setShaderTexture(0, DescriptionTextures.RESEARCH_FOG);
 
             List<Vector2f> positions = Lists.newArrayList(new Vector2f(pMouseX, pMouseY));
             List<Float> scales = Lists.newArrayList(0.15F);
@@ -360,7 +360,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
             RenderUtils.renderRevealingPanel(poseStack, x + 67, y + 54, 110, 155, positions, scales, noises, (player.tickCount + pPartialTick) / 50F);
 
-            guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/test_background.png"), x + 60, y + 45, 0, 0, 242, 176, 242, 176);
+            guiGraphics.blit(DescriptionTextures.RESEARCH_BACKGROUND, x + 60, y + 45, 0, 0, 242, 176, 242, 176);
 
             poseStack.popPose();
         }

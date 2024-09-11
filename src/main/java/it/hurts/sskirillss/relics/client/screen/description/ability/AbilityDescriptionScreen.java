@@ -7,22 +7,19 @@ import it.hurts.sskirillss.relics.badges.base.AbilityBadge;
 import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
+import it.hurts.sskirillss.relics.client.screen.description.ability.widgets.*;
 import it.hurts.sskirillss.relics.client.screen.description.general.widgets.*;
-import it.hurts.sskirillss.relics.client.screen.description.relic.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
-import it.hurts.sskirillss.relics.client.screen.description.ability.widgets.StatWidget;
-import it.hurts.sskirillss.relics.client.screen.description.ability.widgets.BigAbilityCardWidget;
-import it.hurts.sskirillss.relics.client.screen.description.ability.widgets.RerollActionWidget;
-import it.hurts.sskirillss.relics.client.screen.description.ability.widgets.ResetActionWidget;
-import it.hurts.sskirillss.relics.client.screen.description.ability.widgets.UpgradeActionWidget;
+import it.hurts.sskirillss.relics.client.screen.description.relic.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.init.BadgeRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.utils.Reference;
-import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
+import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -149,81 +146,86 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         int yOff = 0;
         int xOff = 0;
 
-        RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + (backgroundWidth / 2F), y + (backgroundHeight / 2F), 418, 4096, backgroundWidth, backgroundHeight, 1F, AnimationData.builder()
-                .frame(0, 2).frame(1, 2).frame(2, 2)
-                .frame(3, 2).frame(4, 2).frame(5, 2)
-                .frame(6, 2).frame(7, 2).frame(8, 2)
-                .frame(9, 2).frame(10, 2).frame(11, 2)
-                .frame(12, 2).frame(13, 2).frame(14, 2)
-                .frame(15, 2)
-        );
+        GUIRenderer.begin(DescriptionTextures.SPACE_BACKGROUND, poseStack)
+                .texSize(418, 4096)
+                .patternSize(backgroundWidth, backgroundHeight)
+                .pos(x + (backgroundWidth / 2F), y + (backgroundHeight / 2F))
+                .animation(AnimationData.builder()
+                        .frame(0, 2).frame(1, 2).frame(2, 2)
+                        .frame(3, 2).frame(4, 2).frame(5, 2)
+                        .frame(6, 2).frame(7, 2).frame(8, 2)
+                        .frame(9, 2).frame(10, 2).frame(11, 2)
+                        .frame(12, 2).frame(13, 2).frame(14, 2)
+                        .frame(15, 2))
+                .end();
 
-        {
-            ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, stack, ability) + ".png");
+        GUIRenderer.begin(DescriptionTextures.TOP_BACKGROUND, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(x + 60, y + 47)
+                .end();
 
-            float color = (float) (1.05F + (Math.sin((player.tickCount + (ability.length() * 10)) * 0.2F) * 0.1F));
+        GUIRenderer.begin(DescriptionTextures.BOTTOM_BACKGROUND, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(x + 60, y + 133)
+                .end();
 
-            RenderSystem.setShaderColor(color, color, color, 1F);
+        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, stack, ability) + ".png");
 
-            guiGraphics.blit(card, x + 67, y + 57, 34, 49, 0, 0, 22, 31, 22, 31);
+        float color = (float) (1.05F + (Math.sin((player.tickCount + (ability.length() * 10)) * 0.2F) * 0.1F));
 
-            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        GUIRenderer.begin(card, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .color(color, color, color, 1F)
+                .pos(x + 67, y + 57)
+                .texSize(34, 49)
+                .end();
 
-            guiGraphics.blit(DescriptionTextures.ABILITY_BACKGROUND, x + 60, y + 47, 0, 0, 243, 77, 243, 77);
+        int quality = relic.getAbilityQuality(stack, ability);
+        boolean isAliquot = quality % 2 == 1;
 
-            poseStack.pushPose();
+        for (int i = 0; i < Math.floor(quality / 2D); i++) {
+            GUIRenderer.begin(DescriptionTextures.BIG_STAR_ACTIVE, poseStack)
+                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .pos(x + xOff + 64, y + 110)
+                    .end();
 
-            int quality = relic.getAbilityQuality(stack, ability);
-            boolean isAliquot = quality % 2 == 1;
-
-            for (int i = 0; i < Math.floor(quality / 2D); i++) {
-                guiGraphics.blit(DescriptionTextures.BIG_STAR_ACTIVE, x + xOff + 64, y + 110, 0, 0, 8, 7, 8, 7);
-
-                xOff += 8;
-            }
-
-            if (isAliquot)
-                guiGraphics.blit(DescriptionTextures.BIG_STAR_ACTIVE, x + xOff + 64, y + 110, 0, 0, 4, 7, 8, 7);
-
-            poseStack.popPose();
-
-            poseStack.pushPose();
-
-            MutableComponent pointsComponent = Component.literal(String.valueOf(level)).withStyle(ChatFormatting.BOLD);
-
-            poseStack.scale(0.75F, 0.75F, 1F);
-
-            guiGraphics.drawString(minecraft.font, pointsComponent, (int) (((x + 85.5F) * 1.33F) - (minecraft.font.width(pointsComponent) / 2F)), (int) ((y + 51) * 1.33F), 0xFFE278, true);
-
-            poseStack.popPose();
-
-            poseStack.pushPose();
-
-            poseStack.scale(0.75F, 0.75F, 0.75F);
-
-            guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability)
-                    .withStyle(ChatFormatting.BOLD), (int) ((x + 113) * 1.33F), (int) ((y + 67) * 1.33F), 0x662f13, false);
-
-            yOff = 9;
-
-            poseStack.popPose();
-
-            poseStack.pushPose();
-
-            poseStack.scale(0.5F, 0.5F, 0.5F);
-
-            for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 340)) {
-                guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 74) * 2 + yOff, 0x662f13, false);
-
-                yOff += 9;
-            }
-
-            poseStack.popPose();
+            xOff += 8;
         }
 
-        {
-            guiGraphics.blit(DescriptionTextures.STATS_BACKGROUND, x + 60, y + 133, 0, 0, 243, 88, 243, 88);
+        if (isAliquot)
+            GUIRenderer.begin(DescriptionTextures.BIG_STAR_ACTIVE, poseStack)
+                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .pos(x + xOff + 64, y + 110)
+                    .patternSize(4, 7)
+                    .texSize(8, 7)
+                    .end();
+
+        poseStack.pushPose();
+
+        MutableComponent pointsComponent = Component.literal(String.valueOf(level)).withStyle(ChatFormatting.BOLD);
+
+        poseStack.scale(0.75F, 0.75F, 1F);
+
+        guiGraphics.drawString(minecraft.font, pointsComponent, (int) (((x + 85.5F) * 1.33F) - (minecraft.font.width(pointsComponent) / 2F)), (int) ((y + 51) * 1.33F), 0xFFE278, true);
+
+        guiGraphics.drawString(minecraft.font, Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability)
+                .withStyle(ChatFormatting.BOLD), (int) ((x + 113) * 1.33F), (int) ((y + 67) * 1.33F), 0x662f13, false);
+
+        yOff = 9;
+
+        poseStack.popPose();
+
+        poseStack.pushPose();
+
+        poseStack.scale(0.5F, 0.5F, 0.5F);
+
+        for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 340)) {
+            guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 74) * 2 + yOff, 0x662f13, false);
+
+            yOff += 9;
         }
+
+        poseStack.popPose();
     }
 
     @Override

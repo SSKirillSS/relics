@@ -28,8 +28,6 @@ import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -136,28 +134,28 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        LocalPlayer player = Minecraft.getInstance().player;
+        var player = Minecraft.getInstance().player;
 
         if (player == null || !(screen.stack.getItem() instanceof IRelicItem relic))
             return;
 
-        ItemStack stack = screen.getStack();
+        var stack = screen.getStack();
 
-        TextureManager manager = minecraft.getTextureManager();
-        PoseStack poseStack = guiGraphics.pose();
+        var manager = minecraft.getTextureManager();
+        var poseStack = guiGraphics.pose();
 
-        int unlocks = relic.getLockUnlocks(stack, ability);
+        var unlocks = relic.getLockUnlocks(stack, ability);
 
-        boolean isEnoughLevel = relic.isEnoughLevel(stack, ability);
-        boolean isLockUnlocked = relic.isLockUnlocked(stack, ability);
-        boolean isAbilityResearched = relic.isAbilityResearched(stack, ability);
+        var isEnoughLevel = relic.isEnoughLevel(stack, ability);
+        var isLockUnlocked = relic.isLockUnlocked(stack, ability);
+        var isAbilityResearched = relic.isAbilityResearched(stack, ability);
 
-        boolean canUse = isEnoughLevel && isLockUnlocked && isAbilityResearched;
+        var canUse = isEnoughLevel && isLockUnlocked && isAbilityResearched;
 
-        boolean canUpgrade = relic.mayPlayerUpgrade(minecraft.player, stack, ability);
-        boolean canResearch = relic.mayResearch(stack, ability);
+        var canUpgrade = relic.mayPlayerUpgrade(minecraft.player, stack, ability);
+        var canResearch = relic.mayResearch(stack, ability);
 
-        boolean hasAction = canUpgrade || canResearch;
+        var hasAction = canUpgrade || canResearch;
 
         ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, screen.stack, ability) + ".png");
 
@@ -167,15 +165,15 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         poseStack.pushPose();
 
-        float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
+        var partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
 
-        float lerpedScale = Mth.lerp(partialTicks, scaleOld, scale);
+        var lerpedScale = Mth.lerp(partialTicks, scaleOld, scale);
 
         poseStack.scale(lerpedScale, lerpedScale, lerpedScale);
 
         poseStack.translate((getX() + (width / 2F)) / lerpedScale, (getY() + (height / 2F)) / lerpedScale, 0);
 
-        float color = (float) ((canUpgrade ? 0.75F : 1.05F) + (Math.sin((player.tickCount + (ability.length() * 10)) * 0.2F) * 0.1F));
+        var color = (float) ((canUpgrade ? 0.75F : 1.05F) + (Math.sin((player.tickCount + (ability.length() * 10)) * 0.2F) * 0.1F));
 
         if (isLockUnlocked)
             GUIRenderer.begin(card, poseStack)
@@ -197,9 +195,11 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
                     .end();
 
         if (isLockUnlocked) {
-            if (!isAbilityResearched)
+            if (!isAbilityResearched) {
+                var time = minecraft.player.tickCount + (ability.length() * 10F) + partialTick;
+
                 GUIRenderer.begin(DescriptionTextures.RESEARCH, poseStack)
-                        .pos((float) Math.sin((minecraft.player.tickCount + partialTick) * 0.25F), (float) Math.cos((minecraft.player.tickCount + partialTick) * 0.25F) + 0.5F)
+                        .pos((float) Math.sin(time * 0.25F), (float) Math.cos(time * 0.25F) + 0.5F)
                         .patternSize(16, 16)
                         .animation(AnimationData.builder()
                                 .frame(0, 2).frame(1, 2)
@@ -209,6 +209,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
                                 .frame(8, 2).frame(9, 2)
                                 .frame(10, 2).frame(11, 40))
                         .end();
+            }
         } else {
             GUIRenderer.begin(isEnoughLevel ? ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/relic/chains_active_" + unlocks + ".png") : DescriptionTextures.CHAINS_INACTIVE, poseStack)
                     .pos(0, -1)

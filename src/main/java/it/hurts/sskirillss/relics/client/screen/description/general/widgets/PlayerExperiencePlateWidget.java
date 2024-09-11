@@ -36,12 +36,12 @@ public class PlayerExperiencePlateWidget extends AbstractPlateWidget {
 
         poseStack.pushPose();
 
-        GUIRenderer.begin(DescriptionTextures.PLAYER_EXPERIENCE_BACKGROUND, poseStack)
+        GUIRenderer.begin(DescriptionTextures.PLATE_PLAYER_EXPERIENCE_BACKGROUND, poseStack)
                 .orientation(SpriteOrientation.TOP_LEFT)
                 .pos(1, height - 3)
                 .end();
 
-        GUIRenderer.begin(DescriptionTextures.PLAYER_EXPERIENCE_FILLER, poseStack)
+        GUIRenderer.begin(DescriptionTextures.PLATE_PLAYER_EXPERIENCE_FILLER, poseStack)
                 .pos(1, height - 3)
                 .texSize(barWidth, barHeight)
                 .orientation(SpriteOrientation.TOP_LEFT)

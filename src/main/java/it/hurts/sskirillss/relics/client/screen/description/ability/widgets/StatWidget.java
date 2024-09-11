@@ -3,11 +3,13 @@ package it.hurts.sskirillss.relics.client.screen.description.ability.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.description.ability.AbilityDescriptionScreen;
-import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.general.widgets.base.AbstractDescriptionWidget;
+import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcon;
+import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
@@ -122,6 +124,13 @@ public class StatWidget extends AbstractDescriptionWidget {
 
             if (isAliquot)
                 guiGraphics.blit(DescriptionTextures.SMALL_STAR_ACTIVE, getX() + xOff + width - 32, getY() + yOff + 3, 0, 0, 2, 4, 4, 4);
+        }
+
+        {
+            GUIRenderer.begin(DescriptionTextures.STAT_DELIMITER, poseStack)
+                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .pos(getX() + 7, getY())
+                    .end();
         }
     }
 

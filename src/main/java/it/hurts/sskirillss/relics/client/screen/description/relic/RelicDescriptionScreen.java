@@ -8,10 +8,10 @@ import it.hurts.sskirillss.relics.badges.base.RelicBadge;
 import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
-import it.hurts.sskirillss.relics.client.screen.description.relic.particles.ExperienceParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.general.widgets.*;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
+import it.hurts.sskirillss.relics.client.screen.description.relic.particles.ExperienceParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.relic.widgets.AbilityCardWidget;
 import it.hurts.sskirillss.relics.client.screen.description.relic.widgets.BigRelicCardWidget;
 import it.hurts.sskirillss.relics.client.screen.description.relic.widgets.RelicExperienceWidget;
@@ -19,8 +19,9 @@ import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.init.BadgeRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
+import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -165,89 +166,98 @@ public class RelicDescriptionScreen extends Screen implements IAutoScaledScreen,
         int yOff = 0;
         int xOff = 0;
 
-        RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + (backgroundWidth / 2F), y + (backgroundHeight / 2F), 418, 4096, backgroundWidth, backgroundHeight, 1F, AnimationData.builder()
-                .frame(0, 2).frame(1, 2).frame(2, 2)
-                .frame(3, 2).frame(4, 2).frame(5, 2)
-                .frame(6, 2).frame(7, 2).frame(8, 2)
-                .frame(9, 2).frame(10, 2).frame(11, 2)
-                .frame(12, 2).frame(13, 2).frame(14, 2)
-                .frame(15, 2)
-        );
+        GUIRenderer.begin(DescriptionTextures.SPACE_BACKGROUND, poseStack)
+                .texSize(418, 4096)
+                .patternSize(backgroundWidth, backgroundHeight)
+                .pos(x + (backgroundWidth / 2F), y + (backgroundHeight / 2F))
+                .animation(AnimationData.builder()
+                        .frame(0, 2).frame(1, 2).frame(2, 2)
+                        .frame(3, 2).frame(4, 2).frame(5, 2)
+                        .frame(6, 2).frame(7, 2).frame(8, 2)
+                        .frame(9, 2).frame(10, 2).frame(11, 2)
+                        .frame(12, 2).frame(13, 2).frame(14, 2)
+                        .frame(15, 2))
+                .end();
 
-        {
-            guiGraphics.blit(DescriptionTextures.RELIC_BACKGROUND, x + 60, y + 47, 0, 0, 243, 90, 243, 90);
+        GUIRenderer.begin(DescriptionTextures.BIG_CARD_BACKGROUND, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(x + 67, y + 57)
+                .end();
 
-            poseStack.pushPose();
+        GUIRenderer.begin(DescriptionTextures.TOP_BACKGROUND, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(x + 60, y + 47)
+                .end();
 
-            int quality = relic.getRelicQuality(stack);
-            boolean isAliquot = quality % 2 == 1;
+        GUIRenderer.begin(DescriptionTextures.BOTTOM_BACKGROUND, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(x + 60, y + 133)
+                .end();
 
-            for (int i = 0; i < Math.floor(quality / 2D); i++) {
-                guiGraphics.blit(DescriptionTextures.BIG_STAR_ACTIVE, x + xOff + 64, y + 110, 0, 0, 8, 7, 8, 7);
+        int quality = relic.getRelicQuality(stack);
+        boolean isAliquot = quality % 2 == 1;
 
-                xOff += 8;
-            }
+        for (int i = 0; i < Math.floor(quality / 2D); i++) {
+            GUIRenderer.begin(DescriptionTextures.BIG_STAR_ACTIVE, poseStack)
+                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .pos(x + xOff + 64, y + 110)
+                    .end();
 
-            if (isAliquot)
-                guiGraphics.blit(DescriptionTextures.BIG_STAR_ACTIVE, x + xOff + 64, y + 110, 0, 0, 4, 7, 8, 7);
-
-            poseStack.popPose();
-
-            poseStack.pushPose();
-
-            float scale = 1.75F;
-
-            poseStack.translate(x + 70 + 8 * scale, y + 69 + Math.sin((player.tickCount + pPartialTick) * 0.1F) * 2F + 8 * scale, 0);
-
-            poseStack.mulPose(Axis.ZP.rotationDegrees((float) Math.cos((player.tickCount + pPartialTick) * 0.05F) * 5F));
-            poseStack.mulPose(Axis.YP.rotationDegrees((float) Math.cos((player.tickCount + pPartialTick) * 0.075F) * 25F));
-
-            poseStack.translate(-8 * scale, -8 * scale, -150 * scale);
-
-            poseStack.scale(scale, scale, scale);
-
-            guiGraphics.renderItem(stack, 0, 0);
-
-            poseStack.popPose();
-
-            poseStack.pushPose();
-
-            MutableComponent levelComponent = Component.literal(String.valueOf(level)).withStyle(ChatFormatting.BOLD);
-
-            poseStack.scale(0.75F, 0.75F, 1F);
-
-            guiGraphics.drawString(minecraft.font, levelComponent, (int) (((x + 85.5F) * 1.33F) - (minecraft.font.width(levelComponent) / 2F)), (int) ((y + 51) * 1.33F), 0xFFE278, true);
-
-            poseStack.popPose();
-
-            poseStack.pushPose();
-
-            poseStack.scale(0.75F, 0.75F, 0.75F);
-
-            guiGraphics.drawString(minecraft.font, Component.literal(stack.getDisplayName().getString()
-                            .replace("[", "").replace("]", ""))
-                    .withStyle(ChatFormatting.BOLD), (int) ((x + 113) * 1.33F), (int) ((y + 67) * 1.33F), 0x662f13, false);
-
-            poseStack.popPose();
-
-            poseStack.pushPose();
-
-            poseStack.scale(0.5F, 0.5F, 0.5F);
-
-            yOff = 9;
-
-            for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".description"), 340)) {
-                guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 74) * 2 + yOff, 0x662f13, false);
-
-                yOff += 9;
-            }
-
-            poseStack.popPose();
+            xOff += 8;
         }
 
-        {
-            guiGraphics.blit(DescriptionTextures.ABILITIES_BACKGROUND, x + 60, y + 133, 0, 0, 243, 88, 243, 88);
+        if (isAliquot)
+            GUIRenderer.begin(DescriptionTextures.BIG_STAR_ACTIVE, poseStack)
+                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .pos(x + xOff + 64, y + 110)
+                    .patternSize(4, 7)
+                    .texSize(8, 7)
+                    .end();
+
+        poseStack.pushPose();
+
+        float scale = 1.75F;
+
+        poseStack.translate(x + 70 + 8 * scale, y + 69 + Math.sin((player.tickCount + pPartialTick) * 0.1F) * 2F + 8 * scale, 0);
+
+        poseStack.mulPose(Axis.ZP.rotationDegrees((float) Math.cos((player.tickCount + pPartialTick) * 0.05F) * 5F));
+        poseStack.mulPose(Axis.YP.rotationDegrees((float) Math.cos((player.tickCount + pPartialTick) * 0.075F) * 25F));
+
+        poseStack.translate(-8 * scale, -8 * scale, -150 * scale);
+
+        poseStack.scale(scale, scale, scale);
+
+        guiGraphics.renderItem(stack, 0, 0);
+
+        poseStack.popPose();
+
+        poseStack.pushPose();
+
+        MutableComponent levelComponent = Component.literal(String.valueOf(level)).withStyle(ChatFormatting.BOLD);
+
+        poseStack.scale(0.75F, 0.75F, 1F);
+
+        guiGraphics.drawString(minecraft.font, levelComponent, (int) (((x + 85.5F) * 1.33F) - (minecraft.font.width(levelComponent) / 2F)), (int) ((y + 51) * 1.33F), 0xFFE278, true);
+
+        guiGraphics.drawString(minecraft.font, Component.literal(stack.getDisplayName().getString()
+                        .replace("[", "").replace("]", ""))
+                .withStyle(ChatFormatting.BOLD), (int) ((x + 113) * 1.33F), (int) ((y + 67) * 1.33F), 0x662f13, false);
+
+        poseStack.popPose();
+
+        poseStack.pushPose();
+
+        poseStack.scale(0.5F, 0.5F, 0.5F);
+
+        yOff = 9;
+
+        for (FormattedCharSequence line : minecraft.font.split(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".description"), 340)) {
+            guiGraphics.drawString(minecraft.font, line, (x + 112) * 2, (y + 74) * 2 + yOff, 0x662f13, false);
+
+            yOff += 9;
         }
+
+        poseStack.popPose();
     }
 
     @Override

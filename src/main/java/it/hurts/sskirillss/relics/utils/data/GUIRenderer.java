@@ -17,6 +17,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 @Setter
@@ -135,6 +136,7 @@ public final class GUIRenderer {
         renderer.red = red;
         renderer.green = green;
         renderer.blue = blue;
+        renderer.alpha = alpha;
 
         return renderer;
     }
@@ -156,7 +158,7 @@ public final class GUIRenderer {
 
         Minecraft.getInstance().getTextureManager().getTexture(texture).bind();
 
-        var color = RenderSystem.getShaderColor();
+        var color = Arrays.copyOf(RenderSystem.getShaderColor(), RenderSystem.getShaderColor().length);
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, texture);

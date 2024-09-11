@@ -5,14 +5,16 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.ITickingWidget;
+import it.hurts.sskirillss.relics.client.screen.description.general.widgets.base.AbstractDescriptionWidget;
+import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
+import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.client.screen.description.relic.RelicDescriptionScreen;
 import it.hurts.sskirillss.relics.client.screen.description.relic.particles.ExperienceParticleData;
-import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
-import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
-import it.hurts.sskirillss.relics.client.screen.description.general.widgets.base.AbstractDescriptionWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
+import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -51,16 +53,28 @@ public class RelicExperienceWidget extends AbstractDescriptionWidget implements 
 
         float color = (float) (1.025F + (Math.sin(player.tickCount * 0.5F) * 0.05F));
 
-        RenderSystem.setShaderColor(color, color, color, 1F);
+        GUIRenderer.begin(DescriptionTextures.RELIC_EXPERIENCE_BACKGROUND, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(getX(), getY() - 10)
+                .end();
+
         RenderSystem.enableBlend();
 
-        guiGraphics.blit(DescriptionTextures.EXPERIENCE_FILLER, getX() + 3, getY() + 2, 0, 0, calculateFillerWidth(relic), 11, FILLER_WIDTH, 11);
+        GUIRenderer.begin(DescriptionTextures.RELIC_EXPERIENCE_FILLER, poseStack)
+                .patternSize(calculateFillerWidth(relic), 11)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(getX() + 3, getY() + 2)
+                .color(color, color, color, 1F)
+                .texSize(FILLER_WIDTH, 11)
+                .end();
 
         RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         if (isHovered())
-            guiGraphics.blit(DescriptionTextures.EXPERIENCE_OUTLINE, getX() - 1, getY() - 6, 0, 0, 141, 23, 141, 23);
+            GUIRenderer.begin(DescriptionTextures.RELIC_EXPERIENCE_OUTLINE, poseStack)
+                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .pos(getX() - 1, getY() - 6)
+                    .end();
 
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
