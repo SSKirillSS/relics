@@ -129,7 +129,7 @@ public class StatWidget extends AbstractDescriptionWidget {
         {
             GUIRenderer.begin(DescriptionTextures.STAT_DELIMITER, poseStack)
                     .orientation(SpriteOrientation.TOP_LEFT)
-                    .pos(getX() + 7, getY())
+                    .pos(getX() + 7, getY() + height - 2)
                     .end();
         }
     }

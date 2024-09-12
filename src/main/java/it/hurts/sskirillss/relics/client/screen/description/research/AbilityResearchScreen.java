@@ -293,25 +293,30 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, DescriptionTextures.SPACE_BACKGROUND);
 
-        RenderUtils.renderAnimatedTextureFromCenter(poseStack, x + (backgroundWidth / 2F), y + (backgroundHeight / 2F), 418, 4096, backgroundWidth, backgroundHeight, 1F, AnimationData.builder()
-                .frame(0, 2).frame(1, 2).frame(2, 2)
-                .frame(3, 2).frame(4, 2).frame(5, 2)
-                .frame(6, 2).frame(7, 2).frame(8, 2)
-                .frame(9, 2).frame(10, 2).frame(11, 2)
-                .frame(12, 2).frame(13, 2).frame(14, 2)
-                .frame(15, 2)
-        );
+        GUIRenderer.begin(DescriptionTextures.SPACE_BACKGROUND, poseStack)
+                .texSize(418, 4096)
+                .patternSize(backgroundWidth, backgroundHeight)
+                .pos(x + (backgroundWidth / 2F), y + (backgroundHeight / 2F))
+                .animation(AnimationData.builder()
+                        .frame(0, 2).frame(1, 2).frame(2, 2)
+                        .frame(3, 2).frame(4, 2).frame(5, 2)
+                        .frame(6, 2).frame(7, 2).frame(8, 2)
+                        .frame(9, 2).frame(10, 2).frame(11, 2)
+                        .frame(12, 2).frame(13, 2).frame(14, 2)
+                        .frame(15, 2))
+                .end();
 
         {
             ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, stack, ability) + ".png");
 
             float color = (float) (0.5F + (Math.sin((player.tickCount + pPartialTick) * 0.1F) * 0.1F));
 
-            RenderSystem.setShaderColor(color, color, color, 1F);
-
-            guiGraphics.blit(card, x + 67, y + 54, 0, 0, 110, 155, 110, 155);
-
-            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            GUIRenderer.begin(card, poseStack)
+                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .color(color, color, color, 1F)
+                    .pos(x + 67, y + 54)
+                    .texSize(110, 155)
+                    .end();
         }
 
         {
@@ -360,7 +365,10 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
             RenderUtils.renderRevealingPanel(poseStack, x + 67, y + 54, 110, 155, positions, scales, noises, (player.tickCount + pPartialTick) / 50F);
 
-            guiGraphics.blit(DescriptionTextures.RESEARCH_BACKGROUND, x + 60, y + 45, 0, 0, 242, 176, 242, 176);
+            GUIRenderer.begin(DescriptionTextures.RESEARCH_BACKGROUND, poseStack)
+                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .pos(x + 60, y + 45)
+                    .end();
 
             poseStack.popPose();
         }
