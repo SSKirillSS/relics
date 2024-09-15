@@ -262,6 +262,20 @@
  "tooltip.relics.wool_mitten.ability.mold.stat.damage": "Daño: %1$s por cada tamaño.",
  "tooltip.relics.wool_mitten.ability.mold.stat.stun": "Aturdimiento: %1$s segundos por cada nivel de tamaño.",
  "tooltip.relics.wool_mitten.ability.mold.stat.freeze": "Congelación: %1$s segundos por tamaño.",
+ "tooltip.relics.wool_mitten.ability.frosty_shroud": "Mortaja helada",
+ "tooltip.relics.wool_mitten.ability.frosty_shroud.description": "Todas las entidades cercanas en un área pequeña reciben un efecto de congelación acumulativo",
+ "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.radius.title": "Radio:",
+ "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.radius.value": "%1$s por unidad de tamaño",
+ "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.duration.title": "Duración:",
+ "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.duration.value": "%1$s segundos por unidad de tamaño",
+ "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.cooldown.title": "Enfriamiento:",
+ "tooltip.relics.wool_mitten.ability.frosty_shroud.stat.cooldown.value": "%1$s segundos por unidad de tamaño",
+ "tooltip.relics.wool_mitten.ability.cold_touch": "Toque frío",
+ "tooltip.relics.wool_mitten.ability.cold_touch.description": "El número de cargas con cubitos de hielo se dibuja sobre los objetivos atacados. Cada ataque llena 1 carga. Con el tiempo, las cargas se "
+ "tooltip.relics.wool_mitten.ability.cold_touch.stat.max_charges.title": "Cargas máximas:",
+ "tooltip.relics.wool_mitten.ability.cold_touch.stat.max_charges.value": "%1$s unidades",
+ "tooltip.relics.wool_mitten.ability.cold_touch.stat.melt_time.title": "Tiempo de fusión:",
+ "tooltip.relics.wool_mitten.ability.cold_touch.stat.melt_time.value": "%1$s segundos por unidad de tamaño",
 
  "item.relics.roller_skates": "Patines",
  "tooltip.relics.roller_skates.description": "Gana 1EXP por cada segundo que la habilidad de esta Reliquia esté activada.",
@@ -277,6 +291,7 @@
  "effect.relics.paralysis": "Parálisis",
  "effect.relics.confusion": "Confusión",
  "effect.relics.vanishing": "Desvanecimiento",
+ "effect.relics.frostbite": "Congelación",
 
  "command.relics.base.not_relic": "¡El objeto en la mano debe ser una Reliquia!"
 }
