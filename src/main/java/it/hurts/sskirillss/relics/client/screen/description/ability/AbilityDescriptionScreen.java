@@ -159,16 +159,6 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
                         .frame(15, 2))
                 .end();
 
-        GUIRenderer.begin(DescriptionTextures.TOP_BACKGROUND, poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
-                .pos(x + 60, y + 47)
-                .end();
-
-        GUIRenderer.begin(DescriptionTextures.BOTTOM_BACKGROUND, poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
-                .pos(x + 60, y + 133)
-                .end();
-
         ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, stack, ability) + ".png");
 
         float color = (float) (1.05F + (Math.sin((player.tickCount + (ability.length() * 10)) * 0.2F) * 0.1F));
@@ -178,6 +168,16 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
                 .color(color, color, color, 1F)
                 .pos(x + 67, y + 57)
                 .texSize(34, 49)
+                .end();
+
+        GUIRenderer.begin(DescriptionTextures.TOP_BACKGROUND, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(x + 60, y + 47)
+                .end();
+
+        GUIRenderer.begin(DescriptionTextures.BOTTOM_BACKGROUND, poseStack)
+                .orientation(SpriteOrientation.TOP_LEFT)
+                .pos(x + 60, y + 133)
                 .end();
 
         int quality = relic.getAbilityQuality(stack, ability);

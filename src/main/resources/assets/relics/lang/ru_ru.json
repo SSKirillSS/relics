@@ -29,6 +29,8 @@
   "tooltip.relics.researching.badge.relic.flawless_relic.title": "Совершенная реликвия",
   "tooltip.relics.researching.badge.relic.flawless_relic.description": "Реликвия достигла максимальных идеальных параметров. Гордись собой!",
 
+  "tooltip.relics.researching.research.tip": "Чтобы разблокировать способность, необходимо соединить звезды, скрытые под туманом, так, чтобы образованное созвездие совпало с изображением на фоне. Когда созвездие будет подобрано правильно, способность будет исследована автоматически.",
+
   "tooltip.relics.researching.badge.ability.cast_type.hint": "Используй клавишу [%1$s] вне любого интерфейса для вызова меню активных способностей!",
 
   "tooltip.relics.researching.general.leveling_point.title": "Очки улучшения:",

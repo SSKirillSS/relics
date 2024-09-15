@@ -47,4 +47,14 @@ public class DescriptionTextures {
     public static final ResourceLocation PLATE_PLAYER_EXPERIENCE_FILLER = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/plate_player_experience_filler.png");
 
     public static final ResourceLocation LOGO = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/logo.png");
+
+    public static final ResourceLocation HINT_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/hint_background.png");
+    public static final ResourceLocation HINT_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/hint_outline.png");
+
+    public static final ResourceLocation TIP_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/tip_background.png");
+    public static final ResourceLocation TIP_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/tip_outline.png");
+
+    public static final ResourceLocation BULB = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb.png");
+    public static final ResourceLocation BULB_GLOWING = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb_glowing.png");
+    public static final ResourceLocation BULB_BURNING = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb_burning.png");
 }

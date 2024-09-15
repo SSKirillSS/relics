@@ -20,7 +20,9 @@ import it.hurts.sskirillss.relics.client.screen.description.relic.RelicDescripti
 import it.hurts.sskirillss.relics.client.screen.description.research.misc.BurnPoint;
 import it.hurts.sskirillss.relics.client.screen.description.research.particles.ResearchParticleData;
 import it.hurts.sskirillss.relics.client.screen.description.research.particles.SmokeParticleData;
+import it.hurts.sskirillss.relics.client.screen.description.research.widgets.HintWidget;
 import it.hurts.sskirillss.relics.client.screen.description.research.widgets.StarWidget;
+import it.hurts.sskirillss.relics.client.screen.description.research.widgets.TipWidget;
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.init.SoundRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -148,6 +150,10 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         this.addRenderableWidget(new PointsPlateWidget(x + 313, y + 77, this));
         this.addRenderableWidget(new PlayerExperiencePlateWidget(x + 313, y + 102, this));
         this.addRenderableWidget(new LuckPlateWidget(x + 313, y + 127, this));
+
+        this.addRenderableWidget(new TipWidget(x + 117, y + 207, this));
+
+        this.addRenderableWidget(new HintWidget(x + 192, y + 198, this));
 
         int starSize = 17;
 
@@ -291,7 +297,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         PoseStack poseStack = guiGraphics.pose();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, DescriptionTextures.SPACE_BACKGROUND);
 
         GUIRenderer.begin(DescriptionTextures.SPACE_BACKGROUND, poseStack)
                 .texSize(418, 4096)
@@ -376,16 +381,29 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         {
             poseStack.pushPose();
 
-            poseStack.translate(x + 190, y + 67, 0F);
-
-            poseStack.scale(0.75F, 0.75F, 0.75F);
-
             MutableComponent title = Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD);
+
+            poseStack.translate((int) (x + 184 + (102 / 2F) - (minecraft.font.width(title) / 2F / 1.3F)), y + 68, 0F);
+
+            poseStack.scale(0.75F, 0.75F, 1F);
 
             if (!relic.isAbilityResearched(stack, ability))
                 title.withStyle(ChatFormatting.OBFUSCATED);
 
             guiGraphics.drawString(minecraft.font, title, 0, 0, 0x662f13, false);
+
+            poseStack.popPose();
+        }
+
+        {
+            poseStack.pushPose();
+
+            poseStack.translate(x + 195, y + 120, 0F);
+
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+
+            guiGraphics.drawString(minecraft.font, Component.literal("Lorem ipsum dolor sit amet: 0/5"), 0, 0, 0x662f13, false);
+            guiGraphics.drawString(minecraft.font, Component.literal("Consectetur adipiscing elit: 0/10"), 0, 10, 0x662f13, false);
 
             poseStack.popPose();
         }
@@ -516,47 +534,72 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
             Pair<Integer, Integer> toRemove = null;
 
-
             for (var link : relic.getResearchLinks(stack, ability).entries())
                 if (isHoveringConnection(getScaledPos(researchData.getStars().get(link.getKey()).getPos()), getScaledPos(researchData.getStars().get(link.getValue()).getPos()), (int) pMouseX, (int) pMouseY))
                     toRemove = Pair.of(link.getKey(), link.getValue());
 
-            RandomSource random = minecraft.player.getRandom();
-
-            if (toRemove != null) {
-                int start = toRemove.getKey();
-                int end = toRemove.getValue();
-
-                NetworkHandler.sendToServer(new PacketManageLink(container, slot, ability, PacketManageLink.Operation.REMOVE, start, end));
-
-                executeForConnection(researchData.getStars().get(start).getPos(), researchData.getStars().get(end).getPos(), 0.1F, point -> {
-                    ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
-                            point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 10 + random.nextInt(50), random.nextFloat() * 0.01F));
-                });
-
-                this.points.stream().filter(point -> point.getLink() != null && point.getLink().getKey() == start && point.getLink().getValue() == end).forEach(entry -> entry.setTicker(point -> {
-                    if (point.getLifeTime() < 0)
-                        return;
-
-                    point.setLifeTime(point.getLifeTime() - 1);
-
-                    float diff = Mth.clamp(point.getLifeTime(), 0.01F, point.getMaxLifeTime()) / point.getMaxLifeTime();
-
-                    point.setScaleO(point.getScale());
-                    point.setScale(point.getScale() * diff);
-                }));
-
-                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.DISCONNECT_STARS.get(), 0.75F + minecraft.player.getRandom().nextFloat() * 0.5F, 0.75F));
-            }
+            if (toRemove != null)
+                removeLink(toRemove.getKey(), toRemove.getValue());
         }
 
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
+    public void addLink(int start, int end) {
+        var startStar = stars.stream().filter(entry -> entry.getStar().getIndex() == start).findFirst();
+        var endStar = stars.stream().filter(entry -> entry.getStar().getIndex() == end).findFirst();
+
+        if (startStar.isEmpty() || endStar.isEmpty())
+            return;
+
+        var random = minecraft.player.getRandom();
+
+        NetworkHandler.sendToServer(new PacketManageLink(container, slot, ability, PacketManageLink.Operation.ADD, start, end));
+
+        executeForConnection(startStar.get().getStar().getPos(), endStar.get().getStar().getPos(), 0.25F, point -> {
+            ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
+                    point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(60), random.nextFloat() * 0.025F));
+        });
+
+        executeForConnection(startStar.get().getStar().getPos(), endStar.get().getStar().getPos(), 1F, point -> {
+            addStaticPoint((int) point.x, (int) point.y, 0.05F, Pair.of(start, end));
+        });
+    }
+
+    public void removeLink(int start, int end) {
+        var startStar = stars.stream().filter(entry -> entry.getStar().getIndex() == start).findFirst();
+        var endStar = stars.stream().filter(entry -> entry.getStar().getIndex() == end).findFirst();
+
+        if (startStar.isEmpty() || endStar.isEmpty())
+            return;
+
+        var random = minecraft.player.getRandom();
+
+        NetworkHandler.sendToServer(new PacketManageLink(container, slot, ability, PacketManageLink.Operation.REMOVE, start, end));
+
+        executeForConnection(startStar.get().getStar().getPos(), endStar.get().getStar().getPos(), 0.1F, point -> {
+            ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
+                    point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 10 + random.nextInt(50), random.nextFloat() * 0.01F));
+        });
+
+        this.points.stream().filter(point -> point.getLink() != null && point.getLink().getKey() == start && point.getLink().getValue() == end).forEach(entry -> entry.setTicker(point -> {
+            if (point.getLifeTime() < 0)
+                return;
+
+            point.setLifeTime(point.getLifeTime() - 1);
+
+            float diff = Mth.clamp(point.getLifeTime(), 0.01F, point.getMaxLifeTime()) / point.getMaxLifeTime();
+
+            point.setScaleO(point.getScale());
+            point.setScale(point.getScale() * diff);
+        }));
+
+        minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.DISCONNECT_STARS.get(), 0.75F + minecraft.player.getRandom().nextFloat() * 0.5F, 0.75F));
+    }
+
     @Override
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
         if (stack.getItem() instanceof IRelicItem relic && pButton == GLFW.GLFW_MOUSE_BUTTON_LEFT && selectedStar != null) {
-            RandomSource random = minecraft.player.getRandom();
 
             for (StarWidget widget : stars) {
                 if (!widget.isHovered())
@@ -573,16 +616,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                         || links.containsEntry(start, end) || links.containsEntry(end, start))
                     continue;
 
-                NetworkHandler.sendToServer(new PacketManageLink(container, slot, ability, PacketManageLink.Operation.ADD, start, end));
-
-                executeForConnection(selectedStar.getPos(), widget.getStar().getPos(), 0.25F, point -> {
-                    ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
-                            point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(60), random.nextFloat() * 0.025F));
-                });
-
-                executeForConnection(selectedStar.getPos(), widget.getStar().getPos(), 1F, point -> {
-                    addStaticPoint((int) point.x, (int) point.y, 0.05F, Pair.of(start, end));
-                });
+                addLink(start, end);
 
                 break;
             }

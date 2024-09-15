@@ -29,6 +29,8 @@
   "tooltip.relics.researching.badge.relic.flawless_relic.title": "Flawless Relic",
   "tooltip.relics.researching.badge.relic.flawless_relic.description": "The relic has reached perfect parameters. Be proud of yourself!",
 
+  "tooltip.relics.researching.research.tip": "To unlock the ability, it is necessary to connect the stars hidden beneath the fog in such a way that the resulting constellation matches the image in the background. When the constellation is correctly aligned, the ability will be automatically researched.",
+
   "tooltip.relics.researching.badge.ability.cast_type.hint": "Use the [%1$s] key outside any interface to call up the active abilities menu!",
 
   "tooltip.relics.researching.general.leveling_point.title": "Leveling Points:",
