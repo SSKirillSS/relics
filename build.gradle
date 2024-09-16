@@ -86,7 +86,7 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    implementation 'top.theillusivec4.curios:curios-neoforge:9.0.5+1.21'
+    implementation 'top.theillusivec4.curios:curios-neoforge:9.0.9+1.21'
 
     implementation "it.hurts.octostudios.octolib:octolib-neoforge:0.4.1+1.21"
 

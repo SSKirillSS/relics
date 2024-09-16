@@ -31,6 +31,11 @@
 
   "tooltip.relics.researching.research.tip": "Чтобы разблокировать способность, необходимо соединить звезды, скрытые под туманом, так, чтобы образованное созвездие совпало с изображением на фоне. Когда созвездие будет подобрано правильно, способность будет исследована автоматически.",
 
+  "tooltip.relics.researching.research.hint.description": "Подсказка",
+  "tooltip.relics.researching.research.hint.cost": "Стоимость: %1$s уровней опыта %2$s.",
+  "tooltip.relics.researching.research.hint.quick": "Удерживай [Шифт] для полного автоматического исследования способности.",
+  "tooltip.relics.researching.research.hint.locked": "Способность уже исследована!",
+
   "tooltip.relics.researching.badge.ability.cast_type.hint": "Используй клавишу [%1$s] вне любого интерфейса для вызова меню активных способностей!",
 
   "tooltip.relics.researching.general.leveling_point.title": "Очки улучшения:",
@@ -42,8 +47,10 @@
   "tooltip.relics.researching.general.luck.title": "Удача:",
   "tooltip.relics.researching.general.luck.extra_info": "Получается при каждом неудачном сбросе случайных характеристик реликвии и повышает вероятность получения лучших значений при их следующем сбросе. Увеличивает стоимость сброса на 1 уровень опыта за каждые 25% удачи.",
 
-  "tooltip.relics.researching.relic.card.low_level": "Для использования необходимо повысить уровень реликвии до %1$s!",
+  "tooltip.relics.researching.relic.card.low_level": "Для разблокировки необходимо повысить уровень реликвии до %1$s!",
   "tooltip.relics.researching.relic.card.no_stats": "Способность не имеет улучшаемых характеристик и не влияет на качество реликвии!",
+  "tooltip.relics.researching.relic.card.unresearched": "Для использования необходимо провести исследование!",
+  "tooltip.relics.researching.relic.card.ready_to_unlock": "Способность готова к разблокировке! Кликов осталось: %1$s",
   "tooltip.relics.researching.relic.card.ready_to_upgrade": "Способность готова к улучшению!",
 
   "tooltip.relics.researching.general.extra_info": "Удерживай [Шифт] для подробной информации",

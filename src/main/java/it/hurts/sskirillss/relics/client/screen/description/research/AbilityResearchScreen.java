@@ -3,7 +3,6 @@ package it.hurts.sskirillss.relics.client.screen.description.research;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -39,7 +38,6 @@ import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
 import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -66,6 +64,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @OnlyIn(Dist.CLIENT)
@@ -160,17 +159,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         for (var entry : relic.getAbilityData(ability).getResearchData().getStars().values())
             stars.add(this.addWidget(new StarWidget((int) (x + 67 + (entry.getX() * 5F) - starSize / 2F), (int) (y + 54 + (entry.getY() * 5F) - starSize / 2F), this, entry)));
 
-        ResearchData researchData = relic.getResearchData(ability);
-
-        for (var link : relic.getResearchLinks(stack, ability).entries()) {
-            var start = link.getKey();
-            var end = link.getValue();
-
-            executeForConnection(researchData.getStars().get(start).getPos(), researchData.getStars().get(end).getPos(), 1F, point -> {
-                addStaticPoint((int) point.x, (int) point.y, 0.05F, Pair.of(start, end));
-            });
-        }
-
         if (!relic.isAbilityResearched(stack, ability)) {
             RandomSource random = minecraft.player.getRandom();
 
@@ -191,36 +179,70 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
 
         RandomSource random = minecraft.player.getRandom();
 
-        if (relic.isAbilityResearched(stack, ability) && researchProgress >= 0 && researchProgress < maxResearchProgress) {
-            researchProgress++;
+        if (relic.isAbilityResearched(stack, ability)) {
+            if (researchProgress >= 0 && researchProgress < maxResearchProgress) {
+                researchProgress++;
 
-            if (researchProgress % 3 == 0) {
-                ResearchData researchData = relic.getResearchData(ability);
+                if (researchProgress % 3 == 0) {
+                    ResearchData researchData = relic.getResearchData(ability);
 
-                for (var link : relic.getResearchLinks(stack, ability).entries()) {
-                    var start = researchData.getStars().get(link.getKey()).getPos();
-                    var end = researchData.getStars().get(link.getValue()).getPos();
+                    for (var link : relic.getResearchLinks(stack, ability).entries()) {
+                        var start = researchData.getStars().get(link.getKey()).getPos();
+                        var end = researchData.getStars().get(link.getValue()).getPos();
 
-                    executeForConnection(start, end, 0.75F, point -> {
-                        ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
-                                point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(40 + researchProgress), random.nextFloat() * 0.025F));
+                        executeForConnection(start, end, 0.75F, point -> {
+                            ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
+                                    point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(40 + researchProgress), random.nextFloat() * 0.025F));
+                        });
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 3; i++)
+                ParticleStorage.addParticle(this, new SmokeParticleData(x + 190 + random.nextInt(90), y + 67 + random.nextInt((int) (minecraft.font.lineHeight * 0.77F)), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(40), 0.1F)
+                        .setDeltaX(MathUtils.randomFloat(random) * 0.25F).setDeltaY(MathUtils.randomFloat(random) * 0.25F));
+        }
+
+        if (minecraft.player.tickCount % 3 == 0) {
+            var links = relic.getResearchLinks(stack, ability);
+
+            for (var pair : links.entries()) {
+                var start = pair.getKey();
+                var end = pair.getValue();
+
+                var startStar = stars.stream().filter(entry -> entry.getStar().getIndex() == start).findFirst();
+                var endStar = stars.stream().filter(entry -> entry.getStar().getIndex() == end).findFirst();
+
+                if (startStar.isPresent() && endStar.isPresent())
+                    executeForConnection(startStar.get().getStar().getPos(), endStar.get().getStar().getPos(), 1.1F, point -> {
+                        addStaticPoint((int) point.x, (int) point.y, 0.06F, Pair.of(start, end));
+                    });
+            }
+
+            for (var pair : points.stream().map(BurnPoint::getLink).filter(Objects::nonNull).toList()) {
+                var start = pair.getKey();
+                var end = pair.getValue();
+
+                if (!links.containsEntry(start, end) && !links.containsEntry(end, start)) {
+                    this.points.stream().filter(point -> point.getLink() != null && point.getLink().getKey().equals(start) && point.getLink().getValue().equals(end)).forEach(entry -> {
+                        entry.setLink(null);
+                        entry.setTicker(point -> {
+                            int time = point.getLifeTime();
+
+                            if (time <= 0)
+                                return;
+
+                            point.setLifeTime(--time);
+
+                            float diff = Mth.clamp(point.getLifeTime(), 0.01F, point.getMaxLifeTime()) / point.getMaxLifeTime();
+
+                            point.setScaleO(point.getScale());
+                            point.setScale(point.getScale() * diff);
+                        });
                     });
                 }
             }
         }
-
-        if (!relic.isAbilityResearched(stack, ability))
-            for (int i = 0; i < 3; i++)
-                ParticleStorage.addParticle(this, new SmokeParticleData(x + 190 + random.nextInt(90), y + 67 + random.nextInt((int) (minecraft.font.lineHeight * 0.77F)), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(40), 0.1F)
-                        .setDeltaX(MathUtils.randomFloat(random) * 0.25F).setDeltaY(MathUtils.randomFloat(random) * 0.25F));
-
-        MouseHandler mouseHandler = minecraft.mouseHandler;
-        Window window = minecraft.getWindow();
-
-        int mouseX = (int) (mouseHandler.xpos() * window.getGuiScaledWidth() / window.getScreenWidth());
-        int mouseY = (int) (mouseHandler.ypos() * window.getGuiScaledHeight() / window.getScreenHeight());
-
-        addLivingPoint(mouseX, mouseY, 5, 0.1F);
 
         for (BurnPoint point : points)
             point.tick();
@@ -230,7 +252,13 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         if (points.size() >= 256)
             return;
 
-        var optional = points.stream().filter(entry -> entry.getLifeTime() <= 0).findFirst();
+        var optional = points.stream().filter(entry -> entry.getX() == point.getX() && entry.getY() == point.getY()).findAny();
+
+        if (optional.isPresent()) {
+            if (optional.get().getLifeTime() > 0)
+                return;
+        } else
+            optional = points.stream().filter(entry -> entry.getLifeTime() <= 0).findFirst();
 
         if (optional.isEmpty())
             points.add(point);
@@ -242,10 +270,12 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                 .lifeTime(lifeTime)
                 .maxLifeTime(lifeTime)
                 .ticker(point -> {
-                    if (point.getLifeTime() < 0)
+                    int time = point.getLifeTime();
+
+                    if (time < 0)
                         return;
 
-                    point.setLifeTime(point.getLifeTime() - 1);
+                    point.setLifeTime(--time);
 
                     float diff = Mth.clamp(point.getLifeTime(), 0.01F, point.getMaxLifeTime()) / point.getMaxLifeTime();
 
@@ -264,17 +294,18 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                     point.setScaleO(point.getScale());
 
                     if (researchProgress <= 0) {
-                        if (point.getLifeTime() >= point.getMaxLifeTime())
+                        int time = point.getLifeTime();
+
+                        if (time >= point.getMaxLifeTime())
                             return;
 
-                        point.setLifeTime(point.getLifeTime() + 1);
+                        point.setLifeTime(++time);
 
                         float diff = Mth.clamp(point.getLifeTime(), 0.01F, point.getMaxLifeTime()) / point.getMaxLifeTime();
 
                         point.setScale(point.getMaxScale() * diff);
-                    } else {
+                    } else
                         point.setScale(point.getScale() + (researchProgress * 0.00075F));
-                    }
                 })
                 .link(link)
                 .build());
@@ -358,6 +389,8 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             List<Float> scales = Lists.newArrayList(0.15F);
             List<Float> noises = Lists.newArrayList(10F);
 
+            addLivingPoint(pMouseX, pMouseY, 3, 0.1F);
+
             for (BurnPoint point : points) {
                 boolean shouldRender = point.getLifeTime() > 0;
 
@@ -395,18 +428,23 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             poseStack.popPose();
         }
 
-        {
-            poseStack.pushPose();
-
-            poseStack.translate(x + 195, y + 120, 0F);
-
-            poseStack.scale(0.5F, 0.5F, 0.5F);
-
-            guiGraphics.drawString(minecraft.font, Component.literal("Lorem ipsum dolor sit amet: 0/5"), 0, 0, 0x662f13, false);
-            guiGraphics.drawString(minecraft.font, Component.literal("Consectetur adipiscing elit: 0/10"), 0, 10, 0x662f13, false);
-
-            poseStack.popPose();
-        }
+//        {
+//            poseStack.pushPose();
+//
+//            poseStack.translate(x + 184 + (102 / 2F), y + 100, 0F);
+//
+//            poseStack.scale(0.5F, 0.5F, 1F);
+//
+//            int yOff = 0;
+//
+//            for (FormattedCharSequence line : minecraft.font.split(ScreenUtils.obfuscate(Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability + ".description"), 1D - relic.testAbilityResearchPercentage(stack, ability), minecraft.level.getGameTime() / 5), 180)) {
+//                guiGraphics.drawString(minecraft.font, line, -(minecraft.font.width(line) / 2F), yOff, 0x662f13, false);
+//
+//                yOff += 9;
+//            }
+//
+//            poseStack.popPose();
+//        }
     }
 
     public Vec2 getScaledPos(Vec2 pos) {
@@ -560,10 +598,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
                     point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 20 + random.nextInt(60), random.nextFloat() * 0.025F));
         });
-
-        executeForConnection(startStar.get().getStar().getPos(), endStar.get().getStar().getPos(), 1F, point -> {
-            addStaticPoint((int) point.x, (int) point.y, 0.05F, Pair.of(start, end));
-        });
     }
 
     public void removeLink(int start, int end) {
@@ -581,18 +615,6 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             ParticleStorage.addParticle(this, new ResearchParticleData(new Color(100 + random.nextInt(150), random.nextInt(25), 200 + random.nextInt(50)),
                     point.x + MathUtils.randomFloat(random), point.y + MathUtils.randomFloat(random), 1F + (random.nextFloat() * 0.25F), 10 + random.nextInt(50), random.nextFloat() * 0.01F));
         });
-
-        this.points.stream().filter(point -> point.getLink() != null && point.getLink().getKey() == start && point.getLink().getValue() == end).forEach(entry -> entry.setTicker(point -> {
-            if (point.getLifeTime() < 0)
-                return;
-
-            point.setLifeTime(point.getLifeTime() - 1);
-
-            float diff = Mth.clamp(point.getLifeTime(), 0.01F, point.getMaxLifeTime()) / point.getMaxLifeTime();
-
-            point.setScaleO(point.getScale());
-            point.setScale(point.getScale() * diff);
-        }));
 
         minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.DISCONNECT_STARS.get(), 0.75F + minecraft.player.getRandom().nextFloat() * 0.5F, 0.75F));
     }

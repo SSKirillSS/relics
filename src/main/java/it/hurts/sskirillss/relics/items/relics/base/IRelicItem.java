@@ -617,19 +617,31 @@ public interface IRelicItem {
                 .build());
     }
 
-    default boolean testAbilityResearch(ItemStack stack, String ability) {
+    default double testAbilityResearchPercentage(ItemStack stack, String ability) {
         Multimap<Integer, Integer> schema = getResearchData(ability).getLinks();
         Multimap<Integer, Integer> links = getResearchLinks(stack, ability);
 
-        if (schema.size() != links.size())
-            return false;
+        if (schema.isEmpty())
+            return 0D;
 
         Set<Pair<Integer, Integer>> bidirectionalSchema = schema.entries().stream()
                 .flatMap(entry -> Stream.of(Pair.of(entry.getKey(), entry.getValue()), Pair.of(entry.getValue(), entry.getKey())))
                 .collect(Collectors.toSet());
 
-        return links.entries().stream().allMatch(entry -> bidirectionalSchema.contains(Pair.of(entry.getKey(), entry.getValue()))
-                || bidirectionalSchema.contains(Pair.of(entry.getValue(), entry.getKey())));
+        long matchingLinks = links.entries().stream()
+                .filter(entry -> bidirectionalSchema.contains(Pair.of(entry.getKey(), entry.getValue()))
+                        || bidirectionalSchema.contains(Pair.of(entry.getValue(), entry.getKey())))
+                .count();
+
+        return (double) matchingLinks / schema.size();
+    }
+
+    default boolean testAbilityResearch(ItemStack stack, String ability) {
+        return testAbilityResearchPercentage(stack, ability) >= 1D;
+    }
+
+    default int getResearchHintCost(String ability) {
+        return 3;
     }
 
     default StatComponent getStatComponent(ItemStack stack, String ability, String stat) {

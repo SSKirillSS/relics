@@ -84,7 +84,7 @@ public class TipWidget extends AbstractDescriptionWidget implements IHoverableWi
 
         List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
-        int maxWidth = 150;
+        int maxWidth = 180;
         int renderWidth = 0;
 
         List<MutableComponent> entries = Lists.newArrayList(

@@ -31,6 +31,11 @@
 
   "tooltip.relics.researching.research.tip": "To unlock the ability, it is necessary to connect the stars hidden beneath the fog in such a way that the resulting constellation matches the image in the background. When the constellation is correctly aligned, the ability will be automatically researched.",
 
+  "tooltip.relics.researching.research.hint.description": "Hint",
+  "tooltip.relics.researching.research.hint.cost": "Cost: %1$s experience levels %2$s.",
+  "tooltip.relics.researching.research.hint.quick": "Hold [Shift] for fully automatic ability research.",
+  "tooltip.relics.researching.research.hint.locked": "The ability has already been researched!",
+
   "tooltip.relics.researching.badge.ability.cast_type.hint": "Use the [%1$s] key outside any interface to call up the active abilities menu!",
 
   "tooltip.relics.researching.general.leveling_point.title": "Leveling Points:",
@@ -42,9 +47,11 @@
   "tooltip.relics.researching.general.luck.title": "Luck:",
   "tooltip.relics.researching.general.luck.extra_info": "Gained with each unsuccessful reroll of random relic stats, increasing the chances of getting better stats in the next reroll. Increases the reroll cost by 1 experience level for every 25% of luck.",
 
-  "tooltip.relics.researching.relic.card.low_level": "You need to upgrade the relic to level %1$s to use this!",
-  "tooltip.relics.researching.relic.card.no_stats": "This ability has no upgradeable stats and does not affect the relic's quality!",
-  "tooltip.relics.researching.relic.card.ready_to_upgrade": "This ability is ready to be upgraded!",
+  "tooltip.relics.researching.relic.card.low_level": "To unlock, you need to level up the relic to %1$s!",
+  "tooltip.relics.researching.relic.card.no_stats": "Ability has no upgradeable stats and does not affect the quality of the relic!",
+  "tooltip.relics.researching.relic.card.unresearched": "To use, you need to conduct the research!",
+  "tooltip.relics.researching.relic.card.ready_to_unlock": "Ability is ready to be unlocked! Clicks remaining: %1$s",
+  "tooltip.relics.researching.relic.card.ready_to_upgrade": "Ability is ready to be upgraded!",
 
   "tooltip.relics.researching.general.extra_info": "Hold [Shift] for more info",
 

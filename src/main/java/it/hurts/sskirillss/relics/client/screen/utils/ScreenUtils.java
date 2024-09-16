@@ -5,8 +5,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.RandomSource;
+
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ScreenUtils {
     public static void drawTexturedTooltipBorder(GuiGraphics guiGraphics, ResourceLocation texture, int width, int height, int x, int y) {
@@ -51,5 +57,44 @@ public class ScreenUtils {
 
     public static boolean isHovered(int x, int y, int width, int height, int mouseX, int mouseY) {
         return (mouseX >= x && mouseX <= x + width) && (mouseY >= y && mouseY <= y + height);
+    }
+
+    private static final ResourceLocation ALT_FONT = ResourceLocation.withDefaultNamespace("alt");
+    private static final ResourceLocation ILLAGER_ALT_FONT = ResourceLocation.withDefaultNamespace("illageralt");
+
+    public static MutableComponent illageriate(MutableComponent input, double percentage, long seed) {
+        return stylize(input, percentage, Style.EMPTY.withFont(ILLAGER_ALT_FONT), seed);
+    }
+
+    public static MutableComponent galactizate(MutableComponent input, double percentage, long seed) {
+        return stylize(input, percentage, Style.EMPTY.withFont(ALT_FONT), seed);
+    }
+
+    public static MutableComponent obfuscate(MutableComponent input, double percentage, long seed) {
+        return stylize(input, percentage, Style.EMPTY.withObfuscated(true), seed);
+    }
+
+    public static MutableComponent stylize(MutableComponent input, double percentage, Style style, long seed) {
+        RandomSource random = RandomSource.create(seed);
+
+        String text = input.getString();
+        int length = text.length();
+
+        var indices = IntStream.generate(() -> random.nextInt(length))
+                .distinct()
+                .limit((int) (length * percentage))
+                .boxed()
+                .collect(Collectors.toSet());
+
+        return IntStream.range(0, length)
+                .mapToObj(index -> {
+                    MutableComponent component = Component.literal(String.valueOf(text.charAt(index))).setStyle(input.getStyle());
+
+                    if (indices.contains(index))
+                        component.setStyle(style.applyTo(component.getStyle()));
+
+                    return component;
+                })
+                .collect(Component::empty, MutableComponent::append, MutableComponent::append);
     }
 }

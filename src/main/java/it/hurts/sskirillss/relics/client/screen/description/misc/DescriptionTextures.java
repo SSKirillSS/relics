@@ -55,6 +55,7 @@ public class DescriptionTextures {
     public static final ResourceLocation TIP_OUTLINE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/tip_outline.png");
 
     public static final ResourceLocation BULB = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb.png");
+    public static final ResourceLocation BULB_BROKEN = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb_broken.png");
     public static final ResourceLocation BULB_GLOWING = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb_glowing.png");
     public static final ResourceLocation BULB_BURNING = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb_burning.png");
 }

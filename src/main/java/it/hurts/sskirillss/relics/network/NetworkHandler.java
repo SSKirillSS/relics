@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.network.packets.capability.CapabilitySyncPacke
 import it.hurts.sskirillss.relics.network.packets.leveling.PacketRelicTweak;
 import it.hurts.sskirillss.relics.network.packets.lock.PacketAbilityUnlock;
 import it.hurts.sskirillss.relics.network.packets.research.PacketManageLink;
+import it.hurts.sskirillss.relics.network.packets.research.PacketResearchHint;
 import it.hurts.sskirillss.relics.network.packets.sync.SyncTargetPacket;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -36,6 +37,7 @@ public class NetworkHandler {
         registrar.playToClient(SyncTargetPacket.TYPE, SyncTargetPacket.STREAM_CODEC, SyncTargetPacket::handle);
         registrar.playToServer(PacketAbilityUnlock.TYPE, PacketAbilityUnlock.STREAM_CODEC, PacketAbilityUnlock::handle);
         registrar.playToServer(PacketManageLink.TYPE, PacketManageLink.STREAM_CODEC, PacketManageLink::handle);
+        registrar.playToServer(PacketResearchHint.TYPE, PacketResearchHint.STREAM_CODEC, PacketResearchHint::handle);
     }
 
     public static <MSG extends CustomPacketPayload> void sendToServer(MSG message) {
