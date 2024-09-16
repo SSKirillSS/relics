@@ -41,7 +41,7 @@ public class HintWidget extends AbstractDescriptionWidget implements IHoverableW
 
     @Override
     public void onPress() {
-        if (!(screen.stack.getItem() instanceof IRelicItem relic))
+        if (!(screen.stack.getItem() instanceof IRelicItem relic) || relic.isAbilityResearched(screen.stack, screen.ability))
             return;
 
         int links = relic.getResearchData(screen.ability).getLinks().size();
@@ -136,7 +136,7 @@ public class HintWidget extends AbstractDescriptionWidget implements IHoverableW
         int maxWidth = 150;
         int renderWidth = 0;
 
-        int requiredLevel = relic.getResearchHintCost(screen.ability) * (Screen.hasShiftDown() ? (relic.getResearchData(screen.ability).getLinks().size() + 1) : 1);
+        int requiredLevel = relic.getResearchHintCost(screen.ability) * (Screen.hasShiftDown() ? relic.getResearchData(screen.ability).getLinks().size() : 1);
 
         int level = minecraft.player.experienceLevel;
 
