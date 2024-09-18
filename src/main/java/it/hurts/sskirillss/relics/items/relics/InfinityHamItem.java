@@ -1,7 +1,8 @@
 package it.hurts.sskirillss.relics.items.relics;
 
-import com.google.common.collect.Lists;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
+import it.hurts.sskirillss.relics.init.CreativeTabRegistry;
+import it.hurts.sskirillss.relics.items.misc.CreativeContentConstructor;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -77,12 +78,12 @@ public class InfinityHamItem extends RelicItem {
     }
 
     @Override
-    public List<ItemStack> processCreativeTab() {
+    public void gatherCreativeTabContent(CreativeContentConstructor constructor) {
         ItemStack stack = this.getDefaultInstance();
 
         stack.set(CHARGE, 10);
 
-        return Lists.newArrayList(stack);
+        constructor.entry(CreativeTabRegistry.RELICS_TAB.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS, stack);
     }
 
     @Override

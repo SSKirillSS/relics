@@ -14,9 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static it.hurts.sskirillss.relics.init.DataComponentRegistry.CHARGE;
 
 public class SolidSnowballItem extends ItemBase {
@@ -25,11 +22,6 @@ public class SolidSnowballItem extends ItemBase {
                 .stacksTo(1)
                 .rarity(Rarity.UNCOMMON)
         );
-    }
-
-    @Override
-    public List<ItemStack> processCreativeTab() {
-        return new ArrayList<>();
     }
 
     @Override

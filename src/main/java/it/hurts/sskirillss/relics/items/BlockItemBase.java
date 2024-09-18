@@ -1,20 +1,19 @@
 package it.hurts.sskirillss.relics.items;
 
-import com.google.common.collect.Lists;
-import it.hurts.sskirillss.relics.items.relics.base.ICreativeTabEntry;
+import it.hurts.sskirillss.relics.init.CreativeTabRegistry;
+import it.hurts.sskirillss.relics.items.misc.CreativeContentConstructor;
+import it.hurts.sskirillss.relics.items.misc.ICreativeTabContent;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 
-import java.util.List;
-
-public class BlockItemBase extends BlockItem implements ICreativeTabEntry {
+public class BlockItemBase extends BlockItem implements ICreativeTabContent {
     public BlockItemBase(Block block, Properties properties) {
         super(block, properties);
     }
 
     @Override
-    public List<ItemStack> processCreativeTab() {
-        return Lists.newArrayList(this.getDefaultInstance());
+    public void gatherCreativeTabContent(CreativeContentConstructor constructor) {
+        constructor.entry(CreativeTabRegistry.RELICS_TAB.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS, this);
     }
 }
