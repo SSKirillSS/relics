@@ -9,10 +9,7 @@ import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.screen.base.IAutoScaledScreen;
 import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import it.hurts.sskirillss.relics.client.screen.base.IRelicScreenProvider;
-import it.hurts.sskirillss.relics.client.screen.description.general.widgets.LogoWidget;
-import it.hurts.sskirillss.relics.client.screen.description.general.widgets.LuckPlateWidget;
-import it.hurts.sskirillss.relics.client.screen.description.general.widgets.PlayerExperiencePlateWidget;
-import it.hurts.sskirillss.relics.client.screen.description.general.widgets.PointsPlateWidget;
+import it.hurts.sskirillss.relics.client.screen.description.general.widgets.*;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionTextures;
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.client.screen.description.relic.RelicDescriptionScreen;
@@ -145,6 +142,9 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         points.clear();
 
         this.addRenderableWidget(new LogoWidget(x + 313, y + 57, this));
+
+        if (relic.isSomethingWrongWithLevelingPoints(stack))
+            this.addRenderableWidget(new PointsFixWidget(x + 330, y + 33, this));
 
         this.addRenderableWidget(new PointsPlateWidget(x + 313, y + 77, this));
         this.addRenderableWidget(new PlayerExperiencePlateWidget(x + 313, y + 102, this));

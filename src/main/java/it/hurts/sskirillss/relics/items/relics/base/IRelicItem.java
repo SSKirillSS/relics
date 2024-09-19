@@ -379,6 +379,16 @@ public interface IRelicItem {
         return getTotalRelicExperienceBetweenLevels(currentLevel, level) - getRelicExperience(stack);
     }
 
+    @Deprecated(forRemoval = true)
+    default boolean isSomethingWrongWithLevelingPoints(ItemStack stack) {
+        int current = getRelicLevelingPoints(stack);
+
+        for (var data : getAbilitiesData().getAbilities().values())
+            current += getAbilityComponent(stack, data.getId()).points() * data.getRequiredPoints();
+
+        return current != getRelicLevel(stack);
+    }
+
     default int getTotalRelicExperienceBetweenLevels(int from, int to) {
         return getTotalRelicExperienceForLevel(to) - getTotalRelicExperienceForLevel(from);
     }
