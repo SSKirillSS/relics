@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics;
 import it.hurts.sskirillss.relics.init.*;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -34,5 +35,7 @@ public class Relics {
     private void setupCommon(final FMLCommonSetupEvent event) {
         DispenserBehaviorRegistry.register();
         ConfigRegistry.register();
+
+        InterModComms.sendTo("darkmodeeverywhere", "dme-shaderblacklist", () -> Reference.MODID);
     }
 }
