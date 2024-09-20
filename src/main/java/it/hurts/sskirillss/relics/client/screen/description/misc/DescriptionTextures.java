@@ -1,7 +1,13 @@
 package it.hurts.sskirillss.relics.client.screen.description.misc;
 
+import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.Reference;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class DescriptionTextures {
     public static final ResourceLocation PLATE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/plate_background.png");
@@ -58,4 +64,21 @@ public class DescriptionTextures {
     public static final ResourceLocation BULB_BROKEN = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb_broken.png");
     public static final ResourceLocation BULB_GLOWING = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb_glowing.png");
     public static final ResourceLocation BULB_BURNING = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/research/bulb_burning.png");
+
+    private static final ResourceLocation SMALL_CARD_MISSING = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/missing.png");
+
+    // TODO: Since ability may have different icons based on the relic state we need to implement some sort of default icon that will be used in the description UIs
+    @OnlyIn(Dist.CLIENT)
+    public static ResourceLocation getAbilityCardTexture(ItemStack stack, String ability) {
+        var item = stack.getItem();
+
+        if (!(item instanceof IRelicItem relic))
+            return SMALL_CARD_MISSING;
+
+        var minecraft = Minecraft.getInstance();
+
+        var texture = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(item).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, stack, ability) + ".png");
+
+        return minecraft.getResourceManager().getResource(texture).orElse(null) == null ? SMALL_CARD_MISSING : texture;
+    }
 }

@@ -343,11 +343,9 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                 .end();
 
         {
-            ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, stack, ability) + ".png");
-
             float color = (float) (0.5F + (Math.sin((player.tickCount + pPartialTick) * 0.1F) * 0.1F));
 
-            GUIRenderer.begin(card, poseStack)
+            GUIRenderer.begin(DescriptionTextures.getAbilityCardTexture(stack, ability), poseStack)
                     .orientation(SpriteOrientation.TOP_LEFT)
                     .color(color, color, color, 1F)
                     .pos(x + 67, y + 54)
@@ -414,7 +412,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
         {
             poseStack.pushPose();
 
-            MutableComponent title = Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD);
+            MutableComponent title = Component.translatableWithFallback("tooltip.relics." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".ability." + ability, ability).withStyle(ChatFormatting.BOLD);
 
             poseStack.translate((int) (x + 184 + (102 / 2F) - (minecraft.font.width(title) / 2F / 1.3F)), y + 68, 0F);
 

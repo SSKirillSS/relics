@@ -158,8 +158,6 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         var hasAction = canUpgrade || canResearch;
 
-        ResourceLocation card = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/abilities/" + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + "/" + relic.getAbilityData(ability).getIcon().apply(minecraft.player, screen.stack, ability) + ".png");
-
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         RenderSystem.enableBlend();
@@ -177,7 +175,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
         var color = (float) ((canUpgrade ? 0.75F : 1.05F) + (Math.sin((player.tickCount + (ability.length() * 10)) * 0.2F) * 0.1F));
 
         if (isLockUnlocked)
-            GUIRenderer.begin(card, poseStack)
+            GUIRenderer.begin(DescriptionTextures.getAbilityCardTexture(stack, ability), poseStack)
                     .color(color, color, color, 1F)
                     .texSize(22, 31)
                     .scale(1.01F)
@@ -369,7 +367,7 @@ public class AbilityCardWidget extends AbstractDescriptionWidget implements IHov
 
         List<MutableComponent> entries = new ArrayList<>();
 
-        MutableComponent title = Component.translatable("tooltip.relics." + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + ".ability." + ability).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE);
+        MutableComponent title = Component.translatableWithFallback("tooltip.relics." + BuiltInRegistries.ITEM.getKey(screen.stack.getItem()).getPath() + ".ability." + ability, ability).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.UNDERLINE);
 
         if (!relic.isAbilityUnlocked(screen.stack, ability))
             title = ScreenUtils.obfuscate(title, 0.99F, minecraft.level.getGameTime() / 5);
