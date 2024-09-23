@@ -83,10 +83,17 @@ public class EntityRegistry {
                     .sized(0.25F, 0.25F)
                     .build("thrown_relic_experience_bottle")
     );
+
     public static final DeferredHolder<EntityType<?>, EntityType<DeathEssenceEntity>> DEATH_ESSENCE = ENTITIES.register("death_essence", () ->
             EntityType.Builder.<DeathEssenceEntity>of(DeathEssenceEntity::new, MobCategory.MISC)
                     .sized(0.5F, 0.5F)
                     .build("death_essence")
+    );
+
+    public static final DeferredHolder<EntityType<?>, EntityType<ChairEntity>> CHAIR = ENTITIES.register("chair", () ->
+            EntityType.Builder.<ChairEntity>of(ChairEntity::new, MobCategory.MISC)
+                    .sized(0F, 0F)
+                    .build("chair")
     );
 
     public static void register(IEventBus bus) {

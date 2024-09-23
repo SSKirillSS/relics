@@ -136,6 +136,7 @@ public class RemoteRegistry {
 //        event.registerEntityRenderer(EntityRegistry.ARROW_RAIN.get(), NullRenderer::new);
         event.registerEntityRenderer(EntityRegistry.RELIC_EXPERIENCE_ORB.get(), RelicExperienceOrbRenderer::new);
         event.registerEntityRenderer(EntityRegistry.THROWN_RELIC_EXPERIENCE_BOTTLE.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.CHAIR.get(), NullRenderer::new);
 
         event.registerBlockEntityRenderer(TileRegistry.RESEARCHING_TABLE.get(), ResearchingTableRenderer::new);
     }
