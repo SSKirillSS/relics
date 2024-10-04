@@ -17,7 +17,9 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Setter
@@ -54,7 +56,8 @@ public final class GUIRenderer {
     private Supplier<Long> time;
     private AnimationData animation;
 
-    private SpriteOrientation orientation;
+    private SpriteAnchor anchor;
+    private List<SpriteMirror> mirror;
 
     public static GUIRenderer begin(ResourceLocation texture, PoseStack pose) {
         var renderer = INSTANCE;
@@ -89,7 +92,8 @@ public final class GUIRenderer {
         renderer.animation = AnimationData.builder()
                 .frame(0, Integer.MAX_VALUE);
 
-        renderer.orientation = SpriteOrientation.CENTER;
+        renderer.anchor = SpriteAnchor.CENTER;
+        renderer.mirror = new ArrayList<>();
 
         return renderer;
     }
@@ -153,6 +157,14 @@ public final class GUIRenderer {
         return this.color(new Color(color));
     }
 
+    public GUIRenderer mirror(SpriteMirror... mirror) {
+        var renderer = INSTANCE;
+
+        renderer.mirror.addAll(Arrays.asList(mirror));
+
+        return renderer;
+    }
+
     public void end() {
         BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
@@ -162,7 +174,7 @@ public final class GUIRenderer {
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, texture);
-        RenderSystem.setShaderColor(red == -1F ? color[0] : red, green == -1F ? color[1] : green, blue == -1 ? color[2] : blue, alpha == -1F ? color[3] : alpha);
+        RenderSystem.setShaderColor(red == -1F ? color[0] : red, green == -1F ? color[1] : green, blue == -1F ? color[2] : blue, alpha == -1F ? color[3] : alpha);
         RenderSystem.disableCull();
 
         if (texHeight == -1)
@@ -184,10 +196,42 @@ public final class GUIRenderer {
         float xOff = 0F;
         float yOff = 0F;
 
-        switch (orientation) {
+        switch (anchor) {
             case CENTER -> {
                 xOff = patternWidth / 2F * scale;
                 yOff = patternHeight / 2F * scale;
+            }
+            case TOP_RIGHT -> {
+                xOff = patternWidth * scale;
+                yOff = 0F;
+            }
+            case TOP_LEFT -> {
+                xOff = 0F;
+                yOff = 0F;
+            }
+            case BOTTOM_LEFT -> {
+                xOff = 0F;
+                yOff = patternHeight * scale;
+            }
+            case BOTTOM_RIGHT -> {
+                xOff = patternWidth * scale;
+                yOff = patternHeight * scale;
+            }
+            case TOP_CENTER -> {
+                xOff = (patternWidth / 2F) * scale;
+                yOff = 0F;
+            }
+            case CENTER_LEFT -> {
+                xOff = 0F;
+                yOff = (patternHeight / 2F) * scale;
+            }
+            case CENTER_RIGHT -> {
+                xOff = patternWidth * scale;
+                yOff = (patternHeight / 2F) * scale;
+            }
+            case BOTTOM_CENTER -> {
+                xOff = (patternWidth / 2F) * scale;
+                yOff = patternHeight * scale;
             }
         }
 
@@ -200,6 +244,13 @@ public final class GUIRenderer {
         float u2 = (float) (texOffX + patternWidth) / texWidth;
         float v1 = (float) (texOffY + patternHeight) / texHeight;
         float v2 = (float) texOffY / texHeight;
+
+        for (SpriteMirror mirror : mirror) {
+            switch (mirror) {
+                case HORIZONTAL -> u1 = u1 + u2 - (u2 = u1);
+                case VERTICAL -> v1 = v1 + v2 - (v2 = v1);
+            }
+        }
 
         builder.addVertex(m, 0, patternHeight, 0).setUv(u1, v1);
         builder.addVertex(m, patternWidth, patternHeight, 0).setUv(u2, v1);

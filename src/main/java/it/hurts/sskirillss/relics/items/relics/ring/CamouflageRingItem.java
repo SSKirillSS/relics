@@ -75,6 +75,14 @@ public class CamouflageRingItem extends RelicItem {
                 .build();
     }
 
+    public boolean isHiding(Player player) {
+        var level = player.getCommandSenderWorld();
+
+        var pos = player.getBoundingBox().getBottomCenter().add(0F, player.getBbHeight(), 0F);
+
+        return level.getBlockState(new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()))).getBlock() instanceof BushBlock;
+    }
+
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         var level = player.getCommandSenderWorld();
@@ -127,11 +135,7 @@ public class CamouflageRingItem extends RelicItem {
         var level = player.getCommandSenderWorld();
 
         {
-            var pos = player.getBoundingBox().getBottomCenter().add(0F, player.getBbHeight(), 0F);
-
-            boolean isHiding = level.getBlockState(new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()))).getBlock() instanceof BushBlock;
-
-            if (isHiding)
+            if (isHiding(player))
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
         }
 

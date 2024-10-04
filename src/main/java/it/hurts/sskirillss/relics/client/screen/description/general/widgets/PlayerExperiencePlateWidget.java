@@ -8,7 +8,7 @@ import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionText
 import it.hurts.sskirillss.relics.client.screen.description.misc.DescriptionUtils;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
-import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
+import it.hurts.sskirillss.relics.utils.data.SpriteAnchor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -37,14 +37,14 @@ public class PlayerExperiencePlateWidget extends AbstractPlateWidget {
         poseStack.pushPose();
 
         GUIRenderer.begin(DescriptionTextures.PLATE_PLAYER_EXPERIENCE_BACKGROUND, poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .pos(1, height - 3)
                 .end();
 
         GUIRenderer.begin(DescriptionTextures.PLATE_PLAYER_EXPERIENCE_FILLER, poseStack)
                 .pos(1, height - 3)
                 .texSize(barWidth, barHeight)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .patternSize((int) (barWidth * ((player.totalExperience / ((player.totalExperience / player.experienceProgress) / 100F)) / 100F)), barHeight)
                 .end();
 

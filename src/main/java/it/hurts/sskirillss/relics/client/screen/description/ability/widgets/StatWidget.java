@@ -9,7 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcon;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
-import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
+import it.hurts.sskirillss.relics.utils.data.SpriteAnchor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
@@ -128,7 +128,7 @@ public class StatWidget extends AbstractDescriptionWidget {
 
         {
             GUIRenderer.begin(DescriptionTextures.STAT_DELIMITER, poseStack)
-                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .anchor(SpriteAnchor.TOP_LEFT)
                     .pos(getX() + 7, getY() + height - 2)
                     .end();
         }

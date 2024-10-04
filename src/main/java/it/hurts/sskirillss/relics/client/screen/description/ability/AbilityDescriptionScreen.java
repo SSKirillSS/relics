@@ -18,7 +18,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
-import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
+import it.hurts.sskirillss.relics.utils.data.SpriteAnchor;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -163,19 +163,19 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
         float color = (float) (1.05F + (Math.sin((player.tickCount + (ability.length() * 10)) * 0.2F) * 0.1F));
 
         GUIRenderer.begin(DescriptionTextures.getAbilityCardTexture(stack, ability), poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .color(color, color, color, 1F)
                 .pos(x + 67, y + 57)
                 .texSize(34, 49)
                 .end();
 
         GUIRenderer.begin(DescriptionTextures.TOP_BACKGROUND, poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .pos(x + 60, y + 47)
                 .end();
 
         GUIRenderer.begin(DescriptionTextures.BOTTOM_BACKGROUND, poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .pos(x + 60, y + 133)
                 .end();
 
@@ -184,7 +184,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         for (int i = 0; i < Math.floor(quality / 2D); i++) {
             GUIRenderer.begin(DescriptionTextures.BIG_STAR_ACTIVE, poseStack)
-                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .anchor(SpriteAnchor.TOP_LEFT)
                     .pos(x + xOff + 64, y + 110)
                     .end();
 
@@ -193,7 +193,7 @@ public class AbilityDescriptionScreen extends Screen implements IAutoScaledScree
 
         if (isAliquot)
             GUIRenderer.begin(DescriptionTextures.BIG_STAR_ACTIVE, poseStack)
-                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .anchor(SpriteAnchor.TOP_LEFT)
                     .pos(x + xOff + 64, y + 110)
                     .patternSize(4, 7)
                     .texSize(8, 7)

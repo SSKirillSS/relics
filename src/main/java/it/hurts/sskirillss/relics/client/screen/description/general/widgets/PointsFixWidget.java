@@ -12,7 +12,7 @@ import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.leveling.FixLevelingPoints;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
-import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
+import it.hurts.sskirillss.relics.utils.data.SpriteAnchor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -59,7 +59,7 @@ public class PointsFixWidget extends AbstractDescriptionWidget implements IHover
         float color = (float) (1.25F + (Math.sin(player.tickCount) * 0.5F));
 
         GUIRenderer.begin(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/general/fix.png"), poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .color(color, color, color, 1F)
                 .pos(getX(), getY())
                 .end();

@@ -6,7 +6,7 @@ import com.mojang.math.Axis;
 import it.hurts.sskirillss.relics.client.screen.description.general.particles.base.ParticleData;
 import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
-import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
+import it.hurts.sskirillss.relics.utils.data.SpriteAnchor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
@@ -63,7 +63,7 @@ public class SmokeParticleData extends ParticleData {
 
         GUIRenderer.begin(TEXTURE, guiGraphics.pose())
                 .scale(scale)
-                .orientation(SpriteOrientation.CENTER)
+                .anchor(SpriteAnchor.CENTER)
                 .end();
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);

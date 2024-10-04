@@ -32,7 +32,7 @@ import it.hurts.sskirillss.relics.utils.Reference;
 import it.hurts.sskirillss.relics.utils.RenderUtils;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
-import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
+import it.hurts.sskirillss.relics.utils.data.SpriteAnchor;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -346,7 +346,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             float color = (float) (0.5F + (Math.sin((player.tickCount + pPartialTick) * 0.1F) * 0.1F));
 
             GUIRenderer.begin(DescriptionTextures.getAbilityCardTexture(stack, ability), poseStack)
-                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .anchor(SpriteAnchor.TOP_LEFT)
                     .color(color, color, color, 1F)
                     .pos(x + 67, y + 54)
                     .texSize(110, 155)
@@ -402,7 +402,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
             RenderUtils.renderRevealingPanel(poseStack, x + 67, y + 54, 110, 155, positions, scales, noises, (player.tickCount + pPartialTick) / 50F);
 
             GUIRenderer.begin(DescriptionTextures.RESEARCH_BACKGROUND, poseStack)
-                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .anchor(SpriteAnchor.TOP_LEFT)
                     .pos(x + 60, y + 45)
                     .end();
 
@@ -484,7 +484,7 @@ public class AbilityResearchScreen extends Screen implements IAutoScaledScreen, 
                 .pos(0, 0)
                 .texSize(width, height * 6)
                 .patternSize(distance, height)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .animation(AnimationData.builder()
                         .frame(0, 2).frame(1, 2).frame(2, 2)
                         .frame(3, 2).frame(4, 2).frame(5, 2)

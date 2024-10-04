@@ -15,7 +15,7 @@ import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.network.packets.research.PacketResearchHint;
 import it.hurts.sskirillss.relics.utils.data.AnimationData;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
-import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
+import it.hurts.sskirillss.relics.utils.data.SpriteAnchor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -66,19 +66,19 @@ public class HintWidget extends AbstractDescriptionWidget implements IHoverableW
         poseStack.pushPose();
 
         GUIRenderer.begin(DescriptionTextures.HINT_BACKGROUND, poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .pos(getX(), getY() - 10)
                 .end();
 
         if (relic.isAbilityResearched(screen.stack, screen.ability)) {
             GUIRenderer.begin(DescriptionTextures.BULB_BROKEN, poseStack)
-                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .anchor(SpriteAnchor.TOP_LEFT)
                     .pos(getX() + 34, getY() - 3)
                     .end();
         } else {
             if (isHovered()) {
                 GUIRenderer.begin(DescriptionTextures.HINT_OUTLINE, poseStack)
-                        .orientation(SpriteOrientation.TOP_LEFT)
+                        .anchor(SpriteAnchor.TOP_LEFT)
                         .pos(getX() - 1, getY() - 6)
                         .end();
 
@@ -86,7 +86,7 @@ public class HintWidget extends AbstractDescriptionWidget implements IHoverableW
 
                 if (Screen.hasShiftDown())
                     GUIRenderer.begin(DescriptionTextures.BULB_BURNING, poseStack)
-                            .orientation(SpriteOrientation.TOP_LEFT)
+                            .anchor(SpriteAnchor.TOP_LEFT)
                             .pos(getX() + 34, getY() - 17)
                             .patternSize(16, 34)
                             .color(color, color, color, 1F)
@@ -97,13 +97,13 @@ public class HintWidget extends AbstractDescriptionWidget implements IHoverableW
                             .end();
                 else
                     GUIRenderer.begin(DescriptionTextures.BULB_GLOWING, poseStack)
-                            .orientation(SpriteOrientation.TOP_LEFT)
+                            .anchor(SpriteAnchor.TOP_LEFT)
                             .pos(getX() + 34, getY() - 3)
                             .color(color, color, color, 1F)
                             .end();
             } else
                 GUIRenderer.begin(DescriptionTextures.BULB, poseStack)
-                        .orientation(SpriteOrientation.TOP_LEFT)
+                        .anchor(SpriteAnchor.TOP_LEFT)
                         .pos(getX() + 34, getY() - 3)
                         .end();
         }

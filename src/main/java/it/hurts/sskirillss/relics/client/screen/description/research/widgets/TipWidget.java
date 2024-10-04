@@ -12,7 +12,7 @@ import it.hurts.sskirillss.relics.client.screen.description.research.AbilityRese
 import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
-import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
+import it.hurts.sskirillss.relics.utils.data.SpriteAnchor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
@@ -48,14 +48,14 @@ public class TipWidget extends AbstractDescriptionWidget implements IHoverableWi
         float color = (float) (1.05F + (Math.sin((player.tickCount + pPartialTick) * 0.5F) * 0.1F));
 
         GUIRenderer.begin(DescriptionTextures.TIP_BACKGROUND, poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .color(color, color, color, 1F)
                 .pos(getX() + 2, getY() + 1)
                 .end();
 
         if (isHovered())
             GUIRenderer.begin(DescriptionTextures.TIP_OUTLINE, poseStack)
-                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .anchor(SpriteAnchor.TOP_LEFT)
                     .pos(getX(), getY() - 1)
                     .end();
 

@@ -14,7 +14,7 @@ import it.hurts.sskirillss.relics.client.screen.utils.ParticleStorage;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.data.GUIRenderer;
-import it.hurts.sskirillss.relics.utils.data.SpriteOrientation;
+import it.hurts.sskirillss.relics.utils.data.SpriteAnchor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -54,7 +54,7 @@ public class RelicExperienceWidget extends AbstractDescriptionWidget implements 
         float color = (float) (1.025F + (Math.sin(player.tickCount * 0.5F) * 0.05F));
 
         GUIRenderer.begin(DescriptionTextures.RELIC_EXPERIENCE_BACKGROUND, poseStack)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .pos(getX(), getY() - 10)
                 .end();
 
@@ -62,7 +62,7 @@ public class RelicExperienceWidget extends AbstractDescriptionWidget implements 
 
         GUIRenderer.begin(DescriptionTextures.RELIC_EXPERIENCE_FILLER, poseStack)
                 .patternSize(calculateFillerWidth(relic), 11)
-                .orientation(SpriteOrientation.TOP_LEFT)
+                .anchor(SpriteAnchor.TOP_LEFT)
                 .pos(getX() + 3, getY() + 2)
                 .color(color, color, color, 1F)
                 .texSize(FILLER_WIDTH, 11)
@@ -72,7 +72,7 @@ public class RelicExperienceWidget extends AbstractDescriptionWidget implements 
 
         if (isHovered())
             GUIRenderer.begin(DescriptionTextures.RELIC_EXPERIENCE_OUTLINE, poseStack)
-                    .orientation(SpriteOrientation.TOP_LEFT)
+                    .anchor(SpriteAnchor.TOP_LEFT)
                     .pos(getX() - 1, getY() - 6)
                     .end();
 
