@@ -41,7 +41,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
 
-import static it.hurts.sskirillss.relics.init.DataComponentRegistry.BLOCK_STATE;
+import static it.hurts.sskirillss.relics.init.DataComponentRegistry.*;
 
 public class CamouflageRingItem extends RelicItem {
     @Override
@@ -73,14 +73,6 @@ public class CamouflageRingItem extends RelicItem {
                         .entry(LootCollections.BASTION)
                         .build())
                 .build();
-    }
-
-    public boolean isHiding(Player player) {
-        var level = player.getCommandSenderWorld();
-
-        var pos = player.getBoundingBox().getBottomCenter().add(0F, player.getBbHeight(), 0F);
-
-        return level.getBlockState(new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()))).getBlock() instanceof BushBlock;
     }
 
     @Override
@@ -135,8 +127,26 @@ public class CamouflageRingItem extends RelicItem {
         var level = player.getCommandSenderWorld();
 
         {
-            if (isHiding(player))
+            var progress = getCurrentProgress(stack);
+            var hiding = isHiding(stack);
+
+            var pos = player.getBoundingBox().getBottomCenter().add(0F, player.getBbHeight(), 0F);
+
+            if (level.getBlockState(new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()))).getBlock() instanceof BushBlock) {
+                if (!hiding)
+                    setHiding(stack, true);
+
+                if (progress < getMaxProgress())
+                    addCurrentProgress(stack, 1);
+
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
+            } else {
+                if (hiding)
+                    setHiding(stack, false);
+
+                if (progress > 0)
+                    addCurrentProgress(stack, -1);
+            }
         }
 
         {
@@ -166,6 +176,30 @@ public class CamouflageRingItem extends RelicItem {
                 }
             }
         }
+    }
+
+    public boolean isHiding(ItemStack stack) {
+        return stack.getOrDefault(TOGGLED, false);
+    }
+
+    public void setHiding(ItemStack stack, boolean hiding) {
+        stack.set(TOGGLED, hiding);
+    }
+
+    public int getCurrentProgress(ItemStack stack) {
+        return stack.getOrDefault(PROGRESS, 0);
+    }
+
+    public void setCurrentProgress(ItemStack stack, int progress) {
+        stack.set(PROGRESS, Math.clamp(progress, 0, getMaxProgress()));
+    }
+
+    public void addCurrentProgress(ItemStack stack, int progress) {
+        setCurrentProgress(stack, getCurrentProgress(stack) + progress);
+    }
+
+    public int getMaxProgress() {
+        return 10;
     }
 
     @EventBusSubscriber
