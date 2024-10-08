@@ -17,7 +17,7 @@ import it.hurts.sskirillss.relics.items.relics.necklace.HolyLocketItem;
 import it.hurts.sskirillss.relics.items.relics.necklace.JellyfishNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.necklace.ReflectionNecklaceItem;
 import it.hurts.sskirillss.relics.items.relics.ring.BastionRingItem;
-import it.hurts.sskirillss.relics.items.relics.ring.CamouflageRingItem;
+import it.hurts.sskirillss.relics.items.relics.ring.LeafyRingItem;
 import it.hurts.sskirillss.relics.items.relics.ring.ChorusInhibitorItem;
 import it.hurts.sskirillss.relics.items.relics.charm.SporeSackItem;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -61,7 +61,7 @@ public class ItemRegistry {
     // TODO: public static final DeferredHolder<Item, RelicItem> HORSE_FLUTE = ITEMS.register("horse_flute", HorseFluteItem::new);
     public static final DeferredHolder<Item, RelicItem> WOOL_MITTEN = ITEMS.register("wool_mitten", WoolMittenItem::new);
     public static final DeferredHolder<Item, RelicItem> AMPHIBIAN_BOOT = ITEMS.register("amphibian_boot", AmphibianBootItem::new);
-    public static final DeferredHolder<Item, RelicItem> CAMOUFLAGE_RING = ITEMS.register("camouflage_ring", CamouflageRingItem::new);
+    public static final DeferredHolder<Item, RelicItem> LEAFY_RING = ITEMS.register("leafy_ring", LeafyRingItem::new);
 
     public static void register(IEventBus bus) {
         ITEMS.register(bus);

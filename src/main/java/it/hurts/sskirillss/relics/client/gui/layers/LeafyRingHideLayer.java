@@ -2,7 +2,7 @@ package it.hurts.sskirillss.relics.client.gui.layers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
-import it.hurts.sskirillss.relics.items.relics.ring.CamouflageRingItem;
+import it.hurts.sskirillss.relics.items.relics.ring.LeafyRingItem;
 import it.hurts.sskirillss.relics.utils.Easing;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -18,8 +18,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
 
-public class CamouflageRingHideLayer implements LayeredDraw.Layer {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/camouflage_ring_hide.png");
+public class LeafyRingHideLayer implements LayeredDraw.Layer {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/hud/leafy_ring_hide.png");
     private static final ResourceLocation VIGNETTE = ResourceLocation.withDefaultNamespace("textures/misc/vignette.png");
 
     @Override
@@ -30,9 +30,9 @@ public class CamouflageRingHideLayer implements LayeredDraw.Layer {
         if (player == null)
             return;
 
-        var stack = EntityUtils.findEquippedCurio(player, ItemRegistry.CAMOUFLAGE_RING.get());
+        var stack = EntityUtils.findEquippedCurio(player, ItemRegistry.LEAFY_RING.get());
 
-        if (!(stack.getItem() instanceof CamouflageRingItem relic))
+        if (!(stack.getItem() instanceof LeafyRingItem relic))
             return;
 
         var progress = relic.getCurrentProgress(stack);

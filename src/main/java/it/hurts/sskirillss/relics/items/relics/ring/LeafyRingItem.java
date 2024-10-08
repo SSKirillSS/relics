@@ -6,19 +6,13 @@ import it.hurts.sskirillss.relics.init.EntityRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
-import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -43,35 +37,13 @@ import java.awt.*;
 
 import static it.hurts.sskirillss.relics.init.DataComponentRegistry.*;
 
-public class CamouflageRingItem extends RelicItem {
+public class LeafyRingItem extends RelicItem {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("hide")
-                                .stat(StatData.builder("example")
-                                        .icon(StatIcons.CHANCE)
-                                        .initialValue(0D, 1D)
-                                        .upgradeModifier(UpgradeOperation.ADD, 1D)
-                                        .formatValue(value -> (int) MathUtils.round(value, 0))
-                                        .build())
-                                .build())
-                        .ability(AbilityData.builder("morph")
-                                .active(CastData.builder()
-                                        .type(CastType.INSTANTANEOUS)
-                                        .build())
-                                .stat(StatData.builder("distance")
-                                        .icon(StatIcons.CHANCE)
-                                        .initialValue(2D, 4D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> (int) MathUtils.round(value, 1))
-                                        .build())
-                                .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 200))
-                .loot(LootData.builder()
-                        .entry(LootCollections.BASTION)
-                        .build())
                 .build();
     }
 
@@ -211,7 +183,7 @@ public class CamouflageRingItem extends RelicItem {
 
             var level = player.getCommandSenderWorld();
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.CAMOUFLAGE_RING.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.LEAFY_RING.get());
 
             if (stack.isEmpty())
                 return;
@@ -239,7 +211,7 @@ public class CamouflageRingItem extends RelicItem {
             var player = event.getEntity();
             var level = player.getCommandSenderWorld();
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.CAMOUFLAGE_RING.get());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ItemRegistry.LEAFY_RING.get());
 
             if (stack.isEmpty())
                 return;
