@@ -69,7 +69,7 @@ public class RerollActionWidget extends AbstractActionWidget {
 
         RenderSystem.setShaderColor(color, color, color, 1F);
 
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/ability/reroll_button" + (isLocked() ? "_inactive" : "_active") + (isWarning ? "_warning" : isQuick ? "_quick" : "") + ".png"), getX(), getY(), 0, 0, width, height, width, height);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/description/ability/reroll_button" + (isLocked() ? "_inactive" : "_active" + (isWarning ? "_warning" : isQuick ? "_quick" : "")) + ".png"), getX(), getY(), 0, 0, width, height, width, height);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
