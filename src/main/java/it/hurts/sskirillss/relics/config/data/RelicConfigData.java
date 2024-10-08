@@ -4,6 +4,7 @@ import it.hurts.octostudios.octolib.modules.config.annotations.IgnoreProp;
 import it.hurts.octostudios.octolib.modules.config.impl.OctoConfig;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
+import it.hurts.sskirillss.relics.level.RelicLootModifier;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -40,5 +41,7 @@ public class RelicConfigData implements OctoConfig {
     @Override
     public void onLoadObject(Object object) {
         relic.setRelicData(((RelicConfigData) object).toData(relic));
+
+        RelicLootModifier.processRelicCache(relic);
     }
 }
