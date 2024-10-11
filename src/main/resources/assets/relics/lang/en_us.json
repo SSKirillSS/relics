@@ -478,6 +478,10 @@
   "item.relics.leafy_ring": "Leafy Ring [WIP]",
   "tooltip.relics.leafy_ring.description": "[WIP]",
 
+  "item.relics.phantom_boot": "Phantom Boot [WIP]",
+  "tooltip.relics.phantom_boot.description": "[WIP]",
+
+
   "item.relics.relic_experience_bottle": "Relic Experience Bottle",
 
   "block.relics.researching_table": "Researching Table [Removed from the mod]",

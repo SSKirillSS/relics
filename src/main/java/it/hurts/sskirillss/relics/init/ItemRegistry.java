@@ -61,7 +61,10 @@ public class ItemRegistry {
     // TODO: public static final DeferredHolder<Item, RelicItem> HORSE_FLUTE = ITEMS.register("horse_flute", HorseFluteItem::new);
     public static final DeferredHolder<Item, RelicItem> WOOL_MITTEN = ITEMS.register("wool_mitten", WoolMittenItem::new);
     public static final DeferredHolder<Item, RelicItem> AMPHIBIAN_BOOT = ITEMS.register("amphibian_boot", AmphibianBootItem::new);
+
+    // NEW GEN
     public static final DeferredHolder<Item, RelicItem> LEAFY_RING = ITEMS.register("leafy_ring", LeafyRingItem::new);
+    public static final DeferredHolder<Item, RelicItem> PHANTOM_BOOT = ITEMS.register("phantom_boot", PhantomBootItem::new);
 
     public static void register(IEventBus bus) {
         ITEMS.register(bus);
