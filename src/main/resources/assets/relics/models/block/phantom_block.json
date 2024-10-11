@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "relics:block/phantom_block"
+  },
+  "render_type": "translucent"
+}

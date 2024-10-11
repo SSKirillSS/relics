@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "relics:block/phantom_block"
+    }
+  }
+}

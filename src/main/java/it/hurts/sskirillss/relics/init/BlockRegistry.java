@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.init;
 
+import it.hurts.sskirillss.relics.blocks.PhantomBlock;
 import it.hurts.sskirillss.relics.blocks.ResearchingTableBlock;
 import it.hurts.sskirillss.relics.items.BlockItemBase;
 import it.hurts.sskirillss.relics.utils.Reference;
@@ -21,6 +22,8 @@ public class BlockRegistry {
             .strength(1.5F)
             .sound(SoundType.WOOD)
             .noOcclusion()));
+
+    public static final DeferredHolder<Block, PhantomBlock> PHANTOM_BLOCK = BLOCKS.register("phantom_block", PhantomBlock::new);
 
     public static void register(IEventBus bus) {
         BLOCKS.register(bus);

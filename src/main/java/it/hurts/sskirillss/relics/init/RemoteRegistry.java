@@ -3,6 +3,7 @@ package it.hurts.sskirillss.relics.init;
 import it.hurts.sskirillss.relics.client.gui.layers.ActiveAbilitiesLayer;
 import it.hurts.sskirillss.relics.client.gui.layers.LeafyRingHideLayer;
 import it.hurts.sskirillss.relics.client.gui.layers.InfoTileLayer;
+import it.hurts.sskirillss.relics.client.gui.layers.PhantomBootBridgeLayer;
 import it.hurts.sskirillss.relics.client.models.items.CurioModel;
 import it.hurts.sskirillss.relics.client.models.layers.WingsLayer;
 import it.hurts.sskirillss.relics.client.renderer.entities.*;
@@ -151,6 +152,7 @@ public class RemoteRegistry {
     public static void onOverlayRegistry(RegisterGuiLayersEvent event) {
         event.registerBelowAll(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "info_tile"), new InfoTileLayer());
         event.registerBelowAll(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "active_abilities"), new ActiveAbilitiesLayer());
-        event.registerBelowAll(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "camouflage_ring_hide"), new LeafyRingHideLayer());
+        event.registerBelowAll(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "leafy_ring_hide"), new LeafyRingHideLayer());
+        event.registerBelowAll(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "phantom_boot_bridge"), new PhantomBootBridgeLayer());
     }
 }

@@ -81,6 +81,12 @@ public class DataComponentRegistry {
                     .build()
     );
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Double>> HEIGHT = DATA_COMPONENTS.register("height",
+            () -> DataComponentType.<Double>builder()
+                    .persistent(Codec.DOUBLE)
+                    .build()
+    );
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<WorldPosition>> WORLD_POSITION = DATA_COMPONENTS.register("world_position",
             () -> DataComponentType.<WorldPosition>builder()
                     .persistent(WorldPosition.CODEC)
