@@ -30,7 +30,7 @@ public class AbilityConfigData {
         data.setRequiredPoints(requiredPoints);
         data.setRequiredLevel(requiredLevel);
         data.setMaxLevel(maxLevel);
-        data.setStats(stats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toData(relic, ability, e.getKey()), (o1, o2) -> o1, LinkedHashMap::new)));
+        data.setStats(data.getStats().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> stats.get(entry.getKey()).toData(relic, ability, entry.getKey()), (o1, o2) -> o1, LinkedHashMap::new)));
 
         return data;
     }
