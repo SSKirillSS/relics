@@ -1,5 +1,6 @@
 package it.hurts.sskirillss.relics.items.relics.base;
 
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import it.hurts.sskirillss.relics.api.events.leveling.ExperienceAddEvent;
@@ -625,6 +626,40 @@ public interface IRelicItem {
         setResearchComponent(stack, ability, getResearchComponent(stack, ability).toBuilder()
                 .researched(researched)
                 .build());
+    }
+
+    default Multimap<Integer, Integer> getCorrectResearchLinks(ItemStack stack, String ability) {
+        Multimap<Integer, Integer> schema = getResearchData(ability).getLinks();
+        Multimap<Integer, Integer> links = getResearchLinks(stack, ability);
+
+        if (schema.isEmpty())
+            return LinkedHashMultimap.create();
+
+        Set<Pair<Integer, Integer>> bidirectionalSchema = schema.entries().stream()
+                .flatMap(entry -> Stream.of(Pair.of(entry.getKey(), entry.getValue()), Pair.of(entry.getValue(), entry.getKey())))
+                .collect(Collectors.toSet());
+
+        return links.entries().stream()
+                .filter(entry -> bidirectionalSchema.contains(Pair.of(entry.getKey(), entry.getValue()))
+                        || bidirectionalSchema.contains(Pair.of(entry.getValue(), entry.getKey())))
+                .collect(LinkedHashMultimap::create, (map, entry) -> map.put(entry.getKey(), entry.getValue()), Multimap::putAll);
+    }
+
+    default Multimap<Integer, Integer> getIncorrectResearchLinks(ItemStack stack, String ability) {
+        Multimap<Integer, Integer> schema = getResearchData(ability).getLinks();
+        Multimap<Integer, Integer> links = getResearchLinks(stack, ability);
+
+        if (schema.isEmpty())
+            return LinkedHashMultimap.create();
+
+        Set<Pair<Integer, Integer>> bidirectionalSchema = schema.entries().stream()
+                .flatMap(entry -> Stream.of(Pair.of(entry.getKey(), entry.getValue()), Pair.of(entry.getValue(), entry.getKey())))
+                .collect(Collectors.toSet());
+
+        return links.entries().stream()
+                .filter(entry -> !bidirectionalSchema.contains(Pair.of(entry.getKey(), entry.getValue()))
+                        && !bidirectionalSchema.contains(Pair.of(entry.getValue(), entry.getKey())))
+                .collect(LinkedHashMultimap::create, (map, entry) -> map.put(entry.getKey(), entry.getValue()), Multimap::putAll);
     }
 
     default double testAbilityResearchPercentage(ItemStack stack, String ability) {

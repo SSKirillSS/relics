@@ -59,8 +59,8 @@ public class ScreenUtils {
         return (mouseX >= x && mouseX <= x + width) && (mouseY >= y && mouseY <= y + height);
     }
 
-    private static final ResourceLocation ALT_FONT = ResourceLocation.withDefaultNamespace("alt");
-    private static final ResourceLocation ILLAGER_ALT_FONT = ResourceLocation.withDefaultNamespace("illageralt");
+    public static final ResourceLocation ALT_FONT = ResourceLocation.withDefaultNamespace("alt");
+    public static final ResourceLocation ILLAGER_ALT_FONT = ResourceLocation.withDefaultNamespace("illageralt");
 
     public static MutableComponent illageriate(MutableComponent input, double percentage, long seed) {
         return stylize(input, percentage, Style.EMPTY.withFont(ILLAGER_ALT_FONT), seed);
