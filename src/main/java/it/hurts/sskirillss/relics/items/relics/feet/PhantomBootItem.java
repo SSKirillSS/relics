@@ -89,7 +89,7 @@ public class PhantomBootItem extends RelicItem implements IRenderableCurio {
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         var level = player.level();
 
-        if (ability.equals("bridge")) {
+        if (ability.equals("bridge") && isToggled(stack)) {
             if (stage == CastStage.START) {
                 var motion = player.getDeltaMovement();
 
@@ -102,7 +102,7 @@ public class PhantomBootItem extends RelicItem implements IRenderableCurio {
                 }
             }
 
-            if (!level.isClientSide() && stage == CastStage.TICK && isToggled(stack)) {
+            if (!level.isClientSide() && stage == CastStage.TICK) {
                 var motion = player.getKnownMovement().multiply(1F, 0F, 1F);
                 var pos = player.position().add(motion);
                 var blockPos = new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()));
