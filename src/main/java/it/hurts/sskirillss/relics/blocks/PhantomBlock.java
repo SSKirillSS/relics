@@ -16,6 +16,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -30,9 +31,10 @@ public class PhantomBlock extends Block {
     public PhantomBlock() {
         super(BlockBehaviour.Properties.of()
                 .friction(0.98F)
-                .strength(0F)
+                .sound(SoundType.WOOL)
                 .dynamicShape()
                 .noOcclusion()
+                .instabreak()
         );
     }
 
