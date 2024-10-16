@@ -24,7 +24,7 @@ public class ParticleUtils {
                 .diameter(diameter)
                 .lifetime(lifetime)
                 .scaleModifier(scaleModifier)
-                .physical(true)
+                .physical(false)
                 .roll(0.5F)
                 .build());
     }

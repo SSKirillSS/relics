@@ -100,7 +100,7 @@ public class TooltipBorderHandler {
         for (int i = 1; i < relic.getRelicQuality(stack) + 1; i++) {
             boolean isAliquot = i % 2 == 1;
 
-            float color = (float) (0.85F + Math.sin(player.tickCount * Math.ceil(i / 2F) * 0.075F) * 0.3F);
+            float color = (float) (0.85F + Math.sin(player.tickCount * Math.ceil(i / 2F) * 0.075F) * 0.2F);
 
             RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 

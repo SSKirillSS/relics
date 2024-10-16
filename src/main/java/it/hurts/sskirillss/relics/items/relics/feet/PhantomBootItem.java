@@ -20,6 +20,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -33,11 +34,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import top.theillusivec4.curios.api.SlotContext;
@@ -60,8 +61,13 @@ public class PhantomBootItem extends RelicItem implements IRenderableCurio {
                                 .stat(StatData.builder("duration")
                                         .icon(StatIcons.DURATION)
                                         .initialValue(0.25D, 1D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 11, 8).star(1, 7, 13).star(2, 15, 14)
+                                        .star(3, 11, 21).star(4, 3, 29).star(5, 19, 29)
+                                        .link(0, 1).link(0, 2).link(0, 3).link(3, 4).link(3, 5).link(4, 5)
                                         .build())
                                 .build())
                         .build())
@@ -85,21 +91,34 @@ public class PhantomBootItem extends RelicItem implements IRenderableCurio {
 
         if (ability.equals("bridge")) {
             if (stage == CastStage.START) {
-                Vec3 motion = player.getDeltaMovement();
+                var motion = player.getDeltaMovement();
 
-                if (motion.y <= -0.5D)
+                if (motion.y <= -0.5D) {
                     player.setDeltaMovement(motion.x, -motion.y, motion.z);
+
+                    var state = BlockRegistry.PHANTOM_BLOCK.get().defaultBlockState();
+
+                    state.getBlock().fallOn(level, state, player.blockPosition(), player, player.fallDistance);
+                }
             }
 
             if (!level.isClientSide() && stage == CastStage.TICK && isToggled(stack)) {
-                for (int x = -1; x <= 1; x++) {
-                    for (int z = -1; z <= 1; z++) {
-                        var relativePos = player.blockPosition().offset(x, -1, z);
+                var motion = player.getKnownMovement().multiply(1F, 0F, 1F);
+                var pos = player.position().add(motion);
+                var blockPos = new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()));
+
+                var radius = (int) Mth.clamp(Math.round(motion.length()), 1, 3);
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int z = -radius; z <= radius; z++) {
+                        var relativePos = blockPos.offset(x, -1, z);
 
                         if (!level.isEmptyBlock(relativePos))
                             continue;
 
-                        level.setBlockAndUpdate(relativePos, BlockRegistry.PHANTOM_BLOCK.get().defaultBlockState());
+                        if (level.setBlockAndUpdate(relativePos, BlockRegistry.PHANTOM_BLOCK.get().defaultBlockState())
+                                && level.getRandom().nextInt(9) == 0)
+                            spreadRelicExperience(player, stack, 1);
                     }
                 }
             }
