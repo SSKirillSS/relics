@@ -59,7 +59,7 @@ public class PhantomBootItem extends RelicItem implements IRenderableCurio {
                                         .build())
                                 .stat(StatData.builder("duration")
                                         .icon(StatIcons.DURATION)
-                                        .initialValue(0.5D, 1.5D)
+                                        .initialValue(0.25D, 1D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
@@ -91,7 +91,7 @@ public class PhantomBootItem extends RelicItem implements IRenderableCurio {
                     player.setDeltaMovement(motion.x, -motion.y, motion.z);
             }
 
-            if (stage == CastStage.TICK && isToggled(stack)) {
+            if (!level.isClientSide() && stage == CastStage.TICK && isToggled(stack)) {
                 for (int x = -1; x <= 1; x++) {
                     for (int z = -1; z <= 1; z++) {
                         var relativePos = player.blockPosition().offset(x, -1, z);

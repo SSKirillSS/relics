@@ -1,7 +1,21 @@
 {
   "variants": {
-    "": {
-      "model": "relics:block/phantom_block"
-    }
+    "": [
+      {
+        "model": "relics:block/phantom_block"
+      },
+      {
+        "model": "relics:block/phantom_block",
+        "y": 90
+      },
+      {
+        "model": "relics:block/phantom_block",
+        "y": 180
+      },
+      {
+        "model": "relics:block/phantom_block",
+        "y": 270
+      }
+    ]
   }
 }

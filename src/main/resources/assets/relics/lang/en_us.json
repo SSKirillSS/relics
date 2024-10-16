@@ -475,12 +475,15 @@
   "tooltip.relics.space_dissector.ability.dissection.stat.time.title": "Portal lifetime:",
   "tooltip.relics.space_dissector.ability.dissection.stat.time.value": "%1$s seconds",
 
+  "item.relics.phantom_boot": "Phantom Boot",
+  "tooltip.relics.phantom_boot.description": "Condenses matter beneath the feet of the relic's owner, forging a path through any space, even where there is no solid ground.",
+  "tooltip.relics.phantom_boot.ability.bridge": "Phantom Bridge",
+  "tooltip.relics.phantom_boot.ability.bridge.description": "When the ability is active, a temporary phantom bridge forms beneath the player's feet, allowing the relic's owner to traverse it. The bridge possesses the properties of slippery and bouncy blocks, fully absorbing fall damage. If the player stands still on the bridge for too long, they will fall through and will be unable to climb back up until they stand on solid ground.",
+  "tooltip.relics.phantom_boot.ability.bridge.stat.duration.title": "Maximum standing duration:",
+  "tooltip.relics.phantom_boot.ability.bridge.stat.duration.value": "%1$s seconds.",
+
   "item.relics.leafy_ring": "Leafy Ring [WIP]",
   "tooltip.relics.leafy_ring.description": "[WIP]",
-
-  "item.relics.phantom_boot": "Phantom Boot [WIP]",
-  "tooltip.relics.phantom_boot.description": "[WIP]",
-
 
   "item.relics.relic_experience_bottle": "Relic Experience Bottle",
 
